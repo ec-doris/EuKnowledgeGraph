@@ -33,7 +33,7 @@ call_user_func( function() {
 	define( 'WB_NS_PROPERTY', $baseNs + 2 );
 	define( 'WB_NS_PROPERTY_TALK', $baseNs + 3 );
 
-	// Register extra namespaces.
+        // Register extra namespaces.
 	$wgExtraNamespaces[WB_NS_ITEM] = 'Item';
 	$wgExtraNamespaces[WB_NS_ITEM_TALK] = 'Item_talk';
 	$wgExtraNamespaces[WB_NS_PROPERTY] = 'Property';
@@ -73,7 +73,18 @@ call_user_func( function() {
                         'dataTypes' => array( 'external-id' ),
                 ),
         ),
-);
+        );
+        $wgWBRepoSettings['string-limits'] = array (
+              'multilang' => array (
+                      'length' => 250, // length constraint
+              ),
+              'VT:monolingualtext'  => array (
+                      'length' => 5000, // length constraint
+              ),
+              'VT:string'  => array (
+                      'length' => 5000, // length constraint
+              ),
+         );
 } );
 
 /*
