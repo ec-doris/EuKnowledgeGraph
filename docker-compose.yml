@@ -79,6 +79,7 @@ services:
     environment:
       - WIKIBASE_HOST=wikibase.svc
       - WDQS_HOST=wdqs-proxy.svc
+      - BRAND_TITLE=EU Knowledge Graph Query Service
   wdqs:
     image: wikibase/wdqs:0.3.10
     restart: unless-stopped
