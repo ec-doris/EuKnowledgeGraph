@@ -76,7 +76,7 @@ call_user_func( function() {
         );
         $wgWBRepoSettings['string-limits'] = array (
               'multilang' => array (
-                      'length' => 250, // length constraint
+                      'length' => 400, // length constraint
               ),
               'VT:monolingualtext'  => array (
                       'length' => 5000, // length constraint
@@ -84,7 +84,11 @@ call_user_func( function() {
               'VT:string'  => array (
                       'length' => 5000, // length constraint
               ),
+              'PT:url' => array (
+			'length' => 500,
+	      ),
          );
+        // $wgWBRepoSettings['useKartographerGlobeCoordinateFormatter'] = true;
 } );
 
 /*
