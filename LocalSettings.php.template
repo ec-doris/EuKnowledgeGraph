@@ -105,3 +105,7 @@ wfLoadExtension( 'cldr' );
 
 # EntitySchema
 wfLoadExtension( 'EntitySchema' );
+
+#JsonConfig for Kartographer
+#wfLoadExtension( 'JsonConfig' );
+#wfLoadExtension( 'Kartographer' );

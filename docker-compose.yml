@@ -25,6 +25,8 @@ services:
       - ./images:/var/www/html/resources/assets/images
       - ./LocalSettings.php.template:/LocalSettings.php.template
       - ./Wikibase.example.php:/var/www/html/extensions/Wikibase/repo/config/Wikibase.example.php
+      #- ./JsonConfig:/var/www/html/extensions/JsonConfig
+      #- ./Kartographer:/var/www/html/extensions/Kartographer
     depends_on:
     - mysql
     - elasticsearch

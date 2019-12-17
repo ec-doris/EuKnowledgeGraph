@@ -1,1 +1,1 @@
-docker exec -i -t 64a4054f1e83 php extensions/Wikibase/lib/maintenance/populateSitesTable.php
+docker exec -i -t "$(docker ps -aqf name=wikibase_wikibase)"  php extensions/Wikibase/lib/maintenance/populateSitesTable.php
