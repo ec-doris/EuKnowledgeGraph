@@ -40,16 +40,10 @@ services:
       - DB_SERVER=mysql.svc:3306
       - MW_ELASTIC_HOST=elasticsearch.svc
       - MW_ELASTIC_PORT=9200
-      # CONFIG - Change the default values below
-      - MW_ADMIN_NAME=Admin
-      - MW_ADMIN_PASS=jozwoc-paKjor-4xewmy
-      - MW_ADMIN_EMAIL=dennis.diefenbach@qanswer.eu
-      - MW_WG_SECRET_KEY=jozwoc-paKjor-4xewmy
-      # CONFIG - Change the default values below (should match mysql values in this file)
-      - DB_USER=admin
-      - DB_PASS=jozwoc-paKjor-4xewmy
       - DB_NAME=my_wiki
       - QS_PUBLIC_SCHEME_HOST_AND_PORT=http://localhost:9191
+    env_file:
+      - services_secrets.env
   mysql:
     image: mariadb:10.3
     restart: unless-stopped
@@ -59,8 +53,8 @@ services:
       MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
       # CONFIG - Change the default values below (should match values passed to wikibase)
       MYSQL_DATABASE: 'my_wiki'
-      MYSQL_USER: 'admin'
-      MYSQL_PASSWORD: 'jozwoc-paKjor-4xewmy'
+    env_file:
+        - mysql_secrets.env
     networks:
       default:
         aliases:
