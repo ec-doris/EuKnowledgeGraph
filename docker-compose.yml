@@ -34,7 +34,6 @@ services:
     networks:
       default:
         aliases:
-         - linkedopendata.eu
          - wikibase.svc
          # CONFIG - Add your real wikibase hostname here, for example wikibase-registry.wmflabs.org
     environment:
@@ -94,6 +93,7 @@ services:
          - wdqs.svc
     environment:
       - WIKIBASE_HOST=linkedopendata.eu
+      - WIKIBASE_SCHEME=https
       - WDQS_HOST=wdqs.svc
       - WDQS_PORT=9999
     expose:
@@ -124,6 +124,7 @@ services:
          - wdqs-updater.svc
     environment:
      - WIKIBASE_HOST=linkedopendata.eu
+     - WIKIBASE_SCHEME=https
      - WDQS_HOST=wdqs.svc
      - WDQS_PORT=9999
   elasticsearch:

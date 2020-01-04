@@ -46,6 +46,7 @@ ${DOLLAR}wgSecretKey = "${MW_WG_SECRET_KEY}";
 ${DOLLAR}wgRCMaxAge = 365 * 24 * 3600;
 
 ${DOLLAR}wgLogo = 'resources/assets/images/euLogo.png';
+${DOLLAR}wgServer = "https://linkedopendata.eu";
 
 wfLoadSkin( 'Vector' );
 
