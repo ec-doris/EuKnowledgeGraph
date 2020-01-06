@@ -1,0 +1,6 @@
+{
+	"@metadata": [],
+	"jsonconfig-err-bool": "Parameter \"$1\" moet waar of vals wees",
+	"jsonconfig-err-string": "Parameter \"$1\" moet 'n string wees",
+	"jsonconfig-optional-field": "(opsioneel)"
+}

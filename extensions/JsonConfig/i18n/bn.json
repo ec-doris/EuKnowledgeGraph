@@ -1,0 +1,26 @@
+{
+	"@metadata": {
+		"authors": [
+			"Aftab1995",
+			"Aftabuzzaman",
+			"আফতাবুজ্জামান"
+		]
+	},
+	"jsonconfig-duplicate-field": "একের অধিক \"$1\" মান পাওয়া গেছে",
+	"jsonconfig-err-array": "প্যারামিটার \"$1\" অবশ্যই একটি তালিকা হতে হবে, উদাহরণ [\"মান১\", \"মান২\", ...]",
+	"jsonconfig-err-bool": "প্যারামিটার \"$1\" ট্রু বা ফলস হতে হবে",
+	"jsonconfig-err-integer": "প্যারামিটার \"$1\" অবশ্যই একটি পূর্ণসংখ্যা হতে হবে",
+	"jsonconfig-err-number": "প্যারামিটার \"$1\" অবশ্যই একটি নম্বর হতে হবে",
+	"jsonconfig-err-string": "প্যারামিটার \"$1\" একটি স্ট্রিং হতে হবে",
+	"jsonconfig-err-url": "প্যারামিটার \"$1\" অবশ্যই একটি বৈধ URL হতে হবে",
+	"jsonconfig-optional-field": "(ঐচ্ছিক)",
+	"jsonconfig-type-name-invalid": "অবৈধ",
+	"jsonconfig-type-name-string": "স্ট্রিং",
+	"jsonconfig-type-name-localized": "স্থানীয়কৃত",
+	"jsonconfig-type-name-number": "নম্বর",
+	"jsonconfig-type-name-boolean": "বুলিয়ান",
+	"jsonconfig-license": "উপাত্ত $1 লাইসেন্সের অধীনে উপলব্ধ।",
+	"jsonconfig-license-name-CC0-1.0": "ক্রিয়েটিভ কমন্স জিরো",
+	"jsonconfig-license-copyrightwarning-CC0-1.0": "পরিবর্তন সংরক্ষণ করার মাধ্যমে, আপনি [https://foundation.wikimedia.org/wiki/Terms_of_Use ব্যবহারের নীতিমালার] সাথে সম্মত হচ্ছেন এবং একই সাথে আপনার অবদান [https://creativecommons.org/publicdomain/zero/1.0/deed.bn সিসি০] লাইসেন্সের অধীনে প্রকাশের অনুমতি দিচ্ছেন।",
+	"jsonconfig-license-notice-CC0-1.0": "'''টীকা:''' এই পাতা সম্পাদনা করার দ্বারা, আপনি আপনার অবদান [https://creativecommons.org/publicdomain/zero/1.0/deed.bn সিসি০] লাইসেন্সের অধীনে প্রকাশে সম্মত হচ্ছেন।"
+}

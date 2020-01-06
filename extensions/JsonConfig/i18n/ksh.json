@@ -1,0 +1,33 @@
+{
+	"@metadata": {
+		"authors": [
+			"Purodha",
+			"Yurik"
+		]
+	},
+	"jsonconfig-desc": "Määd et müjjelesch, <i lang=\"en\" xml:lang=\"en\" dir=\"ltr\" title=\"JavaScript Object Notation\">JSON</i>-Enschtällonge em Wikki faßzehallde.",
+	"jsonconfig-duplicate-field": "Mer han mih wi eine „$1“-Wäät jefonge.",
+	"jsonconfig-err-array": "Dä Parramehter „$1“ moss en Leß sin, för e Beijschpell [\"Wääd1\", \"Wääd2\", …]",
+	"jsonconfig-err-array-expected": "För dä Parramehter „$1“ ham_mer en Leß äwahd, met […] Klammere drömeröm.",
+	"jsonconfig-err-assoc-array": "Dä Parramehter „$1“ moss e su jenannt Wööterbohch sin, för e Beijschpell {\"Schößel\": \"Wäät\", …}",
+	"jsonconfig-err-bool": "Dä Parrameeter „$1“ moß „<code lang=\"en\" xml:lang=\"en\" dir=\"ltr\">true</code>“ udder „<code lang=\"en\" xml:lang=\"en\" dir=\"ltr\">false</code>“ sin, un kann och fott blihve.",
+	"jsonconfig-err-integer": "Dä Parramehter „$1“ moss en jannze Zahl sin",
+	"jsonconfig-err-object-expected": "För dä Parramehter „$1“ ham_mer en Objäk äwahd, met {…} Klammere drömeröm.",
+	"jsonconfig-err-root-array-expected": "De <i lang=\"en\" xml:lang=\"en\" dir=\"ltr\" title=\"JavaScript Object Notation\">JSON</i>-Dahte sullte en Leß sin, met […] Klammere drömeröm.",
+	"jsonconfig-err-root-object-expected": "De <i lang=\"en\" xml:lang=\"en\" dir=\"ltr\" title=\"JavaScript Object Notation\">JSON</i>-Dahte sullte en Objäk sin, met {…} Klammere drömeröm.",
+	"jsonconfig-err-string": "Dä Parramehter „$1“ moss_en Aanzahl Zeijsche sin, un dä kann och fott blihve.",
+	"jsonconfig-err-url": "Dä Parramehter „$1“ moss en jöltejje <i lang=\"en\" xml:lang=\"en\" dir=\"ltr\" title=\"Uniform Ressource Locator\">URL</i> sin",
+	"jsonconfig-move-aborted-ns": "de neue Övverschreff för di Sigg es nit ze bruche, för <i lang=\"en\" xml:lang=\"en\" dir=\"ltr\" title=\"JavaScript Object Notation\">JSON</i>-Dahte en di Sigg ze donn.",
+	"jsonconfig-optional-field": "(kann fott blihve)",
+	"jsonconfig-type-name-invalid": "onjöltesch:",
+	"jsonconfig-type-name-number": "Zahl",
+	"jsonconfig-type-name-boolean": "Joh/Näh",
+	"right-jsonconfig-flush": "De Enschtällonge för <i lang=\"en\" xml:lang=\"en\" dir=\"ltr\" title=\"JavaScript Object Notation\">JSON</i> övver en <i lang=\"en\" xml:lang=\"en\" dir=\"ltr\" title=\"Application Programming Interface\">API</i> änndere.",
+	"apihelp-jsonconfig-description": "Mähd ene tiräkte Zohjang zom <i lang=\"en\" xml:lang=\"en\" dir=\"ltr\">JsonConfig</i> Ongersößtehm müjjelesch.",
+	"apihelp-jsonconfig-param-command": "Wat för en zohsäzlejje Aufjahb sull för de <i lang=\"en\" xml:lang=\"en\" dir=\"ltr\">JsonConfig</i> jedonn wähde:\n;„<code lang=\"en\" xml:lang=\"en\" dir=\"ltr\">status</code>“:Zeijsch de Enschtällonge uß der <i lang=\"en\" xml:lang=\"en\" dir=\"ltr\">JsonConfig</i>\n;„<code lang=\"en\" xml:lang=\"en\" dir=\"ltr\">reset</code>“:Schmiiß de Enschtällonge uß der <i lang=\"en\" xml:lang=\"en\" dir=\"ltr\">JsonConfig</i> uss em Zweschescheijscher. Bruch der Parramehter „<code lang=\"en\" xml:lang=\"en\" dir=\"ltr\">$1title</code>“ un et Rääsch „<code lang=\"en\" xml:lang=\"en\" dir=\"ltr\">jsonconfig-reset</code>“.\n;„<code lang=\"en\" xml:lang=\"en\" dir=\"ltr\">reload</code>“:Lähd de Enschtällonge neu uss em Schpeijscher för dem Wikki sin Enschtällonge un deiht en der Zweschescheijscher. Bruch der Parramehter „<code lang=\"en\" xml:lang=\"en\" dir=\"ltr\">$1title</code>“ un et Rääsch „<code lang=\"en\" xml:lang=\"en\" dir=\"ltr\">jsonconfig-reset</code>“.",
+	"apihelp-jsonconfig-param-title": "De Övverschreff zom Verärbeide.",
+	"apihelp-jsonconfig-param-content": "För „<code lang=\"en\" xml:lang=\"en\" dir=\"ltr\">$1command=reload</code>“ nemm schtatt dämm heh dä Ennhallt.\n<!--  \nhttps://translatewiki.net/wiki/Thread:Support/About_MediaWiki:Apihelp-jsonconfig-param-content/ksh\n-->",
+	"apihelp-jsonconfig-example-1": "Ennschtällonge aanzeije",
+	"apihelp-jsonconfig-example-2": "[[Zero:TEST]] neu aanloufe lohße",
+	"apihelp-jsonconfig-example-3": "[[Zero:TEST]] neu lahde"
+}

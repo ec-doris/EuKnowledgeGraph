@@ -1,0 +1,33 @@
+{
+	"@metadata": {
+		"authors": [
+			"Siebrand",
+			"Sjoerddebruin",
+			"Hex",
+			"Yurik",
+			"Mainframe98"
+		]
+	},
+	"jsonconfig-desc": "Maakt het mogelijk JSON-instellingen op te slaan in een wiki",
+	"jsonconfig-duplicate-field": "Meer dan één waarde \"$1\" aangetroffen",
+	"jsonconfig-err-array": "Parameter \"$1\" moet een lijst zijn, bijvoorbeeld [\"waarde1\", \"waarde2\", ...]",
+	"jsonconfig-err-array-expected": "De verwachting was dat \"$1\" een lijst was omringd door haakjes[...]",
+	"jsonconfig-err-assoc-array": "Parameter \"$1\" moet een must be an associatieve array (dictionary) zijn, bijvoorbeeld {\"sleutel\": \"waarde\", ...}",
+	"jsonconfig-err-bool": "Parameter \"$1\" moet op waar of onwaar zijn ingesteld",
+	"jsonconfig-err-integer": "Parameter \"$1\" moet een integer zijn",
+	"jsonconfig-err-license": "Parameter \"$1\" moet één van de geldige licentiecodes zijn, bijvoorbeeld $2",
+	"jsonconfig-err-number": "Parameter \"$1\" moet een nummer zijn",
+	"jsonconfig-err-object-expected": "De verwachting was dat \"$1\" een object was, omringd door accolades {...}",
+	"jsonconfig-err-root-array-expected": "JSON-gegevens moeten een lijst zijn, omringd door haakjes [...]",
+	"jsonconfig-err-root-object-expected": "JSON-gegevens moeten een object zijn, omringd door accolades {...}",
+	"jsonconfig-err-string": "Parameter \"$1\" moet tekst zijn",
+	"jsonconfig-err-url": "Parameter \"$1\" moet een geldige URL zijn",
+	"jsonconfig-move-aborted-model": "het JSON-configuratiemodel \"$1\" van deze pagina zou niet overeen komen met het model \"$2\" van de nieuwe naam",
+	"jsonconfig-move-aborted-ns": "de nieuwe paginanaam is niet ingesteld om de nieuwe JSON-configuratie te bevatten",
+	"jsonconfig-optional-field": "(optioneel)",
+	"jsonconfig-type-name-invalid": "ongeldig",
+	"jsonconfig-type-name-number": "getal",
+	"jsonconfig-type-name-boolean": "Boolean",
+	"jsonconfig-license": "Gegevens beschikbaar onder $1.",
+	"jsonconfig-license-name-CC0-1.0": "Creative Commons Zero"
+}

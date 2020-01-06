@@ -1,0 +1,32 @@
+{
+	"@metadata": {
+		"authors": [
+			"Chrumps",
+			"Openbk",
+			"Railfail536"
+		]
+	},
+	"jsonconfig-desc": "Umożliwia przechowywanie na wiki konfiguracji JSON",
+	"jsonconfig-duplicate-field": "Znaleziono więcej niż jedną wartość „$1”",
+	"jsonconfig-err-array": "Parametr „$1” musi być listą, np. [„wartość1”, „wartość2”, ...]",
+	"jsonconfig-err-assoc-array": "Parametr „$1” musi być tablicą asocjacyjną (słownikiem), np. {„klucz”: „wartość”, ...}",
+	"jsonconfig-err-bad-header-string": "Nagłówek „$1” może zawierać wyłącznie litery, cyfry i znak podkreślenia oraz nie może rozpoczynać się cyfrą.",
+	"jsonconfig-err-bool": "Parametr „$1” musi mieć wartość true (prawda) lub false (fałsz)",
+	"jsonconfig-err-integer": "Parametr „$1” musi być liczbą całkowitą",
+	"jsonconfig-err-number": "Parametr „$1” musi być liczbą",
+	"jsonconfig-err-string": "Parametr „$1” musi być ciągiem znaków",
+	"jsonconfig-err-unexpected-key": "Obiekt „$1” zawiera nieoczekiwane pole „$2”",
+	"jsonconfig-err-url": "Parametr „$1” musi być prawidłowym adresem URL",
+	"jsonconfig-optional-field": "(opcjonalne)",
+	"jsonconfig-type-name-number": "liczba",
+	"jsonconfig-type-name-boolean": "wartość logiczna",
+	"jsonconfig-license": "Dane dostępne w ramach licencji $1.",
+	"jsonconfig-license-name-CC0-1.0": "Creative Commons Zero",
+	"jsonconfig-license-copyrightwarning": "Zapisując zmiany, wyrażasz zgodę na [https://foundation.wikimedia.org/wiki/Terms_of_Use/pl Warunki użytkowania] i nieodwołalnie zgadzasz się na udostępnienie swojego udziału zgodnie z licencją  [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}].",
+	"jsonconfig-license-copyrightwarning-license-unset": "Zapisując zmiany, wyrażasz zgodę na [https://foundation.wikimedia.org/wiki/Terms_of_Use/pl Warunki użytkowania], a nieodwołalnie zgadzasz się na udostępnienie swojego udziału zgodnie z licencją określoną w polu 'licencja'.",
+	"right-jsonconfig-flush": "Zmienianie JsonConfig przez API",
+	"action-jsonconfig-flush": "zmieniania JsonConfig przez API",
+	"apihelp-jsonconfig-example-1": "Pokaż konfigurację",
+	"apihelp-jsondata-description": "Odbierz zlokalizowane dane JSON.",
+	"apierror-jsonconfig-paramrequired": "Dla tego polecenia wymagany jest parametr <var>$1</ var>."
+}

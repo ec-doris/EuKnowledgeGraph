@@ -1,0 +1,23 @@
+{
+	"@metadata": {
+		"authors": [
+			"Robby"
+		]
+	},
+	"jsonconfig-duplicate-field": "Méi wéi ee Wäert \"$1\" fonnt",
+	"jsonconfig-err-array": "Parameter \"$1\" muss eng Lëscht sinn, z.&nbsp;Bsp. [\"Wäert1\", \"Wäert2\", …]",
+	"jsonconfig-err-bool": "Parameter \"$1\" muss entweder wouer oder falsch sinn",
+	"jsonconfig-err-integer": "De Parameter \"$1\" muss eng ganz Zuel sinn",
+	"jsonconfig-err-number": "De Parameter \"$1\" muss eng Zuel sinn",
+	"jsonconfig-optional-field": "(fakultativ)",
+	"jsonconfig-type-name-invalid": "net valabel",
+	"jsonconfig-type-name-string": "Zeecheketten",
+	"jsonconfig-type-name-localized": "lokaliséiert",
+	"jsonconfig-type-name-number": "Zuel",
+	"jsonconfig-license": "D'Donnéeë sinn disponibel ënner $1.",
+	"jsonconfig-license-notice-CC0-1.0": "'''Notiz:''' Wann Dir dës Säit ännert dat sidd Dir domat averstan datt Äre Beitrag ënner [https://creativecommons.org/publicdomain/zero/1.0/ CC0] publizéiert gëtt.",
+	"right-jsonconfig-flush": "JsonConfig iwwer d'API manipuléieren",
+	"apihelp-jsonconfig-example-1": "Astellung weisen",
+	"apihelp-jsonconfig-example-2": "[[Zero:TEST]] zrécksetzen",
+	"apihelp-jsonconfig-example-3": "[[Zero:TEST]] nei lueden"
+}

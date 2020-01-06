@@ -1,0 +1,12 @@
+{
+	"@metadata": {
+		"authors": [
+			"Y-M D",
+			"Fohanno"
+		]
+	},
+	"jsonconfig-err-integer": "An arventenn \"$1\" a rank bezañ un niver anterin",
+	"jsonconfig-err-string": "An arventenn \"$1\" a rank bezañ ur chadennad",
+	"jsonconfig-err-url": "Rankout a ra an arventenn $1 bezañ evit un URL reizh.",
+	"jsonconfig-optional-field": "(diret)"
+}

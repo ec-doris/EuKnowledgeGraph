@@ -1,0 +1,13 @@
+{
+	"@metadata": {
+		"authors": [
+			"Умар"
+		]
+	},
+	"jsonconfig-desc": "JSON нисяр лато йиш хуьлуьйту вики-проектехь",
+	"jsonconfig-duplicate-field": "Карина цхьанал дукха маьӀна «$1»",
+	"jsonconfig-err-bool": "Параметр «$1» язийна хила еза маьӀнаца true (бакъ) я false (харц)",
+	"jsonconfig-err-integer": "Параметр «$1» дуьзина терахь хила деза",
+	"jsonconfig-err-string": "Параметр «$1» могӀа хила беза",
+	"jsonconfig-optional-field": "(тӀехь дац)"
+}

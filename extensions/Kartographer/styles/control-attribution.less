@@ -1,0 +1,55 @@
+/* == Attribution control == */
+@import '../lib/external/wikimedia-ui-base';
+
+/* Static snapshot */
+.mw-kartographer-attribution {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	margin: 0;
+	padding: 0 5px;
+	box-shadow: none;
+}
+
+/* Static + Interactive */
+.mw-kartographer-attribution,
+.leaflet-right.leaflet-bottom {
+	background-color: rgba( 255, 255, 255, 0.8 );
+	color: @color-base;
+}
+
+/* Interactive */
+.leaflet-right.leaflet-bottom .leaflet-control.leaflet-control-attribution {
+	/** Override initial properties */
+	background-color: transparent;
+	float: none;
+	clear: none;
+}
+
+/* Static + Interactive */
+.mw-kartographer-attribution,
+.leaflet-right.leaflet-bottom .leaflet-control.leaflet-control-attribution {
+	font-size: 10px;
+	font-family: sans-serif;
+	line-height: 1.6;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+
+	/* Removes ellipsis on hover */
+	&:hover {
+		overflow: hidden;
+		text-overflow: clip;
+		white-space: normal;
+	}
+
+	a {
+		color: @color-primary;
+	}
+}
+
+/* Static + Interactive */
+.mw-kartographer-map:hover .mw-kartographer-attribution,
+.mw-kartographer-interactive:hover .leaflet-right.leaflet-bottom {
+	background-color: rgba( 255, 255, 255, 0.9 );
+}

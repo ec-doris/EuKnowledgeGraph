@@ -1,0 +1,12 @@
+{
+	"@metadata": {
+		"authors": [
+			"McDutchie"
+		]
+	},
+	"jsonconfig-err-bool": "Parametro \"$1\" debe esser \"true\" o \"false\"",
+	"jsonconfig-err-string": "Parametro \"$1\" debe esser un catena de characteres",
+	"jsonconfig-optional-field": "(optional)",
+	"apihelp-jsonconfig-param-namespace": "Numero de spatio de nomines del titulo a tractar.",
+	"apihelp-jsonconfig-param-title": "Titulo a tractar sin prefixo de spatio de nomines."
+}

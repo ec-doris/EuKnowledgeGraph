@@ -1,0 +1,15 @@
+{
+	"@metadata": {
+		"authors": [
+			"Rachmat.Wahidi",
+			"Presidenvolksraad",
+			"Rachmat04"
+		]
+	},
+	"jsonconfig-err-bool": "Parameter \"$1\" harus benar atau salah",
+	"jsonconfig-err-string": "Parameter \"$1\" harus berupa string",
+	"jsonconfig-optional-field": "(opsional)",
+	"apihelp-jsonconfig-param-namespace": "Nomor ruangnama judul akan diproses.",
+	"apihelp-jsonconfig-param-title": "Judul untuk diproses tanpa awalan ruangnama.",
+	"apihelp-jsondata-description": "Mengambil data JSON lokal."
+}

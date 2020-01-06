@@ -1,0 +1,14 @@
+{
+	"@metadata": {
+		"authors": [
+			"Cedric31"
+		]
+	},
+	"jsonconfig-desc": "Permet d'emmagazinar una configuracion JSON dins un wiki",
+	"jsonconfig-duplicate-field": "Mai d’una valor « $1 » trobada",
+	"jsonconfig-err-bool": "Paramètre « $1 » deu èsser verai o fals",
+	"jsonconfig-err-integer": "Lo paramètre « $1 » deu èsser un nombre entièr",
+	"jsonconfig-err-string": "Lo paramètre « $1 » deu èsser una cadena",
+	"jsonconfig-move-aborted-ns": "lo títol de la novèla pagina es pas configurat per conténer una configuracion JSON",
+	"jsonconfig-optional-field": "(facultatiu)"
+}

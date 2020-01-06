@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"Tlustulimu"
+		]
+	},
+	"jsonconfig-err-url": "Parametro \"$1\" devas esti valida URL"
+}

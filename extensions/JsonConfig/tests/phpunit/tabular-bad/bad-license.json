@@ -1,0 +1,14 @@
+{
+    "license": {
+        "en": "blah"
+    },
+    "schema": {
+        "fields": [
+            {
+                "name": "col1",
+                "type": "string"
+            }
+        ]
+    },
+    "data": []
+}

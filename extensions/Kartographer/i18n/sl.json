@@ -1,0 +1,16 @@
+{
+	"@metadata": {
+		"authors": [
+			"Pickle12",
+			"Dbc334",
+			"HairyFotr"
+		]
+	},
+	"kartographer-sidebar-coordinates": "Koordinate",
+	"kartographer-sidebar-externalservices": "Storitve zemljevidov",
+	"kartographer-sidebar-latitude": "Zemljepisna širina",
+	"kartographer-sidebar-longitude": "Zemljepisna dolžina",
+	"kartographer-sidebar-mapdetails": "Zunanji zemljevidi",
+	"kartographer-sidebar-service": "Storitev",
+	"kartographer-sidebar-togglebutton": "Zunanji zemljevidi"
+}

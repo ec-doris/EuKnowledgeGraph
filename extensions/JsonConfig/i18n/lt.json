@@ -1,0 +1,17 @@
+{
+	"@metadata": {
+		"authors": [
+			"Zygimantus",
+			"Eitvys200"
+		]
+	},
+	"jsonconfig-err-license": "Parametras „$1“ turi būti vienas iš galimų licencijos kodų, pavyzdžiui $2",
+	"jsonconfig-type-name-invalid": "neteisingas",
+	"jsonconfig-type-name-string": "eilutė",
+	"jsonconfig-type-name-number": "skaičius",
+	"jsonconfig-type-name-boolean": "loginė reikšmė",
+	"jsonconfig-license": "Duomenys prieinami $1.",
+	"action-jsonconfig-flush": "manipuliuoti JsonConfig per API",
+	"apihelp-jsondata-description": "Gauti lokalizuotus JSON duomenys.",
+	"apierror-jsonconfig-paramrequired": "Parametras <var>$1</var> reikalingas šiai komandai."
+}

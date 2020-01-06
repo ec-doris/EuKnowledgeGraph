@@ -1,0 +1,20 @@
+{
+	"@metadata": {
+		"authors": [
+			"Hjalmtyr",
+			"Sveinn í Felli"
+		]
+	},
+	"jsonconfig-err-bad-type": "Viðfang \"$1\" verður að vera löglegt tag, eins og \"string\", \"number\" eða \"boolean\"",
+	"jsonconfig-optional-field": "(valfrjálst)",
+	"jsonconfig-type-name-invalid": "ógilt",
+	"jsonconfig-type-abbr-string": "(S)",
+	"jsonconfig-type-name-string": "strengur",
+	"jsonconfig-type-abbr-localized": "(L)",
+	"jsonconfig-type-name-localized": "staðvært",
+	"jsonconfig-type-abbr-number": "(T)",
+	"jsonconfig-type-name-number": "tala",
+	"jsonconfig-type-abbr-boolean": "(B)",
+	"jsonconfig-type-name-boolean": "rökgildi",
+	"jsonconfig-license-url-CC0-1.0": "https://creativecommons.org/publicdomain/zero/1.0/"
+}

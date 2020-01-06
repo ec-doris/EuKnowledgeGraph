@@ -1,0 +1,214 @@
+{
+    "raw": {
+        "license": "CC0-1.0",
+        "description": {
+            "en": "data info"
+        },
+        "schema": {
+            "fields": [
+                {
+                    "name": "_1",
+                    "type": "string",
+                    "title": {
+                        "en": "__1en"
+                    }
+                },
+                {
+                    "name": "абв_1",
+                    "type": "number",
+                    "title": {
+                        "fr": "__2fr"
+                    }
+                },
+                {
+                    "name": "_3",
+                    "type": "boolean",
+                    "title": {
+                        "en": "__3en",
+                        "he": "__3 בְ he"
+                    }
+                },
+                {
+                    "name": "__col4__",
+                    "type": "localized"
+                }
+            ]
+        },
+        "data": [
+            [
+                "a",
+                10.2,
+                true,
+                {
+                    "en": "en-foo",
+                    "fr": "fr-bar"
+                }
+            ],
+            [
+                "",
+                0,
+                false,
+                {
+                    "fr": "fr-baz"
+                }
+            ],
+            [
+                null,
+                null,
+                null,
+                null
+            ]
+        ]
+    },
+    "en": {
+        "license": {
+            "code": "CC0-1.0"
+        },
+        "description": "data info",
+        "schema": {
+            "fields": [
+                {
+                    "name": "_1",
+                    "type": "string",
+                    "title": "__1en"
+                },
+                {
+                    "name": "абв_1",
+                    "type": "number",
+                    "title": "__2fr"
+                },
+                {
+                    "name": "_3",
+                    "type": "boolean",
+                    "title": "__3en"
+                },
+                {
+                    "name": "__col4__",
+                    "type": "localized",
+                    "title": "__col4__"
+                }
+            ]
+        },
+        "data": [
+            [
+                "a",
+                10.2,
+                true,
+                "en-foo"
+            ],
+            [
+                "",
+                0,
+                false,
+                "fr-baz"
+            ],
+            [
+                null,
+                null,
+                null,
+                null
+            ]
+        ]
+    },
+    "he": {
+        "license": {
+            "code": "CC0-1.0"
+        },
+        "description": "data info",
+        "schema": {
+            "fields": [
+                {
+                    "name": "_1",
+                    "type": "string",
+                    "title": "__1en"
+                },
+                {
+                    "name": "абв_1",
+                    "type": "number",
+                    "title": "__2fr"
+                },
+                {
+                    "name": "_3",
+                    "type": "boolean",
+                    "title": "__3 בְ he"
+                },
+                {
+                    "name": "__col4__",
+                    "type": "localized",
+                    "title": "__col4__"
+                }
+            ]
+        },
+        "data": [
+            [
+                "a",
+                10.2,
+                true,
+                "en-foo"
+            ],
+            [
+                "",
+                0,
+                false,
+                "fr-baz"
+            ],
+            [
+                null,
+                null,
+                null,
+                null
+            ]
+
+        ]
+    },
+    "fr": {
+        "license": {
+            "code": "CC0-1.0"
+        },
+        "description": "data info",
+        "schema": {
+            "fields": [
+                {
+                    "name": "_1",
+                    "type": "string",
+                    "title": "__1en"
+                },
+                {
+                    "name": "абв_1",
+                    "type": "number",
+                    "title": "__2fr"
+                },
+                {
+                    "name": "_3",
+                    "type": "boolean",
+                    "title": "__3en"
+                },
+                {
+                    "name": "__col4__",
+                    "type": "localized",
+                    "title": "__col4__"
+                }
+            ]
+        },
+        "data": [
+            [
+                "a",
+                10.2,
+                true,
+                "fr-bar"
+            ],
+            [
+                "",
+                0,
+                false,
+                "fr-baz"
+            ],
+            [
+                null,
+                null,
+                null,
+                null
+            ]
+        ]
+    }
+}

@@ -1,0 +1,214 @@
+{
+	"default": "map",
+	"types": [
+		"map",
+		"satellite",
+		"topo"
+	],
+	"services": [
+		{
+			"id": "acme-mapper",
+			"links": [
+				{
+					"type": "map",
+					"url": "https://mapper.acme.com/?ll={latitude},{longitude}&z={zoom}&t=M&marker0={latitude},{longitude},{title}"
+				},
+				{
+					"type": "satellite",
+					"url": "https://mapper.acme.com/?ll={latitude},{longitude}&z={zoom}&t=H&marker0={latitude},{longitude},{title}"
+				},
+				{
+					"type": "terrain",
+					"url": "https://mapper.acme.com/?ll={latitude},{longitude}&z={zoom}&t=R&marker0={latitude},{longitude},{title}"
+				},
+				{
+					"type": "topo",
+					"url": "https://mapper.acme.com/?ll={latitude},{longitude}&z={zoom}&t=T&marker0={latitude},{longitude},{title}"
+				}
+			]
+		},
+		{
+			"id": "apple-maps",
+			"links": [
+				{
+					"type": "map",
+					"url": "https://maps.apple.com/?q={latitude},{longitude}"
+				},
+				{
+					"type": "satellite",
+					"url": "https://maps.apple.com/?q={latitude},{longitude}&t=k"
+				}
+			]
+		},
+		{
+			"id": "arctic-io",
+			"links": [
+				{
+					"type": "satellite",
+					"url": "https://www.arctic.io/wikipedia/?lon={longitude}&lat={latitude}&title={title}"
+				}
+			]
+		},
+		{
+			"id": "bing-maps",
+			"featured": true,
+			"links": [
+				{
+					"type": "map",
+					"url": "https://www.bing.com/maps/?v=2&cp={latitude}~{longitude}&style=r&lvl={zoom}&sp=Point.{latitude}_{longitude}_{title}___"
+				},
+				{
+					"type": "aerial",
+					"url": "https://www.bing.com/maps/?v=2&cp={latitude}~{longitude}&style=h&lvl={zoom}&sp=Point.{latitude}_{longitude}_{title}___"
+				},
+				{
+					"type": "other",
+					"url": "https://www.bing.com/maps/?v=2&cp={latitude}~{longitude}&style=o&lvl={zoom}&sp=Point.{latitude}_{longitude}_{title}___"
+				}
+			]
+		},
+		{
+			"id": "blue-marble-navigator",
+			"links": [
+				{
+					"type": "satellite",
+					"url": "https://www.blue-marble.de?lon={longitude}&nlat={latitude}&borders&geonames&townnames&zoom&overlay=14&base=7"
+				},
+				{
+					"type": "other",
+					"url": "https://www.blue-marble.de/nightlights?ll={latitude},{longitude}"
+				}
+			]
+		},
+		{
+			"id": "geohack",
+			"featured": true,
+			"links": [
+				{
+					"type": "map",
+					"url": "https://tools.wmflabs.org/geohack/geohack.php?language={language}&pagename={title}&params={latitude}_N_{longitude}_E_scale:{scale}"
+				}
+			]
+		},
+		{
+			"id": "geonames",
+			"links": [
+				{
+					"type": "satellite",
+					"url": "https://www.geonames.org/maps/google_{latitude}_{longitude}.html"
+				}
+			]
+		},
+		{
+			"id": "google-maps",
+			"featured": true,
+			"links": [
+				{
+					"type": "map",
+					"url": "https://maps.google.com/maps?ll={latitude},{longitude}&q={latitude},{longitude}&hl={language}&t=m&z={zoom}"
+				},
+				{
+					"type": "satellite",
+					"url": "https://maps.google.com/maps?ll={latitude},{longitude}&q={latitude},{longitude}&hl={language}&t=h&z={zoom}"
+				},
+				{
+					"type": "terrain",
+					"url": "https://www.google.com/maps/place//@{latitude},{longitude},{zoom}z/data=!4m2!3m1!1s0x0:0x0!5m1!1e4?hl=en"
+				}
+			]
+		},
+		{
+			"id": "here",
+			"links": [
+				{
+					"type": "map",
+					"url": "https://wego.here.com/?map={latitude},{longitude},{zoom},normal&msg={title}"
+				},
+				{
+					"type": "satellite",
+					"url": "https://wego.here.com/?map={latitude},{longitude},{zoom},satellite&msg={title}"
+				},
+				{
+					"type": "terrain",
+					"url": "https://wego.here.com/?map={latitude},{longitude},{zoom},terrain&msg={title}"
+				}
+			]
+		},
+		{
+			"id": "mapquest",
+			"links": [
+				{
+					"type": "map",
+					"url": "https://www.mapquest.com/?center={latitude},{longitude}&zoom={zoom}&q={title}"
+				}
+			]
+		},
+		{
+			"id": "openstreetmap",
+			"featured": true,
+			"links": [
+				{
+					"type": "map",
+					"url": "https://www.openstreetmap.org/?mlat={latitude}&mlon={longitude}&zoom={zoom}&layers=M"
+				},
+				{
+					"type": "topo",
+					"url": "https://www.openstreetmap.org/?mlat={latitude}&mlon={longitude}&zoom={zoom}&layers=C"
+				}
+			]
+		},
+		{
+			"id": "skyvector",
+			"links": [
+				{
+					"type": "other",
+					"url": "https://skyvector.com/?ll={latitude},{longitude}&zoom=2"
+				}
+			]
+		},
+		{
+			"id": "waze",
+			"links": [
+				{
+					"type": "map",
+					"url": "https://www.waze.com/livemap/?zoom={zoom}&lat={latitude}&lon={longitude}"
+				}
+			]
+		},
+		{
+			"id": "wikimapia",
+			"links": [
+				{
+					"type": "map",
+					"url": "https://wikimapia.org/#lang={language}&lat={latitude}&lon={longitude}&z={zoom}&m=w"
+				},
+				{
+					"type": "satellite",
+					"url": "https://wikimapia.org/#lang={language}&lat={latitude}&lon={longitude}&z={zoom}&m=b"
+				}
+			]
+		},
+		{
+			"id": "wikiminiatlas",
+			"links": [
+				{
+					"type": "map",
+					"url": "https://wma.wmflabs.org/iframe.html?wma={latitude}_{longitude}_700_500_{language}_{zoom}_en&globe=Earth&lang={language}&page={title}"
+				}
+			]
+		},
+		{
+			"id": "yandex-maps",
+			"links": [
+				{
+					"type": "map",
+					"url": "https://maps.yandex.com/?ll={longitude},{latitude}&z={zoom}&l=map&pt={longitude},{latitude}"
+				},
+				{
+					"type": "satellite",
+					"url": "https://maps.yandex.com/?ll={longitude},{latitude}&z={zoom}&l=sat&pt={longitude},{latitude}"
+				}
+			]
+		}
+	]
+}

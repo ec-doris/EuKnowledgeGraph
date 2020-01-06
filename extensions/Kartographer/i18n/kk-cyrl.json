@@ -1,0 +1,11 @@
+{
+	"@metadata": {
+		"authors": [
+			"Mirgulkali"
+		]
+	},
+	"kartographer-linktype-other": "Басқа",
+	"kartographer-linktype-satellite": "Серік",
+	"kartographer-linktype-terrain": "Бедер",
+	"kartographer-linktype-topo": "Топологиялық"
+}

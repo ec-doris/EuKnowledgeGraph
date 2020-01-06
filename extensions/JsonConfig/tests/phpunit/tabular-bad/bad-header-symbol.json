@@ -1,0 +1,12 @@
+{
+    "license": "CC0-1.0",
+    "schema": {
+        "fields": [
+            {
+                "name": "a-b",
+                "type": "string"
+            }
+        ]
+    },
+    "data": []
+}

@@ -1,0 +1,24 @@
+{
+	"@metadata": {
+		"authors": [
+			"Keysuck",
+			"Jonghaya",
+			"Ykhwong"
+		]
+	},
+	"jsonconfig-err-array": "\"$1\" 변수는 리스트여야 합니다. (예: [\"값1\", \"값2\", ...])",
+	"jsonconfig-err-assoc-array": "\"$1\" 변수는 연관 배열(사전)이어야 합니다. (예:{\"키\": \"값\", ...})",
+	"jsonconfig-err-bool": "변수 \"$1\" true나 false여야 합니다",
+	"jsonconfig-err-integer": "\"$1\" 변수는 정수여야 합니다",
+	"jsonconfig-err-license": "\"$1\" 변수는 유효한 라이선스 코드 중 하나여야 합니다 (예: $2)",
+	"jsonconfig-err-number": "\"$1\" 변수는 숫자여야 합니다",
+	"jsonconfig-err-string": "\"$1\" 변수는 문자열이어야 합니다",
+	"jsonconfig-optional-field": "(선택 사항)",
+	"jsonconfig-license-name-CC0-1.0": "크리에이티브 커먼즈 제로",
+	"apihelp-jsonconfig-description": "JsonConfig 하위 시스템으로의 직접 접근을 허용합니다.",
+	"apihelp-jsonconfig-summary": "JsonConfig 하위 시스템으로의 직접 접근을 허용합니다.",
+	"apihelp-jsonconfig-param-namespace": "처리할 제목의 이름공간 숫자.",
+	"apihelp-jsonconfig-param-title": "네임스페이스의 어미가 없는 타이틀",
+	"apihelp-jsondata-summary": "지역화된 JSON 데이터를 검색합니다.",
+	"apierror-jsonconfig-paramrequired": "이 명령에는 <var>$1</var> 변수가 필요합니다."
+}

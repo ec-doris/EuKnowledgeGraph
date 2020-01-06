@@ -1,0 +1,43 @@
+{
+	"@metadata": {
+		"authors": [
+			"WikiPhoenix",
+			"Lokal Profil",
+			"Yurik"
+		]
+	},
+	"jsonconfig-desc": "Tillåter JSON-konfigurationer att lagras i en wiki",
+	"jsonconfig-duplicate-field": "Fler än ett värde \"$1\" hittades",
+	"jsonconfig-err-array": "Parameter \"$1\" måste vara en lista, dvs. ['värde1', 'värde2', ...]",
+	"jsonconfig-err-array-expected": "Värdet vid $1 förväntades vara en lista omgiven av [...]-parenteser",
+	"jsonconfig-err-assoc-array": "Parameter \"$1\" måste vara en associerad lista (ordbok), dvs. {\"nyckel\": \"värde\", ...}",
+	"jsonconfig-err-bool": "Parametern \"$1\" måste antingen vara \"true\" eller \"false\"",
+	"jsonconfig-err-integer": "Parametern \"$1\" måste vara ett heltal",
+	"jsonconfig-err-object-expected": "Värdet vid $1 förväntades vara ett objekt omgivet av {...}-parenteser",
+	"jsonconfig-err-root-array-expected": "JSON-data bör vara en lista, omgiven av [...]-parenteser",
+	"jsonconfig-err-root-object-expected": "JSON-data bör vara ett objekt, omgivet av {...}-parenteser",
+	"jsonconfig-err-string": "Parametern \"$1\" måste vara en sträng",
+	"jsonconfig-err-url": "Parameter \"$1\" måste vara en giltig URL",
+	"jsonconfig-move-aborted-model": "denna sidas JSON-konfigurationsmodell \"$1\" motsvarar inte den nya sidans modell \"$2\"",
+	"jsonconfig-move-aborted-ns": "den nya sidtiteln är inte inställd för att hålla en JSON-konfiguration",
+	"jsonconfig-optional-field": "(valfritt)",
+	"jsonconfig-type-name-invalid": "ogiltig",
+	"jsonconfig-type-name-string": "sträng",
+	"jsonconfig-type-name-number": "nummer",
+	"jsonconfig-type-name-boolean": "boolesk",
+	"jsonconfig-license": "Data tillgänglig under $1.",
+	"jsonconfig-license-not-set": "När du redigerar denna sida samtycker du till att släppa ditt bidrag enligt licensen som anges i fältet \"licens\".",
+	"jsonconfig-license-copyrightwarning-CC0-1.0": "Genom att spara ändringar samtycker du till [https://foundation.wikimedia.org/wiki/Terms_of_Use användarvillkoren] och oåterkalleligen går med på att släppa ditt bidrag som allmän egendom under [https://creativecommons.org/publicdomain/zero/1.0/ CC0].",
+	"jsonconfig-license-copyrightwarning": "Genom att spara ändringar samtycker du till [https://foundation.wikimedia.org/wiki/Terms_of_Use användarvillkoren] och du oåterkalleligen samtycker till att släppa ditt bidrag under [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}].",
+	"jsonconfig-license-copyrightwarning-license-unset": "Genom att spara ändringar samtycker du till [https://foundation.wikimedia.org/wiki/Terms_of_Use användarvillkoren] och du oåterkalleligen samtycker till att släppa ditt bidrag enligt licensen som anges i fältet \"licens\".",
+	"jsonconfig-license-notice": "'''OBS:''' När du redigerar denna sida samtycker du till att släppa ditt bidrag under [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}].",
+	"jsonconfig-license-notice-license-unset": "'''OBS:''' När du redigerar denna sida samtycker du till att släppa ditt bidrag enligt licensen som anges i fältet \"licens\".",
+	"apihelp-jsonconfig-description": "Ger direkt åtkomst till JsonConfig-undersystemet.",
+	"apihelp-jsonconfig-param-command": "Wilken underåtgärd som ska utföras på JsonConfig:\n;status:Visar JsonConfig-konfiguration.\n;reset:Rensar konfigurationer från cache. Kräver $1title parametern och jsonconfig-reset-rättighet.\n;reload:Ladda om och cachar konfigurationer från config-lagringen.  Kräver $1title parametern och jsonconfig-reset-rättighet.",
+	"apihelp-jsonconfig-param-title": "Titel att bearbeta utan namnrymdsprefix.",
+	"apihelp-jsonconfig-param-content": "För $1command=reload, använd detta innehåll istället.",
+	"apihelp-jsonconfig-example-1": "Visa konfiguration",
+	"apihelp-jsonconfig-example-2": "Återställ [[Zero:TEST]]",
+	"apihelp-jsonconfig-example-3": "Ladda om [[Zero:TEST]]",
+	"apihelp-jsondata-param-title": "Titel att hämta. Som standard antas namnrymden vara \"Data:\""
+}

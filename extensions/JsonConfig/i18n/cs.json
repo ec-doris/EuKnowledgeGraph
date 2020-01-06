@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"Mormegil"
+		]
+	},
+	"jsonconfig-desc": "Umožňuje do wiki ukládat konfiguraci v JSON"
+}

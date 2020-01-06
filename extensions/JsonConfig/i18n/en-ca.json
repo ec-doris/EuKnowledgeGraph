@@ -1,0 +1,9 @@
+{
+	"@metadata": {
+		"authors": [
+			"Irus"
+		]
+	},
+	"jsonconfig-err-localized": "Parameter \"$1\" must be an object that maps valid language codes to single line strings without tabs or trailing spaces, e.g. { \"en\":\"String in English\", ... }",
+	"jsonconfig-err-stringline": "Parameter \"$1\" must be a single line string no longer than $2 characters, with no tabs, and must not begin or end with a space"
+}

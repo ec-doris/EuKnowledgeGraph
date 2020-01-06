@@ -1,0 +1,13 @@
+{
+	"@metadata": {
+		"authors": [
+			"Saederup92"
+		]
+	},
+	"jsonconfig-err-integer": "Parameteren \"$1\" skal være et heltal",
+	"jsonconfig-err-number": "Parameteren \"$1\" skal være et tal",
+	"jsonconfig-err-string": "Parameteren \"$1\" skal være en streng",
+	"jsonconfig-type-name-invalid": "ugyldig",
+	"jsonconfig-type-name-string": "streng",
+	"jsonconfig-type-name-number": "tal"
+}

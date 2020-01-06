@@ -1,0 +1,29 @@
+{
+	"@metadata": {
+		"authors": [
+			"Reza1615",
+			"Mjbmr",
+			"Ebraminio",
+			"Huji",
+			"Ladsgroup"
+		]
+	},
+	"jsonconfig-desc": "اجازه می‌دهد که پیکربندی JSON در یک ویکی ذخیره شود",
+	"jsonconfig-duplicate-field": "بیشتر از یک مقدار برای «$1» یافت شده‌است",
+	"jsonconfig-err-bad-type": "پارامتر «$1» باید یک نوع معتبر مانند «رشته»، «عدد»، یا «بولی» باشد.",
+	"jsonconfig-err-bool": "پارامتر \"$1\" باید درست یا نادرست باشد",
+	"jsonconfig-err-integer": "پارامتر «$1» باید عدد باشد",
+	"jsonconfig-err-number": "پارامتر «$1» باید عدد باشد",
+	"jsonconfig-err-string": "پارامتر \"$1\" باید یک دسته باشد",
+	"jsonconfig-err-url": "پارامتر «$1» باید یک نشانی معتبر باشد",
+	"jsonconfig-optional-field": "(اختیاری)",
+	"jsonconfig-type-name-invalid": "نامعتبر",
+	"jsonconfig-type-name-string": "رشته",
+	"jsonconfig-type-name-localized": "محلی",
+	"jsonconfig-type-name-number": "عدد",
+	"jsonconfig-type-name-boolean": "بولی",
+	"jsonconfig-license": "داده‌ها تحت مجوز $1 در دسترس هستند",
+	"jsonconfig-license-name-CC0-1.0": "کریتیو کامنز صفر",
+	"right-jsonconfig-flush": "کنترل جی‌سان کانفیگ توسط رابط برنامه‌نویسی",
+	"apihelp-jsonconfig-example-1": "نمایش تنظیمات"
+}

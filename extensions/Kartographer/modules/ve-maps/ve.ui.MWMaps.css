@@ -1,0 +1,46 @@
+.ve-ce-mwMapsNode {
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+}
+
+.ve-ui-mwMapsDialog-mapWidget {
+	width: 100%;
+	height: 70%;
+}
+
+.ve-ui-mwMapsDialog-mapWidget > div {
+	width: 100%;
+	height: 100%;
+	background-color: #eaecf0;
+}
+
+.ve-ui-mwMapsDialog-geoJSONWidget {
+	max-width: none;
+	min-height: 210px;
+}
+
+.ve-ui-mwMapsDialog-geoJSONWidget .oo-ui-inputWidget-input:first-child,
+.ve-ui-mwMapsDialog-geoJSONWidget .ace_editor.ace-tm {
+	min-height: 210px;
+}
+
+.ve-ui-mwMapsDialog-help {
+	position: absolute;
+	top: 0.714285em;
+	right: 0.714285em;
+	margin: 0;
+}
+
+/* Fixes align=center */
+.ve-ce-mwMapsNode.center {
+	position: relative;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.ve-ui-mwMapsContextItem-nosupport {
+	color: #72777d;
+	font-style: italic;
+	line-height: 1.6;
+}

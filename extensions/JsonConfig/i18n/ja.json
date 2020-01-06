@@ -1,0 +1,35 @@
+{
+	"@metadata": {
+		"authors": [
+			"Shirayuki",
+			"Otokoume",
+			"Akki-102525",
+			"Thibaut120094",
+			"Yurik",
+			"Yusuke1109",
+			"Kkairri",
+			"Suyama"
+		]
+	},
+	"jsonconfig-desc": "JSON設定をwikiに保存できるようにする",
+	"jsonconfig-err-array": "パラメーター「$1」はリストでなければなりません。例: [\"値1\", \"値2\", ...]",
+	"jsonconfig-err-assoc-array": "パラメーター「$1」は連想配列 (辞書) でなければなりません。例: {\"キー\": \"値\", ...}",
+	"jsonconfig-err-bool": "パラメーター「$1」には true または false を設定しなければなりません",
+	"jsonconfig-err-integer": "パラメーター「$1」は整数でなければなりません",
+	"jsonconfig-err-number": "パラメーター「$1」は数値でなければなりません",
+	"jsonconfig-err-string": "パラメーター「$1」は文字列でなければなりません",
+	"jsonconfig-err-url": "引数「$1」には有効な URL を指定してください",
+	"jsonconfig-optional-field": "(省略可能)",
+	"jsonconfig-type-name-invalid": "無効",
+	"jsonconfig-type-name-string": "文字列",
+	"jsonconfig-type-name-number": "数値",
+	"jsonconfig-type-name-boolean": "ブール型",
+	"jsonconfig-license": "データは$1の下で利用できます。",
+	"jsonconfig-license-name-CC0-1.0": "クリエイティブ・コモンズ・ゼロ",
+	"right-jsonconfig-flush": "API を経由して JsonConfig を操作する",
+	"apihelp-jsonconfig-description": "JsonConfig サブシステムに直接アクセスできるようにします。",
+	"apihelp-jsonconfig-param-title": "処理するページ名です。",
+	"apihelp-jsonconfig-example-1": "設定内容を表示",
+	"apihelp-jsonconfig-example-2": "[[Zero:TEST]] をリセット",
+	"apihelp-jsonconfig-example-3": "[[Zero:TEST]] を再読み込み"
+}

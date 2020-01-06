@@ -1,0 +1,23 @@
+{
+	"@metadata": {
+		"authors": [
+			"امین اکبر",
+			"BukhariSaeed"
+		]
+	},
+	"kartographer-linktype-map": "نقشہ",
+	"kartographer-linktype-other": "دیگر",
+	"kartographer-linktype-satellite": "سیٹلائٹ",
+	"kartographer-linktype-terrain": "قطعۂ زمین",
+	"kartographer-linktype-topo": "مقامیات",
+	"kartographer-sidebar-coordinates": "محددات",
+	"kartographer-sidebar-filterdropdown": "نقشے کی قسم منتخب کریں",
+	"kartographer-sidebar-externalservices": "بیرونی خدمات",
+	"kartographer-sidebar-latitude": "عرض البلد",
+	"kartographer-sidebar-longitude": "طول البلد",
+	"kartographer-sidebar-mapdetails": "نقشے کی تفصیلات",
+	"kartographer-sidebar-service": "خدمات",
+	"kartographer-sidebar-togglebutton": "مزید تفصیلات",
+	"leafletdraw-draw-handlers-circle-radius": "نصف قطر",
+	"leafletdraw-draw-handlers-circle-tooltip-start": "دائرہ بنانے کے لیے کلک کریں"
+}

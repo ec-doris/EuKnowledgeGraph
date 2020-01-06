@@ -1,0 +1,36 @@
+{
+	"@metadata": {
+		"authors": [
+			"Vlad5250"
+		]
+	},
+	"jsonconfig-desc": "Позволява поставеност на JSON да се складира на уики",
+	"jsonconfig-duplicate-field": "Открих повече от една стойност „$1“",
+	"jsonconfig-err-array": "Параметърът „$1“ трябва да бъде списък, както на пр. [\"стойност1\", \"стойност2\", ...]",
+	"jsonconfig-err-array-count": "Списъкът „$1“ има $2 {{PLURAL:$2|стойност|стойности}}, но трябва да има $3 {{PLURAL:$3|стойност|стойности}}, т.е. същ брой стойности, както и „$4“",
+	"jsonconfig-err-assoc-array": "Параметърът „$1“ трябва да бъде асоциативен строй (речник), както на пр. {\"ключ\": \"стойност\", ...}",
+	"jsonconfig-optional-field": "(незадължително)",
+	"jsonconfig-type-name-invalid": "невалиден",
+	"jsonconfig-type-name-string": "низ",
+	"jsonconfig-type-name-number": "число",
+	"jsonconfig-type-name-boolean": "Булев",
+	"jsonconfig-license": "Данните са достъпни под $1.",
+	"jsonconfig-license-not-set": "При редактиране на страницата Вие се съгласявате, че обявявате приносите съгласно лиценза, който е указан в полето за лиценз.",
+	"right-jsonconfig-flush": "Работа с JsonConfig чрез извършник",
+	"action-jsonconfig-flush": "работа с JsonConfig чрез приложник",
+	"apihelp-jsonconfig-description": "Позволява непосреден достъп до подсистемата JsonConfig.",
+	"apihelp-jsonconfig-summary": "Позволява непосреден достъп до подсистемата JsonConfig.",
+	"apihelp-jsonconfig-param-command": "Кое поддействие да се извърши на JsonConfig:\n;status: Показва поставеността на JsonConfig.\n;reset: Изчиства настройките от кеша. Изисква параметъра $1title и правото „jsonconfig-reset“.\n;reload: Презарежда и кешира поставености от склада на настройки. Изисква параметъра $1title и правото „jsonconfig-reset“.",
+	"apihelp-jsonconfig-param-namespace": "Номер на именното пространство на заглавието за обработка.",
+	"apihelp-jsonconfig-param-title": "Заглавие за обработка без представка за именно пространство.",
+	"apihelp-jsonconfig-param-content": "За $1command=reload, използвайте тази содржина.",
+	"apihelp-jsonconfig-example-1": "Показване на поставеност",
+	"apihelp-jsonconfig-example-2": "Връщане на [[Zero:TEST]] по подразбиране",
+	"apihelp-jsonconfig-example-3": "Презареждане на [[Zero:TEST]]",
+	"apihelp-jsondata-description": "Превзема локализирани JSON-данни.",
+	"apihelp-jsondata-summary": "Превзема локализирани JSON-данни.",
+	"apihelp-jsondata-param-title": "Заглавие за повикване. По подразбиране се предпоставя, че именното пространство е „Data:“",
+	"apihelp-jsondata-example-1": "Дава JSON-съдържание на страницата Sample.tab page, локализирана на езика на потребителя",
+	"apierror-jsonconfig-paramrequired": "Команда изисква параметъра <var>$1</var>.",
+	"apierror-jsonconfig-badtitle": "Тази страница, указана от параметрите <var>namespace</var> и <var>title</var> е невалидна, или не е регистрирана в поставеността на JsonConfig."
+}

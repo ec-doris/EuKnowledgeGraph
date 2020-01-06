@@ -1,0 +1,36 @@
+{
+    "raw": {
+        "license": "CC0-1.0",
+        "description": {
+            "en": "data info"
+        },
+        "schema": {
+            "fields": [
+                {
+                    "name": "col1",
+                    "type": "string",
+                    "title": {
+                        "en": "column 1"
+                    }
+                }
+            ]
+        },
+        "data": []
+    },
+    "en": {
+        "license": {
+            "code": "CC0-1.0"
+        },
+        "description": "data info",
+        "schema": {
+            "fields": [
+                {
+                    "name": "col1",
+                    "type": "string",
+                    "title": "column 1"
+                }
+            ]
+        },
+        "data": []
+    }
+}

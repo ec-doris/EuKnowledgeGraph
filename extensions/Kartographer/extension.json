@@ -1,0 +1,521 @@
+{
+	"name": "Kartographer",
+	"author": [
+		"Yuri Astrakhan",
+		"Max Semenik",
+		"Ed Sanders",
+		"Julien Girault"
+	],
+	"url": "https://www.mediawiki.org/wiki/Extension:Kartographer",
+	"descriptionmsg": "kartographer-desc",
+	"license-name": "MIT",
+	"type": "parserhook",
+	"requires": {
+		"MediaWiki": ">= 1.31.0",
+		"extensions": {
+			"JsonConfig": "*"
+		}
+	},
+	"MessagesDirs": {
+		"Kartographer": [
+			"i18n",
+			"modules/wikivoyage/i18n"
+		]
+	},
+	"ExtensionMessagesFiles": {
+		"KartographerAliases": "Kartographer.alias.php"
+	},
+	"SpecialPages": {
+		"Map": "Kartographer\\SpecialMap"
+	},
+	"AutoloadNamespaces": {
+		"Kartographer\\": "includes/",
+		"Kartographer\\Tests\\Tag\\": "tests/phpunit/Tag/",
+		"Kartographer\\Tests\\Mock\\": "tests/phpunit/Mock/"
+	},
+	"APIModules": {
+		"sanitize-mapdata": "Kartographer\\ApiSanitizeMapData"
+	},
+	"APIPropModules": {
+		"mapdata": "Kartographer\\ApiQueryMapData"
+	},
+	"ResourceModules": {
+		"ext.kartographer": {
+			"class": "Kartographer\\DataModule"
+		},
+		"ext.kartographer.extlinks": {
+			"class": "Kartographer\\DataModuleLinks"
+		},
+		"ext.kartographer.style": {
+			"styles": [
+				"styles/kartographer.less",
+				"styles/link.less",
+				"styles/dialog.less",
+				"styles/control-attribution.less",
+				"styles/control-scale.less",
+				"styles/leaflet-overrides.less"
+			],
+			"skinStyles": {
+				"minerva": [
+					"styles/kartographer.minerva.less"
+				]
+			},
+			"targets": [
+				"mobile",
+				"desktop"
+			]
+		},
+		"ext.kartographer.site": {
+			"class": "ResourceLoaderWikiModule",
+			"scripts": [
+				"MediaWiki:Kartographer.js"
+			],
+			"styles": [
+				"MediaWiki:Kartographer.css"
+			],
+			"targets": [
+				"mobile",
+				"desktop"
+			]
+		},
+		"mapbox": {
+			"scripts": [
+				"lib/external/mapbox/mapbox-lib.js",
+				"lib/external/mapbox/mapbox.i18n.js"
+			],
+			"styles": [
+				"lib/external/mapbox/style.css",
+				"lib/external/mapbox/icons.css",
+				"lib/mapbox-style-fixes.css"
+			],
+			"messages": [
+				"kartographer-fullscreen-text",
+				"mapbox-control-zoomin-title",
+				"mapbox-control-zoomout-title"
+			],
+			"targets": [
+				"mobile",
+				"desktop"
+			]
+		},
+		"leaflet.draw": {
+			"dependencies": [
+				"mapbox"
+			],
+			"scripts": [
+				"lib/leaflet.draw/leaflet.draw-src.js",
+				"lib/leaflet.draw/leaflet.draw.i18n.js"
+			],
+			"styles": [
+				"lib/leaflet.draw/leaflet.draw-src.css"
+			],
+			"messages": [
+				"leafletdraw-draw-handlers-circle-radius",
+				"leafletdraw-draw-handlers-circle-tooltip-start",
+				"leafletdraw-draw-handlers-marker-tooltip-start",
+				"leafletdraw-draw-handlers-circlemarker-tooltip-start",
+				"leafletdraw-draw-handlers-polygon-tooltip-cont",
+				"leafletdraw-draw-handlers-polygon-tooltip-end",
+				"leafletdraw-draw-handlers-polygon-tooltip-start",
+				"leafletdraw-draw-handlers-polyline-error",
+				"leafletdraw-draw-handlers-polyline-tooltip-cont",
+				"leafletdraw-draw-handlers-polyline-tooltip-end",
+				"leafletdraw-draw-handlers-polyline-tooltip-start",
+				"leafletdraw-draw-handlers-rectangle-tooltip-start",
+				"leafletdraw-draw-handlers-simpleshape-tooltip-end",
+				"leafletdraw-draw-toolbar-actions-text",
+				"leafletdraw-draw-toolbar-actions-title",
+				"leafletdraw-draw-toolbar-buttons-circle",
+				"leafletdraw-draw-toolbar-buttons-marker",
+				"leafletdraw-draw-toolbar-buttons-circlemarker",
+				"leafletdraw-draw-toolbar-buttons-polygon",
+				"leafletdraw-draw-toolbar-buttons-polyline",
+				"leafletdraw-draw-toolbar-buttons-rectangle",
+				"leafletdraw-draw-toolbar-undo-text",
+				"leafletdraw-draw-toolbar-undo-title",
+				"leafletdraw-edit-handlers-edit-tooltip-subtext",
+				"leafletdraw-edit-handlers-edit-tooltip-text",
+				"leafletdraw-edit-handlers-remove-tooltip-text",
+				"leafletdraw-edit-toolbar-actions-cancel-text",
+				"leafletdraw-edit-toolbar-actions-cancel-title",
+				"leafletdraw-edit-toolbar-actions-save-text",
+				"leafletdraw-edit-toolbar-actions-save-title",
+				"leafletdraw-edit-toolbar-actions-clearall-text",
+				"leafletdraw-edit-toolbar-actions-clearall-title",
+				"leafletdraw-edit-toolbar-buttons-edit",
+				"leafletdraw-edit-toolbar-buttons-editdisabled",
+				"leafletdraw-edit-toolbar-buttons-remove",
+				"leafletdraw-edit-toolbar-buttons-removedisabled",
+				"leafletdraw-draw-toolbar-finish-text",
+				"leafletdraw-draw-toolbar-finish-title"
+			],
+			"targets": [
+				"mobile",
+				"desktop"
+			]
+		},
+		"ext.kartographer.link": {
+			"dependencies": [
+				"mediawiki.router",
+				"ext.kartographer.linkbox"
+			],
+			"scripts": [
+				"modules/maplink/maplink.js"
+			],
+			"targets": [
+				"mobile",
+				"desktop"
+			]
+		},
+		"ext.kartographer.box": {
+			"dependencies": [
+				"mediawiki.api",
+				"mediawiki.Uri",
+				"oojs-ui.styles.icons-media",
+				"jquery.throttle-debounce",
+				"mapbox",
+				"ext.kartographer.lib.topojson",
+				"ext.kartographer",
+				"ext.kartographer.style",
+				"ext.kartographer.settings",
+				"ext.kartographer.site",
+				"ext.kartographer.data",
+				"ext.kartographer.util"
+			],
+			"scripts": [
+				"lib/external/leaflet.sleep.js",
+				"modules/box/openfullscreen_control.js",
+				"modules/box/scale_control.js",
+				"modules/box/dataLayerOpts.js",
+				"modules/box/data.js",
+				"modules/box/Map.js",
+				"modules/box/enablePreview.js",
+				"modules/box/index.js"
+			],
+			"messages": [
+				"kartographer-attribution"
+			],
+			"targets": [
+				"mobile",
+				"desktop"
+			]
+		},
+		"ext.kartographer.linkbox": {
+			"scripts": [
+				"modules/linkbox/Link.js",
+				"modules/linkbox/index.js"
+			],
+			"dependencies": [
+				"ext.kartographer.util"
+			],
+			"targets": [
+				"mobile",
+				"desktop"
+			]
+		},
+		"ext.kartographer.data": {
+			"scripts": [
+				"lib/external/wikimedia-mapdata.js"
+			],
+			"messages": [
+				"kartographer-attribution-externaldata",
+				"project-localized-name-commonswiki"
+			],
+			"targets": [
+				"mobile",
+				"desktop"
+			]
+		},
+		"ext.kartographer.dialog": {
+			"dependencies": [
+				"oojs-ui.styles.icons-content",
+				"oojs-ui-windows",
+				"mediawiki.router"
+			],
+			"scripts": [
+				"modules/dialog/closefullscreen_control.js",
+				"modules/dialog/dialog.js",
+				"modules/dialog/index.js"
+			],
+			"messages": [
+				"kartographer-fullscreen-close",
+				"kartographer-sidebar-togglebutton"
+			],
+			"targets": [
+				"mobile",
+				"desktop"
+			]
+		},
+		"ext.kartographer.dialog.sidebar": {
+			"dependencies": [
+				"oojs-ui.styles.icons-interactions",
+				"oojs-ui.styles.icons-movement",
+				"ext.kartographer.extlinks"
+			],
+			"scripts": [
+				"modules/dialog-sidebar/sidebar.js"
+			],
+			"messages": [
+				"kartographer-fullscreen-close",
+				"kartographer-fullscreen-collapse",
+				"kartographer-sidebar-coordinates",
+				"kartographer-sidebar-filterdropdown",
+				"kartographer-sidebar-externalservices",
+				"kartographer-sidebar-externalservices-show-featured",
+				"kartographer-sidebar-externalservices-show-all",
+				"kartographer-sidebar-latitude",
+				"kartographer-sidebar-longitude",
+				"kartographer-sidebar-mapdetails",
+				"kartographer-sidebar-service"
+			],
+			"targets": [
+				"mobile",
+				"desktop"
+			]
+		},
+		"ext.kartographer.settings": {
+			"dependencies": [
+				"mapbox",
+				"ext.kartographer"
+			],
+			"scripts": [
+				"modules/settings/settings.js"
+			],
+			"targets": [
+				"mobile",
+				"desktop"
+			]
+		},
+		"ext.kartographer.util": {
+			"scripts": [
+				"modules/util/util.js"
+			],
+			"dependencies": [
+				"ext.kartographer"
+			],
+			"targets": [
+				"mobile",
+				"desktop"
+			]
+		},
+		"ext.kartographer.frame": {
+			"dependencies": [
+				"mediawiki.router",
+				"ext.kartographer.box",
+				"ext.kartographer.util"
+			],
+			"scripts": [
+				"modules/mapframe/mapframe.js"
+			],
+			"targets": [
+				"mobile",
+				"desktop"
+			]
+		},
+		"ext.kartographer.staticframe": {
+			"dependencies": [
+				"mediawiki.router",
+				"oojs-ui.styles.icons-media",
+				"ext.kartographer.linkbox",
+				"ext.kartographer.util"
+			],
+			"scripts": [
+				"modules/staticframe/staticframe.js"
+			],
+			"messages": [
+				"kartographer-attribution-short",
+				"kartographer-fullscreen-text"
+			],
+			"targets": [
+				"mobile",
+				"desktop"
+			]
+		},
+		"ext.kartographer.preview": {
+			"scripts": [
+				"modules/preview/preview.js"
+			],
+			"messages": [
+				"visualeditor-mwmapsdialog-position-lat",
+				"visualeditor-mwmapsdialog-position-lon",
+				"visualeditor-mwmapsdialog-position-zoom"
+			],
+			"targets": [
+				"mobile",
+				"desktop"
+			]
+		},
+		"ext.kartographer.editing": {
+			"dependencies": [
+				"mediawiki.api"
+			],
+			"scripts": [
+				"modules/editing/editing.js"
+			],
+			"targets": [
+				"mobile",
+				"desktop"
+			]
+		},
+		"ext.kartographer.editor": {
+			"dependencies": [
+				"leaflet.draw",
+				"ext.kartographer.box"
+			],
+			"targets": [
+				"mobile",
+				"desktop"
+			]
+		},
+		"ext.kartographer.visualEditor": {
+			"scripts": [
+				"modules/ve-maps/ve.dm.MWInlineMapsNode.js",
+				"modules/ve-maps/ve.ce.MWInlineMapsNode.js",
+				"modules/ve-maps/ve.dm.MWMapsNode.js",
+				"modules/ve-maps/ve.ce.MWMapsNode.js",
+				"modules/ve-maps/ve.ui.MWMapsContextItem.js",
+				"modules/ve-maps/ve.ui.MWMapsDialog.js",
+				"modules/ve-maps/ve.ui.MWMapsTool.js"
+			],
+			"styles": [
+				"modules/ve-maps/ve.ui.MWMaps.css"
+			],
+			"messages": [
+				"visualeditor-mwmapscontextitem-nosupport",
+				"visualeditor-mwmapscontextitem-title",
+				"visualeditor-mwmapsdialog-area",
+				"visualeditor-mwmapsdialog-content",
+				"visualeditor-mwmapsdialog-options",
+				"visualeditor-mwmapsdialog-align",
+				"visualeditor-mwmapsdialog-geojson",
+				"visualeditor-mwmapsdialog-language",
+				"visualeditor-mwmapsdialog-help-title",
+				"visualeditor-mwmapsdialog-position-lat",
+				"visualeditor-mwmapsdialog-position-lon",
+				"visualeditor-mwmapsdialog-position-zoom",
+				"visualeditor-mwmapsdialog-size",
+				"visualeditor-mwmapsdialog-title"
+			],
+			"dependencies": [
+				"jquery.throttle-debounce",
+				"oojs-ui.styles.icons-content",
+				"oojs-ui.styles.icons-location",
+				"ext.visualEditor.mwcore",
+				"ext.kartographer",
+				"ext.kartographer.util"
+			],
+			"targets": [
+				"mobile",
+				"desktop"
+			]
+		},
+		"ext.kartographer.lib.prunecluster": {
+			"dependencies": [
+				"mapbox"
+			],
+			"scripts": [
+				"lib/external/prunecluster/PruneCluster.js",
+				"modules/prunecluster/prunecluster.js"
+			],
+			"styles": [
+				"lib/external/prunecluster/LeafletStyleSheet.css"
+			],
+			"targets": [
+				"mobile",
+				"desktop"
+			]
+		},
+		"ext.kartographer.lib.topojson": {
+			"dependencies": [
+				"mapbox"
+			],
+			"scripts": [
+				"lib/topojson/topojson.js",
+				"lib/topojson/loader.js"
+			],
+			"targets": [
+				"mobile",
+				"desktop"
+			]
+		},
+		"ext.kartographer.wv": {
+			"dependencies": [
+				"oojs-ui.styles.icons-editing-core",
+				"mapbox",
+				"ext.kartographer.lib.prunecluster"
+			],
+			"scripts": [
+				"modules/wikivoyage/wikivoyage.js",
+				"modules/wikivoyage/NearbyArticles.js",
+				"modules/wikivoyage/ControlLayers.js",
+				"modules/wikivoyage/ControlNearby.js",
+				"modules/wikivoyage/WVMapLayers.js",
+				"modules/wikivoyage/WVMap.js",
+				"modules/wikivoyage/index.js"
+			],
+			"styles": [
+				"modules/wikivoyage/styles/wv-leaflet.less",
+				"modules/wikivoyage/styles/control-layers.less",
+				"modules/wikivoyage/styles/control-nearby.less"
+			],
+			"messages": [
+				"kartographer-wv-group",
+				"kartographer-wv-layer-nearby-articles",
+				"kartographer-wv-layer-wikimedia",
+				"kartographer-wv-nearby-articles-control",
+				"kartographer-wv-warning-external-source-title",
+				"kartographer-wv-warning-external-source-message",
+				"kartographer-wv-warning-external-source-agree",
+				"kartographer-wv-warning-external-source-disagree"
+			],
+			"targets": [
+				"mobile",
+				"desktop"
+			]
+		},
+		"ext.kartographer.specialMap": {
+			"styles": [
+				"styles/specialMap.less"
+			],
+			"targets": [
+				"mobile",
+				"desktop"
+			]
+		}
+	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "",
+		"remoteExtPath": "Kartographer"
+	},
+	"Hooks": {
+		"ParserFirstCallInit": [
+			"Kartographer\\Hooks::onParserFirstCallInit"
+		],
+		"ParserAfterParse": [
+			"Kartographer\\Hooks::onParserAfterParse"
+		]
+	},
+	"VisualEditorPluginModules": [
+		"ext.kartographer.editing",
+		"ext.kartographer.visualEditor"
+	],
+	"config": {
+		"KartographerStaticMapframe": false,
+		"KartographerWikivoyageMode": false,
+		"KartographerDfltStyle": "osm-intl",
+		"KartographerStyles": ["osm-intl", "osm"],
+		"KartographerSrcsetScales": [1.3, 1.5, 2, 2.6, 3],
+		"KartographerMapServer": "https://maps.wikimedia.org",
+		"KartographerIconServer": "https://maps.wikimedia.org",
+		"KartographerFrameMode": "interactive",
+		"KartographerUseMarkerStyle": false,
+		"KartographerEnableMapFrame": true,
+		"KartographerUsePageLanguage": true
+	},
+	"TrackingCategories": [
+		"kartographer-tracking-category",
+		"kartographer-broken-category"
+	],
+	"load_composer_autoloader": true,
+	"manifest_version": 1
+}

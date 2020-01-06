@@ -1,0 +1,20 @@
+{
+    "raw": {
+        "sources": "Something [http://example.com with a link]",
+        "license": "CC0-1.0",
+        "schema": {
+            "fields": []
+        },
+        "data": []
+    },
+    "en": {
+        "sources": "Something [http://example.com with a link]",
+        "license": {
+            "code": "CC0-1.0"
+        },
+        "schema": {
+            "fields": []
+        },
+        "data": []
+    }
+}

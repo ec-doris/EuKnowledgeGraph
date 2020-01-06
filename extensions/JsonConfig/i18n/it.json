@@ -1,0 +1,41 @@
+{
+	"@metadata": {
+		"authors": [
+			"Beta16",
+			"PeppeAeco",
+			"Yurik"
+		]
+	},
+	"jsonconfig-desc": "Permette di memorizzare la configurazione JSON in un wiki",
+	"jsonconfig-duplicate-field": "Trovato più di un valore \"$1\"",
+	"jsonconfig-err-array": "Il parametro \"$1\" deve essere un elenco, ad esempio [\"valore1\", \"valore2\", ...]",
+	"jsonconfig-err-array-count": "L'elenco \"$1\" ha $2 {{PLURAL:$2|valore|valori}}, ma dovrebbe averne $3 {{PLURAL:$3|valore|valori}}, lo stesso numero di valori di \"$4\"",
+	"jsonconfig-err-array-expected": "Il valore \"$1\" deve essere un elenco tra da parentesi quadre [...]",
+	"jsonconfig-err-assoc-array": "Il parametro \"$1\" deve essere un array associativo (dizionario), ad esempio {\"chiave\": \"valore\", ...}",
+	"jsonconfig-err-bad-header-string": "L'intestazione \"$1\" deve essere composta solo da lettere, numeri e caratteri di sottolineatura, e non deve iniziare con un numero",
+	"jsonconfig-err-bad-type": "Il parametro \"$1\" deve essere di un tipo valido come \"stringa\", \"numero\", o \"booleano\"",
+	"jsonconfig-err-bool": "Il parametro \"$1\" deve essere impostato su true (vero) o false (falso)",
+	"jsonconfig-err-integer": "Il parametro \"$1\" deve essere un numero intero",
+	"jsonconfig-err-license": "Il parametro \"$1\" deve essere uno dei codici di licenza valida, ad esempio $2",
+	"jsonconfig-err-localized": "Il parametro \"$1\" deve essere un oggetto che mappa codici di lingua validi in stringhe su riga singola, senza tabulazioni o spazi finali. Ad esempio: { \"it\":\"Stringa in italiano\", ... }",
+	"jsonconfig-err-number": "Il parametro \"$1\" deve essere un numero",
+	"jsonconfig-err-object-expected": "Il valore \"$1\" deve essere un oggetto tra da parentesi graffe {...}",
+	"jsonconfig-err-root-array-expected": "I dati JSON deve essere un elenco tra da parentesi quadre [...]",
+	"jsonconfig-err-root-object-expected": "I dati JSON deve essere un elenco tra da parentesi graffe {...}",
+	"jsonconfig-err-string": "Il parametro \"$1\" deve essere una stringa",
+	"jsonconfig-err-unexpected-key": "L'oggetto \"$1\" contiene un campo non previsto \"$2\"",
+	"jsonconfig-err-url": "Il parametro \"$1\" deve essere un URL valido",
+	"jsonconfig-move-aborted-model": "il modello di configurazione JSON \"$1\" di questa pagina non corrisponde al nuovo modello \"$2\"",
+	"jsonconfig-move-aborted-ns": "il nuovo titolo della pagina non è impostato per contenere la configurazione JSON",
+	"jsonconfig-optional-field": "(opzionale)",
+	"jsonconfig-type-name-invalid": "non valido",
+	"jsonconfig-type-name-string": "stringa",
+	"jsonconfig-type-name-localized": "localizzato",
+	"jsonconfig-type-name-number": "numero",
+	"jsonconfig-type-name-boolean": "booleano",
+	"jsonconfig-license": "Dati disponibili in base alla licenza $1.",
+	"jsonconfig-license-name-CC0-1.0": "Creative Commons Zero",
+	"apihelp-jsonconfig-description": "Consente l'accesso diretto al sottosistema JsonConfig.",
+	"apihelp-jsonconfig-param-namespace": "Numero namespace del titolo da elaborare.",
+	"apihelp-jsonconfig-param-title": "Titolo da elaborare senza prefisso namespace."
+}

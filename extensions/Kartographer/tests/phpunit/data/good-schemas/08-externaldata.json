@@ -1,0 +1,83 @@
+[
+	{
+		"type": "Point",
+		"coordinates": [-122.3988, 37.8013]
+	},
+	{
+		"type": "ExternalData",
+		"service": "geoshape",
+		"query": "SELECT ?foo\nbar"
+	},
+	{
+		"type": "ExternalData",
+		"service": "geoshape",
+		"ids": []
+	},
+	{
+		"type": "ExternalData",
+		"service": "geoshape",
+		"ids": [ "Q1", "Q2", "Q3" ]
+	},
+	{
+		"type": "ExternalData",
+		"service": "geoshape",
+		"query": "ugh",
+		"ids": [ "Q1", "Q2", "Q3" ]
+	},
+	{
+		"type": "ExternalData",
+		"service": "geoshape",
+		"query": "lalala",
+		"ids": "Q1"
+	},
+	{
+		"type": "ExternalData",
+		"service": "geoshape",
+		"query": "lalala",
+		"ids": "Q1,Q2 , Q3"
+	},
+	{
+		"type": "ExternalData",
+		"service": "geoline",
+		"query": "SELECT ?foo\nbar"
+	},
+	{
+		"type": "ExternalData",
+		"service": "geoline",
+		"ids": []
+	},
+	{
+		"type": "ExternalData",
+		"service": "geoline",
+		"ids": [ "Q1", "Q2", "Q3" ]
+	},
+	{
+		"type": "ExternalData",
+		"service": "geoline",
+		"query": "ugh",
+		"ids": [ "Q1", "Q2", "Q3" ]
+	},
+	{
+		"type": "ExternalData",
+		"service": "geoline",
+		"query": "lalala",
+		"ids": "Q1"
+	},
+	{
+		"type": "ExternalData",
+		"service": "geoline",
+		"query": "lalala",
+		"ids": "Q1,Q2 , Q3"
+	},
+	{
+		"type": "ExternalData",
+		"service": "geomask",
+		"query": "lalala",
+		"ids": "Q1"
+	},
+	{
+		"type": "ExternalData",
+		"service": "page",
+		"title": "lalala"
+	}
+]

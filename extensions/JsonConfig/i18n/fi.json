@@ -1,0 +1,43 @@
+{
+	"@metadata": {
+		"authors": [
+			"Nike",
+			"Valtlait",
+			"Pyscowicz"
+		]
+	},
+	"jsonconfig-err-bad-type": "Parametrin ”$1” on oltava kelvollinen tyyppi, kuten ”string\", ”number” tai ”boolean”",
+	"jsonconfig-optional-field": "(valinnainen)",
+	"jsonconfig-type-name-invalid": "kelpaamaton",
+	"jsonconfig-type-name-string": "merkkijono",
+	"jsonconfig-type-name-localized": "lokalisoitu",
+	"jsonconfig-type-name-number": "luku",
+	"jsonconfig-type-name-boolean": "totuusarvo",
+	"jsonconfig-license": "Tiedot on käytettävissä lisenssillä $1.",
+	"jsonconfig-license-name-CC0-1.0": "Creative Commons Zero",
+	"jsonconfig-license-name-CC-BY-1.0": "Creative Commons Nimeä 1.0",
+	"jsonconfig-license-name-CC-BY-2.0": "Creative Commons Nimeä 2.0",
+	"jsonconfig-license-name-CC-BY-2.5": "Creative Commons Nimeä 2.5",
+	"jsonconfig-license-name-CC-BY-3.0": "Creative Commons Nimeä 3.0",
+	"jsonconfig-license-name-CC-BY-4.0": "Creative Commons Nimeä 4.0",
+	"jsonconfig-license-name-CC-BY-4.0+": "Creative Commons Nimeä 4.0 tai uudempi versio",
+	"jsonconfig-license-name-CC-BY-SA-1.0": "Creative Commons Nimeä-JaaSamoin 1.0",
+	"jsonconfig-license-name-CC-BY-SA-2.0": "Creative Commons Nimeä-JaaSamoin 2.0",
+	"jsonconfig-license-name-CC-BY-SA-2.5": "Creative Commons Nimeä-JaaSamoin 2.5",
+	"jsonconfig-license-name-CC-BY-SA-3.0": "Creative Commons Nimeä-JaaSamoin 3.0",
+	"jsonconfig-license-name-CC-BY-SA-4.0": "Creative Commons Nimeä-JaaSamoin 4.0",
+	"jsonconfig-license-name-CC-BY-SA-4.0+": "Creative Commons Nimeä-JaaSamoin 4.0  tai uudempi versio",
+	"jsonconfig-license-url-CC0-1.0": "https://creativecommons.org/publicdomain/zero/1.0/deed.fi",
+	"jsonconfig-license-url-CC-BY-1.0": "https://creativecommons.org/licenses/by/1.0/deed.fi",
+	"jsonconfig-license-url-CC-BY-2.0": "https://creativecommons.org/licenses/by/2.0/deed.fi",
+	"jsonconfig-license-url-CC-BY-2.5": "https://creativecommons.org/licenses/by/2.5/deed.fi",
+	"jsonconfig-license-url-CC-BY-3.0": "https://creativecommons.org/licenses/by/3.0/deed.fi",
+	"jsonconfig-license-url-CC-BY-4.0": "https://creativecommons.org/licenses/by/4.0/deed.fi",
+	"jsonconfig-license-url-CC-BY-4.0+": "https://creativecommons.org/licenses/by/4.0/deed.fi",
+	"jsonconfig-license-url-CC-BY-SA-1.0": "https://creativecommons.org/licenses/by-sa/1.0/deed.fi",
+	"jsonconfig-license-url-CC-BY-SA-2.0": "https://creativecommons.org/licenses/by-sa/2.0/deed.fi",
+	"jsonconfig-license-url-CC-BY-SA-2.5": "https://creativecommons.org/licenses/by-sa/2.5/deed.fi",
+	"jsonconfig-license-url-CC-BY-SA-3.0": "https://creativecommons.org/licenses/by-sa/3.0/deed.fi",
+	"jsonconfig-license-url-CC-BY-SA-4.0": "https://creativecommons.org/licenses/by-sa/4.0/deed.fi",
+	"jsonconfig-license-url-CC-BY-SA-4.0+": "https://creativecommons.org/licenses/by-sa/4.0/deed.fi"
+}

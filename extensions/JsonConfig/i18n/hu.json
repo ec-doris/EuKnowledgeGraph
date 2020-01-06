@@ -1,0 +1,14 @@
+{
+	"@metadata": {
+		"authors": [
+			"Bináris",
+			"Máté",
+			"Tacsipacsi"
+		]
+	},
+	"jsonconfig-desc": "Lehetővé teszi JSON-konfiguráció tárolását egy wikiben",
+	"jsonconfig-duplicate-field": "Egynél több „$1” érték található",
+	"jsonconfig-err-array": "A(z) „$1” paraméter értékének listának kell lennie (pl. [\"érték1\", \"érték2\", …])",
+	"jsonconfig-err-array-count": "A(z) „$1” listának $2 értéke van, de $3 értékkel kell rendelkeznie, ugyanannyival, mint a(z) „$4” listának",
+	"jsonconfig-type-name-string": "karakterlánc"
+}
