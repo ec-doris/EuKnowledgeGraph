@@ -9,9 +9,6 @@
 			"درفش کاویانی"
 		]
 	},
-	"apihelp-sanitize-mapdata-param-text": "جئوجی‌سان برای تمیزکاری",
-	"apihelp-sanitize-mapdata-example": "تمیزکاری یک باینری بزرگ جئوجی‌سان",
-	"apihelp-query+mapdata-param-limit": "داده‌ای برای تعیین اینکه چند صفحه برگردانده شود",
 	"kartographer-attribution": "[https://meta.wikimedia.org/wiki/Maps_Terms_of_Use/fa نقشه‌های ویکی‌مدیا] | داده‌های نقشه © [https://www.openstreetmap.org/copyright مشارکت‌کنندگان اوپن‌استریت‌مپ]",
 	"kartographer-broken-category": "صفحات با نقشه خراب",
 	"kartographer-broken-category-desc": "در این صفحه یک نقشهٔ خراب استفاده شده‌است",
@@ -78,6 +75,7 @@
 	"kartographer-fullscreen-close": "بستن",
 	"kartographer-fullscreen-collapse": "نهفتن جزئیات نقشه",
 	"kartographer-fullscreen-text": "در تمام صفحه نمایش بده",
+	"visualeditor-mwmapsdialog-area": "منظقه نقشه",
 	"visualeditor-mwmapsdialog-content": "محتویات نقشه",
 	"visualeditor-mwmapsdialog-options": "گزینه‌ها",
 	"visualeditor-mwmapsdialog-align": "تراز",

@@ -102,6 +102,7 @@ abstract class TagHandler {
 	 * @return string
 	 */
 	public static function entryPoint( $input, array $args, Parser $parser, PPFrame $frame ) {
+		/** @phan-suppress-next-line PhanTypeInstantiateAbstract */
 		$handler = new static();
 
 		return $handler->handle( $input, $args, $parser, $frame );
@@ -176,9 +177,7 @@ abstract class TagHandler {
 		// Language code specified by the user (null if none)
 		$this->specifiedLangCode = $this->getText( 'lang', null );
 		// Language code we're going to use
-		$this->resolvedLangCode = $this->specifiedLangCode !== null ?
-			$this->specifiedLangCode :
-			$defaultLangCode;
+		$this->resolvedLangCode = $this->specifiedLangCode ?? $defaultLangCode;
 		// If the specified language code is invalid, behave as if no language was specified
 		if (
 			!Language::isKnownLanguageTag( $this->resolvedLangCode ) &&
@@ -319,11 +318,6 @@ abstract class TagHandler {
 	) {
 		global $wgKartographerStaticMapframe;
 
-		$data = $state->getData();
-		if ( $data ) {
-			$json = FormatJson::encode( $data, false, FormatJson::ALL_OK );
-			$output->setProperty( 'kartographer', gzencode( $json ) );
-		}
 		if ( $state->getMaplinks() ) {
 			$output->setProperty( 'kartographer_links', $state->getMaplinks() );
 		}
@@ -339,6 +333,7 @@ abstract class TagHandler {
 		}
 
 		// https://phabricator.wikimedia.org/T145615 - include all data in previews
+		$data = $state->getData();
 		if ( $data && $isPreview ) {
 			$output->addJsConfigVars( 'wgKartographerLiveData', $data );
 			if ( $wgKartographerStaticMapframe ) {
