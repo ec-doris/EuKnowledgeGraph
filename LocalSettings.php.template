@@ -110,3 +110,6 @@ wfLoadExtension( 'EntitySchema' );
 #JsonConfig for Kartographer
 wfLoadExtension( 'JsonConfig' );
 wfLoadExtension( 'Kartographer' );
+
+#Allowing file upload
+${DOLLAR}wgEnableUploads = true; # Enable uploads
