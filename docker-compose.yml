@@ -27,6 +27,8 @@ services:
       - ./Wikibase.example.php:/var/www/html/extensions/Wikibase/repo/config/Wikibase.example.php
       - ./extensions/JsonConfig:/var/www/html/extensions/JsonConfig
       - ./extensions/Kartographer:/var/www/html/extensions/Kartographer
+      - ./script_QAnswer.sh:/var/www/html/script_QAnswer.sh
+      - ./qanswer_secretes.env:/var/www/html/qanswer_secretes.env 
     depends_on:
     - mysql
     - elasticsearch
