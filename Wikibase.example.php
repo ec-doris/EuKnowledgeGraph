@@ -88,7 +88,8 @@ call_user_func( function() {
 			'length' => 500,
 	      ),
          );
-        $wgWBRepoSettings['useKartographerGlobeCoordinateFormatter'] = true;
+	$wgWBRepoSettings['useKartographerGlobeCoordinateFormatter'] = true;
+	$wgWBRepoSettings['formatterUrlProperty'] = 'P877';
 } );
 
 /*
