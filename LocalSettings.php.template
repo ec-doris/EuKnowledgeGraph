@@ -107,6 +107,9 @@ wfLoadExtension( 'cldr' );
 # EntitySchema
 wfLoadExtension( 'EntitySchema' );
 
+#increasing default memory
+ini_set('memory_limit', '512M');
+
 #JsonConfig for Kartographer
 wfLoadExtension( 'JsonConfig' );
 wfLoadExtension( 'Kartographer' );
