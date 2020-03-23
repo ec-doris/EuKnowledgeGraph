@@ -1,7 +1,20 @@
 """Convert CSV files to XLSX"""
 
 import os
+from openpyxl.utils.exceptions import IllegalCharacterError
 import pandas
 
-files = os.listdir("/home/ubuntu/dump/kohesio")
-print(files)
+root = "/home/ubuntu/dump/kohesio/"
+csv_files = [f for f in os.listdir(root) if f.endswith(".csv")]
+for f in sorted(csv_files):
+    ff = root+f
+    output = f"{ff[:-3]}xlsx"
+    if not os.path.isfile(output):
+        print(f"Processing {f}...")
+        df = pandas.read_csv(ff)
+        try:
+            df.to_excel(output)
+        except IllegalCharacterError:
+            print("Failed!")
+    else:
+        print(f"Skipping {f}")
