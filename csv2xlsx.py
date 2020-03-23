@@ -15,6 +15,9 @@ for f in sorted(csv_files):
         try:
             df.to_excel(output)
         except IllegalCharacterError:
-            print("Failed!")
+            try:
+                df.to_excel(output, engine='xlsxwriter')
+            except:
+                print("Failed!")
     else:
         print(f"Skipping {f}")
