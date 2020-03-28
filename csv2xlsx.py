@@ -12,8 +12,10 @@ for f in sorted(csv_files):
     if not os.path.isfile(output):
         print(f"Processing {f}...")
         df = pandas.read_csv(ff)
+        writer = pandas.ExcelWriter(output, engine='xlsxwriter',options={'strings_to_urls': False})
         try:
-            df.to_excel(output)
+            df.to_excel(writer)
+            writer.close()
         except IllegalCharacterError:
             try:
                 df.to_excel(output, engine='xlsxwriter')
