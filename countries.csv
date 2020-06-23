@@ -1,9 +1,9 @@
 #Finland Q10 FI
 #Sweden Q11 SW
-Denmark Q12 DK da
-Poland Q13 PL pl
+Denmark Q12 DK da P844
+Poland Q13 PL pl P842
 #Lithuania Q14 LH
-Italy Q15 IT it
+Italy Q15 IT it P1360
 #Austria Q16 AU
 #Greece Q17 GR
 #Slovakia Q26 LO
@@ -12,8 +12,8 @@ Italy Q15 IT it
 #Bulgaria Q29 BU
 #Portugal Q18 PO
 #Netherlands Q19 NL
-Ireland Q2 IE en
-France Q20 FR fr
+Ireland Q2 IE en P891
+France Q20 FR fr P843
 #Hungary Q3 HU
 #Croatia Q30 HR
 #Republic_of_Cyprus Q31 CY
@@ -24,4 +24,4 @@ France Q20 FR fr
 #Germany Q22 GM
 #Estonia Q23 EN
 #Latvia Q24 LG
-Czech_Republic Q25 CZ cs
+Czech_Republic Q25 CZ cs P833
