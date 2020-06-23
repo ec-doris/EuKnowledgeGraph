@@ -13,7 +13,7 @@ version: '3'
 
 services:
   wikibase:
-    image: wikibase/wikibase:1.33-bundle
+    image: wikibase/wikibase:1.34-bundle
     links:
       - mysql
     ports:
@@ -23,12 +23,12 @@ services:
       - mediawiki-images-data:/var/www/html/images
       - quickstatements-data:/quickstatements/data
       - ./images:/var/www/html/resources/assets/images
-      - ./LocalSettings.php.template:/LocalSettings.php.template
+      - ./LocalSettings.php.template2:/LocalSettings.php.template
       - ./Wikibase.example.php:/var/www/html/extensions/Wikibase/repo/config/Wikibase.example.php
       - ./extensions/JsonConfig:/var/www/html/extensions/JsonConfig
       - ./extensions/Kartographer:/var/www/html/extensions/Kartographer
       - ./script_QAnswer.sh:/var/www/html/script_QAnswer.sh
-      - ./qanswer_secretes.env:/var/www/html/qanswer_secretes.env 
+      - ./qanswer_secretes.env:/var/www/html/qanswer_secretes.env
     depends_on:
     - mysql
     - elasticsearch
@@ -45,7 +45,7 @@ services:
       - DB_NAME=my_wiki
       - QS_PUBLIC_SCHEME_HOST_AND_PORT=http://localhost:9191
     env_file:
-      - services_secrets.env
+      - services_secrets.env      
   mysql:
     image: mariadb:10.3
     restart: unless-stopped
@@ -92,6 +92,7 @@ services:
       - WIKIBASE_SCHEME=https
       - WDQS_HOST=wdqs.svc
       - WDQS_PORT=9999
+      - HEAP_SIZE=8g
     expose:
       - 9999
   wdqs-proxy:
@@ -147,8 +148,8 @@ services:
         aliases:
          - quickstatements.svc
     environment:
-      - QS_PUBLIC_SCHEME_HOST_AND_PORT=http://localhost:9191
-      - WB_PUBLIC_SCHEME_HOST_AND_PORT=http://localhost:8181
+      - QS_PUBLIC_SCHEME_HOST_AND_PORT=https://quickstatements.linkedopendata.eu
+      - WB_PUBLIC_SCHEME_HOST_AND_PORT=https://linkedopendata.eu
       - WIKIBASE_SCHEME_AND_HOST=http://wikibase.svc
       - WB_PROPERTY_NAMESPACE=122
       - "WB_PROPERTY_PREFIX=Property:"
