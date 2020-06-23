@@ -4,8 +4,9 @@ import os
 from openpyxl.utils.exceptions import IllegalCharacterError
 import pandas
 
-root = "/home/ubuntu/dump/kohesio/"
-csv_files = [f for f in os.listdir(root) if f.endswith(".csv")]
+root = "/newvolume/dump/kohesio/"
+csv_files = [f for f in os.listdir(root) if f.startswith("latest") and f.endswith(".csv")]
+print(csv_files)
 for f in sorted(csv_files):
     ff = root+f
     output = f"{ff[:-3]}xlsx"
