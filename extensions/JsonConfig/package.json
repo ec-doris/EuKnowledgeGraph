@@ -13,7 +13,10 @@
 		"grunt-contrib-jshint": "1.1.0",
 		"grunt-jsonlint": "1.1.0",
 		"grunt-stylelint": "0.10.1",
-		"stylelint-config-wikimedia": "^0.4.1",
-		"wmui-base": "git+https://phabricator.wikimedia.org/diffusion/WMUI/wikimedia-ui-base.git#v0.7.1"
+		"hosted-git-info": ">=3.0.8",
+		"stylelint-config-wikimedia": "^0.10.3",
+		"underscore": ">=1.12.1",
+		"wmui-base": "git+https://phabricator.wikimedia.org/diffusion/WMUI/wikimedia-ui-base.git#v0.7.1",
+		"yargs-parser": ">=13.1.2"
 	}
 }
