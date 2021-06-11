@@ -17,6 +17,7 @@
 		"stylelint-config-wikimedia": "^0.10.3",
 		"underscore": ">=1.12.1",
 		"wmui-base": "git+https://phabricator.wikimedia.org/diffusion/WMUI/wikimedia-ui-base.git#v0.7.1",
-		"yargs-parser": ">=13.1.2"
+		"yargs-parser": ">=13.1.2",
+        "trim-newlines": ">=3.0.1"
 	}
 }
