@@ -45,6 +45,7 @@ services:
     environment:
       - WIKIBASE_HOST=${WIKIBASE_HOST}
       - WDQS_HOST=wdqs-proxy.svc
+      - BRAND_TITLE=EU Knowledge Graph Query Service
   wdqs:
     image: "${WDQS_IMAGE_NAME}"
     restart: unless-stopped
