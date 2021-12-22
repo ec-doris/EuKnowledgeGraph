@@ -2,11 +2,11 @@
 namespace Kartographer\Tests;
 
 use ApiMain;
+use ApiUsageException;
 use DerivativeContext;
 use FauxRequest;
 use MediaWikiTestCase;
 use RequestContext;
-use ApiUsageException;
 
 /**
  * @covers \Kartographer\ApiSanitizeMapData
@@ -14,7 +14,7 @@ use ApiUsageException;
  */
 class ApiSanitizeMapDataTest extends MediaWikiTestCase {
 
-	public function setUp() {
+	public function setUp() : void {
 		$this->setMwGlobals( [
 			'wgScriptPath' => '/w',
 			'wgScript' => '/w/index.php',
@@ -47,7 +47,7 @@ class ApiSanitizeMapDataTest extends MediaWikiTestCase {
 	 * @dataProvider provideErrors
 	 */
 	public function testErrors( $title, $json ) {
-		$this->setExpectedException( ApiUsageException::class );
+		$this->expectException( ApiUsageException::class );
 		$this->makeRequest( $title, $json );
 	}
 

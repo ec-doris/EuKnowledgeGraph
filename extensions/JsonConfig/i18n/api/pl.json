@@ -1,0 +1,25 @@
+{
+	"@metadata": {
+		"authors": [
+			"Chrumps",
+			"Matma Rex",
+			"Rail",
+			"SemanticPioneer"
+		]
+	},
+	"apihelp-jsonconfig-description": "Zezwala na bezpośredni dostęp do podsystemu JsonConfig.",
+	"apihelp-jsonconfig-summary": "Zezwala na bezpośredni dostęp do podsystemu JsonConfig.",
+	"apihelp-jsonconfig-param-namespace": "Numer przestrzeni nazw tytułu do przetworzenia.",
+	"apihelp-jsonconfig-param-title": "Tytuł do przetworzenia bez prefiksu przestrzeni nazw.",
+	"apihelp-jsonconfig-param-content": "Dla $1command=reload, użyj tej zawartości.",
+	"apihelp-jsonconfig-example-1": "Pokaż konfigurację",
+	"apihelp-jsonconfig-example-2": "Zresetuj [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsonconfig-example-3": "Przeładuj [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsondata-description": "Odbierz zlokalizowane dane JSON.",
+	"apihelp-jsondata-summary": "Pozyskaj przetłumaczone dane JSON.",
+	"apihelp-jsondata-param-title": "Tytuł do pozyskania. Domyślnie zakładana przestrzeń nazw to „Data:”",
+	"apihelp-jsondata-example-1": "Pobierz zawartość JSON strony Sample.tab zlokalizowaną na język użytkownika",
+	"apihelp-jsondata-example-2": "Pobierz zawartość JSON strony Sample.tab zlokalizowaną na język francuski",
+	"apierror-jsonconfig-paramrequired": "Dla tego polecenia wymagany jest parametr <var>$1</ var>.",
+	"apierror-jsonconfig-badtitle": "Strona określona przez parametry <var>namespace</var> i <var>title</var> jest nieprawidłowa lub nie została zarejestrowana w konfiguracji JsonConfig."
+}

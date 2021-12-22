@@ -1,0 +1,23 @@
+{
+	"@metadata": {
+		"authors": [
+			"ديفيد"
+		]
+	},
+	"apihelp-jsonconfig-description": "يسمح بالوصول المباشر إلى النظام الفرعي لـJsonConfig.",
+	"apihelp-jsonconfig-summary": "يسمح بالوصول المباشر إلى النظام الفرعي لـJsonConfig.",
+	"apihelp-jsonconfig-param-command": "أي إجراء فرعي يتم تنفيذه على JsonConfig:\n;الحالة:يعرض تكوين JsonConfig.\n;إعادة تعيين:يمسح التكوينات من ذاكرة التخزين المؤقت، يتطلب الوسيط $1title وصلاحية jsonconfig-reset.\n;إعادة التحميل:يعيد تحميل ويخبئ التكوينات مخزن التكوين، يتطلب الوسيط $1title parameter وصلاحية jsonconfig-reset.",
+	"apihelp-jsonconfig-param-namespace": "عدد نطاق العنوان لمعالجته.",
+	"apihelp-jsonconfig-param-title": "عنوان للمعالجة بدون بادئة النطاق.",
+	"apihelp-jsonconfig-param-content": "بالنسلة لـ$1command=reload، استخدم هذا المحتوى بدلا من ذلك.",
+	"apihelp-jsonconfig-example-1": "إظهار التكوين",
+	"apihelp-jsonconfig-example-2": "إعادة ضبط [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsonconfig-example-3": "إعادة تحميل [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsondata-description": "استرداد بيانات JSON المترجمة.",
+	"apihelp-jsondata-summary": "استرداد بيانات JSON المترجمة.",
+	"apihelp-jsondata-param-title": "عنوان للحصول عليه، افتراضيا نطاق ليكون \"البيانات:\"",
+	"apihelp-jsondata-example-1": "احصل على محتوى JSON من صفحة Sample.tab، مترجمة إلى لغة المستخدم",
+	"apihelp-jsondata-example-2": "احصل على محتوى JSON من صفحة Sample.tab، مترجمة إلى الفرنسية",
+	"apierror-jsonconfig-paramrequired": "الوسيط <var>$1</var> مطلوب لهذا الأمر.",
+	"apierror-jsonconfig-badtitle": "الصفحة المحددة بواسطة الوسائط <var>namespace</var> و<var>title</var> إما غير صالحة أو غير مسجلة في تكوين JsonConfig."
+}

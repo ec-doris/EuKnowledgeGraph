@@ -1,12 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
-			"Sjoerddebruin",
-			"Siebrand",
-			"Mainframe98",
 			"Huhbakker",
+			"Mainframe98",
+			"Romaine",
+			"Siebrand",
+			"Sjoerddebruin",
 			"Xbaked potatox",
-			"Romaine"
+			"McDutchie"
 		]
 	},
 	"kartographer-broken-category": "Pagina's met niet-werkende kaarten",
@@ -44,6 +45,7 @@
 	"leafletdraw-draw-toolbar-actions-text": "Annuleren",
 	"leafletdraw-draw-toolbar-actions-title": "Tekening annuleren",
 	"leafletdraw-draw-toolbar-buttons-circle": "Teken een cirkel",
+	"leafletdraw-draw-toolbar-buttons-polygon": "Teken een polygoon",
 	"leafletdraw-draw-toolbar-buttons-rectangle": "Teken een rechthoek",
 	"leafletdraw-draw-toolbar-undo-text": "Verwijder het laatste punt",
 	"leafletdraw-draw-toolbar-undo-title": "Verwijder het laatste punt getrokken",
@@ -53,10 +55,10 @@
 	"leafletdraw-edit-toolbar-actions-save-text": "Opslaan",
 	"leafletdraw-edit-toolbar-actions-save-title": "Wijzigingen opslaan",
 	"leafletdraw-edit-toolbar-actions-clearall-text": "Alles wissen",
-	"leafletdraw-edit-toolbar-buttons-edit": "Lagen bewerken",
-	"leafletdraw-edit-toolbar-buttons-editdisabled": "Geen lagen om te bewerken",
-	"leafletdraw-edit-toolbar-buttons-remove": "Lagen verwijderen",
-	"leafletdraw-edit-toolbar-buttons-removedisabled": "Geen lagen om te verwijderen",
+	"leafletdraw-edit-toolbar-buttons-edit": "Objecten bewerken",
+	"leafletdraw-edit-toolbar-buttons-editdisabled": "Geen objecten om te bewerken",
+	"leafletdraw-edit-toolbar-buttons-remove": "Objecten verwijderen",
+	"leafletdraw-edit-toolbar-buttons-removedisabled": "Geen objecten om te verwijderen",
 	"leafletdraw-draw-toolbar-finish-text": "Afgerond",
 	"mapbox-control-zoomin-title": "Inzoomen",
 	"mapbox-control-zoomout-title": "Uitzoomen",

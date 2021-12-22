@@ -1,0 +1,15 @@
+{
+	"extends": "../../.eslintrc.json",
+	"globals": {
+		"mediaWiki": false,
+		"OO": false,
+		"wikibase": false,
+		"jQuery": false
+	},
+	"plugins": ["jasmine"],
+	"env": {
+		"browser": true,
+		"node": true,
+		"jasmine": true
+	}
+}

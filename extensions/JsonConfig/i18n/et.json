@@ -1,11 +1,32 @@
 {
 	"@metadata": {
 		"authors": [
-			"Cumbril"
+			"Cumbril",
+			"Pikne"
 		]
 	},
-	"jsonconfig-err-bool": "Parameetri \"$1\" väärtus saab olla kas tõene või väär",
+	"jsonconfig-desc": "Võimaldab JSON-i häälestust vikis talletada.",
+	"jsonconfig-duplicate-field": "Väärtust \"$1\" leiti rohkem kui üks kord",
+	"jsonconfig-edit-action-apply": "Rakenda",
+	"jsonconfig-edit-action-cancel": "Loobu",
+	"jsonconfig-edit-button-label": "Redigeeri tabelina",
+	"jsonconfig-edit-dialog-error": "Ei saa tabelina redigeerida: $1.",
+	"jsonconfig-edit-dialog-error-data-inavlid": "andmed ei vasta skeemile",
+	"jsonconfig-edit-dialog-error-data-missing": "JSON-i atribuut <code>data</code> puudub või see pole massiiv",
+	"jsonconfig-edit-dialog-error-data-too-large": "andmestik on tabelina redigeerimiseks liiga suur",
+	"jsonconfig-edit-dialog-error-field-name-missing": "igal väljal peab olema nimi",
+	"jsonconfig-edit-dialog-error-field-type-invalid": "tabelina redigeerimiseks peab iga väli olema tüübiga <code>number</code> või <code>string</code>",
+	"jsonconfig-edit-dialog-error-fields-missing": "JSON-i atribuut <code>schema.fields</code> puudub või see pole massiiv",
+	"jsonconfig-edit-dialog-error-schema-missing": "JSON-i atribuut <code>schema</code> puudub või see pole objekt",
+	"jsonconfig-edit-dialog-title": "JSON-i redigeerimine",
+	"jsonconfig-err-bool": "Parameetri \"$1\" väärtus peab olema kas <code>true</code> või <code>false</code>",
 	"jsonconfig-err-string": "Parameeter \"$1\" peab olema sõne",
 	"jsonconfig-optional-field": "(valikuline)",
+	"jsonconfig-license": "Andmed saadaval litsentsi $1 all.",
+	"jsonconfig-license-name-CC0-1.0": "CC0 1.0 Üldine",
+	"jsonconfig-license-copyrightwarning": "Kui salvestad muudatused, nõustud [https://foundation.wikimedia.org/wiki/Terms_of_Use kasutustingimustega] ja nõustud oma kaastöö pöördumatu avaldamisega litsentsi [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}] all.",
+	"jsonconfig-license-copyrightwarning-license-unset": "Kui salvestad muudatused, nõustud [https://foundation.wikimedia.org/wiki/Terms_of_Use kasutustingimustega] ja nõustud oma kaastöö pöördumatu avaldamisega väljal <code>licence</code> näidatud litsentsi all.",
+	"jsonconfig-license-notice": "'''Märkus:''' Kui redigeerid seda lehekülge, siis nõustud avaldama oma muudatused litsentsi [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}] all.",
+	"jsonconfig-license-notice-license-unset": "'''Märkus:''' Kui redigeerid seda lehekülge, siis nõustud avaldama oma muudatused väljal <code>licence</code> näidatud litsentsi all.",
 	"right-jsonconfig-flush": "Muuta JSON-i konfiguratsiooni läbi API"
 }

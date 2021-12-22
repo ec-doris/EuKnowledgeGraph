@@ -1,0 +1,23 @@
+{
+	"@metadata": {
+		"authors": [
+			"Kly"
+		]
+	},
+	"apihelp-jsonconfig-description": "允許直接存取 JsonConfig 子系統。",
+	"apihelp-jsonconfig-summary": "允許直接存取 JsonConfig 子系統。",
+	"apihelp-jsonconfig-param-command": "在 JsonConfig 上執行的細項操作：\n;status：顯示 JsonConfig 設置。\n;reset：清除來自快取的設置。需要 $1title 參數與 jsonconfig-reset 權限。\n;reload：從設定儲存裡重新載入並快取設置。需要 $1title 參數與 jsonconfig-reset 權限。",
+	"apihelp-jsonconfig-param-namespace": "要處理標題的命名空間號碼。",
+	"apihelp-jsonconfig-param-title": "要處理的不帶命名空間前綴標題。",
+	"apihelp-jsonconfig-param-content": "對於 $1command=reload 改使用此內容。",
+	"apihelp-jsonconfig-example-1": "顯示設置",
+	"apihelp-jsonconfig-example-2": "重新設定 [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsonconfig-example-3": "重新載入 [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsondata-description": "索取在地化 JSON 資料。",
+	"apihelp-jsondata-summary": "索取在地化 JSON 資料。",
+	"apihelp-jsondata-param-title": "要取得的標題。預設假定名稱空間為「Data:」",
+	"apihelp-jsondata-example-1": "取得 Sample.tab 頁面的 JSON 內容，以使用者的語言來在地化",
+	"apihelp-jsondata-example-2": "取得 Sample.tab 頁面的 JSON 內容來在地化成法語",
+	"apierror-jsonconfig-paramrequired": "此命令需要參數 <var>$1</var>。",
+	"apierror-jsonconfig-badtitle": "依 <var>namespace</var> 和 <var>title</var> 參數所指定的頁面無效，或是未登記在 JsonConfig 設置裡。"
+}

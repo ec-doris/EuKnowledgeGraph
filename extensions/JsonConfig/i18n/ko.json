@@ -1,11 +1,26 @@
 {
 	"@metadata": {
 		"authors": [
-			"Keysuck",
 			"Jonghaya",
-			"Ykhwong"
+			"Keysuck",
+			"MemphisA5",
+			"Ykhwong",
+			"그냥기여자"
 		]
 	},
+	"jsonconfig-duplicate-field": "하나보다 많은 \"$1\" 항목이 있습니다",
+	"jsonconfig-edit-action-apply": "적용",
+	"jsonconfig-edit-action-cancel": "취소",
+	"jsonconfig-edit-button-label": "표로 편집",
+	"jsonconfig-edit-dialog-error": "표로 편집할 수 없습니다: $1",
+	"jsonconfig-edit-dialog-error-data-inavlid": "데이터카 스키마와 일치하지 않습니다",
+	"jsonconfig-edit-dialog-error-data-missing": "JSON <code>data</code> 속성이 없거나 배열이 아닙니다",
+	"jsonconfig-edit-dialog-error-data-too-large": "데이터셋이 너무 커서 표로 편집할 수 없습니다",
+	"jsonconfig-edit-dialog-error-field-name-missing": "각 필드에는 이름이 필수입니다",
+	"jsonconfig-edit-dialog-error-field-type-invalid": "표로 편집하려면 각 칸은 <code>number</code> 또는 <code>string</code> 자료형이어야 합니다",
+	"jsonconfig-edit-dialog-error-fields-missing": "JSON <code>schema.fields</code> 속성이 없거나 배열이 아닙니다",
+	"jsonconfig-edit-dialog-error-schema-missing": "JSON <code>schema</code> 속성이 없거나 객체가 아닙니다",
+	"jsonconfig-edit-dialog-title": "JSON 편집",
 	"jsonconfig-err-array": "\"$1\" 변수는 리스트여야 합니다. (예: [\"값1\", \"값2\", ...])",
 	"jsonconfig-err-assoc-array": "\"$1\" 변수는 연관 배열(사전)이어야 합니다. (예:{\"키\": \"값\", ...})",
 	"jsonconfig-err-bool": "변수 \"$1\" true나 false여야 합니다",
@@ -13,12 +28,11 @@
 	"jsonconfig-err-license": "\"$1\" 변수는 유효한 라이선스 코드 중 하나여야 합니다 (예: $2)",
 	"jsonconfig-err-number": "\"$1\" 변수는 숫자여야 합니다",
 	"jsonconfig-err-string": "\"$1\" 변수는 문자열이어야 합니다",
+	"jsonconfig-err-url": "\"$1\" 변수는 유효한 URL이어야 합니다",
 	"jsonconfig-optional-field": "(선택 사항)",
+	"jsonconfig-license": "$1로 데이터를 이용할 수 있습니다.",
 	"jsonconfig-license-name-CC0-1.0": "크리에이티브 커먼즈 제로",
-	"apihelp-jsonconfig-description": "JsonConfig 하위 시스템으로의 직접 접근을 허용합니다.",
-	"apihelp-jsonconfig-summary": "JsonConfig 하위 시스템으로의 직접 접근을 허용합니다.",
-	"apihelp-jsonconfig-param-namespace": "처리할 제목의 이름공간 숫자.",
-	"apihelp-jsonconfig-param-title": "네임스페이스의 어미가 없는 타이틀",
-	"apihelp-jsondata-summary": "지역화된 JSON 데이터를 검색합니다.",
-	"apierror-jsonconfig-paramrequired": "이 명령에는 <var>$1</var> 변수가 필요합니다."
+	"jsonconfig-license-name-dl-de-zero-2.0": "데이터 라이선스 독일 – 0 – 버전 2.0",
+	"jsonconfig-license-name-dl-de-by-1.0": "데이터 라이선스 독일 – 저작자 표시 – 버전 1.0",
+	"jsonconfig-license-name-dl-de-by-2.0": "데이터 라이선스 독일 – 저작자 표시 – 버전 2.0"
 }

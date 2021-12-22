@@ -1,0 +1,10 @@
+{
+	"@metadata": {
+		"authors": [
+			"Joao Xavier"
+		]
+	},
+	"wbqc-constraintreport-no-parameter": "nulo",
+	"wbqc-violation-header-parameters": "Parametri:",
+	"wbqc-violations-group": "Restrikti"
+}

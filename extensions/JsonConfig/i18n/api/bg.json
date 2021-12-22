@@ -1,0 +1,24 @@
+{
+	"@metadata": {
+		"authors": [
+			"StanProg",
+			"Ted Masters",
+			"Vlad5250"
+		]
+	},
+	"apihelp-jsonconfig-description": "Позволява директен достъп до подсистемата JsonConfig.",
+	"apihelp-jsonconfig-summary": "Позволява директен достъп до подсистемата JsonConfig.",
+	"apihelp-jsonconfig-param-command": "Кое поддействие да се извърши на JsonConfig:\n;status: Показва конфигурацията на JsonConfig.\n;reset: Изчиства конфигурации от кеша. Изисква параметъра $1title и правото „jsonconfig-reset“.\n;reload: Презарежда и кешира конфигурации от склада на настройки. Изисква параметъра $1title и правото „jsonconfig-reset“.",
+	"apihelp-jsonconfig-param-namespace": "Номер на именното пространство на заглавието за обработка.",
+	"apihelp-jsonconfig-param-title": "Заглавие за обработка без представка за именно пространство.",
+	"apihelp-jsonconfig-param-content": "За $1command=reload, използвайте това съдържание.",
+	"apihelp-jsonconfig-example-1": "Показване на конфигурацията",
+	"apihelp-jsonconfig-example-2": "Зануляване на [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsonconfig-example-3": "Презареждане на [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsondata-description": "Извлича локализирани JSON-данни.",
+	"apihelp-jsondata-summary": "Извлича локализирани JSON-данни.",
+	"apihelp-jsondata-param-title": "Заглавие за връщане. По подразбиране се предполага, че именното пространство е „Data:“",
+	"apihelp-jsondata-example-1": "Получаване на JSON-съдържанието на страницата Sample.tab, локализирана на езика на потребителя",
+	"apierror-jsonconfig-paramrequired": "Команда изисква параметъра <var>$1</var>.",
+	"apierror-jsonconfig-badtitle": "Страницата, указана от параметрите <var>namespace</var> и <var>title</var>, е невалидна или не е регистрирана в конфигурацията на JsonConfig."
+}

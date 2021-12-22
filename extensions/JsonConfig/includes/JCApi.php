@@ -28,11 +28,12 @@ class JCApi extends ApiBase {
 			];
 		}
 		if ( isset( $conf->store ) ) {
+			// when store equals to false it's a flag to indicate content is stored externaly
 			$res['store'] = [
-				'cacheNewValue' => $conf->store->cacheNewValue,
-				'notifyUrl' => $conf->store->notifyUrl,
-				'notifyUsername' => $conf->store->notifyUsername !== '', // true or false
-				'notifyPassword' => $conf->store->notifyPassword !== '', // true or false
+				'cacheNewValue' => $conf->store ? $conf->store->cacheNewValue : null,
+				'notifyUrl' => $conf->store ? $conf->store->notifyUrl : null,
+				'notifyUsername' => $conf->store ? $conf->store->notifyUsername !== '' : false,
+				'notifyPassword' => $conf->store ? $conf->store->notifyPassword !== '' : false,
 			];
 		}
 		return $res;
@@ -122,11 +123,13 @@ class JCApi extends ApiBase {
 							'badparam-content'
 						);
 					}
+					// @phan-suppress-next-line PhanTypeMismatchArgumentNullable T240141
 					$content = JCSingleton::parseContent( $jct, $params['content'], true );
 				} else {
 					$content = false;
 				}
 
+				// @phan-suppress-next-line PhanTypeMismatchArgumentNullable T240141
 				$jc = new JCCache( $jct, $content );
 				if ( $command === 'reset' ) {
 					$jc->resetCache( false ); // clear cache
@@ -164,11 +167,11 @@ class JCApi extends ApiBase {
 	 */
 	protected function getExamplesMessages() {
 		return [
-			'action=jsonconfig&format=jsonfm'
+			'action=jsonconfig&format=json'
 				=> 'apihelp-jsonconfig-example-1',
-			'action=jsonconfig&command=reset&namespace=480&title=TEST&format=jsonfm'
+			'action=jsonconfig&command=reset&namespace=486&title=Brazil/Amazonas.map&format=json'
 				=> 'apihelp-jsonconfig-example-2',
-			'action=jsonconfig&command=reload&namespace=480&title=TEST&format=jsonfm'
+			'action=jsonconfig&command=reload&namespace=486&title=Brazil/Amazonas.map&format=json'
 				=> 'apihelp-jsonconfig-example-3',
 		];
 	}

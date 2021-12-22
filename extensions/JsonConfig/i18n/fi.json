@@ -2,11 +2,11 @@
 	"@metadata": {
 		"authors": [
 			"Nike",
-			"Valtlait",
-			"Pyscowicz"
+			"Pyscowicz",
+			"Valtlait"
 		]
 	},
-	"jsonconfig-err-bad-type": "Parametrin ”$1” on oltava kelvollinen tyyppi, kuten ”string\", ”number” tai ”boolean”",
+	"jsonconfig-err-bad-type": "Parametrin ”$1” on oltava kelvollinen tyyppi, kuten <code>string</code>, <code>number</code> tai <code>boolean</code>",
 	"jsonconfig-optional-field": "(valinnainen)",
 	"jsonconfig-type-name-invalid": "kelpaamaton",
 	"jsonconfig-type-name-string": "merkkijono",

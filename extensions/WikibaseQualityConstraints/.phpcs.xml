@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<ruleset>
+	<rule ref="./vendor/wikibase/wikibase-codesniffer/Wikibase">
+		<exclude name="PSR12.Properties.ConstantVisibility.NotFound" />
+	</rule>
+
+	<rule ref="Generic.Files.LineLength">
+		<properties>
+			<!-- FIXME: Should be lowered further, ideally to 100 (default). -->
+			<property name="lineLimit" value="130" />
+		</properties>
+	</rule>
+
+	<!-- Metrics are intentionally not part of the base Wikibase CodeSniffer rule set. -->
+	<rule ref="Generic.Metrics.CyclomaticComplexity" />
+	<rule ref="Generic.Metrics.NestingLevel" />
+
+	<file>.</file>
+</ruleset>

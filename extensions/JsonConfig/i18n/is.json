@@ -2,16 +2,17 @@
 	"@metadata": {
 		"authors": [
 			"Hjalmtyr",
+			"Snævar",
 			"Sveinn í Felli"
 		]
 	},
-	"jsonconfig-err-bad-type": "Viðfang \"$1\" verður að vera löglegt tag, eins og \"string\", \"number\" eða \"boolean\"",
+	"jsonconfig-err-bad-type": "Viðfang \"$1\" verður að vera gilt tag, eins og \"string\", \"number\" eða \"boolean\"",
 	"jsonconfig-optional-field": "(valfrjálst)",
 	"jsonconfig-type-name-invalid": "ógilt",
 	"jsonconfig-type-abbr-string": "(S)",
 	"jsonconfig-type-name-string": "strengur",
 	"jsonconfig-type-abbr-localized": "(L)",
-	"jsonconfig-type-name-localized": "staðvært",
+	"jsonconfig-type-name-localized": "staðfært",
 	"jsonconfig-type-abbr-number": "(T)",
 	"jsonconfig-type-name-number": "tala",
 	"jsonconfig-type-abbr-boolean": "(B)",

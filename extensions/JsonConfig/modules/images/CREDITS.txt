@@ -1,0 +1,8 @@
+Logo files in this directory where derived from the following resources:
+* Cc-by_new_white.svg - https://commons.wikimedia.org/wiki/File:Cc-by_new_white.svg
+* CC_some_rights_reserved.svg - https://commons.wikimedia.org/wiki/File:CC_some_rights_reserved.svg
+* ODbL_LOGO.svg - https://okfn.org/about/resources/ (https://branding.okfn.org/assets/landscape-full-rgb.svg)
+* PD-icon.svg - https://commons.wikimedia.org/wiki/File:PD-icon.svg
+* Cc-sa_white.svg - https://commons.wikimedia.org/wiki/File:Cc-sa_white.svg
+
+These files were pngcrushed and SVGO optimized according to https://www.mediawiki.org/wiki/Manual:Assets

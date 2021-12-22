@@ -1,0 +1,19 @@
+{
+	"@metadata": {
+		"authors": [
+			"AlimOmar"
+		]
+	},
+	"jsonconfig-edit-action-apply": "قوللان",
+	"jsonconfig-edit-action-cancel": "بىكار قىلىش",
+	"jsonconfig-edit-button-label": "جەدۋەل ھالەتتە تەھرىرلەڭ",
+	"jsonconfig-edit-dialog-error": "$1:جەدۋەل سۈپىتىدە تەھرىرلەشكە ئامالسىز",
+	"jsonconfig-edit-dialog-error-data-inavlid": "سانلىق مەلۇمات لايىھەگە ماس كەلمەيدۇ",
+	"jsonconfig-edit-dialog-error-data-missing": "JSON 'سانلىق مەلۇمات' خاسلىقى يوقاپ كەتتى ياكى سانلار گۇرپىسى ئەمەس",
+	"jsonconfig-edit-dialog-error-data-too-large": "سانلىق مەلۇمات جەدۋىلى بەك چوڭ بولۇپ ، جەدۋەل ھالەتتە تەھرىرلىيەلمەيدۇ",
+	"jsonconfig-edit-dialog-error-field-name-missing": "ھەر بىر ساھەنىڭ ئىسمى بولۇشى كېرەك",
+	"jsonconfig-edit-dialog-error-field-type-invalid": "جەدۋەل سۈپىتىدە تەھرىرلەش ئۈچۈن ، ھەر بىر ساھەدە چوقۇم «سان» ياكى «تىزما» بولۇشى كېرەك.",
+	"jsonconfig-edit-dialog-error-fields-missing": "'JSON 'schema.fields نىڭ خاسلىقى يوقاپ كەتتى ياكى سانلار گۇرپىسى ئەمەس",
+	"jsonconfig-edit-dialog-error-schema-missing": "JSON 'schema' خاسلىقى يوقاپ كەتتى ياكى ئوبيېكت ئەمەس",
+	"jsonconfig-edit-dialog-title": "JSON نى تەھرىرلەڭ"
+}

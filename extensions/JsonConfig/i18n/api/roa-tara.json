@@ -1,0 +1,23 @@
+{
+	"@metadata": {
+		"authors": [
+			"Joetaras"
+		]
+	},
+	"apihelp-jsonconfig-description": "Dèje l'accesse dirette a 'u sottesisteme JsonConfig.",
+	"apihelp-jsonconfig-summary": "Dèje l'accesse dirette a 'u sottesisteme JsonConfig.",
+	"apihelp-jsonconfig-param-command": "Ce sotteazione a eseguì sus a JsonConfig:\n;status:Face 'ndrucà 'a configurazione de JsonConfig.\n;reset:Sdevache le configuraziune da 'a cache. Vole 'u parametre $1title e 'u deritte jsonconfig-reset.\n;reload:Recareche e mette jndr'à cache le configuraziune da 'u reggìstre de configurazione. Vole 'u parametre $1title e 'u deritte jsonconfig-reset.",
+	"apihelp-jsonconfig-param-namespace": "Numere d'u namespace d'u titole da elabborà.",
+	"apihelp-jsonconfig-param-title": "Titole da elabborà senze prefisse d'u namespace.",
+	"apihelp-jsonconfig-param-content": "Pe $1command=reload, invece ause stu condenute.",
+	"apihelp-jsonconfig-example-1": "Fà 'ndrucà 'a configurazione",
+	"apihelp-jsonconfig-example-2": "Azzere [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsonconfig-example-3": "Recareche [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsondata-description": "Pigghie le date JSON localezzate.",
+	"apihelp-jsondata-summary": "Pigghie le date JSON localezzate.",
+	"apihelp-jsondata-param-title": "Titole da pigghià. Se dice ca 'u namespace predefinite adda essere \"Data:\"",
+	"apihelp-jsondata-example-1": "Pigghie 'u condenute JSON d'a pàgene Sample.tab, localezzate jndr'à lènghe de l'utende",
+	"apihelp-jsondata-example-2": "Pigghie 'u condenute JSON d'a pàgene Sample.tab, localezzate jndr'à 'u frangese",
+	"apierror-jsonconfig-paramrequired": "'U parametre <var>$1</var> jè obbligatorie pe stu comande.",
+	"apierror-jsonconfig-badtitle": "'A pàgena specificate da le parametre <var>namespace</var> e <var>title</var> non g'è valide o non ge stè reggistrate jndr'à configurazione JsonConfig."
+}

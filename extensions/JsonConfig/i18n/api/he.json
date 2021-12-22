@@ -1,0 +1,24 @@
+{
+	"@metadata": {
+		"authors": [
+			"Amire80",
+			"Guycn2"
+		]
+	},
+	"apihelp-jsonconfig-description": "מאפשר גישה ישירה לתת־מערכת JsonConfig.",
+	"apihelp-jsonconfig-summary": "אפשרות לגישה ישירה לתת־מערכת של JsonConfig.",
+	"apihelp-jsonconfig-param-command": "איזו תת־פעולה לבצע ב־JsonConfig:\n;status:הצגת הגדרות JsonConfig.\n;reset:ניקוי הגדרות מהמטמון. דורש את הפרמטר $1title ואת ההרשאה jsonconfig-reset.\n;reload:מרענן ומטמין את ההגדרות ממאגר ההגדרות. דורש את הפרמטר $1title ואת ההרשאה jsonconfig-reset.",
+	"apihelp-jsonconfig-param-namespace": "מספר מרחב שם של הכותרת לעיבוד.",
+	"apihelp-jsonconfig-param-title": "כותרת לעיבוד ללא תחיליות מרחב שם.",
+	"apihelp-jsonconfig-param-content": "עבור $1command=reload, להשתמש בתוכן הזה במקום.",
+	"apihelp-jsonconfig-example-1": "הצגת הגדרות",
+	"apihelp-jsonconfig-example-2": "איפוס [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsonconfig-example-3": "רענון [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsondata-description": "אחזור נתוני JSON מותאמים למקום.",
+	"apihelp-jsondata-summary": "אחזור נתוני JSON המותאמים למקום.",
+	"apihelp-jsondata-param-title": "איזו כותרת לקבל. הערך ההתחלתי מניח שמרחב השם הוא \"Data:\".",
+	"apihelp-jsondata-example-1": "קבלת תוכן JSON של הדף Sample.tab, מותאם לשפה של המשתמש",
+	"apihelp-jsondata-example-2": "קבלת תוכן JSON של הדף Sample.tab מותאם לשפה הצרפתית",
+	"apierror-jsonconfig-paramrequired": "הפרמטר <var>$1</var> נדרש לפקודה הזאת.",
+	"apierror-jsonconfig-badtitle": "הדף שצוין בפרמטרים <var>namespace</var> ו־<var>title</var> אינו תקין או שהוא לא רשום בהגדרות JsonConfig."
+}

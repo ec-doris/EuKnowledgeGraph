@@ -4,7 +4,6 @@ namespace Kartographer\Tag;
 
 use FormatJson;
 use Html;
-use UnexpectedValueException;
 use Kartographer\SpecialMap;
 
 /**
@@ -31,21 +30,24 @@ class MapFrame extends TagHandler {
 	 * @return string
 	 */
 	protected function render() {
-		global $wgKartographerFrameMode,
-			$wgKartographerMapServer,
+		global $wgKartographerMapServer,
+			$wgResponsiveImages,
 			$wgServerName,
+			$wgKartographerSrcsetScales,
 			$wgKartographerStaticMapframe;
 
 		$alignClasses = [
 			'left' => 'floatleft',
 			'center' => 'center',
 			'right' => 'floatright',
+			'none' => '',
 		];
 
 		$thumbAlignClasses = [
 			'left' => 'tleft',
-			'center' => 'center',
+			'center' => 'tnone center',
 			'right' => 'tright',
+			'none' => 'tnone',
 		];
 
 		$caption = $this->getText( 'text', null );
@@ -54,111 +56,75 @@ class MapFrame extends TagHandler {
 		$output = $this->parser->getOutput();
 		$options = $this->parser->getOptions();
 
+		$width = is_numeric( $this->width ) ? "{$this->width}px" : $this->width;
+		$fullWidth = false;
+		if ( preg_match( '/^\d+%$/', $width ) ) {
+			if ( $width === '100%' ) {
+				$fullWidth = true;
+				$staticWidth = 800;
+				$this->align = 'none';
+			} else {
+				$width = '300px'; // @todo: deprecate old syntax completely
+				$this->width = 300;
+				$staticWidth = 300;
+			}
+		} elseif ( $width === 'full' ) {
+			$width = '100%';
+			$this->align = 'none';
+			$fullWidth = true;
+			$staticWidth = 800;
+		} else {
+			$staticWidth = $this->width;
+		}
+		// TODO if fullwidth, we really should use interactive mode..
+		// BUT not possible to use both modes at the same time right now. T248023
+		// Should be fixed, especially considering VE in page editing etc...
+
 		$useSnapshot =
 			$wgKartographerStaticMapframe && !$options->getIsPreview() &&
 			!$options->getIsSectionPreview();
 
-		switch ( $wgKartographerFrameMode ) {
-			/* Not implemented in Kartotherian yet
-			case 'static':
-				global $wgKartographerMapServer, $wgKartographerSrcsetScales
-				// http://.../img/{source},{zoom},{lat},{lon},{width}x{height} [ @{scale}x ] .{format}
-				// Optional query value:  ? data = {title}|{group1}|{group2}|...
+		$output->addModules( $useSnapshot
+			? 'ext.kartographer.staticframe'
+			: 'ext.kartographer.frame' );
 
-				$statParams = sprintf( '%s/img/%s,%s,%s,%s,%sx%s',
-					$wgKartographerMapServer,
-					$this->style, $this->zoom, $this->lat, $this->lon, $this->width, $this->height
-				);
+		$attrs = [
+			'class' => 'mw-kartographer-map',
+			// We need dimensions for when there is no img (editpreview or no staticmap)
+			// because an <img> element with permanent failing src has either:
+			// - intrinsic dimensions of 0x0, when alt=''
+			// - intrinsic dimensions of alt size
+			'style' => "width: {$width}; height: {$this->height}px;",
+			'data-mw' => 'interface',
+			'data-style' => $this->mapStyle,
+			'data-width' => $this->width,
+			'data-height' => $this->height,
+		];
+		if ( $this->zoom !== null ) {
+			$staticZoom = $this->zoom;
+			$attrs['data-zoom'] = $this->zoom;
+		} else {
+			$staticZoom = 'a';
+		}
 
-				$dataParam = '';
-				$showGroups = $this->showGroups;
-				if ( $showGroups ) {
-					array_unshift( $showGroups, $this->parser->getTitle()->getPrefixedDBkey() );
-					$dataParam = '?data=' .
-						implode( '|', array_map( 'rawurlencode', $showGroups ) );
-				}
-				$imgAttrs = array(
-					'src' => $statParams . '.jpeg' . $dataParam,
-					'width' => $this->width,
-					'height' => $this->height,
-				);
-				if ( $wgKartographerSrcsetScales ) {
-					$srcSet = array();
-					foreach ( $wgKartographerSrcsetScales as $scale ) {
-						$s = '@' . $scale . 'x';
-						$srcSet[$scale] = $statParams . $s . '.jpeg' . $dataParam;
-					}
-					$imgAttrs['srcset'] = Html::srcSet( $srcSet );
-				}
+		if ( $this->lat !== null && $this->lon !== null ) {
+			$attrs['data-lat'] = $this->lat;
+			$attrs['data-lon'] = $this->lon;
+			$staticLat = $this->lat;
+			$staticLon = $this->lon;
+		} else {
+			$staticLat = 'a';
+			$staticLon = 'a';
+		}
 
-				return Html::rawElement( 'div', $attrs, Html::rawElement( 'img', $imgAttrs ) );
-				break;
-			*/
+		if ( $this->specifiedLangCode !== null ) {
+			$attrs['data-lang'] = $this->specifiedLangCode;
+		}
 
-			case 'interactive':
-				$output->addModules( $useSnapshot
-					? 'ext.kartographer.staticframe'
-					: 'ext.kartographer.frame' );
-
-				$fullWidth = false;
-
-				$width = is_numeric( $this->width ) ? "{$this->width}px" : $this->width;
-
-				if ( preg_match( '/^\d+%$/', $width ) ) {
-					if ( $width === '100%' ) {
-						$fullWidth = true;
-						$staticWidth = 800;
-					} else {
-						$width = '300px'; // @todo: deprecate old syntax completely
-						$staticWidth = 300;
-					}
-				} elseif ( $width === 'full' ) {
-					$width = '100%';
-					$fullWidth = true;
-					$staticWidth = 800;
-				} else {
-					$staticWidth = $this->width;
-				}
-
-				$height = "{$this->height}px";
-
-				$attrs = [
-					'class' => 'mw-kartographer-map',
-					'data-mw' => 'interface',
-					'data-style' => $this->mapStyle,
-					'data-width' => $this->width,
-					'data-height' => $this->height,
-				];
-				if ( $this->zoom !== null ) {
-					$staticZoom = $this->zoom;
-					$attrs['data-zoom'] = $this->zoom;
-				} else {
-					$staticZoom = 'a';
-				}
-
-				if ( $this->lat !== null && $this->lon !== null ) {
-					$attrs['data-lat'] = $this->lat;
-					$attrs['data-lon'] = $this->lon;
-					$staticLat = $this->lat;
-					$staticLon = $this->lon;
-				} else {
-					$staticLat = 'a';
-					$staticLon = 'a';
-				}
-
-				if ( $this->specifiedLangCode !== null ) {
-					$attrs['data-lang'] = $this->specifiedLangCode;
-				}
-
-				if ( $this->showGroups ) {
-					$attrs['data-overlays'] = FormatJson::encode( $this->showGroups, false,
-						FormatJson::ALL_OK );
-					$this->state->addInteractiveGroups( $this->showGroups );
-				}
-				break;
-			default:
-				throw new UnexpectedValueException(
-					"Unexpected frame mode '$wgKartographerFrameMode'" );
+		if ( $this->showGroups ) {
+			$attrs['data-overlays'] = FormatJson::encode( $this->showGroups, false,
+				FormatJson::ALL_OK );
+			$this->state->addInteractiveGroups( $this->showGroups );
 		}
 
 		$containerClass = 'mw-kartographer-container';
@@ -166,38 +132,53 @@ class MapFrame extends TagHandler {
 			$containerClass .= ' mw-kartographer-full';
 		}
 
-		$params = [
+		$attrs['href'] = SpecialMap::link( $staticLat, $staticLon, $staticZoom, $this->resolvedLangCode )
+			->getLocalURL();
+		$imgUrlParams = [
 			'lang' => $this->resolvedLangCode,
 		];
-		$bgUrl = "{$wgKartographerMapServer}/img/{$this->mapStyle},{$staticZoom},{$staticLat}," .
-			"{$staticLon},{$staticWidth}x{$this->height}.png";
 		if ( $this->showGroups ) {
-			$params += [
+			$imgUrlParams += [
 				'domain' => $wgServerName,
 				'title' => $this->parser->getTitle()->getPrefixedText(),
 				'groups' => implode( ',', $this->showGroups ),
 			];
 		}
-		$bgUrl .= '?' . wfArrayToCgi( $params );
+		$imgUrl = "{$wgKartographerMapServer}/img/{$this->mapStyle},{$staticZoom},{$staticLat}," .
+		"{$staticLon},{$staticWidth}x{$this->height}.png";
+		$imgUrl .= '?' . wfArrayToCgi( $imgUrlParams );
+		$imgAttrs = [
+			'src' => $imgUrl,
+			'alt' => '',
+			'width' => (int)$staticWidth,
+			'height' => (int)$this->height,
+			'decoding' => 'async'
+		];
 
-		$attrs['style'] = "background-image: url({$bgUrl});";
-		$attrs['href'] = SpecialMap::link( $staticLat, $staticLon, $staticZoom, $this->resolvedLangCode )
-			->getLocalURL();
-
-		if ( !$framed ) {
-			$attrs['style'] .= " width: {$width}; height: {$height};";
-			$attrs['class'] .= " {$containerClass} {$alignClasses[$this->align]}";
-
-			return Html::rawElement( 'a', $attrs );
+		if ( $wgResponsiveImages && $wgKartographerSrcsetScales ) {
+			// For now only support 2x, not 1.5. Saves some bytes...
+			$srcSetScales = array_intersect( $wgKartographerSrcsetScales, [ 2 ] );
+			$srcSets = [];
+			foreach ( $srcSetScales as $srcSetScale ) {
+				$scaledImgUrl = "{$wgKartographerMapServer}/img/{$this->mapStyle},{$staticZoom},{$staticLat}," .
+				"{$staticLon},{$staticWidth}x{$this->height}@{$srcSetScale}x.png";
+				$scaledImgUrl .= '?' . wfArrayToCgi( $imgUrlParams );
+				$srcSets[] = "{$scaledImgUrl} {$srcSetScale}x";
+			}
+			$imgAttrs[ 'srcset' ] = implode( ', ', $srcSets );
 		}
 
-		$attrs['style'] .= " height: {$height};";
+		if ( !$framed ) {
+			$attrs[ 'class' ] .= " {$containerClass} {$alignClasses[$this->align]}";
+			return Html::rawElement( 'a', $attrs, Html::rawElement( 'img', $imgAttrs ) );
+		}
+
 		$containerClass .= " thumb {$thumbAlignClasses[$this->align]}";
 
 		$captionFrame = Html::rawElement( 'div', [ 'class' => 'thumbcaption' ],
-			$this->parser->recursiveTagParse( $caption ) );
+			$caption ? $this->parser->recursiveTagParse( $caption ) : '' );
 
-		$mapDiv = Html::rawElement( 'a', $attrs );
+		$mapDiv = Html::rawElement( 'a', $attrs, Html::rawElement( 'img', $imgAttrs ) );
 
 		return Html::rawElement( 'div', [ 'class' => $containerClass ],
 			Html::rawElement( 'div', [

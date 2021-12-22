@@ -1,0 +1,23 @@
+{
+	"@metadata": {
+		"authors": [
+			"Xuacu"
+		]
+	},
+	"apihelp-jsonconfig-description": "Permite l'accesu direutu al subsistema JsonConfig.",
+	"apihelp-jsonconfig-summary": "Permite l'accesu direutu al subsistema JsonConfig.",
+	"apihelp-jsonconfig-param-command": "Qué sub-aición facer en JsonConfig:\n;status:Amuesa la configuración de JsonConfig.\n;reset:Llimpia les configuraciones de la caché. Necesita'l parámetru $1title ya'l permisu jsonconfig-reset.\n;reload:Recarga y pon na caché les configuraciones dende l'almacén de configuraciones. Necesita'l parámetru $1title ya'l permisu jsonconfig-reset.",
+	"apihelp-jsonconfig-param-namespace": "Númberu del espaciu de nomes del títulu a procesar.",
+	"apihelp-jsonconfig-param-title": "Títulu a procesar ensin el prefixu d'espaciu de nomes.",
+	"apihelp-jsonconfig-param-content": "Pa $1command=reload, usa esti conteníu nel so llugar.",
+	"apihelp-jsonconfig-example-1": "Amosar configuración",
+	"apihelp-jsonconfig-example-2": "Reaniciar [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsonconfig-example-3": "Recargar [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsondata-description": "Recuperar datos JSON llocalizaos.",
+	"apihelp-jsondata-summary": "Recuperar datos JSON llocalizaos.",
+	"apihelp-jsondata-param-title": "Títulu a recuperar. De mou predetermináu asume que l'espaciu de nomes ye \"Data:\"",
+	"apihelp-jsondata-example-1": "Llograr el conteníu JSON de la páxina Sample.tab, llocalizáu na llingua del usuariu",
+	"apihelp-jsondata-example-2": "Llograr el conteníu JSON de la páxina Sample.tab llocalizáu en francés",
+	"apierror-jsonconfig-paramrequired": "Esti comandu rique'l parámetru <var>$1</var>.",
+	"apierror-jsonconfig-badtitle": "La páxina especificada polos parámetros <var>namespace</var> y <var>title</var> nun ye válida o nun ta rexistrada na configuración de JsonConfig."
+}

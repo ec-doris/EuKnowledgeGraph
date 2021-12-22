@@ -1,3 +1,0 @@
-docker exec -i -t "$(docker ps -aqf name=wikibase_1)"  php extensions/Wikibase/lib/maintenance/populateSitesTable.php
-docker exec -i -t "$(docker ps -aqf name=wikibase_1)"  apt-get install cron  
-docker exec -i -t "$(docker ps -aqf name=wikibase_1)"  echo 0 0 * * *  /var/www/html/script_QAnswer.sh  > /etc/cron.d/qanswer 

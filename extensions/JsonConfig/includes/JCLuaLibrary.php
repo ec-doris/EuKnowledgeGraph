@@ -69,6 +69,7 @@ class JCLuaLibrary extends Scribunto_LuaLibraryBase {
 				$result = $content->getData();
 			} else {
 				/** @var JCDataContent $content */
+				// @phan-suppress-next-line PhanUndeclaredMethod
 				$result = $content->getLocalizedData( $language );
 			}
 			// Always re-index tabular data

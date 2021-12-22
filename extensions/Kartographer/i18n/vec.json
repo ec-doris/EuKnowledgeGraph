@@ -1,12 +1,16 @@
 {
 	"@metadata": {
 		"authors": [
-			"Cusolotto"
+			"Cusolotto",
+			"Fierodelveneto"
 		]
 	},
+	"kartographer-attribution": "[https://foundation.wikimedia.org/wiki/Maps_Terms_of_Use Mape Wikimédia] | Dati mapa © [https://www.openstreetmap.org/copyright contribudori OpenStreetMap]",
+	"kartographer-tracking-category": "Pàjine co mape",
 	"kartographer-linktype-map": "Mapa standard",
 	"kartographer-sidebar-externalservices": "Servisi cartografici",
 	"kartographer-sidebar-externalservices-show-all": "Varda de pì",
 	"kartographer-sidebar-mapdetails": "Mape de fora",
-	"kartographer-sidebar-togglebutton": "Fora"
+	"kartographer-sidebar-togglebutton": "Fora",
+	"kartographer-fullscreen-text": "Varda a schermada intiera"
 }

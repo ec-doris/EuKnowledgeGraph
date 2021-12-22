@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="196" height="196">
+    <circle cx="98" cy="98" r="98" fill="gray"/>
+    <circle cx="98" cy="98" r="78" fill="#fff"/>
+    <circle cx="98" cy="98" r="55" fill="gray"/>
+    <circle cx="98" cy="98" r="30" fill="#fff"/>
+    <path fill="#fff" d="M123 85h31v25h-31z"/>
+    <path fill="#fff" d="M137.75 37.75l20.5 20.5-100 100-20.5-20.5z"/>
+    <path fill="gray" d="M149.25 29.25l17.5 17.5-120 120-17.5-17.5z"/>
+</svg>

@@ -1,16 +1,19 @@
 {
 	"@metadata": {
 		"authors": [
-			"Yuri Astrakhan",
+			"Amire80",
 			"Liuxinyu970226",
 			"Raymond",
-			"Amire80",
-			"Robby"
+			"Robby",
+			"Yuri Astrakhan",
+			"MuratTheTurkish",
+			"Umherirrender",
+			"Verdy p"
 		]
 	},
 	"kartographer-attribution": "Attribution text shown at the bottom of the map.",
-	"kartographer-attribution-externaldata": "Formats external data layer attribution: $1 is external data service (e.g. Wikidata), $2 is link to external data link (e.g. query).",
-	"kartographer-attribution-short": "Shorter version of the attribution text shown at the bottom of the map, for static maps embedded in the article.",
+	"kartographer-attribution-externaldata": "{{optional}}\nFormats external data layer attribution: $1 is external data service (e.g. Wikidata), $2 is link to external data link (e.g. query).",
+	"kartographer-attribution-short": "{{optional}}\nShorter version of the attribution text shown at the bottom of the map, for static maps embedded in the article.",
 	"kartographer-broken-category": "Name of the tracking category",
 	"kartographer-broken-category-desc": "Description on [[Special:TrackingCategories]] for the {{msg-mw|kartographer-broken-category}} tracking category.",
 	"kartographer-desc": "{{desc|name=Kartographer|url=https://www.mediawiki.org/wiki/Extension:Kartographer}}",
@@ -20,12 +23,12 @@
 	"kartographer-error-missing-attr": "Error shown instead of a map when required parameter(s) is missing.\n\nParameters:\n* $1 - non-localized attribute name, such as 'height', 'latitude', etc",
 	"kartographer-error-bad_attr": "Error shown instead of a map in case of a problem with parameters.\n\nParameters:\n* $1 - non-localized attribute name, such as 'height', 'latitude', etc",
 	"kartographer-error-bad_data": "This error is shown if the content of the tag is syntactically valid JSON however it does not adhere to GeoJSON and simplestyle specifications",
-	"kartographer-error-latlon": "Error shown by &lt;maplink&gt; or &lt;mapframe&gt; when certain parameters are incorrect",
+	"kartographer-error-latlon": "{{doc-important|Do not translate <code>latitude</code> and <code>longitude</code>.}}\nError shown by &lt;maplink&gt; or &lt;mapframe&gt; when certain parameters are incorrect",
 	"kartographer-error-title": "Error shown by &lt;maplink&gt; or &lt;mapframe&gt;. Parameters:\n* $1 - page title.",
 	"kartographer-tracking-category": "Name of the tracking category",
 	"kartographer-tracking-category-desc": "Description on [[Special:TrackingCategories]] for the {{msg-mw|kartographer-tracking-category}} tracking category.",
 	"kartographer-coord-combined": "{{optional}}\nJoins two parts of geogrpahical coordinates. $1 and $2 are latitude and longitude, respectively.",
-	"kartographer-coord-dms": "{{optional}}\nFormats geographical latitude or longitude into degrees, munutes and seconds.\nParameters:\n* $1 - degrees\n* $2 - minutes\n* $3 - seconds",
+	"kartographer-coord-dms": "{{optional}}\nFormats geographical latitude or longitude into degrees, minutes and seconds.\n\nParameters:\n* $1 - degrees\n* $2 - minutes\n* $3 - seconds",
 	"kartographer-coord-lat-positive": "{{optional}}\nNorth latitude suffix for geographical coordinates. $1 is value in degrees/minutes/seconds, see {{msg-mw|kartographer-coord-dms}}",
 	"kartographer-coord-lat-negative": "{{optional}}\nSouth latitude suffix for geographical coordinates. $1 is value in degrees/minutes/seconds, see {{msg-mw|kartographer-coord-dms}}",
 	"kartographer-coord-lon-positive": "{{optional}}\nEast longitude suffix for geographical coordinates. $1 is value in degrees/minutes/seconds, see {{msg-mw|kartographer-coord-dms}}",

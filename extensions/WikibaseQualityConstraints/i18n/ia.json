@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"McDutchie"
+		]
+	},
+	"wbqc-violation-message-unique-value": "Le valor de iste proprietate non deberea esser presente sur alcun altere elemento, sed es etiam presente sur {{PLURAL:$1|1=$3.|2=$3 e $4.|le sequente elementos: $2}}"
+}

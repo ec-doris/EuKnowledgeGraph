@@ -37,4 +37,25 @@ abstract class JCContentView {
 	 * @return string
 	 */
 	abstract public function getDefault( $modelId );
+
+	/**
+	 * Returns default content for licenses introduction
+	 * The returned valued does not have to be valid JSON
+	 * @return string
+	 */
+	public static function getLicenseIntro() {
+		global $wgJsonConfigAllowedLicenses;
+		$allowedLicenses = '';
+		foreach ( $wgJsonConfigAllowedLicenses as $supLicense ) {
+			$licenseName = wfMessage( 'jsonconfig-license-name-' . $supLicense )->plain();
+			$allowedLicenses .= '	// "license": "' . $supLicense . '", // ' . $licenseName . PHP_EOL;
+		}
+
+		return <<<EOT
+// Mandatory "license" field.
+	// Recommended license: CC0-1.0.
+	// Please uncomment one of the licenses:
+$allowedLicenses
+EOT;
+	}
 }

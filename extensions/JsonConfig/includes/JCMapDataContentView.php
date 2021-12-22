@@ -3,6 +3,7 @@ namespace JsonConfig;
 
 use ExtensionRegistry;
 use FormatJson;
+use MediaWiki\MediaWikiServices;
 use ParserOptions;
 use ParserOutput;
 use Title;
@@ -30,16 +31,15 @@ class JCMapDataContentView extends JCContentView {
 		JCContent $content, Title $title, $revId, ParserOptions $options,
 		$generateHtml, ParserOutput &$output
 	) {
-		global $wgParser;
-
-		$parser = $wgParser->getFreshParser();
+		$mainParser = MediaWikiServices::getInstance()->getParser();
+		$parser = $mainParser->getFreshParser();
 
 		$localizedData = $content->getLocalizedData( $options->getUserLangObj() );
 		if ( $localizedData ) {
 			$extReg = ExtensionRegistry::getInstance();
 
 			// Test both because for some reason mTagHooks is not set during preview
-			if ( isset( $wgParser->mTagHooks['mapframe'] ) ||
+			if ( isset( $mainParser->mTagHooks['mapframe'] ) ||
 				$extReg->isLoaded( 'Kartographer' )
 			) {
 				$zoom = $content->getField( 'zoom' );
@@ -64,7 +64,7 @@ $jsonText
 EOT;
 			} else {
 				$jsonText = FormatJson::encode( $localizedData->data, true, FormatJson::UTF8_OK );
-				if ( isset( $wgParser->mTagHooks['syntaxhighlight'] ) ||
+				if ( isset( $mainParser->mTagHooks['syntaxhighlight'] ) ||
 					$extReg->isLoaded( 'SyntaxHighlight' )
 				) {
 					$text = "<syntaxhighlight lang=json>\n$jsonText\n</syntaxhighlight>";
@@ -88,6 +88,8 @@ EOT;
 	 * @return string
 	 */
 	public function getDefault( $modelId ) {
+		$licenseIntro = JCContentView::getLicenseIntro();
+
 		return <<<EOT
 {
     // !!!!! All comments will be automatically deleted on save !!!!!
@@ -98,8 +100,7 @@ EOT;
     // Optional "sources" field to describe the sources of the map.  Can use Wiki Markup
     "sources": "Copied from [http://example.com Example Map Source]",
 
-    // Mandatory "license" field. Only CC-0 (public domain dedication) is supported.
-    "license": "CC0-1.0",
+    $licenseIntro
 
     "zoom": 3,
     "latitude": 0,

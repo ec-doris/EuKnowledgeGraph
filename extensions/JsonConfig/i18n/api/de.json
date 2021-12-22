@@ -1,0 +1,22 @@
+{
+	"@metadata": {
+		"authors": [
+			"Metalhead64"
+		]
+	},
+	"apihelp-jsonconfig-description": "Ermöglicht direkten Zugriff auf das JsonConfig-Subsystem.",
+	"apihelp-jsonconfig-summary": "Erlaubt direkten Zugriff auf das JsonConfig-Untersystem.",
+	"apihelp-jsonconfig-param-namespace": "Namensraum-Nummer des zu verarbeitenden Titels.",
+	"apihelp-jsonconfig-param-title": "Zu verarbeitender Titel ohne Namensraum-Präfix.",
+	"apihelp-jsonconfig-param-content": "Für $1command=reload, stattdessen diesen Inhalt verwenden.",
+	"apihelp-jsonconfig-example-1": "Konfiguration anzeigen",
+	"apihelp-jsonconfig-example-2": "[[Data:Brazil/Amazonas.map]] zurücksetzen",
+	"apihelp-jsonconfig-example-3": "[[Data:Brazil/Amazonas.map]] neu laden",
+	"apihelp-jsondata-description": "Ruft lokalisierte JSON-Daten ab.",
+	"apihelp-jsondata-summary": "Ruft lokalisierte JSON-Daten ab.",
+	"apihelp-jsondata-param-title": "Abzurufender Titel. Standardmäßig wird der Namensraum „Data:“ angenommen.",
+	"apihelp-jsondata-example-1": "Ruft den JSON-Inhalt für die Seite Sample.tab, lokalisiert in die Benutzersprache, ab.",
+	"apihelp-jsondata-example-2": "Ruft den JSON-Inhalt für die Seite Sample.tab, lokalisiert in Französisch, ab.",
+	"apierror-jsonconfig-paramrequired": "Der Parameter <var>$1</var> ist für diesen Befehl erforderlich.",
+	"apierror-jsonconfig-badtitle": "Die durch die Parameter <var>namespace</var> und <var>title</var> angegebene Seite ist entweder ungültig oder in der JsonConfig-Konfiguration nicht registriert."
+}

@@ -1,0 +1,23 @@
+{
+	"@metadata": {
+		"authors": [
+			"Jon Harald Søby"
+		]
+	},
+	"apihelp-jsonconfig-description": "Gjør det mulig å få direkte tilgang til undersystemet JsonConfig.",
+	"apihelp-jsonconfig-summary": "Muliggjør direkte tilgang til undersystemet JsonConfig.",
+	"apihelp-jsonconfig-param-command": "Hvilken underhandling som skal utføres på JsonConfig:\n;status:Viser JsonConfig-konfigurasjon.\n;reset:Tømmer konfigurasjoner fra mellomlageret. Krever $1title-parameter og jsonconfig-reset-rettigheter.\n;reload:Laster og mellomlagrer konfigurasjoner fra konfigurasjonslageret. Krever $1title-parameter og jsonconfig-reset-rettigheter.",
+	"apihelp-jsonconfig-param-namespace": "Navneromsnummer for tittelen som skal prosesseres.",
+	"apihelp-jsonconfig-param-title": "Tittelen som skal prosesseres uten navneromsprefiks.",
+	"apihelp-jsonconfig-param-content": "For $1command=reload, bruke dette innholdet i stedet.",
+	"apihelp-jsonconfig-example-1": "Vis konfigurasjon",
+	"apihelp-jsonconfig-example-2": "Tilbakestill [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsonconfig-example-3": "Last [[Data:Brazil/Amazonas.map]] på nytt",
+	"apihelp-jsondata-description": "Hent lokaliserte JSON-data.",
+	"apihelp-jsondata-summary": "Hent lokalisert JSON-data.",
+	"apihelp-jsondata-param-title": "Tittel som skal hentes. Standard navnerom antas å være «Data:»",
+	"apihelp-jsondata-example-1": "Få JSON-innholdet til siden Sample.tab, lokalisert til brukerens språk",
+	"apihelp-jsondata-example-2": "Få JSON-innholdet til siden Sample.tab lokalisert til fransk",
+	"apierror-jsonconfig-paramrequired": "Parameteren <var>$1</var> kreves for denne kommandoen.",
+	"apierror-jsonconfig-badtitle": "Siden angitt av <var>namespace</var>- og <var>title</var> parameterne er enten ugyldig eller ikke registrert med JsonConfig-konfigurasjon."
+}

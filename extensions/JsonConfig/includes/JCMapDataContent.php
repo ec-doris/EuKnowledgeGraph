@@ -4,7 +4,7 @@ namespace JsonConfig;
 use FormatJson;
 use Kartographer\SimpleStyleParser;
 use Language;
-use Parser;
+use MediaWiki\MediaWikiServices;
 use ParserOptions;
 use User;
 
@@ -34,20 +34,20 @@ class JCMapDataContent extends JCDataContent {
 	 * @inheritDoc
 	 */
 	public function getSafeData( $data ) {
-		/** @var Parser */
-		global $wgParser;
+		$parser = MediaWikiServices::getInstance()->getParser();
 
 		// In case the parser hasn't been used yet
-		if ( !$wgParser->getOptions() ) {
-			$options = new ParserOptions( new User( '127.0.0.1' ) );
-			$wgParser->startExternalParse( null, $options, OT_HTML );
+		if ( !$parser->getOptions() ) {
+			$options = new ParserOptions( new User() );
+			$parser->startExternalParse( null, $options, OT_HTML );
 		}
 
 		$data = parent::getSafeData( $data );
 
-		$ssp = new SimpleStyleParser( $wgParser );
+		$ssp = new SimpleStyleParser( $parser );
 		$dummy = [ $data->data ];
 		$ssp->normalizeAndSanitize( $dummy );
+		$data->data = $dummy[0];
 
 		return $data;
 	}
@@ -64,8 +64,7 @@ class JCMapDataContent extends JCDataContent {
 
 			// TODO: decide if this is needed. We would have to alter the above code to localize props
 			// // Use SimpleStyleParser to verify the data's validity
-			// global $wgParser;
-			// $ssp = new \Kartographer\SimpleStyleParser( $wgParser );
+			// $ssp = new \Kartographer\SimpleStyleParser( MediaWikiServices::getInstance()->getParser() );
 			// $status = $ssp->parseObject( $value );
 			// if ( !$status->isOK() ) {
 			// $v->status( $status );
@@ -134,7 +133,7 @@ class JCMapDataContent extends JCDataContent {
 			$result->longitude = $data->longitude;
 		}
 
-		$geojson = FormatJson::decode( FormatJson::encode( $data->data, FormatJson::ALL_OK ) );
+		$geojson = FormatJson::decode( FormatJson::encode( $data->data, false, FormatJson::ALL_OK ) );
 		self::recursiveWalk( $geojson, $lang );
 
 		$result->data = $geojson;

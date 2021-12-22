@@ -1,7 +1,7 @@
 /**
  * **Resource Loader module: {@link Kartographer.Linkbox ext.kartographer.linkbox}**
  *
- * @alias ext.kartographer.linkbox
+ * @alternateClassName ext.kartographer.linkbox
  * @class Kartographer.Linkbox
  * @singleton
  */
@@ -11,7 +11,7 @@ module.exports = {
 	 * @type {Kartographer.Linkbox.LinkClass}
 	 * @ignore
 	 */
-	Link: module.Link,
+	Link: require( './Link.js' ),
 
 	/**
 	 * Use this method to create a {@link Kartographer.Linkbox.LinkClass Link}

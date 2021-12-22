@@ -1,0 +1,24 @@
+{
+	"@metadata": {
+		"authors": [
+			"Bjankuloski06",
+			"Vlad5250"
+		]
+	},
+	"apihelp-jsonconfig-description": "Овозможува непосреден пристап до потсистемот JsonConfig.",
+	"apihelp-jsonconfig-summary": "Оозможува непосреден пристап до потсистемот JsonConfig.",
+	"apihelp-jsonconfig-param-command": "Кое поддејство да му се изврши на JsonConfig:\n;status: Ја прикажува поставеноста на JsonConfig.\n;reset: Ги чисти поставките од меѓускладот. Го бара параметарот $1title и правото „jsonconfig-reset“.\n;reload: Превчитува и меѓускладира поставености од складот на поставки. Го бара параметарот $1title и правото „jsonconfig-reset“.",
+	"apihelp-jsonconfig-param-namespace": "Број на именскиот простор на насловот за обработка.",
+	"apihelp-jsonconfig-param-title": "Наслов за обработка без претставка за именски простор.",
+	"apihelp-jsonconfig-param-content": "За $1command=reload, користете ја оваа содржина.",
+	"apihelp-jsonconfig-example-1": "Прикажи поставеност",
+	"apihelp-jsonconfig-example-2": "Врати го [[Data:Brazil/Amazonas.map]] по основно",
+	"apihelp-jsonconfig-example-3": "Превчитај го [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsondata-description": "Повикува локализирани JSON-податоци.",
+	"apihelp-jsondata-summary": "Повикува локализирани JSON-податоци.",
+	"apihelp-jsondata-param-title": "Наслов за повикување. По основно се претпоставува дека именскиот простор е „Data:“",
+	"apihelp-jsondata-example-1": "Дава JSON-содржина на страницата Sample.tab page, локализирана на јазикот на корисникот",
+	"apihelp-jsondata-example-2": "Дава JSON-содржина на страницата Sample.tab, локализирана на француски",
+	"apierror-jsonconfig-paramrequired": "Наредбава го бара параметарот <var>$1</var>.",
+	"apierror-jsonconfig-badtitle": "Оваа страница укажана од параметрите <var>namespace</var> и <var>title</var> е неважечка, или не е пријавена во поставките на JsonConfig."
+}

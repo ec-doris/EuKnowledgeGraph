@@ -1,12 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
-			"Сербијана",
-			"Milicevic01",
-			"Obsuser",
 			"Acamicamacaraca",
 			"BadDog",
-			"Zoranzoki21"
+			"Milicevic01",
+			"Obsuser",
+			"Zoranzoki21",
+			"Сербијана",
+			"Kizule"
 		]
 	},
 	"kartographer-attribution": "[https://foundation.wikimedia.org/wiki/Maps_Terms_of_Use Викимедијине мапе] | Подаци мапе © [https://www.openstreetmap.org/copyright Сарадници OpenStreetMap]",
@@ -38,7 +39,7 @@
 	"kartographer-link-wikimapia": "Викимапија",
 	"kartographer-link-wikiminiatlas": "Вики Мини атлас",
 	"kartographer-sidebar-coordinates": "Координате",
-	"kartographer-sidebar-filterdropdown": "Изаберите тип мапе",
+	"kartographer-sidebar-filterdropdown": "Изаберите врсту мапе",
 	"kartographer-sidebar-externalservices": "Услуге мапа",
 	"kartographer-sidebar-externalservices-show-featured": "Прикажи само изабране",
 	"kartographer-sidebar-externalservices-show-all": "Прикажи још",
@@ -78,11 +79,11 @@
 	"leafletdraw-edit-toolbar-actions-save-text": "Сачувај",
 	"leafletdraw-edit-toolbar-actions-save-title": "Сачувајте промене",
 	"leafletdraw-edit-toolbar-actions-clearall-text": "Обриши све",
-	"leafletdraw-edit-toolbar-actions-clearall-title": "Обришите све слојеве",
-	"leafletdraw-edit-toolbar-buttons-edit": "Измените слојеве",
-	"leafletdraw-edit-toolbar-buttons-editdisabled": "Нема слојева за измену",
-	"leafletdraw-edit-toolbar-buttons-remove": "Избришите слојеве",
-	"leafletdraw-edit-toolbar-buttons-removedisabled": "Нема слојева за брисање",
+	"leafletdraw-edit-toolbar-actions-clearall-title": "Обришите све објекте",
+	"leafletdraw-edit-toolbar-buttons-edit": "Измените објекте",
+	"leafletdraw-edit-toolbar-buttons-editdisabled": "Нема објеката за измену",
+	"leafletdraw-edit-toolbar-buttons-remove": "Избришите објекте",
+	"leafletdraw-edit-toolbar-buttons-removedisabled": "Нема објеката за брисање",
 	"leafletdraw-draw-toolbar-finish-text": "Заврши",
 	"leafletdraw-draw-toolbar-finish-title": "Кликните да бисте завршили са цртањем",
 	"map": "Информације о координатама",

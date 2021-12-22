@@ -1,0 +1,21 @@
+{
+	"@metadata": {
+		"authors": [
+			"Janezdrilc"
+		]
+	},
+	"apihelp-wbcheckconstraints-description": "Izvede preverjanje omejitev katerekoli želene stvari in izpiše rezultat.",
+	"apihelp-wbcheckconstraints-summary": "Izvede preverjanje omejitev katerekoli želene stvari in izpiše rezultat.",
+	"apihelp-wbcheckconstraints-paramvalue-status-compliance": "Izjava je v skladu z omejitvijo.",
+	"apihelp-wbcheckconstraints-paramvalue-status-violation": "Ta izjava krši omejitev.",
+	"apihelp-wbcheckconstraints-paramvalue-status-todo": "Omejitev ni sprogramirana.",
+	"apihelp-wbcheckconstraints-paramvalue-status-bad-parameters": "Parametri omejitve so pokvarjeni.",
+	"apihelp-wbcheckconstraints-paramvalue-status-warning": "Ta izjava krši omejitev, ki sicer ni obvezna.",
+	"apihelp-wbcheckconstraints-paramvalue-status-suggestion": "Izjava ne upošteva omejitve, čeprav slednja velja zgolj kot predlog.",
+	"apihelp-wbcheckconstraintparameters-summary": "Preveri parametre v izjavah omejitev.",
+	"apihelp-wbcheckconstraints-example-1": "Preveri vse omejitve objektov Q5 in Q42.",
+	"apihelp-wbcheckconstraints-example-2": "Preveri vse omejitve ene izjave.",
+	"apihelp-wbcheckconstraints-example-3": "Preveri določeno omejitev objekta Q2.",
+	"apihelp-wbcheckconstraintparameters-example-propertyid-1": "Preveri parametre vseh omejitev pri lastnosti.",
+	"apihelp-wbcheckconstraintparameters-example-constraintid-2": "Preveri parametre dveh določenih omejitev."
+}

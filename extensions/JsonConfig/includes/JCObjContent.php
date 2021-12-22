@@ -1,8 +1,8 @@
 <?php
 namespace JsonConfig;
 
-use Message;
 use Exception;
+use Message;
 use stdClass;
 
 /**
@@ -28,7 +28,7 @@ abstract class JCObjContent extends JCContent {
 	 */
 	protected $validationData;
 
-	/** @var mixed  */
+	/** @var mixed */
 	protected $dataWithDefaults;
 
 	/** @var bool|null validation status - null=before, true=during, false=done */
@@ -86,7 +86,7 @@ abstract class JCObjContent extends JCContent {
 
 	/**
 	 * Call this function before performing data validation inside the derived validate()
-	 * @param array|object $data
+	 * @param mixed $data
 	 * @throws \Exception
 	 * @return bool if true, validation should be performed, otherwise all checks will be ignored
 	 */
@@ -109,7 +109,7 @@ abstract class JCObjContent extends JCContent {
 	/**
 	 * Derived validate() must return the result of this function
 	 * @throws \Exception
-	 * @return array
+	 * @return array|null
 	 */
 	protected function finishValidation() {
 		if ( !$this->getStatus()->isGood() ) {
@@ -120,7 +120,7 @@ abstract class JCObjContent extends JCContent {
 
 	/**
 	 * Populate this data on-demand for efficiency
-	 * @return array
+	 * @return stdClass
 	 */
 	public function getData() {
 		if ( $this->data === null ) {
@@ -181,10 +181,11 @@ abstract class JCObjContent extends JCContent {
 	 * @param callable $validator callback function as defined in JCValidators::run().
 	 *        More than one validator may be given.
 	 *        If validators are not provided, any value is accepted
+	 * @param callable ...$extraValidators
 	 * @throws \Exception
 	 * @return bool true if ok, false otherwise
 	 */
-	public function test( $path, $validator /*...*/ ) {
+	public function test( $path, $validator, ...$extraValidators ) {
 		$vld = self::convertValidators( $validator, func_get_args(), 1 );
 		return $this->testInt( $path, $vld );
 	}
@@ -198,13 +199,14 @@ abstract class JCObjContent extends JCContent {
 	 *        For example, if client needs to check validity of the 'value1' in the structure
 	 *        {'key':{'sub-key':['value0','value1']}},
 	 *        $field should be set to [ 'key', 'sub-key', 1 ].
-	 * @param callable $validator callback function as defined in JCValidators::run().
+	 * @param callable|null $validator callback function as defined in JCValidators::run().
 	 *        More than one validator may be given.
 	 *        If validators are not provided, any value is accepted
+	 * @param callable ...$extraValidators
 	 * @throws \Exception
 	 * @return bool true if all values tested ok, false otherwise
 	 */
-	public function testEach( $path, $validator = null /*...*/ ) {
+	public function testEach( $path, $validator = null, ...$extraValidators ) {
 		$vld = self::convertValidators( $validator, func_get_args(), 1 );
 		$isOk = true;
 		$path = (array)$path;
@@ -277,7 +279,8 @@ abstract class JCObjContent extends JCContent {
 		}
 
 		/** @var bool $reposition - should the field be deleted and re-added at the end
-		 * this is only needed for viewing and saving */
+		 * this is only needed for viewing and saving
+		 */
 		$reposition = $this->thorough() && is_string( $fld ) && $subJcv !== false;
 		if ( $subJcv === false || $subJcv->isUnchecked() ) {
 			// We never went down this path before
@@ -303,6 +306,7 @@ abstract class JCObjContent extends JCContent {
 				throw new Exception( 'Logic error - subJcv must be valid here' );
 			} elseif ( $subJcv === false ) {
 				// field does not exist
+				// @phan-suppress-next-line PhanTypePossiblyInvalidDimOffset
 				$initValue = !$path ? null : ( is_string( $path[0] ) ? new stdClass() : [] );
 				$subJcv = new JCValue( JCValue::MISSING, $initValue );
 			}

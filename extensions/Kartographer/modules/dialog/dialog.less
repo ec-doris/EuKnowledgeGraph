@@ -1,0 +1,186 @@
+@import '../../lib/external/wikimedia-ui-base';
+
+/*
+	Anyone who changes the width of the sidebar should
+	update Kartographer.Dialog.DialogClass `SIDEBAR_WIDTH` accordingly
+*/
+@sidebarWidth: 320px;
+
+/* Dialog footer */
+.mw-kartographer-mapDialog-foot {
+	/*
+		Anyone who changes the height of the footer should
+		update Kartographer.Dialog.DialogClass `FOOTER_HEIGHT` accordingly
+	*/
+	padding: 1em;
+	height: 4.5em;
+	font-size: 14px; // same as font-size of .mw-kartographer-interactive.leaflet-container
+	background-color: @background-color-base;
+	border-top: @border-base;
+}
+
+.mw-kartographer-captionfoot {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	font-size: 20px;
+	line-height: 31px;
+}
+
+.mw-kartographer-buttonfoot {
+	float: right;
+	margin-left: 1em;
+}
+
+/* Dialog Sidebar */
+.mw-kartographer-mapDialog-sidebar {
+	position: absolute;
+	right: 0;
+	top: 0;
+	bottom: 4.5em;
+	z-index: 2;
+	border-left: @border-base;
+	/*
+		Anyone who changes the width of the sidebar should
+		update Kartographer.Dialog.DialogClass `SIDEBAR_WIDTH` accordingly
+	*/
+	width: @sidebarWidth + 1px; /* 320+1 so border is hidden on common 320px wide mobile devices */
+	max-width: 100vw;
+	box-sizing: border-box;
+	background-color: #fff;
+	overflow-y: auto;
+	transform: translateX( 100% );
+	transition: transform 100ms ease-out;
+	/* don't use padding on this object, because then it will retain height after being pushed off screen */
+
+	/* For MobileFrontend */
+	.skin-minerva & h2 {
+		margin-bottom: 0.6em;
+	}
+}
+
+.mw-kartographer-mapDialog-map {
+	position: absolute;
+	top: 0;
+	bottom: 4.5em;
+	left: 0;
+	right: 0;
+	z-index: 1;
+
+	.leaflet-right.leaflet-top,
+	.leaflet-right.leaflet-bottom {
+		transition: right 100ms ease-out;
+	}
+
+	.leaflet-right.leaflet-top .leaflet-bar.leaflet-control {
+		transition: margin 100ms ease-out;
+	}
+}
+
+.mw-kartographer-mapDialog-sidebar-opened {
+	.mw-kartographer-mapDialog-sidebar {
+		transform: translateX( 0 );
+	}
+
+	.leaflet-right.leaflet-top .leaflet-bar.leaflet-control {
+		// Match the margin with the text inside the sidebar
+		margin-top: 1em;
+	}
+
+	.leaflet-right.leaflet-top,
+	.leaflet-right.leaflet-bottom {
+		right: @sidebarWidth;
+	}
+}
+
+.mw-kartographer-mapdetails {
+	margin: 1.5em 0;
+	padding: 0 16px;
+
+	.geo {
+		white-space: nowrap;
+	}
+
+	&-title-label {
+		font-size: 1.3em;
+		font-weight: bold;
+		padding-top: 4 / 14em; // Half of the icon's whitespace
+	}
+
+	&-title-arrow {
+		float: right;
+	}
+
+	&-coordinates {
+		margin-top: 1em;
+
+		&-title {
+			font-weight: bold;
+		}
+
+		&-latlon {
+			display: block;
+			color: #54595d; // Base20
+			margin-top: 0.5em;
+		}
+	}
+}
+
+.mw-kartographer-filterservices {
+	margin: 1em 0;
+	padding: 0 16px;
+
+	&-title {
+		margin-bottom: 1em;
+		font-weight: bold;
+	}
+
+	&-toggleButton {
+		margin-left: 16px;
+	}
+
+	&-list {
+		&-item {
+			width: 100%;
+
+			&-button {
+				width: 100%;
+				margin-left: 0 !important; /* stylelint-disable-line declaration-no-important */
+				box-sizing: border-box;
+
+				&:hover {
+					background-color: #eaf3ff;
+				}
+
+				.oo-ui-buttonElement-button {
+					width: 100%;
+					// Override OOUI style
+					padding: 1em !important; /* stylelint-disable-line declaration-no-important */
+
+					> .oo-ui-iconElement-icon.oo-ui-icon-newWindow {
+						left: auto !important; /* stylelint-disable-line declaration-no-important */
+						right: 1.5em;
+					}
+				}
+			}
+		}
+	}
+}
+
+.mw-kartographer-externalservices {
+	margin: 1em 0;
+}
+
+.kartographer-mapDialog-loading {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 4.5em;
+
+	/* @embed */
+	background-image: url( ../../styles/images/ajax-loader.gif );
+	background-position: center center;
+	background-size: 32px;
+	background-repeat: no-repeat;
+}

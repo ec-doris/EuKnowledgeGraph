@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Pikne"
+			"Pikne",
+			"Adeliine"
 		]
 	},
 	"kartographer-attribution": "[https://foundation.wikimedia.org/wiki/Maps_Terms_of_Use Wikimedia kaardid] | Kaardiandmed © [https://www.openstreetmap.org/copyright OpenStreetMapi kaastöölised]",
@@ -23,7 +24,7 @@
 	"kartographer-linktype-other": "Muu",
 	"kartographer-linktype-satellite": "Satelliidipilt",
 	"kartographer-linktype-terrain": "Reljeefikaart",
-	"kartographer-linktype-topo": "Topoloogiline kaart",
+	"kartographer-linktype-topo": "Topograafiline kaart",
 	"kartographer-sidebar-coordinates": "Koordinaadid",
 	"kartographer-sidebar-externalservices": "Kaarditeenused",
 	"kartographer-sidebar-externalservices-show-featured": "Näita ainult esiletõstetud kaarte",

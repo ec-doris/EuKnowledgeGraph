@@ -1,19 +1,28 @@
 {
 	"@metadata": {
 		"authors": [
+			"Hex",
+			"Mainframe98",
+			"Nieuwsgierige Gebruiker",
+			"Romaine",
 			"Siebrand",
 			"Sjoerddebruin",
-			"Hex",
-			"Yurik",
-			"Mainframe98"
+			"Yurik"
 		]
 	},
 	"jsonconfig-desc": "Maakt het mogelijk JSON-instellingen op te slaan in een wiki",
 	"jsonconfig-duplicate-field": "Meer dan één waarde \"$1\" aangetroffen",
-	"jsonconfig-err-array": "Parameter \"$1\" moet een lijst zijn, bijvoorbeeld [\"waarde1\", \"waarde2\", ...]",
+	"jsonconfig-edit-action-apply": "Toepassen",
+	"jsonconfig-edit-action-cancel": "Annuleren",
+	"jsonconfig-edit-button-label": "Als tabel bewerken",
+	"jsonconfig-edit-dialog-error": "Kan niet als tabel bewerken: $1",
+	"jsonconfig-edit-dialog-error-field-name-missing": "Elk veld moet een naam hebben",
+	"jsonconfig-edit-dialog-title": "JSON bewerken",
+	"jsonconfig-err-array": "Parameter \"$1\" moet een lijst zijn, bijvoorbeeld <kbd>[\"waarde1\", \"waarde2\", ...]</kbd>",
+	"jsonconfig-err-array-count": "Lijst \"$1\" heeft $2 {{PLURAL:$2|waarde|waarden}}, maar moet $3 {{PLURAL:$3|waarde|waarden}} hebben, hetzelfde aantal waarden als \"$4\"",
 	"jsonconfig-err-array-expected": "De verwachting was dat \"$1\" een lijst was omringd door haakjes[...]",
-	"jsonconfig-err-assoc-array": "Parameter \"$1\" moet een must be an associatieve array (dictionary) zijn, bijvoorbeeld {\"sleutel\": \"waarde\", ...}",
-	"jsonconfig-err-bool": "Parameter \"$1\" moet op waar of onwaar zijn ingesteld",
+	"jsonconfig-err-assoc-array": "Parameter \"$1\" moet een must be an associatieve array (dictionary) zijn, bijvoorbeeld <kbd>{\"key\": \"value\", ...}</kbd>",
+	"jsonconfig-err-bool": "Parameter \"$1\" moet op <code>true</code> of <code>false</code> zijn ingesteld",
 	"jsonconfig-err-integer": "Parameter \"$1\" moet een integer zijn",
 	"jsonconfig-err-license": "Parameter \"$1\" moet één van de geldige licentiecodes zijn, bijvoorbeeld $2",
 	"jsonconfig-err-number": "Parameter \"$1\" moet een nummer zijn",
@@ -21,13 +30,18 @@
 	"jsonconfig-err-root-array-expected": "JSON-gegevens moeten een lijst zijn, omringd door haakjes [...]",
 	"jsonconfig-err-root-object-expected": "JSON-gegevens moeten een object zijn, omringd door accolades {...}",
 	"jsonconfig-err-string": "Parameter \"$1\" moet tekst zijn",
+	"jsonconfig-err-unexpected-key": "Object \"$1\" bevat een overwacht veld \"$2\"",
 	"jsonconfig-err-url": "Parameter \"$1\" moet een geldige URL zijn",
 	"jsonconfig-move-aborted-model": "het JSON-configuratiemodel \"$1\" van deze pagina zou niet overeen komen met het model \"$2\" van de nieuwe naam",
 	"jsonconfig-move-aborted-ns": "de nieuwe paginanaam is niet ingesteld om de nieuwe JSON-configuratie te bevatten",
 	"jsonconfig-optional-field": "(optioneel)",
 	"jsonconfig-type-name-invalid": "ongeldig",
+	"jsonconfig-type-name-string": "tekenreeks",
+	"jsonconfig-type-name-localized": "gelocaliseerd",
 	"jsonconfig-type-name-number": "getal",
 	"jsonconfig-type-name-boolean": "Boolean",
 	"jsonconfig-license": "Gegevens beschikbaar onder $1.",
-	"jsonconfig-license-name-CC0-1.0": "Creative Commons Zero"
+	"jsonconfig-license-name-CC0-1.0": "Creative Commons Zero",
+	"right-jsonconfig-flush": "Manipuleer JsonConfig via API",
+	"action-jsonconfig-flush": "JsonConfig via API te manipuleren"
 }
