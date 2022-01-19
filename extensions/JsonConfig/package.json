@@ -13,6 +13,7 @@
 		"grunt-contrib-jshint": "1.1.0",
 		"grunt-jsonlint": "1.1.0",
 		"hosted-git-info": ">=3.0.8",
+        "postcss": ">=8.2.13",
         "shelljs": ">=0.8.5",
 		"stylelint-config-wikimedia": "^0.10.3",
         "trim-newlines": ">=3.0.1",
