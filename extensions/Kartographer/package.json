@@ -26,7 +26,8 @@
 		"stylelint-config-wikimedia": "^0.10.3",
         "trim": ">=0.0.3",
         "trim-newlines": ">=3.0.1",
-        "underscore": ">=1.12.1"
+        "underscore": ">=1.12.1",
+        "yargs-parser": ">=13.1.2"
 	},
 	"dependencies": {
 		"@wikimedia/leaflet-sleep": "^0.5.1",
