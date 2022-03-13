@@ -7,12 +7,15 @@ x-common-variables: &wikibase_variables
   MW_ADMIN_PASS: ${MW_ADMIN_PASS}
   MW_ADMIN_EMAIL: ${MW_ADMIN_EMAIL}
   MW_WG_SECRET_KEY: ${MW_SECRET_KEY}
+  CAS_CLIENT_ID: ${CAS_CLIENT_ID}
+  CAS_CLIENT_SECRET: ${CAS_CLIENT_SECRET}
   # Disable jobs running after requests when wikibase_jobrunner is defined
   MW_WG_JOB_RUN_RATE: 0
   DB_USER: ${DB_USER}
   DB_PASS: ${DB_PASS}
   DB_NAME: ${DB_NAME}
   WIKIBASE_HOST: ${WIKIBASE_HOST}
+  QS_PUBLIC_SCHEME_HOST_AND_PORT: http://${QUICKSTATEMENTS_HOST}:${QUICKSTATEMENTS_PORT}
 
 services:
   wikibase:
@@ -33,6 +36,7 @@ services:
       - ./extensions/JsonConfig:/var/www/html/extensions/JsonConfig
       - ./extensions/Kartographer:/var/www/html/extensions/Kartographer
       - ./extensions/WikibaseQualityConstraints:/var/www/html/extensions/WikibaseQualityConstraints
+      - ./extensions/CASAuth:/var/www/html/extensions/CASAuth
     networks:
       default:
         aliases:

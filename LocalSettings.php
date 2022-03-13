@@ -90,3 +90,17 @@ $wgWBRepoSettings['formatterUrlProperty'] = 'P877';
 
 # Activate constrain plugin
 wfLoadExtension( 'WikibaseQualityConstraints' );
+
+#CAS
+$wgOAuth2Client['client']['id'] = $_SERVER["CAS_CLIENT_ID"];
+$wgOAuth2Client['client']['secret'] = $_SERVER["CAS_CLIENT_SECRET"];
+$wgOAuth2Client['configuration']['authorize_endpoint'] = 'https://ecas.ec.europa.eu/cas/oauth2/authorize'; // Authorization URL
+$wgOAuth2Client['configuration']['access_token_endpoint'] = 'https://ecas.ec.europa.eu/cas/oauth2/token'; // Token URL
+$wgOAuth2Client['configuration']['api_endpoint'] = 'https://ecas.ec.europa.eu/cas/oauth2'; // URL to fetch user JSON
+$wgOAuth2Client['configuration']['redirect_uri'] = 'http://linkedopendata.eu/wiki/Special:OAuth2Client/callback'; // URL for OAuth2 server to redirect to
+$wgOAuth2Client['configuration']['username'] = 'user.name'; // JSON path to username
+$wgOAuth2Client['configuration']['email'] = 'user.email'; // JSON path to email
+$wgOAuth2Client['configuration']['scopes'] = 'openid email profile';
+
+#CAS Authentication
+require_once "$IP/extensions/CASAuth/CASAuth.php";
