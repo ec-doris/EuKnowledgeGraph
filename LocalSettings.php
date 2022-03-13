@@ -25,6 +25,8 @@
 /*******************************/
 #ini_set( 'display_errors', 0 );
 
+# Increase the memory limit
+ini_set('memory_limit', '1536M');
 
 # Disallow anonymous editing
 $wgGroupPermissions['*']['edit'] = false;
