@@ -17,7 +17,7 @@ trap kill_runner SIGTERM
 
 while true; do
 	if [ -e /shared/LocalSettings.php ]; then
-		php maintenance/runJobs.php --wait --maxjobs="$MAX_JOBS" --conf /shared/LocalSettings.php &
+		php maintenance/runJobs.php --memory-limit 512M --wait --maxjobs="$MAX_JOBS"  --conf /shared/LocalSettings.php &
 		PID=$!
 		wait "$PID"
 	else
