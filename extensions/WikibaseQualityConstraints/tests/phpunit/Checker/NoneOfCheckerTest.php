@@ -26,7 +26,8 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  */
 class NoneOfCheckerTest extends \MediaWikiTestCase {
 
-	use ConstraintParameters, ResultAssertions;
+	use ConstraintParameters;
+	use ResultAssertions;
 
 	/**
 	 * @var NoneOfChecker

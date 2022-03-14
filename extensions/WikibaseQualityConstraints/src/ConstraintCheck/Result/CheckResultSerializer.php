@@ -20,18 +20,18 @@ use WikibaseQuality\ConstraintReport\ConstraintSerializer;
  */
 class CheckResultSerializer {
 
-	const KEY_CONTEXT_CURSOR = '|';
-	const KEY_CONSTRAINT = 'c';
-	const KEY_CHECK_RESULT_STATUS = 's';
-	const KEY_VIOLATION_MESSAGE = 'm';
-	const KEY_CACHING_METADATA = 'CM';
-	const KEY_DEPENDENCY_METADATA = 'DM';
-	const KEY_NULL_RESULT = '0';
+	public const KEY_CONTEXT_CURSOR = '|';
+	public const KEY_CONSTRAINT = 'c';
+	public const KEY_CHECK_RESULT_STATUS = 's';
+	public const KEY_VIOLATION_MESSAGE = 'm';
+	public const KEY_CACHING_METADATA = 'CM';
+	public const KEY_DEPENDENCY_METADATA = 'DM';
+	public const KEY_NULL_RESULT = '0';
 
-	const KEY_CACHING_METADATA_MAX_AGE = 'a';
+	public const KEY_CACHING_METADATA_MAX_AGE = 'a';
 
-	const KEY_DEPENDENCY_METADATA_ENTITY_IDS = 'e';
-	const KEY_DEPENDENCY_METADATA_FUTURE_TIME = 'f';
+	public const KEY_DEPENDENCY_METADATA_ENTITY_IDS = 'e';
+	public const KEY_DEPENDENCY_METADATA_FUTURE_TIME = 'f';
 
 	/**
 	 * @var ConstraintSerializer

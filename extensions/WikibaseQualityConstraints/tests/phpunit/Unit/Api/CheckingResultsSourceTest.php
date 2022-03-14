@@ -26,8 +26,8 @@ use WikibaseQuality\ConstraintReport\ConstraintCheck\Result\NullResult;
  */
 class CheckingResultsSourceTest extends \MediaWikiUnitTestCase {
 
-	const NONEXISTENT_ITEM = 'Q99';
-	const NONEXISTENT_CLAIM = 'Q99$dfb32791-ffd5-4420-a1d9-2bc2a0775968';
+	private const NONEXISTENT_ITEM = 'Q99';
+	private const NONEXISTENT_CLAIM = 'Q99$dfb32791-ffd5-4420-a1d9-2bc2a0775968';
 
 	private function getResultsSource(
 		DelegatingConstraintChecker $delegatingConstraintChecker = null
@@ -102,7 +102,7 @@ class CheckingResultsSourceTest extends \MediaWikiUnitTestCase {
 		)->getArray();
 
 		$this->assertCount( 4, $results );
-		$this->assertCount( 4, array_unique( array_map( function( CheckResult $result ) {
+		$this->assertCount( 4, array_unique( array_map( function ( CheckResult $result ) {
 			return $result->getContextCursor()->getEntityId();
 		}, $results ) ) );
 		foreach ( $results as $result ) {
@@ -137,7 +137,7 @@ class CheckingResultsSourceTest extends \MediaWikiUnitTestCase {
 			->setMethods( [ 'checkAgainstConstraintsOnEntityId', 'checkAgainstConstraintsOnClaimId' ] );
 		$delegatingConstraintChecker = $mock->getMock();
 		$delegatingConstraintChecker->method( 'checkAgainstConstraintsOnEntityId' )
-			->willReturnCallback( function(
+			->willReturnCallback( function (
 				EntityId $entityId,
 				array $constraintIds = null,
 				callable $defaultResultsPerContext = null,

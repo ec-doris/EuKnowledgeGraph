@@ -26,7 +26,8 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  */
 class ItemCheckerTest extends \MediaWikiTestCase {
 
-	use ConstraintParameters, ResultAssertions;
+	use ConstraintParameters;
+	use ResultAssertions;
 
 	/**
 	 * @var ItemChecker

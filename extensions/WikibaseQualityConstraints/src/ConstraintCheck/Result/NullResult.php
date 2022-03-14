@@ -22,7 +22,7 @@ class NullResult extends CheckResult {
 	 * Since the PropertyId constructor prevents invalid property IDs like “P0”,
 	 * we use the maximum permitted property ID and assume that it’s unlikely to actually exist.
 	 */
-	const NULL_PROPERTY_ID = 'P2147483647';
+	private const NULL_PROPERTY_ID = 'P2147483647';
 
 	public function __construct( ContextCursor $contextCursor ) {
 		$constraint = new Constraint(

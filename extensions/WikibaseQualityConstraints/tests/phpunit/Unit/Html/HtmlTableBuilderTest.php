@@ -92,8 +92,8 @@ class HtmlTableBuilderTest extends \MediaWikiUnitTestCase {
 		$this->assertEquals(
 			[
 				[
-					new \WikibaseQuality\ConstraintReport\Html\HtmlTableCellBuilder( 'foo' ),
-					new \WikibaseQuality\ConstraintReport\Html\HtmlTableCellBuilder( 'bar' )
+					new HtmlTableCellBuilder( 'foo' ),
+					new HtmlTableCellBuilder( 'bar' )
 				]
 			],
 			$htmlTable->getRows()
@@ -132,7 +132,7 @@ class HtmlTableBuilderTest extends \MediaWikiUnitTestCase {
 				],
 				[
 					[
-						new \WikibaseQuality\ConstraintReport\Html\HtmlTableCellBuilder( 'foo' ),
+						new HtmlTableCellBuilder( 'foo' ),
 						new HtmlTableCellBuilder( 'bar' )
 					]
 				]
@@ -140,14 +140,14 @@ class HtmlTableBuilderTest extends \MediaWikiUnitTestCase {
 			[
 				[
 					[
-						new \WikibaseQuality\ConstraintReport\Html\HtmlTableCellBuilder( 'foo' ),
+						new HtmlTableCellBuilder( 'foo' ),
 						'bar'
 					]
 				],
 				[
 					[
-						new \WikibaseQuality\ConstraintReport\Html\HtmlTableCellBuilder( 'foo' ),
-						new \WikibaseQuality\ConstraintReport\Html\HtmlTableCellBuilder( 'bar' )
+						new HtmlTableCellBuilder( 'foo' ),
+						new HtmlTableCellBuilder( 'bar' )
 					]
 				]
 			],
@@ -175,13 +175,13 @@ class HtmlTableBuilderTest extends \MediaWikiUnitTestCase {
 	 * @dataProvider toHtmlDataProvider
 	 */
 	public function testToHtml( $headers, $rows, $expectedHtml ) {
-		//Create table
+		// Create table
 		$htmlTable = new HtmlTableBuilder( $headers );
 		$htmlTable->appendRows( $rows );
 
 		// Run assertions
 		$actualHtml = $htmlTable->toHtml();
-		$this->assertEquals( $expectedHtml, $actualHtml );
+		$this->assertSame( $expectedHtml, $actualHtml );
 	}
 
 	public function toHtmlDataProvider() {
@@ -248,7 +248,7 @@ class HtmlTableBuilderTest extends \MediaWikiUnitTestCase {
 	 *
 	 * @param string $content
 	 *
-	 * @return \WikibaseQuality\ConstraintReport\Html\HtmlTableCellBuilder
+	 * @return HtmlTableCellBuilder
 	 */
 	private function getHtmlTableCellMock( $content ) {
 		$cellMock = $this

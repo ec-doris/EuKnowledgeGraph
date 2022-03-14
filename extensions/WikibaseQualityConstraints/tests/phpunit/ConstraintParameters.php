@@ -45,7 +45,7 @@ trait ConstraintParameters {
 		if ( $this->parser === null ) {
 			$this->parser = new ConstraintParameterParser(
 				$this->getDefaultConfig(),
-				WikibaseRepo::getDefaultInstance()->getBaseDataModelDeserializerFactory(),
+				WikibaseRepo::getBaseDataModelDeserializerFactory(),
 				'http://wikibase.example/entity/'
 			);
 		}
@@ -58,7 +58,7 @@ trait ConstraintParameters {
 	 */
 	private function getSnakSerializer() {
 		if ( $this->snakSerializer == null ) {
-			$this->snakSerializer = WikibaseRepo::getDefaultInstance()->getBaseDataModelSerializerFactory()->newSnakSerializer();
+			$this->snakSerializer = WikibaseRepo::getBaseDataModelSerializerFactory()->newSnakSerializer();
 		}
 
 		return $this->snakSerializer;
@@ -72,7 +72,7 @@ trait ConstraintParameters {
 		$classParameterId = $this->getDefaultConfig()->get( 'WBQualityConstraintsClassId' );
 		return [
 			$classParameterId => array_map(
-				function( $classId ) use ( $classParameterId ) {
+				function ( $classId ) use ( $classParameterId ) {
 					return $this->getSnakSerializer()->serialize(
 						new PropertyValueSnak(
 							new PropertyId( $classParameterId ),
@@ -138,7 +138,7 @@ trait ConstraintParameters {
 		$propertyParameterId = $this->getDefaultConfig()->get( 'WBQualityConstraintsPropertyId' );
 		return [
 			$propertyParameterId => array_map(
-				function( $property ) use ( $propertyParameterId ) {
+				function ( $property ) use ( $propertyParameterId ) {
 					$value = new EntityIdValue( new PropertyId( $property ) );
 					$snak = new PropertyValueSnak( new PropertyId( $propertyParameterId ), $value );
 					return $this->getSnakSerializer()->serialize( $snak );
@@ -156,7 +156,7 @@ trait ConstraintParameters {
 		$qualifierParameterId = $this->getDefaultConfig()->get( 'WBQualityConstraintsQualifierOfPropertyConstraintId' );
 		return [
 			$qualifierParameterId => array_map(
-				function( $item ) use ( $qualifierParameterId ) {
+				function ( $item ) use ( $qualifierParameterId ) {
 					if ( $item instanceof Snak ) {
 						$snak = $item;
 					} else {
@@ -337,7 +337,7 @@ trait ConstraintParameters {
 		$separatorId = $this->getDefaultConfig()->get( 'WBQualityConstraintsSeparatorId' );
 		return [
 			$separatorId => array_map(
-				function( $separator ) use ( $separatorId ) {
+				function ( $separator ) use ( $separatorId ) {
 					$value = new EntityIdValue( new PropertyId( $separator ) );
 					$snak = new PropertyValueSnak( new PropertyId( $separatorId ), $value );
 					return $this->getSnakSerializer()->serialize( $snak );
@@ -352,7 +352,7 @@ trait ConstraintParameters {
 		$parameterId = $config->get( 'WBQualityConstraintsPropertyScopeId' );
 		return [
 			$parameterId => array_map(
-				function( $contextType ) use ( $config, $parameterId ) {
+				function ( $contextType ) use ( $config, $parameterId ) {
 					switch ( $contextType ) {
 						case Context::TYPE_STATEMENT:
 							$itemId = $config->get( 'WBQualityConstraintsAsMainValueId' );

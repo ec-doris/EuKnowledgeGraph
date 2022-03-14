@@ -54,7 +54,7 @@ trait ResultAssertions {
 	 * @param CheckResult $result
 	 */
 	public function assertCompliance( CheckResult $result ) {
-		$this->assertEquals(
+		$this->assertSame(
 			CheckResult::STATUS_COMPLIANCE,
 			$result->getStatus(),
 			'Check should comply; message: ' . $this->renderMessage( $result )
@@ -69,7 +69,7 @@ trait ResultAssertions {
 	 *                            matches the message given by this key.
 	 */
 	public function assertViolation( CheckResult $result, $messageKey = null ) {
-		$this->assertEquals(
+		$this->assertSame(
 			CheckResult::STATUS_VIOLATION,
 			$result->getStatus(),
 			'Check should not comply'
@@ -95,7 +95,7 @@ trait ResultAssertions {
 	 * @param CheckResult $result
 	 */
 	public function assertTodo( CheckResult $result ) {
-		$this->assertEquals(
+		$this->assertSame(
 			CheckResult::STATUS_TODO,
 			$result->getStatus(),
 			'Check is not implemented.'
@@ -133,7 +133,7 @@ trait ResultAssertions {
 	 * @param CheckResult $result
 	 */
 	public function assertDeprecation( CheckResult $result ) {
-		$this->assertEquals(
+		$this->assertSame(
 			CheckResult::STATUS_DEPRECATED,
 			$result->getStatus(),
 			'Check should indicate deprecation; message: ' . $this->renderMessage( $result )

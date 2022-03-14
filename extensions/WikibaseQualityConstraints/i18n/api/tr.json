@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"BaRaN6161 TURK",
-			"Incelemeelemani"
+			"Incelemeelemani",
+			"Sezgin İbiş"
 		]
 	},
 	"apihelp-wbcheckconstraints-description": "İstediğiniz varlık üzerinde kısıtlama kontrollerini yapar ve sonucunu döndürür.",

@@ -22,47 +22,47 @@ class CheckResult {
 	/**
 	 * The statement satisfies the constraint.
 	 */
-	const STATUS_COMPLIANCE = 'compliance';
+	public const STATUS_COMPLIANCE = 'compliance';
 	/**
 	 * The statement violates the constraint.
 	 */
-	const STATUS_VIOLATION = 'violation';
+	public const STATUS_VIOLATION = 'violation';
 	/**
 	 * The subject entity of the statement is a known exception to the constraint.
 	 */
-	const STATUS_EXCEPTION = 'exception';
+	public const STATUS_EXCEPTION = 'exception';
 	/**
 	 * The constraint is not implemented.
 	 */
-	const STATUS_TODO = 'todo';
+	public const STATUS_TODO = 'todo';
 	/**
 	 * The constraint parameters are broken.
 	 */
-	const STATUS_BAD_PARAMETERS = 'bad-parameters';
+	public const STATUS_BAD_PARAMETERS = 'bad-parameters';
 	/**
 	 * The constraint has not been checked because the statement is deprecated.
 	 */
-	const STATUS_DEPRECATED = 'deprecated';
+	public const STATUS_DEPRECATED = 'deprecated';
 	/**
 	 * The statement violates the constraint, but the constraint is not mandatory.
 	 *
 	 * DelegatingConstraintChecker downgrades violations to warnings automatically based on the constraint parameters;
 	 * constraint checkers should not assign this status directly.
 	 */
-	const STATUS_WARNING = 'warning';
+	public const STATUS_WARNING = 'warning';
 	/**
 	 * The statement violates the constraint, but the constraint is just a suggestion.
 	 *
 	 * DelegatingConstraintChecker downgrades violations to suggestions automatically based on the constraint parameters;
 	 * constraint checkers should not assign this status directly.
 	 */
-	const STATUS_SUGGESTION = 'suggestion';
+	public const STATUS_SUGGESTION = 'suggestion';
 	/**
 	 * The constraint is not checked on this kind of snak
 	 * (main snak, qualifier or reference),
 	 * so the constraint check is skipped.
 	 */
-	const STATUS_NOT_IN_SCOPE = 'not-in-scope';
+	public const STATUS_NOT_IN_SCOPE = 'not-in-scope';
 	/*
 	 * When adding another status, don’t forget to also do the following:
 	 * * define messages for it in i18n/:

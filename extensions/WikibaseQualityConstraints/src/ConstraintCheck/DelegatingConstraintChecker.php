@@ -447,7 +447,12 @@ class DelegatingConstraintChecker {
 			try {
 				$exceptions = $this->constraintParameterParser->parseExceptionParameter( $parameters );
 			} catch ( ConstraintParameterException $e ) {
-				$result[] = new CheckResult( $context, $constraint, [], CheckResult::STATUS_BAD_PARAMETERS, $e->getViolationMessage() );
+				$result[] = new CheckResult(
+					$context,
+					$constraint,
+					[],
+					CheckResult::STATUS_BAD_PARAMETERS, $e->getViolationMessage()
+				);
 				continue;
 			}
 
@@ -565,7 +570,13 @@ class DelegatingConstraintChecker {
 			try {
 				$result = $checker->checkConstraint( $context, $constraint );
 			} catch ( ConstraintParameterException $e ) {
-				$result = new CheckResult( $context, $constraint, [], CheckResult::STATUS_BAD_PARAMETERS, $e->getViolationMessage() );
+				$result = new CheckResult(
+					$context,
+					$constraint,
+					[],
+					CheckResult::STATUS_BAD_PARAMETERS,
+					$e->getViolationMessage()
+				);
 			} catch ( SparqlHelperException $e ) {
 				$message = new ViolationMessage( 'wbqc-violation-message-sparql-error' );
 				$result = new CheckResult( $context, $constraint, [], CheckResult::STATUS_TODO, $message );

@@ -10,35 +10,35 @@ use WikibaseQuality\ConstraintReport\ConstraintCheck\ConstraintChecker;
  */
 class ConstraintCheckerServices {
 
-	const CONFLICTS_WITH_CHECKER = 'WBQC_ConflictsWithChecker';
-	const ITEM_CHECKER = 'WBQC_ItemChecker';
-	const TARGET_REQUIRED_CLAIM_CHECKER = 'WBQC_TargetRequiredClaimChecker';
-	const SYMMETRIC_CHECKER = 'WBQC_SymmetricChecker';
-	const INVERSE_CHECKER = 'WBQC_InverseChecker';
-	const QUALIFIER_CHECKER = 'WBQC_QualifierChecker';
-	const QUALIFIERS_CHECKER = 'WBQC_QualifiersChecker';
-	const MANDATORY_QUALIFIERS_CHECKER = 'WBQC_MandatoryQualifiersChecker';
-	const RANGE_CHECKER = 'WBQC_RangeChecker';
-	const DIFF_WITHIN_RANGE_CHECKER = 'WBQC_DiffWithinRangeChecker';
-	const TYPE_CHECKER = 'WBQC_TypeChecker';
-	const VALUE_TYPE_CHECKER = 'WBQC_ValueTypeChecker';
-	const SINGLE_VALUE_CHECKER = 'WBQC_SingleValueChecker';
-	const MULTI_VALUE_CHECKER = 'WBQC_MultiValueChecker';
-	const UNIQUE_VALUE_CHECKER = 'WBQC_UniqueValueChecker';
-	const FORMAT_CHECKER = 'WBQC_FormatChecker';
-	const COMMONS_LINK_CHECKER = 'WBQC_CommonsLinkChecker';
-	const ONE_OF_CHECKER = 'WBQC_OneOfChecker';
-	const VALUE_ONLY_CHECKER = 'WBQC_ValueOnlyChecker';
-	const REFERENCE_CHECKER = 'WBQC_ReferenceChecker';
-	const NO_BOUNDS_CHECKER = 'WBQC_NoBoundsChecker';
-	const ALLOWED_UNITS_CHECKER = 'WBQC_AllowedUnitsChecker';
-	const SINGLE_BEST_VALUE_CHECKER = 'WBQC_SingleBestValueChecker';
-	const ENTITY_TYPE_CHECKER = 'WBQC_EntityTypeChecker';
-	const NONE_OF_CHECKER = 'WBQC_NoneOfChecker';
-	const INTEGER_CHECKER = 'WBQC_IntegerChecker';
-	const CITATION_NEEDED_CHECKER = 'WBQC_CitationNeededChecker';
-	const PROPERTY_SCOPE_CHECKER = 'WBQC_PropertyScopeChecker';
-	const CONTEMPORARY_CHECKER = 'WBQC_ContemporaryChecker';
+	public const CONFLICTS_WITH_CHECKER = 'WBQC_ConflictsWithChecker';
+	public const ITEM_CHECKER = 'WBQC_ItemChecker';
+	public const TARGET_REQUIRED_CLAIM_CHECKER = 'WBQC_TargetRequiredClaimChecker';
+	public const SYMMETRIC_CHECKER = 'WBQC_SymmetricChecker';
+	public const INVERSE_CHECKER = 'WBQC_InverseChecker';
+	public const QUALIFIER_CHECKER = 'WBQC_QualifierChecker';
+	public const QUALIFIERS_CHECKER = 'WBQC_QualifiersChecker';
+	public const MANDATORY_QUALIFIERS_CHECKER = 'WBQC_MandatoryQualifiersChecker';
+	public const RANGE_CHECKER = 'WBQC_RangeChecker';
+	public const DIFF_WITHIN_RANGE_CHECKER = 'WBQC_DiffWithinRangeChecker';
+	public const TYPE_CHECKER = 'WBQC_TypeChecker';
+	public const VALUE_TYPE_CHECKER = 'WBQC_ValueTypeChecker';
+	public const SINGLE_VALUE_CHECKER = 'WBQC_SingleValueChecker';
+	public const MULTI_VALUE_CHECKER = 'WBQC_MultiValueChecker';
+	public const UNIQUE_VALUE_CHECKER = 'WBQC_UniqueValueChecker';
+	public const FORMAT_CHECKER = 'WBQC_FormatChecker';
+	public const COMMONS_LINK_CHECKER = 'WBQC_CommonsLinkChecker';
+	public const ONE_OF_CHECKER = 'WBQC_OneOfChecker';
+	public const VALUE_ONLY_CHECKER = 'WBQC_ValueOnlyChecker';
+	public const REFERENCE_CHECKER = 'WBQC_ReferenceChecker';
+	public const NO_BOUNDS_CHECKER = 'WBQC_NoBoundsChecker';
+	public const ALLOWED_UNITS_CHECKER = 'WBQC_AllowedUnitsChecker';
+	public const SINGLE_BEST_VALUE_CHECKER = 'WBQC_SingleBestValueChecker';
+	public const ENTITY_TYPE_CHECKER = 'WBQC_EntityTypeChecker';
+	public const NONE_OF_CHECKER = 'WBQC_NoneOfChecker';
+	public const INTEGER_CHECKER = 'WBQC_IntegerChecker';
+	public const CITATION_NEEDED_CHECKER = 'WBQC_CitationNeededChecker';
+	public const PROPERTY_SCOPE_CHECKER = 'WBQC_PropertyScopeChecker';
+	public const CONTEMPORARY_CHECKER = 'WBQC_ContemporaryChecker';
 
 	private static function getService( ?MediaWikiServices $services, $name ) {
 		if ( $services === null ) {

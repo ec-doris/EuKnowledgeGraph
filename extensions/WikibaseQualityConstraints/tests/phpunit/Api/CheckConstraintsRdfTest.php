@@ -174,20 +174,20 @@ class CheckConstraintsRdfTest extends \PHPUnit\Framework\TestCase {
 		if ( $cachingResultsSource === null ) {
 			$cachingResultsSource = $this->getCachingResultsSource();
 		}
-		$repo = WikibaseRepo::getDefaultInstance();
+
 		return new CheckConstraintsRdf(
 			$article,
 			$this->getContext( $mockResponse ),
 			$cachingResultsSource,
-			$repo->getEntityIdLookup(),
-			$repo->getRdfVocabulary()
+			WikibaseRepo::getEntityIdLookup(),
+			WikibaseRepo::getRdfVocabulary()
 		);
 	}
 
 	public function testShow() {
 		$cachingResultsSource = $this->getCachingResultsSource();
 		$cachingResultsSource->expects( $this->once() )->method( 'getStoredResults' )
-			->willReturnCallback( function( EntityId $entityId ) {
+			->willReturnCallback( function ( EntityId $entityId ) {
 				$serialization = $entityId->getSerialization();
 				return new CachedCheckResults(
 					[ $this->getCheckResult( $serialization ) ],
@@ -199,8 +199,7 @@ class CheckConstraintsRdfTest extends \PHPUnit\Framework\TestCase {
 		$mockResponse->expects( $this->never() )->method( 'statusHeader' );
 		$mockResponse->expects( $this->once() )->method( 'header' )
 			->with( 'Content-Type: text/turtle; charset=UTF-8' );
-		$repo = WikibaseRepo::getDefaultInstance();
-		$rdfVocabulary = $repo->getRdfVocabulary();
+		$rdfVocabulary = WikibaseRepo::getRdfVocabulary();
 		$action = $this->getCheckConstraintsRdf(
 			new Article( Title::newFromText( 'Property:P1' ) ),
 			$mockResponse,
@@ -221,7 +220,7 @@ class CheckConstraintsRdfTest extends \PHPUnit\Framework\TestCase {
 s:P1-00000000-0000-0000-0000-000000000000 wikibase:hasViolationForConstraint s:P1-00000000-0000-0000-0000-000000000000 .
 
 TEXT;
-		$this->assertEquals( $expectedOutput, $actualOutput );
+		$this->assertSame( $expectedOutput, $actualOutput );
 	}
 
 	public function testShow404() {
@@ -237,7 +236,7 @@ TEXT;
 		$actualOutput = ob_get_clean();
 
 		$expectedOutput = '';
-		$this->assertEquals( $expectedOutput, $actualOutput );
+		$this->assertSame( $expectedOutput, $actualOutput );
 	}
 
 	public function testShowNoResults() {
@@ -253,13 +252,13 @@ TEXT;
 		$actualOutput = ob_get_clean();
 
 		$expectedOutput = '';
-		$this->assertEquals( $expectedOutput, $actualOutput );
+		$this->assertSame( $expectedOutput, $actualOutput );
 	}
 
 	public function testShowNoResultsWithNull() {
 		$cachingResultsSource = $this->getCachingResultsSource();
 		$cachingResultsSource->expects( $this->once() )->method( 'getStoredResults' )
-			->willReturnCallback( function( EntityId $entityId ) {
+			->willReturnCallback( function ( EntityId $entityId ) {
 				$serialization = $entityId->getSerialization();
 				return new CachedCheckResults(
 					[
@@ -283,7 +282,7 @@ TEXT;
 		$actualOutput = ob_get_clean();
 
 		$expectedOutput = '';
-		$this->assertEquals( $expectedOutput, $actualOutput );
+		$this->assertSame( $expectedOutput, $actualOutput );
 	}
 
 }

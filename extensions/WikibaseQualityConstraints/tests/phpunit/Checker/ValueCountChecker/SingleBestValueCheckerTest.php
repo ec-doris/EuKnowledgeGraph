@@ -21,7 +21,8 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  */
 class SingleBestValueCheckerTest extends \PHPUnit\Framework\TestCase {
 
-	use ConstraintParameters, ResultAssertions;
+	use ConstraintParameters;
+	use ResultAssertions;
 
 	/**
 	 * @var SingleBestValueChecker

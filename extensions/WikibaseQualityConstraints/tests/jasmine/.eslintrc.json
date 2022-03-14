@@ -11,5 +11,8 @@
 		"browser": true,
 		"node": true,
 		"jasmine": true
+	},
+	"rules": {
+		"compat/compat": "off"
 	}
 }
