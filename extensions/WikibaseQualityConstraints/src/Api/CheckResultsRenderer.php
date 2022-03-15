@@ -1,6 +1,5 @@
 <?php
 
-
 namespace WikibaseQuality\ConstraintReport\Api;
 
 use Wikibase\DataModel\Entity\ItemId;

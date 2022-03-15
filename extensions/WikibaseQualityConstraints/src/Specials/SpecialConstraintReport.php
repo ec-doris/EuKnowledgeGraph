@@ -101,9 +101,12 @@ class SpecialConstraintReport extends SpecialPage {
 	 */
 	private $dataFactory;
 
-	public static function newFromGlobalState(
+	public static function factory(
 		Config $config,
 		IBufferingStatsdDataFactory $dataFactory,
+		EntityIdParser $entityIdParser,
+		EntityTitleLookup $entityTitleLookup,
+		OutputFormatValueFormatterFactory $valueFormatterFactory,
 		EntityLookup $entityLookup,
 		DelegatingConstraintChecker $delegatingConstraintChecker
 	): self {
@@ -111,11 +114,11 @@ class SpecialConstraintReport extends SpecialPage {
 
 		return new self(
 			$entityLookup,
-			$wikibaseRepo->getEntityTitleLookup(),
+			$entityTitleLookup,
 			new EntityIdLabelFormatterFactory(),
 			$wikibaseRepo->getEntityIdHtmlLinkFormatterFactory(),
-			$wikibaseRepo->getEntityIdParser(),
-			$wikibaseRepo->getValueFormatterFactory(),
+			$entityIdParser,
+			$valueFormatterFactory,
 			$delegatingConstraintChecker,
 			$config,
 			$dataFactory
@@ -290,7 +293,7 @@ class SpecialConstraintReport extends SpecialPage {
 		];
 		$htmlForm = HTMLForm::factory( 'ooui', $formDescriptor, $this->getContext(), 'wbqc-constraintreport-form' );
 		$htmlForm->setSubmitText( $this->msg( 'wbqc-constraintreport-form-submit-label' )->escaped() );
-		$htmlForm->setSubmitCallback( function() {
+		$htmlForm->setSubmitCallback( function () {
 			return false;
 		} );
 		$htmlForm->setMethod( 'post' );

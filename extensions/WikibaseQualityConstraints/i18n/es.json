@@ -12,7 +12,8 @@
 			"Macofe",
 			"MarcoAurelio",
 			"Themasterriot",
-			"Tiberius1701"
+			"Tiberius1701",
+			"Danniel07"
 		]
 	},
 	"wbqc-constraintreport": "Informe de restricción",
@@ -124,6 +125,12 @@
 	"wbqc-violation-message-range-time-rightopen-leftnow": "El valor de $1 ($2) no debe estar en el pasado.",
 	"wbqc-violation-message-single-value": "Esta propiedad debería contener un único valor.",
 	"wbqc-violation-message-symmetric": "$1 también debería tener la declaración simétrica $2 $3.",
+	"wbqc-violation-message-type-instance": "Las entidades que utilicen la propiedad $1 deberían ser instancias de {{PLURAL:$3|1=$5|2=$5 o $6|una de las siguientes clases}} (o de {{PLURAL:$3|1=una subclase suya|2=una subclase suya|una de sus subclases}}), pero actualmente $2 {{PLURAL:$3|no lo es.|2=no lo es.|no lo es: $4}}",
+	"wbqc-violation-message-type-subclass": "Las entidades que utilicen la propiedad $1 deberían ser subclases de {{PLURAL:$3|1=$5|2=$5 o $6|una de las siguientes clases}} (o de {{PLURAL:$3|1=una subclase suya|2=una subclase suya|una de sus subclases}}), pero actualmente $2 {{PLURAL:$3|no lo es.|2=no lo es.|no lo es: $4}}",
+	"wbqc-violation-message-type-instanceOrSubclass": "Las entidades que utilicen la propiedad $1 deberían ser instancias o subclases de {{PLURAL:$3|1=$5|2=$5 o $6|una de las siguientes clases}} (o de {{PLURAL:$3|1=una subclase suya|2=una subclase suya|una de sus subclases}}), pero actualmente $2 {{PLURAL:$3|no lo es.|2=no lo es.|no lo es: $4}}",
+	"wbqc-violation-message-valueType-instance": "Los valores de declaraciones $1 deberían ser instancias de {{PLURAL:$3|1=$5|2=$5 o $6|una de las siguientes clases}} (o de {{PLURAL:$3|1=una subclase suya|2=una subclase suya|una de sus subclases}}), pero actualmente $2 {{PLURAL:$3|no lo es.|2=no lo es.|no lo es: $4}}",
+	"wbqc-violation-message-valueType-subclass": "Los valores de declaraciones $1 deberían ser subclases de {{PLURAL:$3|1=$5|2=$5 o $6|una de las siguientes clases}} (o de {{PLURAL:$3|1=una subclase suya|2=una subclase suya|una de sus subclases}}), pero actualmente $2 {{PLURAL:$3|no lo es.|2=no lo es.|no lo es: $4}}",
+	"wbqc-violation-message-valueType-instanceOrSubclass": "Los valores de declaraciones $1 deberían ser instancias o subclases de {{PLURAL:$3|1=$5|2=$5 o $6|una de las siguientes clases}} (o de {{PLURAL:$3|1=una subclase suya|2=una subclase suya|una de sus subclases}}), pero actualmente $2 {{PLURAL:$3|no lo es.|2=no lo es.|no lo es: $4}}",
 	"wbqc-violation-message-unique-value": "El valor de esta propiedad no debe estar presente en ningún otro elemento, pero existe también en {{PLURAL:$1|1=$3.|2=$3 y $4.|los elementos siguientes: $2}}",
 	"wbqc-violation-message-valueOnly": "Esta propiedad sólo debería utilizarse para el valor principal de la declaración, no para calificadores o referencias.",
 	"wbqc-violation-message-reference": "Esta propiedad solo debería usarse para referencias, no para el valor principal de la declaración o calificativos.",

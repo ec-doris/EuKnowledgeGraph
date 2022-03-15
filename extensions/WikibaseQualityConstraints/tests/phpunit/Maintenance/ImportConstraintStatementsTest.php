@@ -7,6 +7,7 @@ use MediaWiki\Tests\Maintenance\MaintenanceBaseTestCase;
 use Wikibase\Lib\Tests\Store\MockPropertyInfoLookup;
 use WikibaseQuality\ConstraintReport\Job\UpdateConstraintsTableJob;
 use WikibaseQuality\ConstraintReport\Maintenance\ImportConstraintStatements;
+use Wikimedia\Rdbms\ILBFactory;
 
 /**
  * @covers \WikibaseQuality\ConstraintReport\Maintenance\ImportConstraintStatements
@@ -35,6 +36,7 @@ class ImportConstraintStatementsTest extends MaintenanceBaseTestCase {
 	public function testNoProperties() {
 		$this->maintenance->setupServices = function () {
 			$this->maintenance->propertyInfoLookup = new MockPropertyInfoLookup( [] );
+			$this->maintenance->lbFactory = $this->createMock( ILBFactory::class );
 		};
 		$this->maintenance->newUpdateConstraintsTableJob = function () {
 			$this->fail( 'newUpdateConstraintsTableJob should not be called' );
@@ -51,6 +53,9 @@ class ImportConstraintStatementsTest extends MaintenanceBaseTestCase {
 				'P1' => [],
 				'P3' => [],
 			] );
+			$this->maintenance->lbFactory = $this->createMock( ILBFactory::class );
+			$this->maintenance->lbFactory->expects( $this->once() )
+				->method( 'waitForReplication' );
 		};
 
 		$call = 0;
@@ -79,8 +84,47 @@ class ImportConstraintStatementsTest extends MaintenanceBaseTestCase {
 		$this->expectOutputRegex( '/^' .
 			'Importing constraint statements for +P1... done in +\d+\.\d+ ms.\n' .
 			'Importing constraint statements for +P3... done in +\d+\.\d+ ms.\n' .
+			'Waiting for replication... done in +\d+\.\d+ ms.\n' .
 			'$/' );
 		$this->assertSame( 2, $call, 'newUpdateConstraintsTableJob should have been called twice' );
+	}
+
+	public function testTenPropertiesBatchSizeFive() {
+		$this->maintenance->setupServices = function () {
+			for ( $i = 1; $i <= 10; $i++ ) {
+				$id = "P$i";
+				$propertyInfos[$id] = [];
+			}
+			$this->maintenance->propertyInfoLookup = new MockPropertyInfoLookup( $propertyInfos );
+			$this->maintenance->lbFactory = $this->createMock( ILBFactory::class );
+			$this->maintenance->lbFactory->expects( $this->exactly( 2 ) )
+				->method( 'waitForReplication' );
+		};
+		$call = 0;
+		$this->maintenance->newUpdateConstraintsTableJob = function ( $_ ) use ( &$call ) {
+			$call++;
+			return $this->createMock( UpdateConstraintsTableJob::class );
+		};
+		$this->maintenance->loadWithArgv( [ '--batch-size=5' ] );
+
+		$this->maintenance->execute();
+
+		$this->expectOutputRegex( '/^' .
+			'Importing constraint statements for +P1... done in +\d+\.\d+ ms.\n' .
+			'Importing constraint statements for +P2... done in +\d+\.\d+ ms.\n' .
+			'Importing constraint statements for +P3... done in +\d+\.\d+ ms.\n' .
+			'Importing constraint statements for +P4... done in +\d+\.\d+ ms.\n' .
+			'Importing constraint statements for +P5... done in +\d+\.\d+ ms.\n' .
+			'Waiting for replication... done in +\d+\.\d+ ms.\n' .
+			'Importing constraint statements for +P6... done in +\d+\.\d+ ms.\n' .
+			'Importing constraint statements for +P7... done in +\d+\.\d+ ms.\n' .
+			'Importing constraint statements for +P8... done in +\d+\.\d+ ms.\n' .
+			'Importing constraint statements for +P9... done in +\d+\.\d+ ms.\n' .
+			'Importing constraint statements for +P10... done in +\d+\.\d+ ms.\n' .
+			'Waiting for replication... done in +\d+\.\d+ ms.\n' .
+			'$/' );
+		$this->assertSame( 10, $call,
+			'newUpdateConstraintsTableJob should have been called 10 times' );
 	}
 
 	public function testDefaultNewUpdateConstraintsTableJob() {

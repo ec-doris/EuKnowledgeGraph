@@ -85,8 +85,8 @@ class ImportConstraintEntitiesTest extends MaintenanceBaseTestCase {
 	public function testImportEntityFromJson_dryRun() {
 		$this->maintenance->loadParamsAndArgs( null, [ 'dry-run' => 1 ], null );
 		$repo = WikibaseRepo::getDefaultInstance();
-		$this->maintenance->entitySerializer = $repo->getAllTypesEntitySerializer();
-		$this->maintenance->entityDeserializer = $repo->getInternalFormatEntityDeserializer();
+		$this->maintenance->entitySerializer = WikibaseRepo::getAllTypesEntitySerializer();
+		$this->maintenance->entityDeserializer = WikibaseRepo::getInternalFormatEntityDeserializer();
 		$entityStore = $this->createMock( EntityStore::class );
 		$entityStore->expects( $this->never() )->method( 'saveEntity' );
 		$this->maintenance->entityStore = $entityStore;
@@ -102,15 +102,14 @@ class ImportConstraintEntitiesTest extends MaintenanceBaseTestCase {
 	}
 
 	public function testImportEntityFromJson() {
-		$repo = WikibaseRepo::getDefaultInstance();
 		$this->maintenance->setupServices();
 
 		$json = file_get_contents( __DIR__ . '/Q21503250.json' );
 		$localEntityId = $this->maintenance->importEntityFromJson( 'Q21503250', $json );
 
-		$repo = WikibaseRepo::getDefaultInstance();
 		/** @var Item $localEntity */
-		$localEntity = $repo->getEntityLookup()->getEntity( $repo->getEntityIdParser()->parse( $localEntityId ) );
+		$localEntity = WikibaseRepo::getEntityLookup()
+			->getEntity( WikibaseRepo::getEntityIdParser()->parse( $localEntityId ) );
 		$this->assertInstanceOf( Item::class, $localEntity );
 		$this->assertSame( 'type constraint', $localEntity->getLabels()->getByLanguage( 'en' )->getText() );
 		$this->assertEmpty( $localEntity->getSiteLinkList()->toArray() );

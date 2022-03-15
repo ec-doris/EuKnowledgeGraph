@@ -188,7 +188,7 @@ class ConstraintParameterParser {
 		$instanceId = $this->config->get( 'WBQualityConstraintsInstanceOfRelationId' );
 		$subclassId = $this->config->get( 'WBQualityConstraintsSubclassOfRelationId' );
 		$instanceOrSubclassId = $this->config->get( 'WBQualityConstraintsInstanceOrSubclassOfRelationId' );
-		switch ( $relationEntityId ) {
+		switch ( $relationEntityId->getSerialization() ) {
 			case $instanceId:
 				return 'instance';
 			case $subclassId:
@@ -557,7 +557,7 @@ class ConstraintParameterParser {
 		}
 
 		return array_map(
-			function( $snakSerialization ) use ( $exceptionId ) {
+			function ( $snakSerialization ) use ( $exceptionId ) {
 				return $this->parseEntityIdParameter( $snakSerialization, $exceptionId );
 			},
 			$constraintParameters[$exceptionId]
@@ -690,7 +690,11 @@ class ConstraintParameterParser {
 	 * @throws ConstraintParameterException if the parameter is invalid
 	 * @return string[]|null Context::TYPE_* constants
 	 */
-	public function parseConstraintScopeParameter( array $constraintParameters, $constraintTypeItemId, array $validScopes = null ) {
+	public function parseConstraintScopeParameter(
+		array $constraintParameters,
+		$constraintTypeItemId,
+		array $validScopes = null
+	) {
 		$contextTypes = [];
 		$parameterId = $this->config->get( 'WBQualityConstraintsConstraintScopeId' );
 		$items = $this->parseItemsParameter(
@@ -932,7 +936,11 @@ class ConstraintParameterParser {
 			case $referencesId:
 				return Context::TYPE_REFERENCE;
 			default:
-				$allowed = [ $mainSnakId, $qualifiersId, $referencesId ];
+				$allowed = [
+					new ItemId( $mainSnakId ),
+					new ItemId( $qualifiersId ),
+					new ItemId( $referencesId ),
+				];
 				throw new ConstraintParameterException(
 					( new ViolationMessage( 'wbqc-violation-message-parameter-oneof' ) )
 						->withEntityId( new PropertyId( $parameterId ), Role::CONSTRAINT_PARAMETER_PROPERTY )

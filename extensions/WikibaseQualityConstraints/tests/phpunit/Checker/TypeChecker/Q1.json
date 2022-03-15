@@ -1,61 +1,61 @@
 {
-  "pageid": 2076,
-  "ns": 0,
-  "title": "Q1",
-  "lastrevid": 11029,
-  "modified": "2015-04-01T13:51:03Z",
-  "id": "Q1",
-  "type": "item",
-  "labels": {
-    "en": {
-      "language": "en",
-      "value": "TestItemType"
-    }
-  },
-  "descriptions": {
-    "en": {
-      "language": "en",
-      "value": "Used for tests"
-    }
-  },
-  "claims": {
-    "P31": [
-      {
-        "id": "Q1$56e6a474-4431-fb24-cc15-1d580e467559",
-        "mainsnak": {
-          "snaktype": "value",
-          "property": "P31",
-          "datatype": "wikibase-item",
-          "datavalue": {
-            "value": {
-              "entity-type": "item",
-              "numeric-id": 100
-            },
-            "type": "wikibase-entityid"
-          }
-        },
-        "type": "statement",
-        "rank": "normal"
-      }
-    ],
-    "P1": [
-      {
-        "id": "Q1$e35707be-4a84-61fe-9b52-623784a316a7",
-        "mainsnak": {
-          "snaktype": "value",
-          "property": "P1",
-          "datatype": "wikibase-item",
-          "datavalue": {
-            "value": {
-              "entity-type": "item",
-              "numeric-id": 42
-            },
-            "type": "wikibase-entityid"
-          }
-        },
-        "type": "statement",
-        "rank": "normal"
-      }
-    ]
-  }
+	"pageid": 2076,
+	"ns": 0,
+	"title": "Q1",
+	"lastrevid": 11029,
+	"modified": "2015-04-01T13:51:03Z",
+	"id": "Q1",
+	"type": "item",
+	"labels": {
+		"en": {
+			"language": "en",
+			"value": "TestItemType"
+		}
+	},
+	"descriptions": {
+		"en": {
+			"language": "en",
+			"value": "Used for tests"
+		}
+	},
+	"claims": {
+		"P31": [
+			{
+				"id": "Q1$56e6a474-4431-fb24-cc15-1d580e467559",
+				"mainsnak": {
+					"snaktype": "value",
+					"property": "P31",
+					"datatype": "wikibase-item",
+					"datavalue": {
+						"value": {
+							"entity-type": "item",
+							"numeric-id": 100
+						},
+						"type": "wikibase-entityid"
+					}
+				},
+				"type": "statement",
+				"rank": "normal"
+			}
+		],
+		"P1": [
+			{
+				"id": "Q1$e35707be-4a84-61fe-9b52-623784a316a7",
+				"mainsnak": {
+					"snaktype": "value",
+					"property": "P1",
+					"datatype": "wikibase-item",
+					"datavalue": {
+						"value": {
+							"entity-type": "item",
+							"numeric-id": 42
+						},
+						"type": "wikibase-entityid"
+					}
+				},
+				"type": "statement",
+				"rank": "normal"
+			}
+		]
+	}
 }

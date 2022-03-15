@@ -2,8 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Pebaryan",
-			"Zakiy",
-			"RXerself"
+			"RXerself",
+			"Zakiy"
 		]
 	},
 	"wbqc-constraintreport": "Laporan pewatas",
@@ -62,6 +62,7 @@
 	"wbqc-violation-message-value-needed-of-type": "Atribut dengan pewatas \"$1\" seharusnya memiliki nilai dengan jenis \"$2\".",
 	"wbqc-violation-message-value-needed-of-types-2": "Atribut dengan pewatas \"$1\" seharusnya memiliki nilai dengan jenis \"$2\" atau \"$3\".",
 	"wbqc-violation-message-parameter-needed": "Atribut dengan pewatas \"$1\" seharusnya memiliki parameter \"$2\".",
+	"wbqc-violation-message-parameters-needed-3": "Atribut dengan pewatas \"$1\" seharusnya memiliki parameter \"$2\", \n\"$3\", dan \"$4\".",
 	"wbqc-violation-message-target-entity-must-exist": "Entitas yang dituju tidak ditemukan.",
 	"wbqc-violation-message-value-entity-must-exist": "Entitas nilai tidak ditemukan.",
 	"wbqc-violation-message-parameter-value": "Parameter \"$1\" seharusnya memiliki nilai tertentu selain \"tanpa nilai\" atau \"nilai tidak diketahui\".",

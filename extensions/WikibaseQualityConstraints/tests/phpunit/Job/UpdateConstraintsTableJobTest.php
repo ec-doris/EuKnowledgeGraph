@@ -20,6 +20,7 @@ use Wikibase\DataModel\Statement\StatementList;
 use Wikibase\Lib\Store\EntityRevision;
 use Wikibase\Lib\Store\EntityRevisionLookup;
 use Wikibase\Lib\Store\LookupConstants;
+use Wikibase\Lib\Tests\Store\Sql\Terms\Util\FakeLBFactory;
 use Wikibase\Lib\Tests\Store\Sql\Terms\Util\FakeLoadBalancer;
 use Wikibase\Repo\Tests\NewStatement;
 use Wikibase\Repo\WikibaseRepo;
@@ -27,6 +28,9 @@ use WikibaseQuality\ConstraintReport\ConstraintRepositoryStore;
 use WikibaseQuality\ConstraintReport\ConstraintsServices;
 use WikibaseQuality\ConstraintReport\Job\UpdateConstraintsTableJob;
 use WikibaseQuality\ConstraintReport\Tests\DefaultConfig;
+use Wikimedia\Rdbms\IDatabase;
+use Wikimedia\Rdbms\ILBFactory;
+use Wikimedia\Rdbms\ILoadBalancer;
 
 /**
  * @covers WikibaseQuality\ConstraintReport\Job\UpdateConstraintsTableJob
@@ -122,8 +126,7 @@ class UpdateConstraintsTableJobTest extends MediaWikiTestCase {
 			$snakP2305,
 		] );
 		$parameters = $job->extractParametersFromQualifiers( $qualifiers );
-		$deserializer = WikibaseRepo::getDefaultInstance()
-			->getBaseDataModelDeserializerFactory()
+		$deserializer = WikibaseRepo::getBaseDataModelDeserializerFactory()
 			->newSnakDeserializer();
 		$this->assertEquals( $snakP2308A, $deserializer->deserialize( $parameters['P2308'][0] ) );
 		$this->assertEquals( $snakP1646, $deserializer->deserialize( $parameters['P1646'][0] ) );
@@ -198,13 +201,12 @@ class UpdateConstraintsTableJobTest extends MediaWikiTestCase {
 
 		$constraint = $job->extractConstraintFromStatement( new PropertyId( 'P2' ), $statement );
 
-		$snakSerializer = WikibaseRepo::getDefaultInstance()
-			->getBaseDataModelSerializerFactory()
+		$snakSerializer = WikibaseRepo::getBaseDataModelSerializerFactory()
 			->newSnakSerializer();
 		$this->assertEquals( $typeId, $constraint->getConstraintTypeItemId() );
 		$this->assertEquals( new PropertyId( 'P2' ), $constraint->getPropertyId() );
 		$this->assertEquals( $statementGuid, $constraint->getConstraintId() );
-		$this->assertEquals(
+		$this->assertSame(
 			[
 				$classId => [
 					$snakSerializer->serialize( $classHumanSnak ),
@@ -327,7 +329,7 @@ class UpdateConstraintsTableJobTest extends MediaWikiTestCase {
 		$constraintRepository->expects( $this->once() )
 			->method( 'insertBatch' )
 			->with( $this->callback(
-				function( array $constraints ) use ( $usedForValuesOnlyId, $usedAsQualifierId ) {
+				function ( array $constraints ) use ( $usedForValuesOnlyId, $usedAsQualifierId ) {
 					$this->assertCount( 2, $constraints );
 					$this->assertSame( $usedForValuesOnlyId, $constraints[0]->getConstraintTypeItemId() );
 					$this->assertSame( $usedAsQualifierId, $constraints[1]->getConstraintTypeItemId() );
@@ -342,8 +344,9 @@ class UpdateConstraintsTableJobTest extends MediaWikiTestCase {
 			null,
 			$config,
 			$constraintRepository,
+			$this->mockLBFactory(),
 			$entityRevisionLookup,
-			WikibaseRepo::getDefaultInstance()->getBaseDataModelSerializerFactory()->newSnakSerializer()
+			WikibaseRepo::getBaseDataModelSerializerFactory()->newSnakSerializer()
 		);
 		$job->importConstraintsForProperty(
 			$property,
@@ -372,15 +375,17 @@ class UpdateConstraintsTableJobTest extends MediaWikiTestCase {
 			->with( $property->getId(), 0, LookupConstants::LATEST_FROM_REPLICA )
 			->willReturn( new EntityRevision( $property ) );
 
+		$lb = new FakeLoadBalancer( [ 'dbr' => $this->db ] );
 		$job = new UpdateConstraintsTableJob(
 			Title::newFromText( 'constraintsTableUpdate' ),
 			[],
 			'P2',
 			null,
 			$this->getDefaultConfig(),
-			new ConstraintRepositoryStore( new FakeLoadBalancer( [ 'dbr' => $this->db ] ), false ),
+			new ConstraintRepositoryStore( $lb, false ),
+			new FakeLBFactory( [ 'lb' => $lb ] ),
 			$entityRevisionLookup,
-			WikibaseRepo::getDefaultInstance()->getBaseDataModelSerializerFactory()->newSnakSerializer()
+			WikibaseRepo::getBaseDataModelSerializerFactory()->newSnakSerializer()
 		);
 
 		$job->run();
@@ -430,6 +435,15 @@ class UpdateConstraintsTableJobTest extends MediaWikiTestCase {
 			TimeValue::PRECISION_DAY,
 			TimeValue::CALENDAR_GREGORIAN
 		);
+	}
+
+	private function mockLBFactory(): ILBFactory {
+		$connection = $this->createMock( IDatabase::class );
+		$loadBalancer = $this->createMock( ILoadBalancer::class );
+		$loadBalancer->method( 'getConnection' )->willReturn( $connection );
+		$lbFactory = $this->createMock( ILBFactory::class );
+		$lbFactory->method( 'getMainLB' )->willReturn( $loadBalancer );
+		return $lbFactory;
 	}
 
 }

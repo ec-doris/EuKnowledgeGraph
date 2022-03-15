@@ -42,12 +42,12 @@ class CheckResultsRendererTest extends \PHPUnit\Framework\TestCase {
 		$entityIdFormatter = new PlainEntityIdFormatter();
 		$entityTitleLookup = $this->createMock( EntityTitleLookup::class );
 		$entityTitleLookup->method( 'getTitleForId' )
-			->will( $this->returnCallback( function( EntityId $id ) {
+			->will( $this->returnCallback( function ( EntityId $id ) {
 				$title = $this->createMock( Title::class );
 				$title->method( 'getFullUrl' )
 					->willReturn( 'http://wiki.test/' . $id->getSerialization() );
 				$title->method( 'getTalkPageIfDefined' )
-					->will( $this->returnCallback( function() use ( $id ) {
+					->will( $this->returnCallback( function () use ( $id ) {
 						$title = $this->createMock( Title::class );
 						$title->method( 'getFullUrl' )
 							->willReturn( 'http://wiki.test/Talk:' . $id->getSerialization() );

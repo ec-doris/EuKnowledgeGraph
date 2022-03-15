@@ -16,56 +16,56 @@ class Role {
 	 *
 	 * @var string
 	 */
-	const SUBJECT = 'subject';
+	public const SUBJECT = 'subject';
 
 	/**
 	 * Indicates that a formatted value acts as the predicate of a statement.
 	 *
 	 * @var string
 	 */
-	const PREDICATE = 'predicate';
+	public const PREDICATE = 'predicate';
 
 	/**
 	 * Indicates that a formatted value acts as the object of a statement.
 	 *
 	 * @var string
 	 */
-	const OBJECT = 'object';
+	public const OBJECT = 'object';
 
 	/**
 	 * Indicates that a formatted value is the property that introduced a constraint.
 	 *
 	 * @var string
 	 */
-	const CONSTRAINT_PROPERTY = 'constraint-property';
+	public const CONSTRAINT_PROPERTY = 'constraint-property';
 
 	/**
 	 * Indicates that a formatted value acts as the predicate of a qualifier.
 	 *
 	 * @var string
 	 */
-	const QUALIFIER_PREDICATE = 'qualifier-predicate';
+	public const QUALIFIER_PREDICATE = 'qualifier-predicate';
 
 	/**
 	 * Indicates that a formatted value is the property for a constraint parameter.
 	 *
 	 * @var string
 	 */
-	const CONSTRAINT_PARAMETER_PROPERTY = 'constraint-parameter-property';
+	public const CONSTRAINT_PARAMETER_PROPERTY = 'constraint-parameter-property';
 
 	/**
 	 * Indicates that a formatted value is the value for a constraint parameter.
 	 *
 	 * @var string
 	 */
-	const CONSTRAINT_PARAMETER_VALUE = 'constraint-parameter-value';
+	public const CONSTRAINT_PARAMETER_VALUE = 'constraint-parameter-value';
 
 	/**
 	 * Indicates that a formatted value is the item for a constraint type.
 	 *
 	 * @var string
 	 */
-	const CONSTRAINT_TYPE_ITEM = 'constraint-type-item';
+	public const CONSTRAINT_TYPE_ITEM = 'constraint-type-item';
 
 	/**
 	 * @codeCoverageIgnore

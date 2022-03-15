@@ -2,10 +2,11 @@
 	"@metadata": {
 		"authors": [
 			"Darcy Le",
+			"Ioe2015",
 			"KhangND",
 			"Minh Nguyen",
-			"Ioe2015",
-			"Vinhtantran"
+			"Vinhtantran",
+			"NguoiDungKhongDinhDanh"
 		]
 	},
 	"wbqc-constraintreport": "Báo cáo về ràng buộc",
@@ -25,7 +26,7 @@
 	"wbqc-constraintreport-status-exception": "Ngoại lệ",
 	"wbqc-constraintreport-status-todo": "Chờ kiểm tra",
 	"wbqc-constraintreport-status-bad-parameters": "Tham số hỏng",
-	"wbqc-constraintreport-status-deprecated": "Bị phản đối",
+	"wbqc-constraintreport-status-deprecated": "Lỗi thời",
 	"wbqc-constraintreport-status-warning": "Cảnh báo",
 	"wbqc-constraintreport-status-suggestion": "Gợi ý",
 	"wbqc-constraintreport-status-not-in-scope": "Ngoài phạm vi",

@@ -101,7 +101,9 @@ class TypeCheckerHelperTest extends \PHPUnit\Framework\TestCase {
 
 	public function testHasClassInRelation_Invalid() {
 		$statement1 = new Statement( new PropertyValueSnak( new PropertyId( 'P1' ), new EntityIdValue( new ItemId( 'Q42' ) ) ) );
-		$statement2 = new Statement( new PropertyValueSnak( new PropertyId( 'P31' ), new EntityIdValue( new ItemId( 'Q100' ) ) ) );
+		$statement2 = new Statement(
+			new PropertyValueSnak( new PropertyId( 'P31' ), new EntityIdValue( new ItemId( 'Q100' ) ) )
+		);
 		$statements = new StatementList( [ $statement1, $statement2 ] );
 		$this->assertFalse( $this->getHelper()->hasClassInRelation( $statements, [ 'P31' ], [ 'Q1' ] )->getBool() );
 	}
@@ -178,11 +180,15 @@ class TypeCheckerHelperTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testIsSubclassOf_ValidWithIndirection() {
-		$this->assertTrue( $this->getHelper()->isSubclassOfWithSparqlFallback( new ItemId( 'Q6' ), [ 'Q100', 'Q101' ] )->getBool() );
+		$this->assertTrue(
+			$this->getHelper()->isSubclassOfWithSparqlFallback( new ItemId( 'Q6' ), [ 'Q100', 'Q101' ] )->getBool()
+		);
 	}
 
 	public function testIsSubclassOf_Invalid() {
-		$this->assertFalse( $this->getHelper()->isSubclassOfWithSparqlFallback( new ItemId( 'Q6' ), [ 'Q200', 'Q201' ] )->getBool() );
+		$this->assertFalse(
+			$this->getHelper()->isSubclassOfWithSparqlFallback( new ItemId( 'Q6' ), [ 'Q200', 'Q201' ] )->getBool()
+		);
 	}
 
 	public function testIsSubclassOf_Cyclic() {

@@ -16,9 +16,9 @@ use Wikibase\DataModel\Services\Lookup\PropertyDataTypeLookup;
  */
 class WikibaseServices {
 
-	const ENTITY_LOOKUP = 'WBQC_EntityLookup';
-	const PROPERTY_DATA_TYPE_LOOKUP = 'WBQC_PropertyDataTypeLookup';
-	const ENTITY_LOOKUP_WITHOUT_CACHE = 'WBQC_EntityLookupWithoutCache';
+	public const ENTITY_LOOKUP = 'WBQC_EntityLookup';
+	public const PROPERTY_DATA_TYPE_LOOKUP = 'WBQC_PropertyDataTypeLookup';
+	public const ENTITY_LOOKUP_WITHOUT_CACHE = 'WBQC_EntityLookupWithoutCache';
 
 	private static function getService( ?MediaWikiServices $services, $name ) {
 		if ( $services === null ) {

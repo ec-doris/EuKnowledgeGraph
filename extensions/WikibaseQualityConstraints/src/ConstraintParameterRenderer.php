@@ -24,7 +24,7 @@ class ConstraintParameterRenderer {
 	 *
 	 * @var int
 	 */
-	const MAX_PARAMETER_ARRAY_LENGTH = 10;
+	private const MAX_PARAMETER_ARRAY_LENGTH = 10;
 
 	/**
 	 * @var EntityIdFormatter

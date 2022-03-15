@@ -74,7 +74,7 @@
 	"wbqc-violation-message-parameter-single": "A(z) „$1” paraméternek egyetlen értéke lehet.",
 	"wbqc-violation-message-parameter-single-per-language": "A(z) „$1” paraméternek nyelvenként egyetlen értéke lehet, de több értéke van $2 ($3) nyelvhez.",
 	"wbqc-violation-message-parameter-oneof": "A(z) „$1” paraméternek {{PLURAL:$2|a(z) „$4” értéket|a következő értékek egyikét}} kell felvennie{{PLURAL:$2|1=.|2=: „$4” vagy „$5”.|:$3}}",
-	"wbqc-violation-message-parameter-regex": "„$1” nem egy érvényes reguláris kifejezés.",
+	"wbqc-violation-message-parameter-regex": "„$1” nem érvényes reguláris kifejezés.",
 	"wbqc-violation-message-sparql-error": "A SPARQL-lekérdezés hibát adott vissza.",
 	"wbqc-violation-message-parameters-error-unknown": "A kikötés paramétereinek importálása sikertelen.",
 	"wbqc-violation-message-parameters-error-toolong": "A kikötés paramétereinek importálása sikertelen, mert túl hosszúak.",

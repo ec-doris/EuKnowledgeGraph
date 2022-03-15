@@ -25,7 +25,8 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  */
 class InverseCheckerTest extends \MediaWikiTestCase {
 
-	use ConstraintParameters, ResultAssertions;
+	use ConstraintParameters;
+	use ResultAssertions;
 
 	/**
 	 * @var InMemoryEntityLookup

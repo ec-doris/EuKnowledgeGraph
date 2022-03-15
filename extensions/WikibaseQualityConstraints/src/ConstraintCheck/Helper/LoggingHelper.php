@@ -280,7 +280,10 @@ class LoggingHelper {
 		);
 	}
 
-	public function logSparqlHelperTooManyRequestsRetryAfterPresent( ConvertibleTimestamp $retryAfterTime, MWHttpRequest $request ) {
+	public function logSparqlHelperTooManyRequestsRetryAfterPresent(
+		ConvertibleTimestamp $retryAfterTime,
+		MWHttpRequest $request
+	) {
 		$this->logger->notice(
 			'Sparql API replied with status 429 and a retry-after header. Requesting to retry after {retryAfterTime}',
 			[

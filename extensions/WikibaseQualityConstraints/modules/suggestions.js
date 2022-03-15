@@ -27,8 +27,8 @@
 				d.claims[ constraintsPropertyId ].forEach( function ( c ) {
 					if ( c.mainsnak.datavalue.value.id === constraintId && c.qualifiers && c.qualifiers[ constraintQualifierOfPropertyId ] ) {
 						oneOfIds = oneOfIds.concat( c.qualifiers[ constraintQualifierOfPropertyId ]
-							.filter( function ( d ) { return d.datavalue; } )
-							.map( function ( d ) { return d.datavalue.value.id; } ) );
+							.filter( function ( filterD ) { return filterD.datavalue; } )
+							.map( function ( mapD ) { return mapD.datavalue.value.id; } ) );
 					}
 				} );
 
@@ -126,7 +126,7 @@
 			articlePathPattern = wbRepo.url + wbRepo.articlePath,
 			constraintId = null,
 			qualifierId = null,
-			filter = function ( term ) {
+			filterFunction = function ( term ) {
 				var filter = false;
 				data.term.split( ' ' ).forEach( function ( t ) {
 					if ( term.toLowerCase().indexOf( t.toLowerCase() ) === -1 ) {
@@ -157,7 +157,7 @@
 			constraintId,
 			qualifierId
 		).then( function ( oneOfIds ) {
-			return createItemsFromIds( data.options.url, data.options.language, oneOfIds, filter, articlePathPattern );
+			return createItemsFromIds( data.options.url, data.options.language, oneOfIds, filterFunction, articlePathPattern );
 		} ) );
 
 	} );

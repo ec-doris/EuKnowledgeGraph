@@ -32,14 +32,14 @@ use WikibaseQuality\ConstraintReport\Tests\SparqlHelperMock;
  */
 class UniqueValueCheckerTest extends \PHPUnit\Framework\TestCase {
 
-	use ConstraintParameters, SparqlHelperMock;
+	use ConstraintParameters;
+	use SparqlHelperMock;
+	use ResultAssertions;
 
 	/**
 	 * @var JsonFileEntityLookup
 	 */
 	private $lookup;
-
-	use ResultAssertions;
 
 	/**
 	 * @var PropertyId

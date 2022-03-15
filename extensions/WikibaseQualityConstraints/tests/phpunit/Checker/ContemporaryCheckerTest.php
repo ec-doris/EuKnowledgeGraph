@@ -28,7 +28,8 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  */
 class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 
-	use DefaultConfig, ResultAssertions;
+	use DefaultConfig;
+	use ResultAssertions;
 
 	/**
 	 * @var RangeCheckerHelper

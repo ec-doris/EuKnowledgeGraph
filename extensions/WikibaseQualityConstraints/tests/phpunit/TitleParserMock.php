@@ -14,7 +14,7 @@ trait TitleParserMock {
 	public function getTitleParserMock() {
 		$titleParser = $this->createMock( TitleParser::class );
 		$titleParser->method( 'parseTitle' )->will( $this->returnCallback(
-			function( $text, $defaultNamespace ) {
+			function ( $text, $defaultNamespace ) {
 				$exploded = explode( ':', $text, 2 );
 				if ( count( $exploded ) === 1 ) {
 					$title = $exploded[0];

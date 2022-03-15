@@ -31,7 +31,8 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  */
 class ValueTypeCheckerTest extends \MediaWikiTestCase {
 
-	use ConstraintParameters, ResultAssertions;
+	use ConstraintParameters;
+	use ResultAssertions;
 
 	/**
 	 * @var JsonFileEntityLookup
