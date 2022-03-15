@@ -23,8 +23,7 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  * @license GPL-2.0-or-later
  */
 class PropertyScopeCheckerTest extends \PHPUnit\Framework\TestCase {
-	use ResultAssertions;
-	use ConstraintParameters;
+	use ResultAssertions, ConstraintParameters;
 
 	/**
 	 * @param Context $context

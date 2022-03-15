@@ -19,31 +19,31 @@ interface Context {
 	 * @see getType()
 	 * @var string
 	 */
-	public const TYPE_STATEMENT = 'statement';
+	const TYPE_STATEMENT = 'statement';
 	/**
 	 * Type of a context for a qualifier of a statement.
 	 * @see getType()
 	 * @var string
 	 */
-	public const TYPE_QUALIFIER = 'qualifier';
+	const TYPE_QUALIFIER = 'qualifier';
 	/**
 	 * Type of a context for a snak of a reference of a statement.
 	 * @see getType()
 	 * @var string
 	 */
-	public const TYPE_REFERENCE = 'reference';
+	const TYPE_REFERENCE = 'reference';
 	/**
 	 * Grouping mode to include the snaks of all non-deprecated statements.
 	 * @see getSnakGroup()
 	 * @var string
 	 */
-	public const GROUP_NON_DEPRECATED = 'non-deprecated';
+	const GROUP_NON_DEPRECATED = 'non-deprecated';
 	/**
 	 * Grouping mode to include the snaks of the best-rank statement(s) per property.
 	 * @see getSnakGroup()
 	 * @var string
 	 */
-	public const GROUP_BEST_RANK = 'best-rank';
+	const GROUP_BEST_RANK = 'best-rank';
 
 	/**
 	 * The snak that is being checked.

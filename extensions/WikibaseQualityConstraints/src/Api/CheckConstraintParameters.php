@@ -8,11 +8,11 @@ use ApiResult;
 use Config;
 use IBufferingStatsdDataFactory;
 use InvalidArgumentException;
+use RequestContext;
 use ValueFormatters\FormatterOptions;
 use Wikibase\DataModel\Entity\PropertyId;
 use Wikibase\DataModel\Services\Statement\StatementGuidParser;
 use Wikibase\DataModel\Services\Statement\StatementGuidParsingException;
-use Wikibase\Lib\Formatters\OutputFormatValueFormatterFactory;
 use Wikibase\Lib\Formatters\SnakFormatter;
 use Wikibase\Repo\Api\ApiErrorReporter;
 use Wikibase\Repo\Api\ApiHelperFactory;
@@ -30,14 +30,14 @@ use WikibaseQuality\ConstraintReport\ConstraintCheck\Message\ViolationMessageRen
  */
 class CheckConstraintParameters extends ApiBase {
 
-	public const PARAM_PROPERTY_ID = 'propertyid';
-	public const PARAM_CONSTRAINT_ID = 'constraintid';
-	public const KEY_STATUS = 'status';
-	public const STATUS_OKAY = 'okay';
-	public const STATUS_NOT_OKAY = 'not-okay';
-	public const STATUS_NOT_FOUND = 'not-found';
-	public const KEY_PROBLEMS = 'problems';
-	public const KEY_MESSAGE_HTML = 'message-html';
+	const PARAM_PROPERTY_ID = 'propertyid';
+	const PARAM_CONSTRAINT_ID = 'constraintid';
+	const KEY_STATUS = 'status';
+	const STATUS_OKAY = 'okay';
+	const STATUS_NOT_OKAY = 'not-okay';
+	const STATUS_NOT_FOUND = 'not-found';
+	const KEY_PROBLEMS = 'problems';
+	const KEY_MESSAGE_HTML = 'message-html';
 
 	/**
 	 * @var ApiErrorReporter
@@ -72,19 +72,18 @@ class CheckConstraintParameters extends ApiBase {
 		string $name,
 		Config $config,
 		IBufferingStatsdDataFactory $dataFactory,
-		StatementGuidParser $statementGuidParser,
-		OutputFormatValueFormatterFactory $valueFormatterFactory,
 		DelegatingConstraintChecker $delegatingConstraintChecker
 	): self {
 		$repo = WikibaseRepo::getDefaultInstance();
-		$helperFactory = $repo->getApiHelperFactory( $main->getContext() );
-		$language = WikibaseRepo::getUserLanguage();
+		$helperFactory = $repo->getApiHelperFactory( RequestContext::getMain() );
+		$language = $repo->getUserLanguage();
 
 		$entityIdHtmlLinkFormatterFactory = $repo->getEntityIdHtmlLinkFormatterFactory();
 		$entityIdHtmlLinkFormatter = $entityIdHtmlLinkFormatterFactory
 			->getEntityIdFormatter( $language );
 		$formatterOptions = new FormatterOptions();
 		$formatterOptions->setOption( SnakFormatter::OPT_LANG, $language->getCode() );
+		$valueFormatterFactory = $repo->getValueFormatterFactory();
 		$dataValueFormatter = $valueFormatterFactory
 			->getValueFormatter( SnakFormatter::FORMAT_HTML, $formatterOptions );
 		$violationMessageRenderer = new MultilingualTextViolationMessageRenderer(
@@ -100,7 +99,7 @@ class CheckConstraintParameters extends ApiBase {
 			$helperFactory,
 			$delegatingConstraintChecker,
 			$violationMessageRenderer,
-			$statementGuidParser,
+			$repo->getStatementGuidParser(),
 			$dataFactory
 		);
 	}
@@ -163,7 +162,7 @@ class CheckConstraintParameters extends ApiBase {
 		}
 
 		return array_map(
-			function ( $propertyIdSerialization ) {
+			function( $propertyIdSerialization ) {
 				try {
 					return new PropertyId( $propertyIdSerialization );
 				} catch ( InvalidArgumentException $e ) {
@@ -194,7 +193,7 @@ class CheckConstraintParameters extends ApiBase {
 		}
 
 		return array_map(
-			function ( $constraintId ) {
+			function( $constraintId ) {
 				try {
 					$propertyId = $this->statementGuidParser->parse( $constraintId )->getEntityId();
 					if ( !$propertyId instanceof PropertyId ) {

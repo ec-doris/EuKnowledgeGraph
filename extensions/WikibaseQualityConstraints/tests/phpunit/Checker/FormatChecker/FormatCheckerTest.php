@@ -30,8 +30,7 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  */
 class FormatCheckerTest extends \MediaWikiTestCase {
 
-	use ConstraintParameters;
-	use ResultAssertions;
+	use ConstraintParameters, ResultAssertions;
 
 	/**
 	 * @var FormatChecker
@@ -46,7 +45,7 @@ class FormatCheckerTest extends \MediaWikiTestCase {
 					  ->getMock();
 		$sparqlHelper->method( 'matchesRegularExpression' )
 			->will( $this->returnCallback(
-				function ( $text, $regex ) {
+				function( $text, $regex ) {
 					$pattern = '/^' . str_replace( '/', '\/', $regex ) . '$/';
 					return preg_match( $pattern, $text );
 				}

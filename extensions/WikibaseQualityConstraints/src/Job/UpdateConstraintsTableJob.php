@@ -20,7 +20,6 @@ use WikibaseQuality\ConstraintReport\Constraint;
 use WikibaseQuality\ConstraintReport\ConstraintsServices;
 use WikibaseQuality\ConstraintReport\ConstraintStore;
 use Wikimedia\Assert\Assert;
-use Wikimedia\Rdbms\ILBFactory;
 
 /**
  * A job that updates the constraints table
@@ -31,28 +30,20 @@ use Wikimedia\Rdbms\ILBFactory;
  */
 class UpdateConstraintsTableJob extends Job {
 
-	/**
-	 * How many constraints to write in one transaction before waiting for replication.
-	 * Properties with more constraints than this will not be updated atomically
-	 * (they will appear to have an incomplete set of constraints for a time).
-	 */
-	private const BATCH_SIZE = 50;
+	const BATCH_SIZE = 10;
 
 	public static function newFromGlobalState( Title $title, array $params ) {
 		Assert::parameterType( 'string', $params['propertyId'], '$params["propertyId"]' );
-		$services = MediaWikiServices::getInstance();
 		$repo = WikibaseRepo::getDefaultInstance();
 		return new UpdateConstraintsTableJob(
 			$title,
 			$params,
 			$params['propertyId'],
 			$params['revisionId'] ?? null,
-			$services->getMainConfig(),
+			MediaWikiServices::getInstance()->getMainConfig(),
 			ConstraintsServices::getConstraintStore(),
-			$services->getDBLoadBalancerFactory(),
 			$repo->getEntityRevisionLookup( Store::LOOKUP_CACHING_DISABLED ),
-			WikibaseRepo::getBaseDataModelSerializerFactory( $services )
-				->newSnakSerializer()
+			$repo->getBaseDataModelSerializerFactory()->newSnakSerializer()
 		);
 	}
 
@@ -76,9 +67,6 @@ class UpdateConstraintsTableJob extends Job {
 	 */
 	private $constraintStore;
 
-	/** @var ILBFactory */
-	private $lbFactory;
-
 	/**
 	 * @var EntityRevisionLookup
 	 */
@@ -96,7 +84,6 @@ class UpdateConstraintsTableJob extends Job {
 	 * @param int|null $revisionId revision ID that triggered this job, if any
 	 * @param Config $config
 	 * @param ConstraintStore $constraintStore
-	 * @param ILBFactory $lbFactory
 	 * @param EntityRevisionLookup $entityRevisionLookup
 	 * @param Serializer $snakSerializer
 	 */
@@ -107,7 +94,6 @@ class UpdateConstraintsTableJob extends Job {
 		$revisionId,
 		Config $config,
 		ConstraintStore $constraintStore,
-		ILBFactory $lbFactory,
 		EntityRevisionLookup $entityRevisionLookup,
 		Serializer $snakSerializer
 	) {
@@ -117,7 +103,6 @@ class UpdateConstraintsTableJob extends Job {
 		$this->revisionId = $revisionId;
 		$this->config = $config;
 		$this->constraintStore = $constraintStore;
-		$this->lbFactory = $lbFactory;
 		$this->entityRevisionLookup = $entityRevisionLookup;
 		$this->snakSerializer = $snakSerializer;
 	}
@@ -165,13 +150,6 @@ class UpdateConstraintsTableJob extends Job {
 			$constraints[] = $this->extractConstraintFromStatement( $property->getId(), $constraintStatement );
 			if ( count( $constraints ) >= self::BATCH_SIZE ) {
 				$constraintStore->insertBatch( $constraints );
-				// interrupt transaction and wait for replication
-				$connection = $this->lbFactory->getMainLB()->getConnection( DB_MASTER );
-				$connection->endAtomic( __CLASS__ );
-				if ( !$connection->explicitTrxActive() ) {
-					$this->lbFactory->waitForReplication();
-				}
-				$connection->startAtomic( __CLASS__ );
 				$constraints = [];
 			}
 		}
@@ -198,11 +176,6 @@ class UpdateConstraintsTableJob extends Job {
 			return true;
 		}
 
-		$connection = $this->lbFactory->getMainLB()->getConnection( DB_MASTER );
-		// start transaction (if not started yet) – using __CLASS__, not __METHOD__,
-		// because importConstraintsForProperty() can interrupt the transaction
-		$connection->startAtomic( __CLASS__ );
-
 		$this->constraintStore->deleteForProperty( $propertyId );
 
 		/** @var Property $property */
@@ -213,8 +186,6 @@ class UpdateConstraintsTableJob extends Job {
 			$this->constraintStore,
 			new PropertyId( $this->config->get( 'WBQualityConstraintsPropertyConstraintId' ) )
 		);
-
-		$connection->endAtomic( __CLASS__ );
 
 		return true;
 	}

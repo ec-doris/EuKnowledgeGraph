@@ -6,14 +6,13 @@ use ApiBase;
 use ApiMain;
 use Config;
 use IBufferingStatsdDataFactory;
+use RequestContext;
 use ValueFormatters\FormatterOptions;
 use Wikibase\DataModel\Entity\EntityId;
 use Wikibase\DataModel\Entity\EntityIdParser;
 use Wikibase\DataModel\Entity\EntityIdParsingException;
 use Wikibase\DataModel\Services\Statement\StatementGuidValidator;
-use Wikibase\Lib\Formatters\OutputFormatValueFormatterFactory;
 use Wikibase\Lib\Formatters\SnakFormatter;
-use Wikibase\Lib\Store\EntityTitleLookup;
 use Wikibase\Repo\Api\ApiErrorReporter;
 use Wikibase\Repo\Api\ApiHelperFactory;
 use Wikibase\Repo\Api\ResultBuilder;
@@ -30,10 +29,10 @@ use WikibaseQuality\ConstraintReport\ConstraintCheck\Result\CheckResult;
  */
 class CheckConstraints extends ApiBase {
 
-	public const PARAM_ID = 'id';
-	public const PARAM_CLAIM_ID = 'claimid';
-	public const PARAM_CONSTRAINT_ID = 'constraintid';
-	public const PARAM_STATUS = 'status';
+	const PARAM_ID = 'id';
+	const PARAM_CLAIM_ID = 'claimid';
+	const PARAM_CONSTRAINT_ID = 'constraintid';
+	const PARAM_STATUS = 'status';
 
 	/**
 	 * @var EntityIdParser
@@ -70,22 +69,22 @@ class CheckConstraints extends ApiBase {
 	 */
 	private $dataFactory;
 
-	public static function factory(
+	/**
+	 * Creates new instance from global state.
+	 */
+	public static function newFromGlobalState(
 		ApiMain $main,
 		string $name,
 		Config $config,
 		IBufferingStatsdDataFactory $dataFactory,
-		EntityIdParser $entityIdParser,
-		EntityTitleLookup $entityTitleLookup,
-		StatementGuidValidator $statementGuidValidator,
-		OutputFormatValueFormatterFactory $valueFormatterFactory,
 		ResultsSource $resultsSource
 	): self {
 		$repo = WikibaseRepo::getDefaultInstance();
 
-		$language = WikibaseRepo::getUserLanguage();
+		$language = $repo->getUserLanguage();
 		$formatterOptions = new FormatterOptions();
 		$formatterOptions->setOption( SnakFormatter::OPT_LANG, $language->getCode() );
+		$valueFormatterFactory = $repo->getValueFormatterFactory();
 		$valueFormatter = $valueFormatterFactory->getValueFormatter( SnakFormatter::FORMAT_HTML, $formatterOptions );
 
 		$entityIdHtmlLinkFormatterFactory = $repo->getEntityIdHtmlLinkFormatterFactory();
@@ -94,7 +93,7 @@ class CheckConstraints extends ApiBase {
 		$entityIdLabelFormatter = $entityIdLabelFormatterFactory->getEntityIdFormatter( $language );
 
 		$checkResultsRenderer = new CheckResultsRenderer(
-			$entityTitleLookup,
+			$repo->getEntityTitleLookup(),
 			$entityIdLabelFormatter,
 			new MultilingualTextViolationMessageRenderer(
 				$entityIdHtmlLinkFormatter,
@@ -104,12 +103,12 @@ class CheckConstraints extends ApiBase {
 			)
 		);
 
-		return new self(
+		return new CheckConstraints(
 			$main,
 			$name,
-			$entityIdParser,
-			$statementGuidValidator,
-			$repo->getApiHelperFactory( $main->getContext() ),
+			$repo->getEntityIdParser(),
+			$repo->getStatementGuidValidator(),
+			$repo->getApiHelperFactory( RequestContext::getMain() ),
 			$resultsSource,
 			$checkResultsRenderer,
 			$dataFactory
@@ -235,6 +234,7 @@ class CheckConstraints extends ApiBase {
 			$this->errorReporter->dieError(
 				"If $paramConstraintId is specified, it must be nonempty.", 'no-data' );
 		}
+		// @phan-suppress-next-line PhanTypePossiblyInvalidDimOffset
 		if ( $params[self::PARAM_ID] === null && $params[self::PARAM_CLAIM_ID] === null ) {
 			$paramId = self::PARAM_ID;
 			$paramClaimId = self::PARAM_CLAIM_ID;

@@ -2,9 +2,9 @@
 	"@metadata": {
 		"authors": [
 			"McSalama",
-			"Moj",
 			"Nike",
-			"Pyscowicz"
+			"Pyscowicz",
+			"Moj"
 		]
 	},
 	"wbqc-constraintreport-not-existent-entity": "Yhteisöä ei ole!",

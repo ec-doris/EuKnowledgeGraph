@@ -22,21 +22,21 @@ use WikibaseQuality\ConstraintReport\ConstraintCheck\Result\CheckResultSerialize
  */
 class ConstraintsServices {
 
-	public const LOGGING_HELPER = 'WBQC_LoggingHelper';
-	public const CONSTRAINT_STORE = 'WBQC_ConstraintStore';
-	public const CONSTRAINT_LOOKUP = 'WBQC_ConstraintLookup';
-	public const CHECK_RESULT_SERIALIZER = 'WBQC_CheckResultSerializer';
-	public const CHECK_RESULT_DESERIALIZER = 'WBQC_CheckResultDeserializer';
-	public const VIOLATION_MESSAGE_SERIALIZER = 'WBQC_ViolationMessageSerializer';
-	public const VIOLATION_MESSAGE_DESERIALIZER = 'WBQC_ViolationMessageDeserializer';
-	public const CONSTRAINT_PARAMETER_PARSER = 'WBQC_ConstraintParameterParser';
-	public const CONNECTION_CHECKER_HELPER = 'WBQC_ConnectionCheckerHelper';
-	public const RANGE_CHECKER_HELPER = 'WBQC_RangeCheckerHelper';
-	public const SPARQL_HELPER = 'WBQC_SparqlHelper';
-	public const TYPE_CHECKER_HELPER = 'WBQC_TypeCheckerHelper';
-	public const DELEGATING_CONSTRAINT_CHECKER = 'WBQC_DelegatingConstraintChecker';
-	public const RESULTS_SOURCE = 'WBQC_ResultsSource';
-	public const EXPIRY_LOCK = 'WBQC_ExpiryLock';
+	const LOGGING_HELPER = 'WBQC_LoggingHelper';
+	const CONSTRAINT_STORE = 'WBQC_ConstraintStore';
+	const CONSTRAINT_LOOKUP = 'WBQC_ConstraintLookup';
+	const CHECK_RESULT_SERIALIZER = 'WBQC_CheckResultSerializer';
+	const CHECK_RESULT_DESERIALIZER = 'WBQC_CheckResultDeserializer';
+	const VIOLATION_MESSAGE_SERIALIZER = 'WBQC_ViolationMessageSerializer';
+	const VIOLATION_MESSAGE_DESERIALIZER = 'WBQC_ViolationMessageDeserializer';
+	const CONSTRAINT_PARAMETER_PARSER = 'WBQC_ConstraintParameterParser';
+	const CONNECTION_CHECKER_HELPER = 'WBQC_ConnectionCheckerHelper';
+	const RANGE_CHECKER_HELPER = 'WBQC_RangeCheckerHelper';
+	const SPARQL_HELPER = 'WBQC_SparqlHelper';
+	const TYPE_CHECKER_HELPER = 'WBQC_TypeCheckerHelper';
+	const DELEGATING_CONSTRAINT_CHECKER = 'WBQC_DelegatingConstraintChecker';
+	const RESULTS_SOURCE = 'WBQC_ResultsSource';
+	const EXPIRY_LOCK = 'WBQC_ExpiryLock';
 
 	private static function getService( ?MediaWikiServices $services, $name ) {
 		if ( $services === null ) {
@@ -117,7 +117,10 @@ class ConstraintsServices {
 		return self::getService( $services, self::RESULTS_SOURCE );
 	}
 
-	public static function getExpiryLock( MediaWikiServices $services = null ): ExpiryLock {
+	/**
+	 * @return ExpiryLock
+	 */
+	public static function getExpiryLock( MediaWikiServices $services = null ) {
 		return self::getService( $services, self::EXPIRY_LOCK );
 	}
 

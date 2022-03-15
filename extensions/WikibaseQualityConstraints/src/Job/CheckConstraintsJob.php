@@ -21,7 +21,7 @@ use Wikimedia\Assert\Assert;
  */
 class CheckConstraintsJob extends Job {
 
-	public const COMMAND = 'constraintsRunCheck';
+	const COMMAND = 'constraintsRunCheck';
 
 	/**
 	 * @var CachingResultsSource
@@ -48,7 +48,7 @@ class CheckConstraintsJob extends Job {
 		// This job should only ever be used when caching result sources are used.
 		$this->setResultsSource( $resultSource );
 
-		$this->setEntityIdParser( WikibaseRepo::getEntityIdParser() );
+		$this->setEntityIdParser( WikibaseRepo::getDefaultInstance()->getEntityIdParser() );
 	}
 
 	public function setResultsSource( CachingResultsSource $resultsSource ) {

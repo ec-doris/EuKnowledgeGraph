@@ -46,13 +46,13 @@ class ContemporaryChecker implements ConstraintChecker {
 	 * Name of the configuration variable for the array of IDs of the properties that
 	 * state the start time of the entities.
 	 */
-	public const CONFIG_VARIABLE_START_PROPERTY_IDS = 'WBQualityConstraintsStartTimePropertyIds';
+	const CONFIG_VARIABLE_START_PROPERTY_IDS = 'WBQualityConstraintsStartTimePropertyIds';
 
 	/**
 	 * Name of the configuration variable for the array of IDs of the properties that
 	 * state the end time of the entities.
 	 */
-	public const CONFIG_VARIABLE_END_PROPERTY_IDS = 'WBQualityConstraintsEndTimePropertyIds';
+	const CONFIG_VARIABLE_END_PROPERTY_IDS = 'WBQualityConstraintsEndTimePropertyIds';
 
 	public function __construct(
 		EntityLookup $entityLookup,

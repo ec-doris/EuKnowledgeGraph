@@ -30,8 +30,7 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  */
 class CommonsLinkCheckerTest extends \MediaWikiTestCase {
 
-	use ConstraintParameters;
-	use ResultAssertions;
+	use ConstraintParameters, ResultAssertions;
 
 	/**
 	 * @var CommonsLinkChecker

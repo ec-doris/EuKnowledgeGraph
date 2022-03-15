@@ -23,8 +23,7 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  */
 class TargetRequiredClaimCheckerTest extends \MediaWikiTestCase {
 
-	use ConstraintParameters;
-	use ResultAssertions;
+	use ConstraintParameters, ResultAssertions;
 
 	/**
 	 * @var InMemoryEntityLookup

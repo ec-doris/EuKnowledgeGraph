@@ -29,21 +29,19 @@ final class WikibaseQualityConstraintsHooks {
 	 * @param DatabaseUpdater $updater
 	 */
 	public static function onCreateSchema( DatabaseUpdater $updater ) {
-		$dir = dirname( __DIR__ ) . '/sql/';
-
 		$updater->addExtensionTable(
 			'wbqc_constraints',
-			$dir . "/{$updater->getDB()->getType()}/tables-generated.sql"
+			__DIR__ . '/../sql/create_wbqc_constraints.sql'
 		);
 		$updater->addExtensionField(
 			'wbqc_constraints',
 			'constraint_id',
-			$dir . '/patch-wbqc_constraints-constraint_id.sql'
+			__DIR__ . '/../sql/patch-wbqc_constraints-constraint_id.sql'
 		);
 		$updater->addExtensionIndex(
 			'wbqc_constraints',
 			'wbqc_constraints_guid_uniq',
-			$dir . '/patch-wbqc_constraints-wbqc_constraints_guid_uniq.sql'
+			__DIR__ . '/../sql/patch-wbqc_constraints-wbqc_constraints_guid_uniq.sql'
 		);
 	}
 
@@ -62,7 +60,7 @@ final class WikibaseQualityConstraintsHooks {
 			self::isSelectedForJobRunBasedOnPercentage()
 		) {
 			$params = [ 'entityId' => $change->getEntityId()->getSerialization() ];
-			JobQueueGroup::singleton()->lazyPush(
+			JobQueueGroup::singleton()->push(
 				new JobSpecification( CheckConstraintsJob::COMMAND, $params )
 			);
 		}
@@ -112,9 +110,11 @@ final class WikibaseQualityConstraintsHooks {
 	}
 
 	public static function onArticlePurge( WikiPage $wikiPage ) {
-		$entityContentFactory = WikibaseRepo::getEntityContentFactory();
+		$repo = WikibaseRepo::getDefaultInstance();
+
+		$entityContentFactory = $repo->getEntityContentFactory();
 		if ( $entityContentFactory->isEntityContentModel( $wikiPage->getContentModel() ) ) {
-			$entityIdLookup = WikibaseRepo::getEntityIdLookup();
+			$entityIdLookup = $repo->getEntityIdLookup();
 			$entityId = $entityIdLookup->getEntityIdForTitle( $wikiPage->getTitle() );
 			if ( $entityId !== null ) {
 				$resultsCache = ResultsCache::getDefaultInstance();
@@ -124,7 +124,9 @@ final class WikibaseQualityConstraintsHooks {
 	}
 
 	public static function onBeforePageDisplay( OutputPage $out, Skin $skin ) {
-		$lookup = WikibaseRepo::getEntityNamespaceLookup();
+		$repo = WikibaseRepo::getDefaultInstance();
+
+		$lookup = $repo->getEntityNamespaceLookup();
 		$title = $out->getTitle();
 		if ( $title === null ) {
 			return;
@@ -139,7 +141,7 @@ final class WikibaseQualityConstraintsHooks {
 
 		$out->addModules( 'wikibase.quality.constraints.suggestions' );
 
-		if ( !$out->getUser()->isRegistered() ) {
+		if ( !$out->getUser()->isLoggedIn() ) {
 			return;
 		}
 

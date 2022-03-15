@@ -59,7 +59,7 @@ class HtmlTableCellBuilderTest extends \MediaWikiUnitTestCase {
 		$cell = new HtmlTableCellBuilder( $content, $attributes );
 		$actualHtml = $cell->toHtml();
 
-		$this->assertSame( $expectedHtml, $actualHtml );
+		$this->assertEquals( $expectedHtml, $actualHtml );
 	}
 
 	/**

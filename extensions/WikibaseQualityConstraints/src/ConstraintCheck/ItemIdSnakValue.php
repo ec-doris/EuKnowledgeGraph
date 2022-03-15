@@ -27,6 +27,7 @@ class ItemIdSnakValue {
 	/**
 	 * @var bool
 	 */
+
 	private $some = false;
 
 	/**

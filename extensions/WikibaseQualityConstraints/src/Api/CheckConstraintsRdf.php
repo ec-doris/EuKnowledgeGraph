@@ -16,8 +16,6 @@ use Wikimedia\Purtle\RdfWriterFactory;
 /**
  * Produce constraint check results in RDF.
  * Only returns cached constraint check results for now.
- *
- * @license GPL-2.0-or-later
  */
 class CheckConstraintsRdf extends FormlessAction {
 
@@ -63,12 +61,14 @@ class CheckConstraintsRdf extends FormlessAction {
 		object $page,
 		IContextSource $context
 	) {
+		$repo = WikibaseRepo::getDefaultInstance();
+
 		return new static(
 			$page,
 			$context,
 			ConstraintsServices::getResultsSource(),
-			WikibaseRepo::getEntityIdLookup(),
-			WikibaseRepo::getRdfVocabulary()
+			$repo->getEntityIdLookup(),
+			$repo->getRdfVocabulary()
 		);
 	}
 

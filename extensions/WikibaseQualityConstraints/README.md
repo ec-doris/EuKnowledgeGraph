@@ -153,7 +153,7 @@ To add a new constraint type, the following steps are necessary:
 * Register the new constraint type checker.
   * In `ConstraintCheckerServices.php`, add a constant like
     ```php
-    public const …_CHECKER = 'WBQC_…Checker';
+    const …_CHECKER => 'WBQC_…Checker';
     ```
     at the end of the list of constants.
     The value should be `'WBQC_'` followed by the class name,

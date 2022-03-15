@@ -1,5 +1,6 @@
 <?php
 
+
 namespace WikibaseQuality\ConstraintReport\Tests;
 
 use HashConfig;
@@ -77,18 +78,12 @@ class ServicesTest extends MediaWikiTestCase {
 			[ ConstraintParameterParser::class ],
 			[ ConnectionCheckerHelper::class ],
 			[ RangeCheckerHelper::class ],
-			[ SparqlHelper::class, [
-				'config' => new HashConfig( [ 'WBQualityConstraintsSparqlEndpoint' => 'http://f.oo/sparql' ] ) ]
-			],
+			[ SparqlHelper::class, [ 'config' => new HashConfig( [ 'WBQualityConstraintsSparqlEndpoint' => 'http://f.oo/sparql' ] ) ] ],
 			[ SparqlHelper::class, [ 'config' => new HashConfig( [ 'WBQualityConstraintsSparqlEndpoint' => '' ] ) ] ],
 			[ TypeCheckerHelper::class ],
 			[ DelegatingConstraintChecker::class ],
-			[ ResultsSource::class, [
-				'config' => new HashConfig( [ 'WBQualityConstraintsCacheCheckConstraintsResults' => true ] ) ]
-			],
-			[ ResultsSource::class, [
-				'config' => new HashConfig( [ 'WBQualityConstraintsCacheCheckConstraintsResults' => false ] ) ]
-			],
+			[ ResultsSource::class, [ 'config' => new HashConfig( [ 'WBQualityConstraintsCacheCheckConstraintsResults' => true ] ) ] ],
+			[ ResultsSource::class, [ 'config' => new HashConfig( [ 'WBQualityConstraintsCacheCheckConstraintsResults' => false ] ) ] ],
 		];
 	}
 

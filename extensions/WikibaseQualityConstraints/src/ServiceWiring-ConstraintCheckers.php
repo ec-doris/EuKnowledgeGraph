@@ -36,21 +36,21 @@ use WikibaseQuality\ConstraintReport\ConstraintCheck\Checker\ValueOnlyChecker;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Checker\ValueTypeChecker;
 
 return [
-	ConstraintCheckerServices::CONFLICTS_WITH_CHECKER => function ( MediaWikiServices $services ) {
+	ConstraintCheckerServices::CONFLICTS_WITH_CHECKER => function( MediaWikiServices $services ) {
 		return new ConflictsWithChecker(
 			ConstraintsServices::getConstraintParameterParser( $services ),
 			ConstraintsServices::getConnectionCheckerHelper( $services )
 		);
 	},
 
-	ConstraintCheckerServices::ITEM_CHECKER => function ( MediaWikiServices $services ) {
+	ConstraintCheckerServices::ITEM_CHECKER => function( MediaWikiServices $services ) {
 		return new ItemChecker(
 			ConstraintsServices::getConstraintParameterParser( $services ),
 			ConstraintsServices::getConnectionCheckerHelper( $services )
 		);
 	},
 
-	ConstraintCheckerServices::TARGET_REQUIRED_CLAIM_CHECKER => function ( MediaWikiServices $services ) {
+	ConstraintCheckerServices::TARGET_REQUIRED_CLAIM_CHECKER => function( MediaWikiServices $services ) {
 		return new TargetRequiredClaimChecker(
 			WikibaseServices::getEntityLookup( $services ),
 			ConstraintsServices::getConstraintParameterParser( $services ),
@@ -58,14 +58,14 @@ return [
 		);
 	},
 
-	ConstraintCheckerServices::SYMMETRIC_CHECKER => function ( MediaWikiServices $services ) {
+	ConstraintCheckerServices::SYMMETRIC_CHECKER => function( MediaWikiServices $services ) {
 		return new SymmetricChecker(
 			WikibaseServices::getEntityLookupWithoutCache( $services ),
 			ConstraintsServices::getConnectionCheckerHelper( $services )
 		);
 	},
 
-	ConstraintCheckerServices::INVERSE_CHECKER => function ( MediaWikiServices $services ) {
+	ConstraintCheckerServices::INVERSE_CHECKER => function( MediaWikiServices $services ) {
 		return new InverseChecker(
 			WikibaseServices::getEntityLookup( $services ),
 			ConstraintsServices::getConstraintParameterParser( $services ),
@@ -73,23 +73,23 @@ return [
 		);
 	},
 
-	ConstraintCheckerServices::QUALIFIER_CHECKER => function ( MediaWikiServices $services ) {
+	ConstraintCheckerServices::QUALIFIER_CHECKER => function( MediaWikiServices $services ) {
 		return new QualifierChecker();
 	},
 
-	ConstraintCheckerServices::QUALIFIERS_CHECKER => function ( MediaWikiServices $services ) {
+	ConstraintCheckerServices::QUALIFIERS_CHECKER => function( MediaWikiServices $services ) {
 		return new QualifiersChecker(
 			ConstraintsServices::getConstraintParameterParser( $services )
 		);
 	},
 
-	ConstraintCheckerServices::MANDATORY_QUALIFIERS_CHECKER => function ( MediaWikiServices $services ) {
+	ConstraintCheckerServices::MANDATORY_QUALIFIERS_CHECKER => function( MediaWikiServices $services ) {
 		return new MandatoryQualifiersChecker(
 			ConstraintsServices::getConstraintParameterParser( $services )
 		);
 	},
 
-	ConstraintCheckerServices::RANGE_CHECKER => function ( MediaWikiServices $services ) {
+	ConstraintCheckerServices::RANGE_CHECKER => function( MediaWikiServices $services ) {
 		return new RangeChecker(
 			WikibaseServices::getPropertyDataTypeLookup( $services ),
 			ConstraintsServices::getConstraintParameterParser( $services ),
@@ -97,7 +97,7 @@ return [
 		);
 	},
 
-	ConstraintCheckerServices::DIFF_WITHIN_RANGE_CHECKER => function ( MediaWikiServices $services ) {
+	ConstraintCheckerServices::DIFF_WITHIN_RANGE_CHECKER => function( MediaWikiServices $services ) {
 		return new DiffWithinRangeChecker(
 			ConstraintsServices::getConstraintParameterParser( $services ),
 			ConstraintsServices::getRangeCheckerHelper( $services ),
@@ -105,7 +105,7 @@ return [
 		);
 	},
 
-	ConstraintCheckerServices::TYPE_CHECKER => function ( MediaWikiServices $services ) {
+	ConstraintCheckerServices::TYPE_CHECKER => function( MediaWikiServices $services ) {
 		return new TypeChecker(
 			ConstraintsServices::getConstraintParameterParser( $services ),
 			ConstraintsServices::getTypeCheckerHelper( $services ),
@@ -113,7 +113,7 @@ return [
 		);
 	},
 
-	ConstraintCheckerServices::VALUE_TYPE_CHECKER => function ( MediaWikiServices $services ) {
+	ConstraintCheckerServices::VALUE_TYPE_CHECKER => function( MediaWikiServices $services ) {
 		return new ValueTypeChecker(
 			WikibaseServices::getEntityLookup( $services ),
 			ConstraintsServices::getConstraintParameterParser( $services ),
@@ -122,26 +122,26 @@ return [
 		);
 	},
 
-	ConstraintCheckerServices::SINGLE_VALUE_CHECKER => function ( MediaWikiServices $services ) {
+	ConstraintCheckerServices::SINGLE_VALUE_CHECKER => function( MediaWikiServices $services ) {
 		return new SingleValueChecker(
 			ConstraintsServices::getConstraintParameterParser( $services )
 		);
 	},
 
-	ConstraintCheckerServices::MULTI_VALUE_CHECKER => function ( MediaWikiServices $services ) {
+	ConstraintCheckerServices::MULTI_VALUE_CHECKER => function( MediaWikiServices $services ) {
 		return new MultiValueChecker(
 			ConstraintsServices::getConstraintParameterParser( $services )
 		);
 	},
 
-	ConstraintCheckerServices::UNIQUE_VALUE_CHECKER => function ( MediaWikiServices $services ) {
+	ConstraintCheckerServices::UNIQUE_VALUE_CHECKER => function( MediaWikiServices $services ) {
 		// TODO return a different, dummy implementation if SPARQL is not available
 		return new UniqueValueChecker(
 			ConstraintsServices::getSparqlHelper( $services )
 		);
 	},
 
-	ConstraintCheckerServices::FORMAT_CHECKER => function ( MediaWikiServices $services ) {
+	ConstraintCheckerServices::FORMAT_CHECKER => function( MediaWikiServices $services ) {
 		// TODO return a different, dummy implementation if SPARQL is not available
 		return new FormatChecker(
 			ConstraintsServices::getConstraintParameterParser( $services ),
@@ -150,7 +150,7 @@ return [
 		);
 	},
 
-	ConstraintCheckerServices::COMMONS_LINK_CHECKER => function ( MediaWikiServices $services ) {
+	ConstraintCheckerServices::COMMONS_LINK_CHECKER => function( MediaWikiServices $services ) {
 		$pageNameNormalizer = new MediaWikiPageNameNormalizer();
 		return new CommonsLinkChecker(
 			ConstraintsServices::getConstraintParameterParser( $services ),
@@ -158,64 +158,68 @@ return [
 		);
 	},
 
-	ConstraintCheckerServices::ONE_OF_CHECKER => function ( MediaWikiServices $services ) {
+	ConstraintCheckerServices::ONE_OF_CHECKER => function( MediaWikiServices $services ) {
 		return new OneOfChecker(
 			ConstraintsServices::getConstraintParameterParser( $services )
 		);
 	},
 
-	ConstraintCheckerServices::VALUE_ONLY_CHECKER => function ( MediaWikiServices $services ) {
+	ConstraintCheckerServices::VALUE_ONLY_CHECKER => function( MediaWikiServices $services ) {
 		return new ValueOnlyChecker();
 	},
 
-	ConstraintCheckerServices::REFERENCE_CHECKER => function ( MediaWikiServices $services ) {
+	ConstraintCheckerServices::REFERENCE_CHECKER => function( MediaWikiServices $services ) {
 		return new ReferenceChecker();
 	},
 
-	ConstraintCheckerServices::NO_BOUNDS_CHECKER => function ( MediaWikiServices $services ) {
+	ConstraintCheckerServices::NO_BOUNDS_CHECKER => function( MediaWikiServices $services ) {
 		return new NoBoundsChecker();
 	},
 
-	ConstraintCheckerServices::ALLOWED_UNITS_CHECKER => function ( MediaWikiServices $services ) {
+	ConstraintCheckerServices::ALLOWED_UNITS_CHECKER => function( MediaWikiServices $services ) {
+		// TODO in the future, get UnitConverter from $services?
+		$repo = WikibaseRepo::getDefaultInstance();
+		$unitConverter = $repo->getUnitConverter();
+
 		return new AllowedUnitsChecker(
 			ConstraintsServices::getConstraintParameterParser( $services ),
-			WikibaseRepo::getUnitConverter( $services )
+			$unitConverter
 		);
 	},
 
-	ConstraintCheckerServices::SINGLE_BEST_VALUE_CHECKER => function ( MediaWikiServices $services ) {
+	ConstraintCheckerServices::SINGLE_BEST_VALUE_CHECKER => function( MediaWikiServices $services ) {
 		return new SingleBestValueChecker(
 			ConstraintsServices::getConstraintParameterParser( $services )
 		);
 	},
 
-	ConstraintCheckerServices::ENTITY_TYPE_CHECKER => function ( MediaWikiServices $services ) {
+	ConstraintCheckerServices::ENTITY_TYPE_CHECKER => function( MediaWikiServices $services ) {
 		return new EntityTypeChecker(
 			ConstraintsServices::getConstraintParameterParser( $services )
 		);
 	},
 
-	ConstraintCheckerServices::NONE_OF_CHECKER => function ( MediaWikiServices $services ) {
+	ConstraintCheckerServices::NONE_OF_CHECKER => function( MediaWikiServices $services ) {
 		return new NoneOfChecker(
 			ConstraintsServices::getConstraintParameterParser( $services )
 		);
 	},
 
-	ConstraintCheckerServices::INTEGER_CHECKER => function ( MediaWikiServices $services ) {
+	ConstraintCheckerServices::INTEGER_CHECKER => function( MediaWikiServices $services ) {
 		return new IntegerChecker();
 	},
 
-	ConstraintCheckerServices::CITATION_NEEDED_CHECKER => function ( MediaWikiServices $services ) {
+	ConstraintCheckerServices::CITATION_NEEDED_CHECKER => function( MediaWikiServices $services ) {
 		return new CitationNeededChecker();
 	},
 
-	ConstraintCheckerServices::PROPERTY_SCOPE_CHECKER => function ( MediaWikiServices $services ) {
+	ConstraintCheckerServices::PROPERTY_SCOPE_CHECKER => function( MediaWikiServices $services ) {
 		return new PropertyScopeChecker(
 			ConstraintsServices::getConstraintParameterParser( $services )
 		);
 	},
 
-	ConstraintCheckerServices::CONTEMPORARY_CHECKER => function ( MediaWikiServices $services ) {
+	ConstraintCheckerServices::CONTEMPORARY_CHECKER => function( MediaWikiServices $services ) {
 		return new ContemporaryChecker(
 			WikibaseServices::getEntityLookup( $services ),
 			ConstraintsServices::getRangeCheckerHelper( $services ),

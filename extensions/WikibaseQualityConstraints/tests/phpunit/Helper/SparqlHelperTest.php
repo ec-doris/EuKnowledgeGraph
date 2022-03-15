@@ -2,7 +2,6 @@
 
 namespace WikibaseQuality\ConstraintReport\Tests\Helper;
 
-use BufferingStatsdDataFactory;
 use Config;
 use DataValues\Deserializers\DataValueDeserializer;
 use DataValues\Geo\Values\GlobeCoordinateValue;
@@ -35,11 +34,11 @@ use WikibaseQuality\ConstraintReport\Api\ExpiryLock;
 use WikibaseQuality\ConstraintReport\Constraint;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Cache\CachedQueryResults;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Cache\Metadata;
+use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\Context;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\ContextCursor;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\ConstraintParameterException;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\LoggingHelper;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\SparqlHelper;
-use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\SparqlHelperException;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\TooManySparqlRequestsException;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Message\ViolationMessage;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Message\ViolationMessageDeserializer;
@@ -61,8 +60,7 @@ use Wikimedia\Timestamp\ConvertibleTimestamp;
  */
 class SparqlHelperTest extends \PHPUnit\Framework\TestCase {
 
-	use DefaultConfig;
-	use ResultAssertions;
+	use DefaultConfig, ResultAssertions;
 
 	public function tearDown() : void {
 		ConvertibleTimestamp::setFakeTime( false );
@@ -108,6 +106,7 @@ class SparqlHelperTest extends \PHPUnit\Framework\TestCase {
 					[ '' => 'http://www.wikidata.org/entity/' ],
 					[ '' => 'http://www.wikidata.org/wiki/Special:EntityData/' ],
 					new EntitySourceDefinitions( [], new EntityTypeDefinitions( [] ) ),
+					'',
 					[ '' => 'wd' ],
 					[ '' => '' ]
 				),
@@ -429,11 +428,8 @@ EOF;
 
 		try {
 			call_user_func_array( [ $sparqlHelper, 'matchesRegularExpressionWithSparql' ], [ $text, $regex ] );
-			$this->assertTrue(
-				false,
-				"matchesRegularExpressionWithSparql should have thrown a ConstraintParameterException with message "
-			. "⧼${messageKey}⧽."
-			);
+			$this->assertTrue( false,
+				"matchesRegularExpressionWithSparql should have thrown a ConstraintParameterException with message ⧼${messageKey}⧽." );
 		} catch ( ConstraintParameterException $exception ) {
 			$checkResult = new CheckResult(
 				$this->createMock( ContextCursor::class ),
@@ -754,7 +750,7 @@ EOF;
 		$requestFactory->expects( $this->atLeastOnce() )
 			->method( 'create' )
 			->with(
-				$this->callback( function ( $url ) {
+				$this->callback( function( $url ) {
 					$query = substr( $url, strpos( $url, '?query=' ) );
 					$query = substr( $query, strlen( '?query=' ) );
 					$query = substr( $query, 0, strpos( $query, '&format=' ) );
@@ -800,6 +796,7 @@ END;
 					'd'
 				)
 			], new EntityTypeDefinitions( [] ) ),
+			'wd',
 			[ 'wd' => 'wd' ],
 			[ 'wd' => '' ]
 		);
@@ -829,106 +826,6 @@ WHERE
 END;
 
 		$sparqlHelper->runQuery( $query, $needsPrefixes = true );
-	}
-
-	public function testRunQueryTracksError_http() {
-		$request = $this->createMock( \MWHttpRequest::class );
-		$request->method( 'getStatus' )
-			->willReturn( 500 );
-		$request->method( 'getResponseHeaders' )
-			->willReturn( [] );
-		$request->method( 'execute' )
-			->willReturn( \Status::newFatal( 'http-bad-status' ) );
-		$request->method( 'getContent' )
-			->willReturn( '' );
-
-		$requestFactory = $this->createMock( HttpRequestFactory::class );
-		$requestFactory->method( 'create' )
-			->willReturn( $request );
-
-		$dataFactory = new BufferingStatsdDataFactory( '' );
-
-		$sparqlHelper = new SparqlHelper(
-			$this->getDefaultConfig(),
-			$this->createMock( RdfVocabulary::class ),
-			$this->createMock( EntityIdParser::class ),
-			$this->createMock( PropertyDataTypeLookup::class ),
-			WANObjectCache::newEmpty(),
-			$this->createMock( ViolationMessageSerializer::class ),
-			$this->createMock( ViolationMessageDeserializer::class ),
-			$dataFactory,
-			new ExpiryLock( new HashBagOStuff() ),
-			$this->createMock( LoggingHelper::class ),
-			'',
-			$requestFactory
-		);
-
-		try {
-			$sparqlHelper->runQuery( 'query' );
-			$this->fail( 'should have thrown' );
-		} catch ( SparqlHelperException $e ) {
-			$statsdData = $dataFactory->getData();
-			// three data events: timing (ignored here), HTTP error, generic error
-			$this->assertCount( 3, $statsdData );
-			$this->assertSame(
-				'wikibase.quality.constraints.sparql.error.http.500',
-				$statsdData[1]->getKey()
-			);
-			$this->assertSame(
-				'wikibase.quality.constraints.sparql.error',
-				$statsdData[2]->getKey()
-			);
-		}
-	}
-
-	public function testRunQueryTracksError_json() {
-		$request = $this->createMock( \MWHttpRequest::class );
-		$request->method( 'getStatus' )
-			->willReturn( 200 );
-		$request->method( 'getResponseHeaders' )
-			->willReturn( [] );
-		$request->method( 'execute' )
-			->willReturn( \Status::newGood() );
-		$request->method( 'getContent' )
-			->willReturn( '{"truncated json":' );
-
-		$requestFactory = $this->createMock( HttpRequestFactory::class );
-		$requestFactory->method( 'create' )
-			->willReturn( $request );
-
-		$dataFactory = new BufferingStatsdDataFactory( '' );
-
-		$sparqlHelper = new SparqlHelper(
-			$this->getDefaultConfig(),
-			$this->createMock( RdfVocabulary::class ),
-			$this->createMock( EntityIdParser::class ),
-			$this->createMock( PropertyDataTypeLookup::class ),
-			WANObjectCache::newEmpty(),
-			$this->createMock( ViolationMessageSerializer::class ),
-			$this->createMock( ViolationMessageDeserializer::class ),
-			$dataFactory,
-			new ExpiryLock( new HashBagOStuff() ),
-			$this->createMock( LoggingHelper::class ),
-			'',
-			$requestFactory
-		);
-
-		try {
-			$sparqlHelper->runQuery( 'query' );
-			$this->fail( 'should have thrown' );
-		} catch ( SparqlHelperException $e ) {
-			$statsdData = $dataFactory->getData();
-			// three data events: timing (ignored here), JSON error, generic error
-			$this->assertCount( 3, $statsdData );
-			$this->assertSame(
-				'wikibase.quality.constraints.sparql.error.json.json_error_syntax',
-				$statsdData[1]->getKey()
-			);
-			$this->assertSame(
-				'wikibase.quality.constraints.sparql.error',
-				$statsdData[2]->getKey()
-			);
-		}
 	}
 
 }

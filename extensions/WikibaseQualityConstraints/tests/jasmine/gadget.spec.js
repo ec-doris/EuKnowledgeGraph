@@ -28,8 +28,8 @@ describe( 'wikibase.quality.constraints.gadget', function () {
 				then: function ( func ) {
 					var thenResult = func.apply( {}, results );
 					return {
-						then: function ( func2 ) {
-							func2( thenResult );
+						then: function ( func ) {
+							func( thenResult );
 							return {
 								promise: sinon.spy()
 							};

@@ -6,7 +6,6 @@ use DataValues\StringValue;
 use HashConfig;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Site\MediaWikiPageNameNormalizer;
-use MockHttpTrait;
 use MultiConfig;
 use Wikibase\DataModel\Entity\EntityId;
 use Wikibase\DataModel\Entity\ItemId;
@@ -51,10 +50,7 @@ use Wikimedia\Rdbms\DBUnexpectedError;
  */
 class DelegatingConstraintCheckerTest extends \MediaWikiTestCase {
 
-	use ConstraintParameters;
-	use ResultAssertions;
-	use TitleParserMock;
-	use MockHttpTrait;
+	use ConstraintParameters, ResultAssertions, TitleParserMock;
 
 	/**
 	 * @var DelegatingConstraintChecker
@@ -74,7 +70,6 @@ class DelegatingConstraintCheckerTest extends \MediaWikiTestCase {
 
 	protected function setUp() : void {
 		parent::setUp();
-		$this->installMockHttp( $this->makeFakeHttpRequest( '', 0 ) );
 		MediaWikiServices::getInstance()->resetServiceForTesting( ConstraintsServices::CONSTRAINT_LOOKUP );
 
 		$config = new MultiConfig( [
@@ -86,7 +81,7 @@ class DelegatingConstraintCheckerTest extends \MediaWikiTestCase {
 
 		$constraintParameterParser = new ConstraintParameterParser(
 			$config,
-			WikibaseRepo::getBaseDataModelDeserializerFactory(),
+			WikibaseRepo::getDefaultInstance()->getBaseDataModelDeserializerFactory(),
 			'http://wikibase.example/entity/'
 		);
 		$this->setService( ConstraintsServices::CONSTRAINT_PARAMETER_PARSER, $constraintParameterParser );
@@ -462,7 +457,7 @@ class DelegatingConstraintCheckerTest extends \MediaWikiTestCase {
 		$result = $this->constraintChecker->checkAgainstConstraintsOnEntityId(
 			$entity->getId(),
 			null,
-			function ( Context $context ) {
+			function( Context $context ) {
 				return [ new NullResult( $context->getCursor() ) ];
 			}
 		);
@@ -478,7 +473,7 @@ class DelegatingConstraintCheckerTest extends \MediaWikiTestCase {
 			$entity->getId(),
 			null,
 			null,
-			function ( EntityId $entityId ) {
+			function( EntityId $entityId ) {
 				return [ new NullResult( new EntityContextCursor( $entityId->getSerialization() ) ) ];
 			}
 		);
@@ -525,7 +520,7 @@ class DelegatingConstraintCheckerTest extends \MediaWikiTestCase {
 
 		$result = $this->constraintChecker->checkAgainstConstraintsOnEntityId( $entity->getId() );
 
-		$this->assertSame( 'exception', $result[ 0 ]->getStatus() );
+		$this->assertEquals( 'exception', $result[ 0 ]->getStatus() );
 	}
 
 	public function testCheckOnEntityIdBrokenException() {
@@ -536,7 +531,7 @@ class DelegatingConstraintCheckerTest extends \MediaWikiTestCase {
 
 		$result = $this->constraintChecker->checkAgainstConstraintsOnEntityId( $entity->getId() );
 
-		$this->assertSame( 'bad-parameters', $result[ 0 ]->getStatus() );
+		$this->assertEquals( 'bad-parameters', $result[ 0 ]->getStatus() );
 	}
 
 	public function testCheckOnEntityIdMandatoryConstraint() {
@@ -562,7 +557,7 @@ class DelegatingConstraintCheckerTest extends \MediaWikiTestCase {
 
 		$result = $this->constraintChecker->checkAgainstConstraintsOnEntityId( $entity->getId() );
 
-		$this->assertSame( 'warning', $result[ 0 ]->getStatus() );
+		$this->assertEquals( 'warning', $result[ 0 ]->getStatus() );
 	}
 
 	public function testCheckOnEntityIdSuggestionConstraint() {
@@ -865,7 +860,7 @@ class DelegatingConstraintCheckerTest extends \MediaWikiTestCase {
 			->willReturn( [ Context::TYPE_QUALIFIER ] );
 		$checker->expects( $this->once() )
 			->method( 'checkConstraint' )
-			->willReturnCallback( function ( Context $context, Constraint $constraint ) {
+			->willReturnCallback( function( Context $context, Constraint $constraint ) {
 				$this->assertSame( Context::TYPE_QUALIFIER, $context->getType() );
 				return new CheckResult( $context, $constraint );
 			} );
@@ -909,7 +904,7 @@ class DelegatingConstraintCheckerTest extends \MediaWikiTestCase {
 			->willReturn( [ Context::TYPE_QUALIFIER ] );
 		$checker->expects( $this->once() )
 			->method( 'checkConstraint' )
-			->willReturnCallback( function ( Context $context, Constraint $constraint ) {
+			->willReturnCallback( function( Context $context, Constraint $constraint ) {
 				$this->assertSame( Context::TYPE_STATEMENT, $context->getType() );
 				return new CheckResult( $context, $constraint );
 			} );

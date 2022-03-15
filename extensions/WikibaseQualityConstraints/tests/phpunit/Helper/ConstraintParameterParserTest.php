@@ -39,8 +39,7 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  */
 class ConstraintParameterParserTest extends \MediaWikiLangTestCase {
 
-	use ConstraintParameters;
-	use ResultAssertions;
+	use ConstraintParameters, ResultAssertions;
 
 	/**
 	 * @var Constraint
@@ -111,7 +110,7 @@ class ConstraintParameterParserTest extends \MediaWikiLangTestCase {
 			[ $classId => [ $this->serializeItemId( 'Q100' ), $this->serializeItemId( 'Q101' ) ] ],
 			'Q1'
 		);
-		$this->assertSame( [ 'Q100', 'Q101' ], $parsed );
+		$this->assertEquals( [ 'Q100', 'Q101' ], $parsed );
 	}
 
 	public function testParseClassParameter_Missing() {
@@ -167,7 +166,7 @@ class ConstraintParameterParserTest extends \MediaWikiLangTestCase {
 			[ $relationId => [ $this->serializeItemId( $instanceOfId ) ] ],
 			'Q21503250'
 		);
-		$this->assertSame( 'instance', $parsed );
+		$this->assertEquals( 'instance', $parsed );
 	}
 
 	public function testParseRelationParameter_Missing() {
@@ -443,9 +442,7 @@ class ConstraintParameterParserTest extends \MediaWikiLangTestCase {
 		$config = $this->getDefaultConfig();
 		$propertyId = $config->get( 'WBQualityConstraintsPropertyId' );
 		$parsed = $this->getConstraintParameterParser()->parsePropertiesParameter(
-			[ $propertyId => [
-				$this->getSnakSerializer()->serialize( new PropertyNoValueSnak( new PropertyId( $propertyId ) ) )
-			] ],
+			[ $propertyId => [ $this->getSnakSerializer()->serialize( new PropertyNoValueSnak( new PropertyId( $propertyId ) ) ) ] ],
 			'Q21510851'
 		);
 		$this->assertEquals( [], $parsed );
@@ -655,9 +652,7 @@ class ConstraintParameterParserTest extends \MediaWikiLangTestCase {
 
 		$parsed = $this->getConstraintParameterParser()->parseTimeRangeParameter(
 			[
-				$minimumId => [ $this->getSnakSerializer()->serialize(
-					new PropertyValueSnak( $propertyId, $wikidataInception )
-				) ],
+				$minimumId => [ $this->getSnakSerializer()->serialize( new PropertyValueSnak( $propertyId, $wikidataInception ) ) ],
 				$maximumId => [ $this->getSnakSerializer()->serialize( new PropertySomeValueSnak( $propertyId ) ) ]
 			],
 			'Q21510860'
@@ -732,7 +727,7 @@ class ConstraintParameterParserTest extends \MediaWikiLangTestCase {
 			'Q21510852'
 		);
 
-		$this->assertSame( 'File', $parsed );
+		$this->assertEquals( 'File', $parsed );
 	}
 
 	public function testParseNamespaceParameter_Missing() {
@@ -789,7 +784,7 @@ class ConstraintParameterParserTest extends \MediaWikiLangTestCase {
 			'Q21502404'
 		);
 
-		$this->assertSame( '\d\.(\d{1,2}|-{1})\.(\d{1,2}|-{1})\.(\d{1,3}|-{1})', $parsed );
+		$this->assertEquals( '\d\.(\d{1,2}|-{1})\.(\d{1,2}|-{1})\.(\d{1,3}|-{1})', $parsed );
 	}
 
 	public function testParseFormatParameter_Missing() {
@@ -891,7 +886,7 @@ class ConstraintParameterParserTest extends \MediaWikiLangTestCase {
 			[ $constraintStatusId => [ $this->getSnakSerializer()->serialize( $snak ) ] ]
 		);
 
-		$this->assertSame( 'mandatory', $parsed );
+		$this->assertEquals( 'mandatory', $parsed );
 	}
 
 	public function testParseConstraintStatusParameter_suggestion_disabled() {
@@ -915,7 +910,7 @@ class ConstraintParameterParserTest extends \MediaWikiLangTestCase {
 				new HashConfig( [ 'WBQualityConstraintsEnableSuggestionConstraintStatus' => true ] ),
 				$this->getDefaultConfig()
 			] ),
-			WikibaseRepo::getBaseDataModelDeserializerFactory(),
+			WikibaseRepo::getDefaultInstance()->getBaseDataModelDeserializerFactory(),
 			'http://wikibase.example/entity/'
 		);
 
@@ -923,7 +918,7 @@ class ConstraintParameterParserTest extends \MediaWikiLangTestCase {
 			[ $constraintStatusId => [ $this->getSnakSerializer()->serialize( $snak ) ] ]
 		);
 
-		$this->assertSame( 'suggestion', $parsed );
+		$this->assertEquals( 'suggestion', $parsed );
 	}
 
 	public function testParseConstraintStatusParameter_Missing() {

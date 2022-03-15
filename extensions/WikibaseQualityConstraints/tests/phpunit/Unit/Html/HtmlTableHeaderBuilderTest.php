@@ -24,8 +24,8 @@ class HtmlTableHeaderBuilderTest extends \MediaWikiUnitTestCase {
 		}
 		$header = new HtmlTableHeaderBuilder( $content, $isSortable );
 
-		$this->assertSame( $content, $header->getContent() );
-		$this->assertSame( $isSortable, $header->getIsSortable() );
+		$this->assertEquals( $content, $header->getContent() );
+		$this->assertEquals( $isSortable, $header->getIsSortable() );
 	}
 
 	/**
@@ -57,7 +57,7 @@ class HtmlTableHeaderBuilderTest extends \MediaWikiUnitTestCase {
 		$header = new HtmlTableHeaderBuilder( $content, $isSortable );
 		$actualHtml = $header->toHtml();
 
-		$this->assertSame( $expectedHtml, $actualHtml );
+		$this->assertEquals( $expectedHtml, $actualHtml );
 	}
 
 	/**

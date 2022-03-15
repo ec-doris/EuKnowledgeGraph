@@ -6,8 +6,6 @@ use Wikimedia\Timestamp\ConvertibleTimestamp;
 
 /**
  * Always returns the invalid timestamp string 'invalid timestamp'.
- *
- * @license GPL-2.0-or-later
  */
 class InvalidConvertibleTimestamp extends ConvertibleTimestamp {
 

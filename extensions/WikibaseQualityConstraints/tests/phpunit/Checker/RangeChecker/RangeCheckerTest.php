@@ -32,8 +32,7 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  */
 class RangeCheckerTest extends \MediaWikiTestCase {
 
-	use ConstraintParameters;
-	use ResultAssertions;
+	use ConstraintParameters, ResultAssertions;
 
 	/**
 	 * @var TimeValue

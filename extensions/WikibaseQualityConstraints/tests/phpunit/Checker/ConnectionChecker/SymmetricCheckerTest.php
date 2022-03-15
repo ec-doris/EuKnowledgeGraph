@@ -25,8 +25,7 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  */
 class SymmetricCheckerTest extends \MediaWikiTestCase {
 
-	use ConstraintParameters;
-	use ResultAssertions;
+	use ConstraintParameters, ResultAssertions;
 
 	/**
 	 * @var InMemoryEntityLookup

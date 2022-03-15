@@ -33,8 +33,7 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  */
 class TypeCheckerTest extends \MediaWikiTestCase {
 
-	use ConstraintParameters;
-	use ResultAssertions;
+	use ConstraintParameters, ResultAssertions;
 
 	/**
 	 * @var JsonFileEntityLookup

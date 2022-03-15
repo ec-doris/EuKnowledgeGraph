@@ -22,8 +22,7 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  */
 class ConflictsWithCheckerTest extends \MediaWikiTestCase {
 
-	use ConstraintParameters;
-	use ResultAssertions;
+	use ConstraintParameters, ResultAssertions;
 
 	/**
 	 * @var ConnectionCheckerHelper

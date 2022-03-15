@@ -24,8 +24,7 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  */
 class MandatoryQualifiersCheckerTest extends \MediaWikiTestCase {
 
-	use ConstraintParameters;
-	use ResultAssertions;
+	use ConstraintParameters, ResultAssertions;
 
 	/**
 	 * @var MandatoryQualifiersChecker

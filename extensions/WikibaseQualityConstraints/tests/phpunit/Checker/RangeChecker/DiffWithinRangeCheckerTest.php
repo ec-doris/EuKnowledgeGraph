@@ -34,8 +34,7 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  */
 class DiffWithinRangeCheckerTest extends \MediaWikiTestCase {
 
-	use ConstraintParameters;
-	use ResultAssertions;
+	use ConstraintParameters, ResultAssertions;
 
 	/**
 	 * A TimeValue for the year 1.

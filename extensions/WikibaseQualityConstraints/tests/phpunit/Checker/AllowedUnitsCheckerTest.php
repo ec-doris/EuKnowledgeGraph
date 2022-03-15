@@ -29,8 +29,7 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  */
 class AllowedUnitsCheckerTest extends \PHPUnit\Framework\TestCase {
 
-	use ConstraintParameters;
-	use ResultAssertions;
+	use ConstraintParameters, ResultAssertions;
 
 	private function getAllowedUnitsChecker( UnitStorage $unitStorage = null ) {
 		if ( $unitStorage === null ) {

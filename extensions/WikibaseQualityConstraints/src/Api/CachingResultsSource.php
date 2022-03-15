@@ -1,5 +1,6 @@
 <?php
 
+
 namespace WikibaseQuality\ConstraintReport\Api;
 
 use DataValues\TimeValue;
@@ -396,7 +397,7 @@ class CachingResultsSource implements ResultsSource {
 
 		return array_reduce(
 			$dependedEntityIds,
-			function ( DependencyMetadata $metadata, EntityId $entityId ) {
+			function( DependencyMetadata $metadata, EntityId $entityId ) {
 				return DependencyMetadata::merge( [
 					$metadata,
 					DependencyMetadata::ofEntityId( $entityId )

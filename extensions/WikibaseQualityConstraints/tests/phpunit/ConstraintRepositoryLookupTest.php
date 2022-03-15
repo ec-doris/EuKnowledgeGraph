@@ -33,7 +33,7 @@ class ConstraintRepositoryLookupTest extends \MediaWikiTestCase {
 		$constraints = $repo->queryConstraintsForProperty( new PropertyId( 'P1' ) );
 
 		$this->assertIsArray( $constraints );
-		$this->assertCount( 2, $constraints );
+		$this->assertEquals( 2, count( $constraints ) );
 		$this->assertInstanceOf( Constraint::class, $constraints[0] );
 	}
 

@@ -21,86 +21,86 @@ class ViolationMessage {
 	/**
 	 * @private
 	 */
-	public const MESSAGE_KEY_PREFIX = 'wbqc-violation-message-';
+	const MESSAGE_KEY_PREFIX = 'wbqc-violation-message-';
 
 	/**
 	 * Argument type for a single entity ID.
 	 * Value type: {@link EntityId}
 	 */
-	public const TYPE_ENTITY_ID = 'e';
+	const TYPE_ENTITY_ID = 'e';
 
 	/**
 	 * Argument type for a list of entity IDs.
 	 * Value type: {@link EntityId}[]
 	 */
-	public const TYPE_ENTITY_ID_LIST = 'E';
+	const TYPE_ENTITY_ID_LIST = 'E';
 
 	/**
 	 * Argument type for an item ID, “unknown value”, or “no value”.
 	 * Value type: {@link ItemIdSnakValue}
 	 */
-	public const TYPE_ITEM_ID_SNAK_VALUE = 'i';
+	const TYPE_ITEM_ID_SNAK_VALUE = 'i';
 
 	/**
 	 * Argument type for a list of item IDs, “unknown value”s, or “no value”s.
 	 * Value type: {@link ItemIdSnakValue}[]
 	 */
-	public const TYPE_ITEM_ID_SNAK_VALUE_LIST = 'I';
+	const TYPE_ITEM_ID_SNAK_VALUE_LIST = 'I';
 
 	/**
 	 * Argument type for a single data value.
 	 * Value type: {@link DataValue}
 	 */
-	public const TYPE_DATA_VALUE = 'v';
+	const TYPE_DATA_VALUE = 'v';
 
 	/**
 	 * Argument type for a data value type, like "time" or "wikibase-entityid".
 	 * (Not to be confused with a data type, like "time" or "wikibase-item".)
 	 * Value type: string
 	 */
-	public const TYPE_DATA_VALUE_TYPE = 't';
+	const TYPE_DATA_VALUE_TYPE = 't';
 
 	/**
 	 * Argument type for a short fragment of inline computer code.
 	 * Value type: string
 	 */
-	public const TYPE_INLINE_CODE = 'c';
+	const TYPE_INLINE_CODE = 'c';
 
 	/**
 	 * Argument type for a single constraint scope.
 	 * Value type: string (one of the Context::TYPE_* constants)
 	 */
-	public const TYPE_CONSTRAINT_SCOPE = 's';
+	const TYPE_CONSTRAINT_SCOPE = 's';
 
 	/**
 	 * Argument type for a list of constraint scopes.
 	 * Value type: string[]
 	 */
-	public const TYPE_CONSTRAINT_SCOPE_LIST = 'S';
+	const TYPE_CONSTRAINT_SCOPE_LIST = 'S';
 
 	/**
 	 * Argument type for a single property scope.
 	 * Value type: string (one of the Context::TYPE_* constants)
 	 */
-	public const TYPE_PROPERTY_SCOPE = 'p';
+	const TYPE_PROPERTY_SCOPE = 'p';
 
 	/**
 	 * Argument type for a list of property scopes.
 	 * Value type: string[]
 	 */
-	public const TYPE_PROPERTY_SCOPE_LIST = 'P';
+	const TYPE_PROPERTY_SCOPE_LIST = 'P';
 
 	/**
 	 * Argument type for a language.
 	 * Value type: string (language code)
 	 */
-	public const TYPE_LANGUAGE = 'l';
+	const TYPE_LANGUAGE = 'l';
 
 	/**
 	 * Argument type for a multilingual text value.
 	 * Value type: {@link MultilingualTextValue}
 	 */
-	public const TYPE_MULTILINGUAL_TEXT = 'm';
+	const TYPE_MULTILINGUAL_TEXT = 'm';
 
 	/**
 	 * @var string

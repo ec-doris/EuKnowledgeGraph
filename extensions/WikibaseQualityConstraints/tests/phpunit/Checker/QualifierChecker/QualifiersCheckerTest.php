@@ -23,8 +23,7 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  */
 class QualifiersCheckerTest extends \MediaWikiTestCase {
 
-	use ConstraintParameters;
-	use ResultAssertions;
+	use ConstraintParameters, ResultAssertions;
 
 	/**
 	 * @var string[]

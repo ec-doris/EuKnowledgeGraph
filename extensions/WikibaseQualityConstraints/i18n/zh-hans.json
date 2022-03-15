@@ -4,15 +4,16 @@
 			"A Chinese Wikipedian",
 			"A Retired User",
 			"Deathkon",
-			"Hudafu",
 			"Liuxinyu970226",
 			"NeverBehave",
 			"予弦",
 			"神樂坂秀吉",
 			"铁桶",
+			"Hudafu",
 			"Shizhao",
 			"Xiplus",
-			"列维劳德"
+			"列维劳德",
+			"Xzonn"
 		]
 	},
 	"wbqc-constraintreport": "约束报告",
@@ -93,7 +94,7 @@
 	"wbqc-violation-message-commons-link-not-well-formed": "共享资源链接应符合语法规则。",
 	"wbqc-violation-message-commons-link-check-for-namespace-not-yet-implemented": "对命名空间“$1”的检查尚未执行。",
 	"wbqc-violation-message-conflicts-with-property": "一个实体不应同时有$1和$2的陈述。",
-	"wbqc-violation-message-conflicts-with-claim": "如果实体带有值$3得的陈述$2，则该实体不应有$1的陈述。",
+	"wbqc-violation-message-conflicts-with-claim": "如果实体带有值$3的陈述$2，则该实体不应有$1的陈述。",
 	"wbqc-violation-message-contemporary-subject-earlier": "实体$1和$3应该是同时通过$2链接，但$1的最新结束值为$4，而$3的最早起始值为$5。",
 	"wbqc-violation-message-contemporary-value-earlier": "实体$1和$3应该同时通过$2链接，但$3的最新结束值为$4，$1的最早起始值为$5。",
 	"wbqc-violation-message-diff-within-range": "$3（$4）和$1（$2）之间的差异应界定在$5和$6之间。",
