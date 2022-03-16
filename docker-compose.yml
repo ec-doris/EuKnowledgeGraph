@@ -41,7 +41,7 @@ services:
     networks:
       default:
         aliases:
-         - ${WIKIBASE_HOST}
+         #- ${WIKIBASE_HOST}
          - wikibase-docker.svc
     environment:
       <<: *wikibase_variables
