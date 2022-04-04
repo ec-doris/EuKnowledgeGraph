@@ -8,10 +8,10 @@
 		"build-lib": ". ./bin/build.sh"
 	},
 	"devDependencies": {
-		"grunt": "^1.4.0",
-		"grunt-banana-checker": "0.6.0",
-		"grunt-contrib-jshint": "1.1.0",
-		"grunt-jsonlint": "1.1.0",
+		"grunt": ">=1.4.0",
+		"grunt-banana-checker": ">=0.6.0",
+		"grunt-contrib-jshint": ">=1.1.0",
+		"grunt-jsonlint": ">=1.1.0",
 		"hosted-git-info": ">=3.0.8",
         "postcss": ">=8.2.13",
         "shelljs": ">=0.8.5",
