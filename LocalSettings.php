@@ -106,3 +106,12 @@ $wgOAuth2Client['configuration']['scopes'] = 'openid email profile';
 
 #CAS Authentication
 require_once "$IP/extensions/CASAuth/CASAuth.php";
+
+#External Storage for Text table
+$wgExternalStores = [ 'DB' ];
+$wgExternalServers = [ 'demoCluster' => [
+  [ 'host' => $_SERVER["EXTERNAL_STORAGE_SERVICE"], 'user' => 'admin',  'password' =>$_SERVER["EXTERNAL_STORAGE_PASSWORD"],  'dbname' => 'my_wiki',  'type' => "mysql", 'load' => 1 ]
+] ];
+$wgDefaultExternalStore = [ 'DB://demoCluster' ];
+#Enable the compression
+$wgCompressRevisions = true;
