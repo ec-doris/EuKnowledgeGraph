@@ -94,8 +94,8 @@ $wgWBRepoSettings['formatterUrlProperty'] = 'P877';
 wfLoadExtension( 'WikibaseQualityConstraints' );
 
 #CAS
-$wgOAuth2Client['client']['id'] = $_SERVER["CAS_CLIENT_ID"];
-$wgOAuth2Client['client']['secret'] = $_SERVER["CAS_CLIENT_SECRET"];
+$wgOAuth2Client['client']['id'] = $_ENV["CAS_CLIENT_ID"];
+$wgOAuth2Client['client']['secret'] = $_ENV["CAS_CLIENT_SECRET"];
 $wgOAuth2Client['configuration']['authorize_endpoint'] = 'https://ecas.ec.europa.eu/cas/oauth2/authorize'; // Authorization URL
 $wgOAuth2Client['configuration']['access_token_endpoint'] = 'https://ecas.ec.europa.eu/cas/oauth2/token'; // Token URL
 $wgOAuth2Client['configuration']['api_endpoint'] = 'https://ecas.ec.europa.eu/cas/oauth2'; // URL to fetch user JSON
@@ -107,11 +107,12 @@ $wgOAuth2Client['configuration']['scopes'] = 'openid email profile';
 #CAS Authentication
 require_once "$IP/extensions/CASAuth/CASAuth.php";
 
-#External Storage for Text table
+#External Storage for Text/Blob table
 $wgExternalStores = [ 'DB' ];
 $wgExternalServers = [ 'demoCluster' => [
-  [ 'host' => $_SERVER["EXTERNAL_STORAGE_SERVICE"], 'user' => 'admin',  'password' =>$_SERVER["EXTERNAL_STORAGE_PASSWORD"],  'dbname' => 'my_wiki',  'type' => "mysql", 'load' => 1 ]
+  [ 'host' => $_ENV["EXTERNAL_STORAGE_SERVICE"], 'user' => 'admin',  'password' =>$_ENV["EXTERNAL_STORAGE_PASSWORD"],  'dbname' => 'my_wiki',  'type' => "mysql", 'load' => 1 ]
 ] ];
 $wgDefaultExternalStore = [ 'DB://demoCluster' ];
 #Enable the compression
 $wgCompressRevisions = true;
+
