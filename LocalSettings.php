@@ -65,11 +65,11 @@ $wgWBRepoSettings['statementSections'] = array(
 
 #Enable Kartographer
 wfLoadExtension( 'JsonConfig' );
-#wfLoadExtension( 'Kartographer' );
-#$wgKartographerMapServer = 'https://a.tile.openstreetmap.org';
-#$wgKartographerDfltStyle = '';
-#$wgKartographerStyles = [];
-#$wgWBRepoSettings['useKartographerGlobeCoordinateFormatter'] = true;
+wfLoadExtension( 'Kartographer' );
+$wgKartographerMapServer = 'https://a.tile.openstreetmap.org';
+$wgKartographerDfltStyle = '';
+$wgKartographerStyles = [];
+$wgWBRepoSettings['useKartographerGlobeCoordinateFormatter'] = true;
 
 # Allow longer strings
 $wgWBRepoSettings['string-limits'] = array (
