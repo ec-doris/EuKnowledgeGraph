@@ -73,6 +73,7 @@ services:
     restart: unless-stopped
     volumes:
       - mediawiki-mysql-data:/var/lib/mysql
+      - mediawiki-mysql-dbdump:/var/lib/mysql-dump
     environment:
       # CONFIG - Change the default values below (should match values passed to wikibase)
       MYSQL_DATABASE: ${DB_NAME}
@@ -87,3 +88,4 @@ services:
 volumes:
   shared:
   mediawiki-mysql-data:
+  mediawiki-mysql-dbdump:

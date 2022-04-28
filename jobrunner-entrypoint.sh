@@ -16,12 +16,7 @@ kill_runner() {
 trap kill_runner SIGTERM
 
 while true; do
-	if [ -e /shared/LocalSettings.php ]; then
-		php maintenance/runJobs.php --memory-limit 512M --wait --maxjobs="$MAX_JOBS"  --conf /shared/LocalSettings.php &
-		PID=$!
-		wait "$PID"
-	else
-		echo "LocalSettings.php not shared yet - waiting for 10 seconds."
-		sleep 10
-	fi
+	php maintenance/runJobs.php --memory-limit 512M --wait --maxjobs="$MAX_JOBS"  --conf /var/www/html/LocalSettings.d/LocalSettings.override.php &
+	PID=$!
+	wait "$PID"
 done
