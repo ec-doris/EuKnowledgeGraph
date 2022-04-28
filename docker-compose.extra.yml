@@ -54,6 +54,7 @@ services:
     volumes:
       - query-service-data:/wdqs/data
       - ./prefixes.conf:/wdqs/prefixes.conf
+      - ./whitelist.txt:/wdqs/whitelist.txt
     networks:
       default:
         aliases:
@@ -62,6 +63,7 @@ services:
       - WIKIBASE_HOST=${WIKIBASE_HOST}
       - WDQS_HOST=wdqs.svc
       - WDQS_PORT=9999
+      - HEAP_SIZE=8g
     expose:
       - 9999
 
