@@ -1,0 +1,23 @@
+{
+	"@metadata": {
+		"authors": [
+			"Yuri Astrakhan"
+		]
+	},
+	"apihelp-jsonconfig-description": "Allows direct access to JsonConfig subsystem.",
+	"apihelp-jsonconfig-summary": "Allows direct access to JsonConfig subsystem.",
+	"apihelp-jsonconfig-param-command": "Which sub-action to perform on JsonConfig:\n;status:Shows JsonConfig configuration.\n;reset:Clears configurations from cache. Requires $1title parameter and jsonconfig-reset right.\n;reload:Reloads and caches configurations from config store. Requires $1title parameter and jsonconfig-reset right.",
+	"apihelp-jsonconfig-param-namespace": "Namespace number of the title to process.",
+	"apihelp-jsonconfig-param-title": "Title to process without namespace prefix.",
+	"apihelp-jsonconfig-param-content": "For $1command=reload, use this content instead.",
+	"apihelp-jsonconfig-example-1": "Show configuration",
+	"apihelp-jsonconfig-example-2": "Reset [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsonconfig-example-3": "Reload [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsondata-description": "Retrieve localized JSON data.",
+	"apihelp-jsondata-summary": "Retrieve localized JSON data.",
+	"apihelp-jsondata-param-title": "Title to get. By default assumes namespace to be \"Data:\"",
+	"apihelp-jsondata-example-1": "Get JSON content of the Sample.tab page, localized to user's language",
+	"apihelp-jsondata-example-2": "Get JSON content of the Sample.tab page localized to French",
+	"apierror-jsonconfig-paramrequired": "Parameter <var>$1</var> is required for this command.",
+	"apierror-jsonconfig-badtitle": "The page specified by <var>namespace</var> and <var>title</var> parameters is either invalid or is not registered in JsonConfig configuration."
+}

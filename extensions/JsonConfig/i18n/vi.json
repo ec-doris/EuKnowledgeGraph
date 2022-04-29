@@ -1,9 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
+			"Leducthn",
 			"Minh Nguyen",
-			"Yurik",
-			"Leducthn"
+			"Yurik"
 		]
 	},
 	"jsonconfig-desc": "Cho phép lưu giữ cấu hình JSON trên wiki",
@@ -25,6 +25,8 @@
 	"jsonconfig-err-root-object-expected": "Dữ liệu JSON phải là đối tượng được đưa vào các dấu ngoặc {…}",
 	"jsonconfig-err-string": "Tham số “$1” phải là chuỗi",
 	"jsonconfig-err-stringline": "Tham số “$1” phải là chuỗi một dòng không dài hơn $2 ký tự, không có tab, không bắt đầu hoặc kết thúc bằng dấu cách",
+	"jsonconfig-err-unexpected-key": "Đối tượng “$1” chứa trường bất ngờ “$2”",
+	"jsonconfig-err-duplicate-header": "Đã tìm thấy đầu đề dư “$2” tại “$1”. Mỗi đầu đề phải khác nhau.",
 	"jsonconfig-err-url": "Tham số “$1” phải là URL hợp lệ",
 	"jsonconfig-move-aborted-model": "Mô hình cấu hình JSON của trang này, “$1”, sẽ không phù hợp với mô hình tại tên mới, “$2”",
 	"jsonconfig-move-aborted-ns": "Tên trang mới chưa được thiết lập để lưu giữ cấu hình JSON",
@@ -39,8 +41,39 @@
 	"jsonconfig-type-name-number": "số",
 	"jsonconfig-type-abbr-boolean": "(LL)",
 	"jsonconfig-type-name-boolean": "luận lý",
+	"jsonconfig-license": "Dữ liệu có sẵn theo $1.",
+	"jsonconfig-license-not-set": "Khi bạn sửa đổi trang này, bạn đồng ý phát hành đóng góp của mình theo giấy phép được chỉ định trong trường “licence”.",
 	"jsonconfig-license-name-CC0-1.0": "Creative Commons Zêrô",
+	"jsonconfig-license-name-CC-BY-1.0": "Creative Commons Ghi công 1.0",
+	"jsonconfig-license-name-CC-BY-2.0": "Creative Commons Ghi công 2.0",
+	"jsonconfig-license-name-CC-BY-2.5": "Creative Commons Ghi công 2.5",
+	"jsonconfig-license-name-CC-BY-3.0": "Creative Commons Ghi công 3.0",
+	"jsonconfig-license-name-CC-BY-4.0": "Creative Commons Ghi công 4.0",
+	"jsonconfig-license-name-CC-BY-4.0+": "Creative Commons Ghi công 4.0 trở lên",
+	"jsonconfig-license-name-CC-BY-SA-1.0": "Creative Commons Ghi công–Chia sẻ tương tự 1.0",
+	"jsonconfig-license-name-CC-BY-SA-2.0": "Creative Commons Ghi công–Chia sẻ tương tự 2.0",
+	"jsonconfig-license-name-CC-BY-SA-2.5": "Creative Commons Ghi công–Chia sẻ tương tự 2.5",
+	"jsonconfig-license-name-CC-BY-SA-3.0": "Creative Commons Ghi công–Chia sẻ tương tự 3.0",
+	"jsonconfig-license-name-CC-BY-SA-4.0": "Creative Commons Ghi công–Chia sẻ tương tự 4.0",
+	"jsonconfig-license-name-CC-BY-SA-4.0+": "Creative Commons Ghi công–Chia sẻ tương tự 4.0 trở lên",
+	"jsonconfig-license-name-ODbL-1.0": "ODC Giấy phép Cơ sở dữ liệu Mở 1.0",
+	"jsonconfig-license-url-CC0-1.0": "https://creativecommons.org/publicdomain/zero/1.0/deed.vi",
+	"jsonconfig-license-url-CC-BY-1.0": "https://creativecommons.org/licenses/by/1.0/deed.vi",
+	"jsonconfig-license-url-CC-BY-2.0": "https://creativecommons.org/licenses/by/2.0/deed.vi",
+	"jsonconfig-license-url-CC-BY-2.5": "https://creativecommons.org/licenses/by/2.5/deed.vi",
+	"jsonconfig-license-url-CC-BY-3.0": "https://creativecommons.org/licenses/by/3.0/deed.vi",
+	"jsonconfig-license-url-CC-BY-4.0": "https://creativecommons.org/licenses/by/4.0/deed.vi",
+	"jsonconfig-license-url-CC-BY-4.0+": "https://creativecommons.org/licenses/by/4.0/deed.vi",
+	"jsonconfig-license-url-CC-BY-SA-1.0": "https://creativecommons.org/licenses/by-sa/1.0/deed.vi",
+	"jsonconfig-license-url-CC-BY-SA-2.0": "https://creativecommons.org/licenses/by-sa/2.0/deed.vi",
+	"jsonconfig-license-url-CC-BY-SA-2.5": "https://creativecommons.org/licenses/by-sa/2.5/deed.vi",
+	"jsonconfig-license-url-CC-BY-SA-3.0": "https://creativecommons.org/licenses/by-sa/3.0/deed.vi",
+	"jsonconfig-license-url-CC-BY-SA-4.0": "https://creativecommons.org/licenses/by-sa/4.0/deed.vi",
+	"jsonconfig-license-url-CC-BY-SA-4.0+": "https://creativecommons.org/licenses/by-sa/4.0/deed.vi",
+	"jsonconfig-license-copyrightwarning": "Với việc lưu các thay đổi, bạn chấp nhận [https://foundation.wikimedia.org/wiki/Terms_of_Use/vi?uselang=vi các Điều khoản Sử dụng], và bạn đồng ý phát hành, một cách không thể hủy bỏ, đóng góp của mình theo [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}].",
+	"jsonconfig-license-copyrightwarning-license-unset": "Với việc lưu các thay đổi, bạn chấp nhận [https://foundation.wikimedia.org/wiki/Terms_of_Use/vi?uselang=vi các Điều khoản Sử dụng], và bạn đồng ý phát hành, một cách không thể hủy bỏ, đóng góp của mình theo giấy phép được chỉ định trong trường “licence”.",
 	"jsonconfig-license-notice": "'''Lưu ý:''' Khi sửa đổi trang này, bạn chấp nhận rằng các sửa đổi của bạn sẽ nằm trong giấy phép [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}].",
+	"jsonconfig-license-notice-license-unset": "'''Lưu ý:''' Khi bạn sửa đổi trang này, bạn đồng ý phát hành đóng góp của mình theo giấy phép được chỉ định trong trường “licence”.",
 	"right-jsonconfig-flush": "Điều khiển JsonConfig qua API",
-	"apihelp-jsonconfig-description": "Cho phép truy cập trực tiếp hệ thống con JsonConfig."
+	"action-jsonconfig-flush": "điều khiển JsonConfig qua API"
 }

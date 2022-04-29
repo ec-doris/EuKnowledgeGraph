@@ -1,0 +1,95 @@
+@import 'mediawiki.ui/variables';
+@import '../../lib/ooui/wikimedia-ui-base';
+
+/* Entity id form */
+form {
+	margin-bottom: 20px;
+}
+
+/* Notices */
+.wbqc-constraintreport-notice {
+	font-style: italic;
+
+	&-error {
+		font-weight: bold;
+		color: @colorError;
+	}
+}
+
+/* Statuses */
+.wbqc-status {
+	font-weight: bold;
+	white-space: nowrap;
+
+	&-compliance {
+		color: @wmui-color-green50;
+	}
+
+	&-exception {
+		color: @wmui-color-green30;
+	}
+
+	&-violation {
+		color: @colorError;
+	}
+
+	&-todo {
+		color: @colorTextLight;
+	}
+
+	&-bad-parameters {
+		color: @colorDestructiveActive;
+	}
+
+	&-deprecated,
+	&-not-in-scope {
+		color: @colorNeutral;
+	}
+
+	&-warning {
+		color: @wmui-color-yellow30;
+	}
+
+	&-suggestion {
+		color: @wmui-color-accent50;
+	}
+}
+
+/* Tooltip */
+.wbqc-indicator {
+	color: @colorNeutral;
+	font-weight: 600;
+}
+
+.wbqc-tooltip {
+	margin-top: -40px;
+	margin-left: -5px;
+	background-color: @background-color-framed;
+	border: @border-base;
+	border-radius: 5px;
+	box-shadow: 2px 2px 1px rgba( 0, 0, 0, 0.2 );
+	padding: 2px 5px 2px 5px;
+	position: absolute;
+	float: left;
+
+	display: none; /* stylelint-disable-line declaration-empty-line-before */
+}
+
+.wbqc-indicator .wbqc-tooltip {
+	/* unset .wbqc-indicator styles */
+	color: initial;
+	font-weight: initial;
+}
+
+.wbqc-indicator:hover .wbqc-tooltip {
+	display: block;
+}
+
+.wbqc-expandable-content-indicator {
+	cursor: pointer;
+}
+
+.wbqc-expandable-content {
+	color: @colorText;
+	display: none;
+}

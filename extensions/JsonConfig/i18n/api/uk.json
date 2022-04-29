@@ -1,0 +1,25 @@
+{
+	"@metadata": {
+		"authors": [
+			"Base",
+			"Piramidion",
+			"Ата"
+		]
+	},
+	"apihelp-jsonconfig-description": "Забезпечує прямий доступ до підсистеми JsonConfig.",
+	"apihelp-jsonconfig-summary": "Забезпечує прямий доступ до підсистеми JsonConfig.",
+	"apihelp-jsonconfig-param-command": "Яку субдію виконати у JsonConfig:\n;status:Показує конфігурацію JsonConfig.\n;reset:Очищує кеш конфігурацій. Вимагає параметр $1title і право jsonconfig-reset.\n;reload:Перезавантажує і кешує конфігурації з config store. Вимагає параметр $1title і право jsonconfig-reset.",
+	"apihelp-jsonconfig-param-namespace": "Номер простору назв назви для обробки.",
+	"apihelp-jsonconfig-param-title": "Заголовок для обробки без префіксу простору назв.",
+	"apihelp-jsonconfig-param-content": "Для $1command=reload використовуйте натомість цей вміст.",
+	"apihelp-jsonconfig-example-1": "Показати конфігурацію",
+	"apihelp-jsonconfig-example-2": "Скинути [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsonconfig-example-3": "Перезавантажити [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsondata-description": "Отримати локалізовані дані JSON.",
+	"apihelp-jsondata-summary": "Отримати локалізовані дані JSON.",
+	"apihelp-jsondata-param-title": "Назва, яку треба отримати. За замовчуванням до уваги береться простір назв «Data:»",
+	"apihelp-jsondata-example-1": "Отримати JSON-контент сторінки Sample.tab, локалізованої мовою користувача",
+	"apihelp-jsondata-example-2": "Отримати JSON-контент сторінки Sample.tab, із французькою локалізацією",
+	"apierror-jsonconfig-paramrequired": "Для цієї команди є обов'язковим параметр <var>$1</var>.",
+	"apierror-jsonconfig-badtitle": "Сторінка, вказана параметрами <var>namespace</var> та <var>title</var> є неправильною, або не зареєстрованою в конфігурації JsonConfig."
+}

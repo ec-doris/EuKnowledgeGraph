@@ -1,0 +1,33 @@
+{
+	"@metadata": {
+		"authors": [
+			"Gomoko",
+			"Thibaut120094",
+			"Wladek92"
+		]
+	},
+	"apihelp-wbcheckconstraints-description": "Réalise les contrôles de contraintes sur n'importe quelle entité que vous désirez et retourne les résultats.",
+	"apihelp-wbcheckconstraints-summary": "Réalise les contrôles de contraintes sur toute entité que vous désirez et retourne le résultat.",
+	"apihelp-wbcheckconstraints-param-id": "Liste d'ID des entités pour lesquelles ont veux les informations. Séparez les valeurs avec  '|' ou similaire.",
+	"apihelp-wbcheckconstraints-param-claimid": "Liste de GUID identifiant une demande de vérification d'un rapport de contraintes. Valeurs séparées par '|'.",
+	"apihelp-wbcheckconstraints-param-constraintid": "Filtre optionnel pour ne retourner que les contraintes qui ont l'ID de contrainte spécifié.",
+	"apihelp-wbcheckconstraints-param-status": "Filtre facultatif pour ne renvoyer que les résultats avec les états sélectionnés.\n\nNoter que seuls les résultats pour les états 'violation', 'avertissement' et 'mauvais-paramètres' sont mis en cache, donc les requêtes qui sélectionnent un état autre que ces trois-là ne bénéficient pas du cache.",
+	"apihelp-wbcheckconstraints-paramvalue-status-compliance": "La déclaration satisfait la contrainte.",
+	"apihelp-wbcheckconstraints-paramvalue-status-violation": "La déclaration viole la contrainte.",
+	"apihelp-wbcheckconstraints-paramvalue-status-exception": "L’entité sujet de la déclaration est une exception connue à la contrainte.",
+	"apihelp-wbcheckconstraints-paramvalue-status-todo": "La contrainte n’est pas implémentée.",
+	"apihelp-wbcheckconstraints-paramvalue-status-bad-parameters": "Les paramètres de la contrainte sont erronés.",
+	"apihelp-wbcheckconstraints-paramvalue-status-deprecated": "La contrainte n’a pas été vérifiée parce que la déclaration est obsolète.",
+	"apihelp-wbcheckconstraints-paramvalue-status-warning": "La déclaration viole la contrainte, mais celle-ci n’est pas obligatoire.",
+	"apihelp-wbcheckconstraints-paramvalue-status-suggestion": "La déclaration viole la contrainte, mais la contrainte n’est qu’une suggestion.",
+	"apihelp-wbcheckconstraints-paramvalue-status-not-in-scope": "La contrainte n’est pas vérifiée sur ce type d’élément (élément principal, qualifieur ou référence), donc la vérification de la contrainte est sautée.",
+	"apihelp-wbcheckconstraintparameters-summary": "Vérifie les paramètres des déclarations de contrainte.",
+	"apihelp-wbcheckconstraintparameters-extended-description": "Un des deux paramètres <var>property</var> ou <var>constraintid</var> au moins doit être spécifié ; toutes les contraintes sélectionnées par chacuns des paramètres seront vérifiées.",
+	"apihelp-wbcheckconstraintparameters-param-propertyid": "Liste des ID de propriété à vérifier. Toutes les déclarations de contrainte de ces propriétés seront vérifiées.\n\nSi ce paramètre est spécifié, il doit être non vide.",
+	"apihelp-wbcheckconstraintparameters-param-constraintid": "Liste des ID de contrainte (GUID de déclaration de contrainte) à vérifier.\n\nSi ce paramètre est spécifié, il doit être non vide.",
+	"apihelp-wbcheckconstraints-example-1": "Vérifier toutes les contraintes sur les éléments Q5 et Q42.",
+	"apihelp-wbcheckconstraints-example-2": "Vérifier toutes les contraintes sur une seule affirmation.",
+	"apihelp-wbcheckconstraints-example-3": "Vérifier une contrainte particulière sur l’élément Q2.",
+	"apihelp-wbcheckconstraintparameters-example-propertyid-1": "Vérifier les paramètres de toutes les contraintes d’une propriété.",
+	"apihelp-wbcheckconstraintparameters-example-constraintid-2": "Vérifier les paramètres de deux contraintes particulières."
+}

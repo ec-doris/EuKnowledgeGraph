@@ -16,7 +16,7 @@ use Scribunto_LuaLibraryBase;
  */
 class JCTabularContentTest extends MediaWikiTestCase {
 
-	public function getAnnotations() {
+	public function getAnnotations() : array {
 		// HACK phpunit can't handle @covers annotations referring to classes which cannot be loaded
 		$annotations = parent::getAnnotations();
 		if (

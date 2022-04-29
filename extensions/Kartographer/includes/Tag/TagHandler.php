@@ -102,7 +102,7 @@ abstract class TagHandler {
 	 * @return string
 	 */
 	public static function entryPoint( $input, array $args, Parser $parser, PPFrame $frame ) {
-		/** @phan-suppress-next-line PhanTypeInstantiateAbstract */
+		/** @phan-suppress-next-line PhanTypeInstantiateAbstractStatic */
 		$handler = new static();
 
 		return $handler->handle( $input, $args, $parser, $frame );
@@ -116,10 +116,13 @@ abstract class TagHandler {
 	 * @return string
 	 */
 	final private function handle( $input, array $args, Parser $parser, PPFrame $frame ) {
+		global $wgKartographerMapServer;
+
 		$this->parser = $parser;
 		$this->frame = $frame;
 		$output = $parser->getOutput();
 		$output->addModuleStyles( 'ext.kartographer.style' );
+		$output->addExtraCSPDefaultSrc( $wgKartographerMapServer );
 		$this->state = State::getOrCreate( $output );
 
 		$this->status = Status::newGood();
@@ -224,7 +227,7 @@ abstract class TagHandler {
 	 * @param string $name
 	 * @param string|bool|null $default
 	 *
-	 * @return int|false|null
+	 * @return int|bool|null
 	 */
 	protected function getInt( $name, $default = false ) {
 		$value = $this->getText( $name, $default, '/^-?[0-9]+$/' );
@@ -237,8 +240,8 @@ abstract class TagHandler {
 
 	/**
 	 * @param string $name
-	 * @param bool $default
-	 * @return float|string
+	 * @param string|bool|null $default
+	 * @return float|bool|null
 	 */
 	protected function getFloat( $name, $default = false ) {
 		$value = $this->getText( $name, $default, '/^-?[0-9]*\.?[0-9]+$/' );
@@ -253,9 +256,9 @@ abstract class TagHandler {
 	 * Returns value of a named tag attribute with optional validation
 	 *
 	 * @param string $name Attribute name
-	 * @param string|bool $default Default value or false to trigger error if absent
-	 * @param string|bool $regexp Regular expression to validate against or false to not validate
-	 * @return string|false
+	 * @param string|bool|null $default Default value or false to trigger error if absent
+	 * @param string|false $regexp Regular expression to validate against or false to not validate
+	 * @return string|bool|null
 	 */
 	protected function getText( $name, $default, $regexp = false ) {
 		if ( !isset( $this->args[$name] ) ) {

@@ -8,7 +8,20 @@
 	},
 	"jsonconfig-desc": "Lehetővé teszi JSON-konfiguráció tárolását egy wikiben",
 	"jsonconfig-duplicate-field": "Egynél több „$1” érték található",
-	"jsonconfig-err-array": "A(z) „$1” paraméter értékének listának kell lennie (pl. [\"érték1\", \"érték2\", …])",
+	"jsonconfig-err-array": "A(z) „$1” paraméter értékének listának kell lennie (pl. <kbd>[\"érték1\", \"érték2\", …]</kbd>)",
 	"jsonconfig-err-array-count": "A(z) „$1” listának $2 értéke van, de $3 értékkel kell rendelkeznie, ugyanannyival, mint a(z) „$4” listának",
-	"jsonconfig-type-name-string": "karakterlánc"
+	"jsonconfig-optional-field": "(opcionális)",
+	"jsonconfig-type-name-invalid": "érvénytelen",
+	"jsonconfig-type-name-string": "karakterlánc",
+	"jsonconfig-type-name-localized": "lokalizált",
+	"jsonconfig-type-name-number": "szám",
+	"jsonconfig-type-name-boolean": "logikai",
+	"jsonconfig-license": "Az adatok a(z) $1 licenc feltételei szerint használhatók fel.",
+	"jsonconfig-license-not-set": "A lap szerkesztésekor beleegyezel a szerkesztésed <code>licence</code> mezőben megadott licenc alatti közzétételébe.",
+	"jsonconfig-license-copyrightwarning": "A módosítások elmentésével elfogadod a [https://foundation.wikimedia.org/wiki/Terms_of_Use felhasználási feltételeket], és visszavonhatatlanul beleegyezel a közreműködésed közzétételébe a(z) [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}] licenc feltételei szerint.",
+	"jsonconfig-license-copyrightwarning-license-unset": "A módosítások elmentésével elfogadod a [https://foundation.wikimedia.org/wiki/Terms_of_Use felhasználási feltételeket], és visszavonhatatlanul beleegyezel a közreműködésed közzétételébe a <code>licence</code> mezőben megadott licenc alatt.",
+	"jsonconfig-license-notice": "'''Megjegyzés:''' A lap szerkesztésével beleegyezel a közreműködésed közzétételébe a(z) [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}] licenc feltételei szerint.",
+	"jsonconfig-license-notice-license-unset": "'''Megjegyzés:''' A lap szerkesztésével beleegyezel a közreműködésed közzétételébe a <code>licence</code> mezőben megadott licenc alatt.",
+	"right-jsonconfig-flush": "JsonConfig módosítása az API-n keresztül",
+	"action-jsonconfig-flush": "JsonConfig módosítása az API-n keresztül"
 }

@@ -97,7 +97,7 @@ class JCValidators {
 	public static function isNumber( $nullable = false ) {
 		return function ( JCValue $v, array $path ) use ( $nullable ) {
 			$value = $v->getValue();
-			if ( is_double( $value ) || is_int( $value ) || ( $nullable && $value === null ) ) {
+			if ( is_float( $value ) || is_int( $value ) || ( $nullable && $value === null ) ) {
 				return true;
 			}
 			$v->error( 'jsonconfig-err-number', $path );
@@ -290,7 +290,7 @@ class JCValidators {
 	 * @return Closure
 	 */
 	public static function validateDataType( &$validators ) {
-		return function ( JCValue $v, array $path ) use ( & $validators ) {
+		return function ( JCValue $v, array $path ) use ( &$validators ) {
 			$value = $v->getValue();
 			$validator = false;
 			if ( is_string( $value ) ) {

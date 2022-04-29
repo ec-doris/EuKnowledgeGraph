@@ -14781,10 +14781,7 @@ function icon(fp, options) {
         color = (fp['marker-color'] || '7e7e7e').replace('#', '');
 
     return L.icon({
-        iconUrl: format_url('/v4/marker/' +
-            'pin-' + size.charAt(0) + symbol + '+' + color +
-            // detect and use retina markers, which are x2 resolution
-            (L.Browser.retina ? '@2x' : '') + '.png', options && options.accessToken),
+        iconUrl: "",
         iconSize: sizes[size],
         iconAnchor: [sizes[size][0] / 2, sizes[size][1] / 2],
         popupAnchor: [0, -sizes[size][1] / 2]

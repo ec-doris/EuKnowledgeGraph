@@ -1,0 +1,24 @@
+{
+	"@metadata": {
+		"authors": [
+			"Banjo",
+			"Elisardojm"
+		]
+	},
+	"apihelp-jsonconfig-description": "Permite o acceso directo ó subsistema JsonConfig.",
+	"apihelp-jsonconfig-summary": "Permite o acceso directo ó subsistema JsonConfig.",
+	"apihelp-jsonconfig-param-command": "Que subacción realizar en JsonConfig:\n;status:Amosa a configuración JsonConfig.\n;reset:Limpa a configuración da caché. Require o parámetro $1title e o permiso jsonconfig-reset.\n;reload:Recarga e carga na caché as configuracións dende o almacén de configuración. Require o parámetro $1title e o permiso jsonconfig-reset.",
+	"apihelp-jsonconfig-param-namespace": "Número do espazo de nomes do título a procesar.",
+	"apihelp-jsonconfig-param-title": "Título a procesar sen o prefixo do espazo de nomes.",
+	"apihelp-jsonconfig-param-content": "Para $1command=reload, use no seu lugar este contido.",
+	"apihelp-jsonconfig-example-1": "Amosar configuración",
+	"apihelp-jsonconfig-example-2": "Restablecer [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsonconfig-example-3": "Recargar [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsondata-description": "Recuperar os datos JSON localizados.",
+	"apihelp-jsondata-summary": "Recuperar os datos JSON localizados.",
+	"apihelp-jsondata-param-title": "Título a recuperar. Por defecto asume que o espazo de nomes é \"Data:\"",
+	"apihelp-jsondata-example-1": "Obter o contido JSON da páxina Sample.tab, localizada para a lingua do usuario",
+	"apihelp-jsondata-example-2": "Obter o contido JSON da páxina Sample.tab localizada en francés",
+	"apierror-jsonconfig-paramrequired": "Este comando require o parámetro <var>$1</var>.",
+	"apierror-jsonconfig-badtitle": "A páxina especificada polos parámetros <var>namespace</var> e <var>title</var> non é válida ou non está rexistrada na configuración JsonConfig."
+}

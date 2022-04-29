@@ -75,7 +75,7 @@ class JCDefaultContentView extends JCContentView {
 			} else {
 				$res =
 					Html::rawElement( 'table', [ 'class' => 'mw-jsonconfig' ],
-						Html::rawElement( 'tbody', null, implode( "\n", $rows ) ) );
+						Html::rawElement( 'tbody', [], implode( "\n", $rows ) ) );
 			}
 		} else {
 			if ( is_string( $data ) ) {
@@ -98,7 +98,7 @@ class JCDefaultContentView extends JCContentView {
 	 */
 	public function renderTableRow( JCContent $content, $data, array $path ) {
 		$content = $this->renderRowContent( $content, $data, $path );
-		return Html::rawElement( 'tr', null, $content );
+		return Html::rawElement( 'tr', [], $content );
 	}
 
 	/**
@@ -111,11 +111,11 @@ class JCDefaultContentView extends JCContentView {
 	 */
 	public function renderRowContent( JCContent $content, $data, array $path ) {
 		$key = end( $path );
-		$th = is_string( $key ) ? Html::element( 'th', null, $key ) : '';
+		$th = is_string( $key ) ? Html::element( 'th', [], $key ) : '';
 
 		$tdVal = $this->renderValue( $content, $data, $path );
 		// If html begins with a '<', its a complex object, and should not have a class
-		$attribs = null;
+		$attribs = [];
 		if ( substr( $tdVal, 0, 1 ) !== '<' ) {
 			$attribs = [ 'class' => 'mw-jsonconfig-value' ];
 		}

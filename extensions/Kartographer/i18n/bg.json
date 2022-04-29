@@ -1,13 +1,15 @@
 {
 	"@metadata": {
 		"authors": [
+			"Iliev",
 			"StanProg",
-			"Iliev"
+			"Ted Masters"
 		]
 	},
 	"kartographer-attribution": "[https://foundation.wikimedia.org/wiki/Maps_Terms_of_Use Карти на Уикимедия] | Карт. данни © [https://www.openstreetmap.org/copyright Редактори в OpenStreetMap]",
 	"kartographer-broken-category": "Страници с повредени карти",
 	"kartographer-broken-category-desc": "Тази страница ползва карта по неправилен начин",
+	"kartographer-error-context-multi": "Проблеми с &lt;$1&gt;:\n$2",
 	"kartographer-tracking-category": "Страници с карти",
 	"kartographer-tracking-category-desc": "Тази страница съдържа карта",
 	"kartographer-specialmap-invalid-coordinates": "Указани са невалидни координати",
@@ -38,6 +40,7 @@
 	"leafletdraw-draw-toolbar-undo-title": "Изтриване на последната начертана точка",
 	"leafletdraw-edit-handlers-edit-tooltip-subtext": "Натисни „Откажи“ за отмяна на направените промени",
 	"leafletdraw-edit-toolbar-actions-cancel-text": "Отказ",
+	"leafletdraw-edit-toolbar-actions-cancel-title": "Отказ на редактирането, отмяна на всички промени",
 	"leafletdraw-edit-toolbar-actions-save-text": "Съхраняване",
 	"map": "Информация за координатите",
 	"mapbox-control-zoomin-title": "Приближаване",
@@ -45,12 +48,16 @@
 	"kartographer-fullscreen-close": "Затваряне",
 	"kartographer-fullscreen-collapse": "Скриване на детайли",
 	"kartographer-fullscreen-text": "Показване на цял екран",
+	"visualeditor-mwmapsdialog-content": "Съдържание на картата",
+	"visualeditor-mwmapsdialog-options": "Настройки",
 	"visualeditor-mwmapsdialog-align": "Подравняване",
 	"visualeditor-mwmapsdialog-language": "Език",
+	"visualeditor-mwmapsdialog-help-title": "Научете повече за създаването и редактирането на карти.",
 	"visualeditor-mwmapsdialog-position-lat": "Географска ширина",
 	"visualeditor-mwmapsdialog-position-lon": "Географска дължина",
 	"visualeditor-mwmapsdialog-position-zoom": "Мащабиране",
 	"visualeditor-mwmapsdialog-size": "Размер",
 	"visualeditor-mwmapsdialog-title": "Карта",
+	"visualeditor-mwmapscontextitem-nosupport": "Тази карта съдържа динамични възможности и за сега може да се редактира само в режим на редактиране на кода.",
 	"visualeditor-mwmapscontextitem-title": "Карта"
 }

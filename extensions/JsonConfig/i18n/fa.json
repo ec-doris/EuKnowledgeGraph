@@ -1,15 +1,19 @@
 {
 	"@metadata": {
 		"authors": [
-			"Reza1615",
-			"Mjbmr",
 			"Ebraminio",
+			"FarsiNevis",
 			"Huji",
-			"Ladsgroup"
+			"Ladsgroup",
+			"Mjbmr",
+			"Reza1615"
 		]
 	},
 	"jsonconfig-desc": "اجازه می‌دهد که پیکربندی JSON در یک ویکی ذخیره شود",
 	"jsonconfig-duplicate-field": "بیشتر از یک مقدار برای «$1» یافت شده‌است",
+	"jsonconfig-edit-action-cancel": "لغو",
+	"jsonconfig-edit-button-label": "ویرایش به‌عنوان جدول",
+	"jsonconfig-edit-dialog-error-data-too-large": "مجموعه‌داده بزرگ‌تر از آن است که قابل ویرایش به‌عنوان جدول باشد",
 	"jsonconfig-err-bad-type": "پارامتر «$1» باید یک نوع معتبر مانند «رشته»، «عدد»، یا «بولی» باشد.",
 	"jsonconfig-err-bool": "پارامتر \"$1\" باید درست یا نادرست باشد",
 	"jsonconfig-err-integer": "پارامتر «$1» باید عدد باشد",
@@ -24,6 +28,5 @@
 	"jsonconfig-type-name-boolean": "بولی",
 	"jsonconfig-license": "داده‌ها تحت مجوز $1 در دسترس هستند",
 	"jsonconfig-license-name-CC0-1.0": "کریتیو کامنز صفر",
-	"right-jsonconfig-flush": "کنترل جی‌سان کانفیگ توسط رابط برنامه‌نویسی",
-	"apihelp-jsonconfig-example-1": "نمایش تنظیمات"
+	"right-jsonconfig-flush": "کنترل جی‌سان کانفیگ توسط رابط برنامه‌نویسی"
 }

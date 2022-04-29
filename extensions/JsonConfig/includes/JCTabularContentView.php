@@ -3,6 +3,7 @@
 namespace JsonConfig;
 
 use Html;
+use MediaWiki\MediaWikiServices;
 use ParserOptions;
 use ParserOutput;
 use Title;
@@ -132,17 +133,19 @@ class JCTabularContentView extends JCContentView {
 			}
 		}
 
-		global $wgParser;
-
 		$html =
 			$content->renderDescription( $lang ) .
-			Html::rawElement( 'table', $dataAttrs, Html::rawElement( 'thead', null, implode( "\n", [
+			Html::rawElement( 'table', $dataAttrs, Html::rawElement( 'thead', [], implode( "\n", [
 					$makeRow( $nameHeaders, [ 'class' => 'mw-tabular-row-key' ] ),
 					$makeRow( $typeHeaders, [ 'class' => 'mw-tabular-row-type' ] ),
 					$makeRow( $titleHeaders, [ 'class' => 'mw-tabular-row-name' ] ),
-				] ) ) . Html::rawElement( 'tbody', null, implode( "\n", $rows ) ) ) .
-			$content->renderSources( $wgParser->getFreshParser(), $pageTitle, $revId, $options ) .
-			$content->renderLicense();
+				] ) ) . Html::rawElement( 'tbody', [], implode( "\n", $rows ) ) ) .
+			$content->renderSources(
+				MediaWikiServices::getInstance()->getParser()->getFreshParser(),
+				$pageTitle,
+				$revId,
+				$options
+			) . $content->renderLicense();
 
 		return $html;
 	}
@@ -153,6 +156,8 @@ class JCTabularContentView extends JCContentView {
 	 * @return string
 	 */
 	public function getDefault( $modelId ) {
+		$licenseIntro = JCContentView::getLicenseIntro();
+
 		return <<<EOT
 {
     // !!!!! All comments will be automatically deleted on save !!!!!
@@ -163,8 +168,7 @@ class JCTabularContentView extends JCContentView {
     // Optional "sources" field to describe the sources of the data.  Can use Wiki Markup
     "sources": "Copied from [http://example.com Example Data Source]",
 
-    // Mandatory "license" field. Only CC-0 (public domain dedication) is supported.
-    "license": "CC0-1.0",
+    $licenseIntro
 
     // Mandatory fields schema. Each field must be an object with
     //   "name" being a valid identifier with consisting of letters, digits, and "_"

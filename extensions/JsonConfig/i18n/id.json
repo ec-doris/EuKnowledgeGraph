@@ -1,15 +1,15 @@
 {
 	"@metadata": {
 		"authors": [
-			"Rachmat.Wahidi",
+			"Kenrick95",
 			"Presidenvolksraad",
+			"Rachmat.Wahidi",
 			"Rachmat04"
 		]
 	},
-	"jsonconfig-err-bool": "Parameter \"$1\" harus benar atau salah",
+	"jsonconfig-err-array": "Parameter \"$1\" harus merupakah sebuah daftar, mis. <kbd>[\"value1\", \"value2\", ...]</kbd>",
+	"jsonconfig-err-bool": "Parameter \"$1\" harus berupa <code>true</code> atau <code>false</code>",
 	"jsonconfig-err-string": "Parameter \"$1\" harus berupa string",
 	"jsonconfig-optional-field": "(opsional)",
-	"apihelp-jsonconfig-param-namespace": "Nomor ruangnama judul akan diproses.",
-	"apihelp-jsonconfig-param-title": "Judul untuk diproses tanpa awalan ruangnama.",
-	"apihelp-jsondata-description": "Mengambil data JSON lokal."
+	"jsonconfig-license-not-set": "Ketika Anda menyunting halaman ini, Anda setuju untuk merilis kontribusi Anda sesuai lisensi yang diperinci di bidang <code>license</code>."
 }

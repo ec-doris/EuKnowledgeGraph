@@ -60,12 +60,13 @@ abstract class JCDataContent extends JCObjContent {
 
 	/**
 	 * Resolve any override-specific localizations, and add it to $result
-	 * @param object $result
+	 * @param stdClass $result
 	 * @param Language $lang
 	 */
 	protected function localizeData( $result, Language $lang ) {
 		$data = $this->getData();
 		if ( property_exists( $data, 'description' ) ) {
+			// @phan-suppress-next-line PhanTypeMismatchArgument
 			$result->description = JCUtils::pickLocalizedString( $data->description, $lang );
 		}
 		$license = $this->getLicenseObject();
@@ -117,9 +118,15 @@ abstract class JCDataContent extends JCObjContent {
 		return $html;
 	}
 
-	private function getLicenseObject() {
+	/**
+	 * Get the license object of the content.
+	 * license code is identifier from https://spdx.org/licenses/
+	 * @return array|false code=>license code text=>license name url=>license URL
+	 */
+	public function getLicenseObject() {
 		$license = $this->getField( 'license' );
 		if ( $license && !$license->error() ) {
+			// should be a valid license identifier as in https://spdx.org/licenses/
 			$code = $license->getValue();
 
 			return [

@@ -1,10 +1,18 @@
 {
 	"@metadata": {
 		"authors": [
-			"QuimGil"
+			"Fitoschido",
+			"QuimGil",
+			"Jmarchn"
 		]
 	},
-	"jsonconfig-err-bool": "Paràmetre \"$1\" ha de ser cert o fals",
+	"jsonconfig-edit-action-apply": "Aplica",
+	"jsonconfig-edit-action-cancel": "Cancel·la",
+	"jsonconfig-edit-button-label": "Edita com a taula",
+	"jsonconfig-edit-dialog-error": "No es pot editar com a taula: $1",
+	"jsonconfig-edit-dialog-error-field-type-invalid": "Per a l’edició com a taula, cadascun dels camps ha de ser del tipus <code>número</code> o <code>cadena</code>",
+	"jsonconfig-edit-dialog-title": "Edita el JSON",
+	"jsonconfig-err-bool": "El paràmetre \"$1\" ha de ser <code>true</code> (vertader) o <code>false</code> (fals)",
 	"jsonconfig-err-string": "Paràmetre \"$1\" ha de ser una cadena de caràcters",
 	"jsonconfig-optional-field": "(opcional)",
 	"jsonconfig-type-name-invalid": "no és vàlid"

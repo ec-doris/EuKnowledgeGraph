@@ -56,7 +56,9 @@ class JCTabularContent extends JCDataContent {
 
 	/**
 	 * Derived classes must implement this method to perform custom validation
-	 * using the check(...) calls
+	 * using the check(...) calls.
+	 *
+	 * This should be kept compatible with mw.JsonConfig.JsonEditDialog validation
 	 */
 	public function validateContent() {
 		parent::validateContent();

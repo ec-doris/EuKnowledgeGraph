@@ -1,8 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Y-M D",
-			"Fohanno"
+			"Fohanno",
+			"Y-M D"
 		]
 	},
 	"jsonconfig-err-integer": "An arventenn \"$1\" a rank bezañ un niver anterin",

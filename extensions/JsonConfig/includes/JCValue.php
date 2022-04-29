@@ -1,8 +1,8 @@
 <?php
 namespace JsonConfig;
 
-use Message;
 use Exception;
+use Message;
 
 /**
  * A class with validation state that wraps each accessed value in the JCObjContent::validationData
@@ -17,15 +17,16 @@ final class JCValue {
 	private $error = false;
 
 	/** Value has not been checked */
-	const UNCHECKED = 0;
+	public const UNCHECKED = 0;
 	/** Value was explicitly checked (might be an error) */
-	const CHECKED = 1;
+	public const CHECKED = 1;
 	/** field is missing in the data, but is being explicitly tested for.
 	 * This value should never be stored in JCObjContent::validationData.
-	 * Setting this value for any field in validator will delete it. */
-	const MISSING = 2;
+	 * Setting this value for any field in validator will delete it.
+	 */
+	public const MISSING = 2;
 	/** field was not explicitly tested, but it was listed as a parent of one of the tested fields */
-	const VISITED = 3;
+	public const VISITED = 3;
 
 	/** @param int $status
 	 * @param mixed $value
@@ -86,10 +87,11 @@ final class JCValue {
 	/** Helper function - same arguments as wfMessage, or true if message was already added.
 	 * false clears this message status, and null returns current state without changing it
 	 * @param null|bool|string $key message id, or if bool, sets/removes error status
-	 * @param array $fieldPath path to the erroneous field. Will be converted to a a/b/c[0]/d style
+	 * @param array|null $fieldPath path to the erroneous field. Will be converted to a/b/c[0]/d style
+	 * @param mixed ...$params
 	 * @return bool|Message
 	 */
-	public function error( $key = null, $fieldPath = null /*...*/ ) {
+	public function error( $key = null, $fieldPath = null, ...$params ) {
 		if ( is_bool( $key ) ) {
 			$this->error = $key;
 		} elseif ( $key !== null ) {

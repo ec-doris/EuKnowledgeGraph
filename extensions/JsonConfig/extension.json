@@ -1,15 +1,16 @@
 {
 	"name": "JsonConfig",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"author": [
-		"Yuri Astrakhan"
+		"Yuri Astrakhan",
+		"Eranroz"
 	],
 	"url": "https://www.mediawiki.org/wiki/Extension:JsonConfig",
 	"descriptionmsg": "jsonconfig-desc",
 	"type": "other",
 	"license-name": "GPL-2.0-or-later",
 	"requires": {
-		"MediaWiki": ">= 1.29.0"
+		"MediaWiki": ">= 1.35.0"
 	},
 	"namespaces": [
 		{
@@ -39,7 +40,8 @@
 	],
 	"MessagesDirs": {
 		"JsonConfig": [
-			"i18n"
+			"i18n",
+			"i18n/api"
 		]
 	},
 	"ExtensionMessagesFiles": {
@@ -48,29 +50,11 @@
 	"RawHtmlMessages": [
 		"jsonconfig-license"
 	],
-	"AutoloadClasses": {
-		"JsonConfig\\FauxInterwikiLookup": "includes/FauxInterwikiLookup.php",
-		"JsonConfig\\JCApi": "includes/JCApi.php",
-		"JsonConfig\\JCCache": "includes/JCCache.php",
-		"JsonConfig\\JCContent": "includes/JCContent.php",
-		"JsonConfig\\JCContentHandler": "includes/JCContentHandler.php",
-		"JsonConfig\\JCContentView": "includes/JCContentView.php",
-		"JsonConfig\\JCDataApi": "includes/JCDataApi.php",
-		"JsonConfig\\JCDataContent": "includes/JCDataContent.php",
-		"JsonConfig\\JCDefaultContentView": "includes/JCDefaultContentView.php",
-		"JsonConfig\\JCDefaultObjContentView": "includes/JCDefaultObjContentView.php",
-		"JsonConfig\\JCJsonDifferenceEngine": "includes/JCJsonDifferenceEngine.php",
-		"JsonConfig\\JCLuaLibrary": "includes/JCLuaLibrary.php",
-		"JsonConfig\\JCMapDataContent": "includes/JCMapDataContent.php",
-		"JsonConfig\\JCMapDataContentView": "includes/JCMapDataContentView.php",
-		"JsonConfig\\JCObjContent": "includes/JCObjContent.php",
-		"JsonConfig\\JCSingleton": "includes/JCSingleton.php",
-		"JsonConfig\\JCTabularContent": "includes/JCTabularContent.php",
-		"JsonConfig\\JCTabularContentView": "includes/JCTabularContentView.php",
-		"JsonConfig\\JCTitle": "includes/JCTitle.php",
-		"JsonConfig\\JCUtils": "includes/JCUtils.php",
-		"JsonConfig\\JCValidators": "includes/JCValidators.php",
-		"JsonConfig\\JCValue": "includes/JCValue.php"
+	"AutoloadNamespaces": {
+		"JsonConfig\\": "includes/"
+	},
+	"TestAutoloadClasses": {
+		"JsonConfig\\Tests\\ObjContent": "tests/phpunit/unit/ObjContent.php"
 	},
 	"APIModules": {
 		"jsonconfig": "JsonConfig\\JCApi"
@@ -78,9 +62,36 @@
 	"ResourceModules": {
 		"ext.jsonConfig": {
 			"styles": [
-				"JsonConfig.css",
+				"JsonConfig.less",
 				"tabular-general.less",
 				"tabular-table.less"
+			]
+		},
+		"ext.jsonConfig.edit": {
+			"scripts": [
+				"ext.jsonConfig.init.js",
+				"ext.jsonConfig.JsonEditDialog.js",
+				"ext.jsonConfig.edit.js"
+			],
+			"dependencies": [
+				"jquery.textSelection",
+				"mediawiki.widgets.Table",
+				"oojs-ui-widgets",
+				"oojs-ui-windows"
+			],
+			"messages": [
+				"jsonconfig-edit-action-apply",
+				"jsonconfig-edit-action-cancel",
+				"jsonconfig-edit-button-label",
+				"jsonconfig-edit-dialog-error",
+				"jsonconfig-edit-dialog-error-data-inavlid",
+				"jsonconfig-edit-dialog-error-data-missing",
+				"jsonconfig-edit-dialog-error-data-too-large",
+				"jsonconfig-edit-dialog-error-field-name-missing",
+				"jsonconfig-edit-dialog-error-field-type-invalid",
+				"jsonconfig-edit-dialog-error-fields-missing",
+				"jsonconfig-edit-dialog-error-schema-missing",
+				"jsonconfig-edit-dialog-title"
 			]
 		}
 	},
@@ -89,63 +100,26 @@
 		"remoteExtPath": "JsonConfig/modules"
 	},
 	"Hooks": {
-		"AbortMove": [
-			"JsonConfig\\JCSingleton::onAbortMove"
-		],
-		"ApiMain::moduleManager": [
-			"JsonConfig\\JCSingleton::onApiMainModuleManager"
-		],
-		"ArticleDeleteComplete": [
-			"JsonConfig\\JCSingleton::onArticleDeleteComplete"
-		],
-		"ArticleUndelete": [
-			"JsonConfig\\JCSingleton::onArticleUndelete"
-		],
-		"BeforePageDisplay": [
-			"JsonConfig\\JCSingleton::onBeforePageDisplay"
-		],
-		"CanonicalNamespaces": [
-			"JsonConfig\\JCSingleton::onCanonicalNamespaces"
-		],
-		"CodeEditorGetPageLanguage": [
-			"JsonConfig\\JCSingleton::onCodeEditorGetPageLanguage"
-		],
-		"ContentHandlerDefaultModelFor": [
-			"JsonConfig\\JCSingleton::onContentHandlerDefaultModelFor"
-		],
-		"ContentHandlerForModelID": [
-			"JsonConfig\\JCSingleton::onContentHandlerForModelID"
-		],
-		"CustomEditor": [
-			"JsonConfig\\JCSingleton::onCustomEditor"
-		],
-		"EditFilterMergedContent": [
-			"JsonConfig\\JCSingleton::onEditFilterMergedContent"
-		],
-		"EditPageCopyrightWarning": [
-			"JsonConfig\\JCSingleton::onEditPageCopyrightWarning"
-		],
-		"MovePageIsValidMove": [
-			"JsonConfig\\JCSingleton::onMovePageIsValidMove"
-		],
-		"PageContentSaveComplete": [
-			"JsonConfig\\JCSingleton::onPageContentSaveComplete"
-		],
-		"ScribuntoExternalLibraries": [
-			"JsonConfig\\JCLuaLibrary::onScribuntoExternalLibraries"
-		],
-		"SkinCopyrightFooter": [
-			"JsonConfig\\JCSingleton::onSkinCopyrightFooter"
-		],
-		"TitleGetEditNotices": [
-			"JsonConfig\\JCSingleton::onTitleGetEditNotices"
-		],
-		"TitleMoveComplete": [
-			"JsonConfig\\JCSingleton::onTitleMoveComplete"
-		],
-		"userCan": [
-			"JsonConfig\\JCSingleton::onuserCan"
-		]
+		"AbortMove": "JsonConfig\\JCSingleton::onAbortMove",
+		"ApiMain::moduleManager": "JsonConfig\\JCSingleton::onApiMainModuleManager",
+		"ArticleDeleteComplete": "JsonConfig\\JCSingleton::onArticleDeleteComplete",
+		"ArticleUndelete": "JsonConfig\\JCSingleton::onArticleUndelete",
+		"BeforePageDisplay": "JsonConfig\\JCSingleton::onBeforePageDisplay",
+		"CanonicalNamespaces": "JsonConfig\\JCSingleton::onCanonicalNamespaces",
+		"CodeEditorGetPageLanguage": "JsonConfig\\JCSingleton::onCodeEditorGetPageLanguage",
+		"ContentHandlerDefaultModelFor": "JsonConfig\\JCSingleton::onContentHandlerDefaultModelFor",
+		"ContentHandlerForModelID": "JsonConfig\\JCSingleton::onContentHandlerForModelID",
+		"AlternateEdit": "JsonConfig\\JCSingleton::onAlternateEdit",
+		"EditPage::showEditForm:initial": "JsonConfig\\JCSingleton::onEditPage",
+		"EditFilterMergedContent": "JsonConfig\\JCSingleton::onEditFilterMergedContent",
+		"EditPageCopyrightWarning": "JsonConfig\\JCSingleton::onEditPageCopyrightWarning",
+		"MovePageIsValidMove": "JsonConfig\\JCSingleton::onMovePageIsValidMove",
+		"PageSaveComplete": "JsonConfig\\JCSingleton::onPageSaveComplete",
+		"ScribuntoExternalLibraries": "JsonConfig\\JCLuaLibrary::onScribuntoExternalLibraries",
+		"SkinCopyrightFooter": "JsonConfig\\JCSingleton::onSkinCopyrightFooter",
+		"TitleGetEditNotices": "JsonConfig\\JCSingleton::onTitleGetEditNotices",
+		"PageMoveComplete": "JsonConfig\\JCSingleton::onPageMoveComplete",
+		"userCan": "JsonConfig\\JCSingleton::onuserCan"
 	},
 	"config": {
 		"JsonConfigs": {
@@ -166,10 +140,31 @@
 			"value": false
 		},
 		"JsonConfigAllowedLicenses": {
-			"value": [ "CC0-1.0" ]
+			"value": [
+				"CC0-1.0",
+				"CC-BY-1.0",
+				"CC-BY-2.0",
+				"CC-BY-2.5",
+				"CC-BY-3.0",
+				"CC-BY-4.0",
+				"CC-BY-4.0+",
+				"CC-BY-SA-1.0",
+				"CC-BY-SA-2.0",
+				"CC-BY-SA-2.5",
+				"CC-BY-SA-3.0",
+				"CC-BY-SA-4.0",
+				"CC-BY-SA-4.0+",
+				"ODbL-1.0",
+				"dl-de-zero-2.0",
+				"dl-de-by-1.0",
+				"dl-de-by-2.0"
+			]
 		},
 		"JsonConfigInterwikiPrefix": {
 			"value": "commons"
+		},
+		"JsonConfigUseGUI": {
+			"value": true
 		}
 	},
 	"manifest_version": 2

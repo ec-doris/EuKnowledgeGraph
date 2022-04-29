@@ -1,0 +1,41 @@
+@import 'mediawiki.ui/variables';
+
+a.mw-kartographer-link,
+.mw-kartographer-maplink {
+	&:not( .mw-kartographer-autostyled ):not( .mw-kartographer-map ):not( .no-icon ) {
+		background-size: 20px 20px;
+		padding-left: 20px;
+	}
+
+	// One can display an iconless link by adding `class="no-icon"`
+	&.no-icon {
+		background: none;
+		margin-left: 0;
+		padding-left: 0;
+	}
+}
+
+// Override for MinervaNeue's "hack.less" that tries to fix Template:Multiple_image
+@media all and ( max-width: @width-breakpoint-tablet ) {
+	.content .mw-kartographer-container.thumb .thumbinner {
+		// Override the 'flex' rules
+		display: block;
+		flex-wrap: unset;
+		justify-content: inherit;
+		align-content: normal;
+
+		> .thumbcaption {
+			display: block;
+		}
+	}
+}
+
+// Override for MinervaNeue's "common.less" rule that specifically
+// enforces width: 320px for thumbs, which means that thumb/maps that
+// are set for width=100% are overrided and remain small. We need
+// to override that override.
+@media screen and ( min-width: @width-breakpoint-tablet ) {
+	.content .mw-kartographer-container.mw-kartographer-full.thumb {
+		width: 100%;
+	}
+}

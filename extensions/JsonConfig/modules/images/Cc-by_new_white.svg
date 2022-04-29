@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" id="svg1325" width="64" height="64" version="1.0">
+    <g id="layer3" display="inline" fill-opacity="1" stroke="none" stroke-linecap="butt" stroke-opacity="1">
+        <path id="path7255" d="M60.546 31.385a27.577 27.577 0 11-55.154 0 27.577 27.577 0 1155.154 0z" transform="matrix(.98077 0 0 .98077 -.335 1.219)" opacity="1" fill="#fff" fill-rule="evenodd" stroke-width=".03" stroke-linejoin="miter" stroke-miterlimit="4" stroke-dasharray="none" stroke-dashoffset="0"/>
+        <path d="M31.188 0C13.904.438 0 14.612 0 32c0 17.664 14.336 32 32 32s32-14.336 32-32S49.664 0 32 0c-.276 0-.538-.007-.813 0zm-.032 5.5c.284-.009.558 0 .844 0 14.628 0 26.5 11.872 26.5 26.5S46.628 58.5 32 58.5 5.5 46.628 5.5 32c0-14.342 11.423-26.049 25.656-26.5z" id="path1334" opacity="1" fill="#000" fill-rule="nonzero" stroke-width="259.507" stroke-linejoin="round" stroke-miterlimit="4" stroke-dasharray="none" stroke-dashoffset="0"/>
+        <g id="g6525" fill="#000" fill-rule="evenodd" stroke-linejoin="miter">
+            <path transform="translate(-.063 .186)" d="M36.688 15.75a4.625 4.625 0 11-9.25 0 4.625 4.625 0 119.25 0z" id="path2838" opacity="1" stroke-width=".03" stroke-miterlimit="4" stroke-dasharray="none" stroke-dashoffset="0"/>
+            <path d="M27.215 52.69h9.57V37.31h2.893V24.59c-.003-.456.041-1.365-.62-2.027-.663-.661-1.556-.621-2.028-.62H26.97c-.472-.001-1.365-.041-2.027.62-.662.662-.618 1.571-.62 2.027v12.72h2.892v15.38z" id="path3572" opacity="1" stroke-width="1"/>
+        </g>
+    </g>
+</svg>

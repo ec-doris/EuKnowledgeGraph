@@ -1,0 +1,25 @@
+{
+	"@metadata": {
+		"authors": [
+			"Lokal Profil",
+			"WikiPhoenix",
+			"Felba"
+		]
+	},
+	"apihelp-jsonconfig-description": "Ger direkt åtkomst till JsonConfig-undersystemet.",
+	"apihelp-jsonconfig-summary": "Tillåter direkt tillgång till JsonConfigs undersystem",
+	"apihelp-jsonconfig-param-command": "Wilken underåtgärd som ska utföras på JsonConfig:\n;status:Visar JsonConfig-konfiguration.\n;reset:Rensar konfigurationer från cache. Kräver $1title parametern och jsonconfig-reset-rättighet.\n;reload:Ladda om och cachar konfigurationer från config-lagringen.  Kräver $1title parametern och jsonconfig-reset-rättighet.",
+	"apihelp-jsonconfig-param-namespace": "Namespace-siffra av titeln som ska bearbetas.",
+	"apihelp-jsonconfig-param-title": "Titel att bearbeta utan namnrymdsprefix.",
+	"apihelp-jsonconfig-param-content": "För $1command=reload, använd detta innehåll istället.",
+	"apihelp-jsonconfig-example-1": "Visa konfiguration",
+	"apihelp-jsonconfig-example-2": "Återställ [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsonconfig-example-3": "Ladda om [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsondata-description": "Hämta lokaliserade JSON-data.",
+	"apihelp-jsondata-summary": "Hämta lokaliserad JSON-data.",
+	"apihelp-jsondata-param-title": "Titel att hämta. Som standard antas namnrymden vara \"Data:\"",
+	"apihelp-jsondata-example-1": "Hämta JSON-innehållet av Sample.tab-sidan, lokaliserad till användarens språk",
+	"apihelp-jsondata-example-2": "Hämta JSON-innehållet av Sample.tab-sidan som är lokaliserad till franska",
+	"apierror-jsonconfig-paramrequired": "Parameter <var>$1</var> krävs för detta kommando.",
+	"apierror-jsonconfig-badtitle": "Sidan som specificeras av <var>namespace</var> och <var>titel</var>-parametrar är antingen ogiltig eller ej registrerad i JsonConfig-konfigurationen."
+}

@@ -2,8 +2,8 @@
 namespace Kartographer\Tests;
 
 use Kartographer\State;
+use MediaWiki\MediaWikiServices;
 use MediaWikiTestCase;
-use Parser;
 use ParserOptions;
 use ParserOutput;
 use Title;
@@ -28,7 +28,7 @@ class KartographerTest extends MediaWikiTestCase {
     }
   }';
 
-	public function setUp() {
+	public function setUp() : void {
 		$this->setMwGlobals( [
 			'wgScriptPath' => '/w',
 			'wgScript' => '/w/index.php',
@@ -277,8 +277,8 @@ WIKITEXT;
 	 * @return ParserOutput
 	 */
 	private function parse( $text, callable $optionsCallback = null ) {
-		$parser = new Parser();
-		$options = new ParserOptions();
+		$parser = MediaWikiServices::getInstance()->getParserFactory()->create();
+		$options = ParserOptions::newFromAnon();
 		if ( $optionsCallback ) {
 			$optionsCallback( $options );
 		}

@@ -1,0 +1,32 @@
+{
+	"@metadata": {
+		"authors": [
+			"Amire80",
+			"Liuxinyu970226",
+			"Lloffiwr",
+			"Purodha",
+			"Raymond",
+			"Robby",
+			"Shirayuki",
+			"Siebrand",
+			"Umherirrender",
+			"Yuri Astrakhan"
+		]
+	},
+	"apihelp-jsonconfig-description": "{{doc-apihelp-description|jsonconfig}}",
+	"apihelp-jsonconfig-summary": "{{doc-apihelp-summary|jsonconfig}}",
+	"apihelp-jsonconfig-param-command": "The \"config store\" is the new way to store the MediaWiki configuration outside <code>LocalSettings.php</code>, namely in JSON files. \n----\n{{doc-apihelp-param|jsonconfig|command}}",
+	"apihelp-jsonconfig-param-namespace": "{{doc-apihelp-param|jsonconfig|namespace}}",
+	"apihelp-jsonconfig-param-title": "{{doc-apihelp-param|jsonconfig|title}}",
+	"apihelp-jsonconfig-param-content": "{{doc-apihelp-param|jsonconfig|content}}",
+	"apihelp-jsonconfig-example-1": "{{doc-apihelp-example|jsonconfig}}",
+	"apihelp-jsonconfig-example-2": "{{doc-apihelp-example|jsonconfig}}",
+	"apihelp-jsonconfig-example-3": "{{doc-apihelp-example|jsonconfig}}",
+	"apihelp-jsondata-description": "{{doc-apihelp-description|jsondata}}",
+	"apihelp-jsondata-summary": "{{doc-apihelp-summary|jsondata}}",
+	"apihelp-jsondata-param-title": "{{doc-apihelp-param|jsondata|title}}",
+	"apihelp-jsondata-example-1": "{{doc-apihelp-example|jsondata}}",
+	"apihelp-jsondata-example-2": "{{doc-apihelp-example|jsondata}}",
+	"apierror-jsonconfig-paramrequired": "{{doc-apierror}}\n\nParameters:\n* $1 - Parameter name",
+	"apierror-jsonconfig-badtitle": "{{doc-apierror}}"
+}

@@ -1,4 +1,9 @@
 {
-	"@metadata": [],
+	"@metadata": {
+		"authors": [
+			"Veeven"
+		]
+	},
+	"jsonconfig-edit-action-cancel": "రద్దుచేయి",
 	"jsonconfig-optional-field": "(ఐచ్ఛికం)"
 }

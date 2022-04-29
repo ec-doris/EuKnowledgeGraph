@@ -1,0 +1,10 @@
+{
+	"@metadata": {
+		"authors": [
+			"Filzstift"
+		]
+	},
+	"jsonconfig-err-bad-geojson": "Der Parameter «$1» muss ein gültiges GeoJSON-Datenobjekt oder ein Array von GeoJSON-Objekten sein. Falls das Feld <code>properties</code> <code>title</code> oder <code>description</code> enthält, müssen es entweder einzeilige Zeichenfolgen ohne Tabulatoren oder anschliessende Leerschläge sein oder mehrsprachige Objekte solcher Zeichenfolgen, z.&nbsp;B. <kbd>{ \"en\":\"String in English\", … }</kbd>",
+	"jsonconfig-err-localized": "Der Parameter «$1» muss ein Objekt sein, das gültige Sprachcodes auf einzelne Zeilenzeichenfolgen abbildet ohne Tabulatoren oder anschliessende Leerschläge, z.&nbsp;B. <kbd>{ \"en\":\"String in English\", … }</kbd>",
+	"jsonconfig-err-stringline": "Der Parameter «$1» muss eine einzelne Zeilenzeichenfolge sein, die nicht länger ist als $2 Zeichen, ohne Tabulatoren und darf nicht mit einem Leerschlag beginnen oder enden."
+}

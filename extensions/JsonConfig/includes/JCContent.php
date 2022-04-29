@@ -5,9 +5,9 @@ namespace JsonConfig;
 use FormatJson;
 use ParserOptions;
 use ParserOutput;
+use Status;
 use stdClass;
 use Title;
-use Status;
 
 /**
  * Represents the content of a JSON Json Config article.
@@ -19,14 +19,16 @@ use Status;
  *   based on Ori Livneh <ori@wikimedia.org> extension schema
  */
 class JCContent extends \TextContent {
-	/** @var array */
+	/** @var mixed */
 	private $rawData = null;
-	/** @var stdClass|array */
+	/** @var stdClass */
 	protected $data = null;
 	/** @var Status */
 	private $status;
 	/** @var bool */
 	private $thorough;
+	/** @var bool */
+	private $stripComments;
 	/** @var JCContentView|null contains an instance of the view class */
 	private $view = null;
 
@@ -36,6 +38,7 @@ class JCContent extends \TextContent {
 	 * @param bool $thorough True if extra validation should be performed
 	 */
 	public function __construct( $text, $modelId, $thorough ) {
+		$this->stripComments = $text !== null;
 		if ( $text === null ) {
 			$text = $this->getView( $modelId )->getDefault( $modelId );
 		}
@@ -47,7 +50,7 @@ class JCContent extends \TextContent {
 
 	/**
 	 * Get validated data
-	 * @return stdClass|stdClass[]
+	 * @return stdClass
 	 */
 	public function getData() {
 		return $this->data;
@@ -56,8 +59,8 @@ class JCContent extends \TextContent {
 	/**
 	 * Returns data after sanitization, suitable for third-party use
 	 *
-	 * @param stdClass|stdClass[] $data
-	 * @return stdClass|stdClass[]
+	 * @param stdClass $data
+	 * @return stdClass
 	 */
 	public function getSafeData( $data ) {
 		return $data;
@@ -121,7 +124,7 @@ class JCContent extends \TextContent {
 	/**
 	 * Override this method to perform additional data validation
 	 * @param mixed $data
-	 * @return mixed
+	 * @return stdClass
 	 */
 	public function validate( $data ) {
 		return $data;
@@ -132,7 +135,10 @@ class JCContent extends \TextContent {
 	 */
 	private function parse() {
 		$rawText = $this->getNativeData();
-		$parseOpts = FormatJson::STRIP_COMMENTS + FormatJson::TRY_FIXING;
+		$parseOpts = FormatJson::TRY_FIXING;
+		if ( $this->stripComments ) {
+			$parseOpts += FormatJson::STRIP_COMMENTS;
+		}
 		$status = FormatJson::parse( $rawText, $parseOpts );
 		if ( !$status->isOK() ) {
 			$this->status = $status;
@@ -143,7 +149,7 @@ class JCContent extends \TextContent {
 		// @fixme: but doing (object)(array)$data will re-encode empty [] as {}
 		// @performance: re-encoding is likely faster than stripping comments in PHP twice
 		$this->rawData = FormatJson::decode(
-			FormatJson::encode( $data, FormatJson::ALL_OK ), true
+			FormatJson::encode( $data, false, FormatJson::ALL_OK ), true
 		);
 		$this->data = $this->validate( $data );
 	}

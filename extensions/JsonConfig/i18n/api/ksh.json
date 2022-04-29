@@ -1,0 +1,14 @@
+{
+	"@metadata": {
+		"authors": [
+			"Purodha"
+		]
+	},
+	"apihelp-jsonconfig-description": "Mähd ene tiräkte Zohjang zom <i lang=\"en\" xml:lang=\"en\" dir=\"ltr\">JsonConfig</i> Ongersößtehm müjjelesch.",
+	"apihelp-jsonconfig-param-command": "Wat för en zohsäzlejje Aufjahb sull för de <i lang=\"en\" xml:lang=\"en\" dir=\"ltr\">JsonConfig</i> jedonn wähde:\n;„<code lang=\"en\" xml:lang=\"en\" dir=\"ltr\">status</code>“:Zeijsch de Enschtällonge uß der <i lang=\"en\" xml:lang=\"en\" dir=\"ltr\">JsonConfig</i>\n;„<code lang=\"en\" xml:lang=\"en\" dir=\"ltr\">reset</code>“:Schmiiß de Enschtällonge uß der <i lang=\"en\" xml:lang=\"en\" dir=\"ltr\">JsonConfig</i> uss em Zweschescheijscher. Bruch der Parramehter „<code lang=\"en\" xml:lang=\"en\" dir=\"ltr\">$1title</code>“ un et Rääsch „<code lang=\"en\" xml:lang=\"en\" dir=\"ltr\">jsonconfig-reset</code>“.\n;„<code lang=\"en\" xml:lang=\"en\" dir=\"ltr\">reload</code>“:Lähd de Enschtällonge neu uss em Schpeijscher för dem Wikki sin Enschtällonge un deiht en der Zweschescheijscher. Bruch der Parramehter „<code lang=\"en\" xml:lang=\"en\" dir=\"ltr\">$1title</code>“ un et Rääsch „<code lang=\"en\" xml:lang=\"en\" dir=\"ltr\">jsonconfig-reset</code>“.",
+	"apihelp-jsonconfig-param-title": "De Övverschreff zom Verärbeide.",
+	"apihelp-jsonconfig-param-content": "För „<code lang=\"en\" xml:lang=\"en\" dir=\"ltr\">$1command=reload</code>“ nemm schtatt dämm heh dä Ennhallt.\n<!--  \nhttps://translatewiki.net/wiki/Thread:Support/About_MediaWiki:Apihelp-jsonconfig-param-content/ksh\n-->",
+	"apihelp-jsonconfig-example-1": "Ennschtällonge aanzeije",
+	"apihelp-jsonconfig-example-2": "[[Data:Brazil/Amazonas.map]] neu aanloufe lohße",
+	"apihelp-jsonconfig-example-3": "[[Data:Brazil/Amazonas.map]] neu lahde"
+}

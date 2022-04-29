@@ -1,0 +1,26 @@
+{
+	"@metadata": {
+		"authors": [
+			"Liuxinyu970226",
+			"御坂美琴",
+			"Xiplus",
+			"坑触可"
+		]
+	},
+	"apihelp-jsonconfig-description": "允许直接访问JsonConfig子系统。",
+	"apihelp-jsonconfig-summary": "允许直接访问JsonConfig子系统。",
+	"apihelp-jsonconfig-param-command": "要在JsonConfig上执行的子操作：\n;status:显示JsonConfig配置。\n;reset:从缓存中清空配置。需要$1title参数和jsonconfig-reset权限。\n;reload:从配置库中重新载入并缓存配置。需要$1title参数和jsonconfig-reset权限。",
+	"apihelp-jsonconfig-param-namespace": "要处理的标题的命名空间编号。",
+	"apihelp-jsonconfig-param-title": "要不带命名空间前缀处理的标题。",
+	"apihelp-jsonconfig-param-content": "对于$1command=reload，使用此内容。",
+	"apihelp-jsonconfig-example-1": "显示配置",
+	"apihelp-jsonconfig-example-2": "重置[[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsonconfig-example-3": "重新加载[[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsondata-description": "取得本地化JSON数据。",
+	"apihelp-jsondata-summary": "取得本地化JSON数据。",
+	"apihelp-jsondata-param-title": "要获取的标题。默认假设命名空间为“Data:”",
+	"apihelp-jsondata-example-1": "获取Sample.tab页面的JSON内容，以用户的语言本地化",
+	"apihelp-jsondata-example-2": "获取Sample.tab页面的JSON内容，本地化为法语",
+	"apierror-jsonconfig-paramrequired": "此命令需要参数<var>$1</var>。",
+	"apierror-jsonconfig-badtitle": "由<var>namespace</var>和<var>title</var>参数指定的页面无效，或未在JsonConfig配置中注册。"
+}

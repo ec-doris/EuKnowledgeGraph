@@ -1,9 +1,22 @@
 {
 	"@metadata": {
 		"authors": [
-			"Stam.nikos"
+			"Stam.nikos",
+			"Geraki",
+			"Norhorn"
 		]
 	},
+	"jsonconfig-edit-action-apply": "Εφαρμογή",
+	"jsonconfig-edit-action-cancel": "Ακύρωση",
+	"jsonconfig-edit-button-label": "Επεξεργασία ως πίνακα",
+	"jsonconfig-edit-dialog-error": "Δεν είναι δυνατή η επεξεργασία ως πίνακα: $1",
+	"jsonconfig-edit-dialog-error-data-inavlid": "Τα δεδομένα δεν ταιριάζουν στη δομή",
+	"jsonconfig-edit-dialog-error-data-too-large": "Το dataset είναι πολύ μεγάλο για να επεξεργαστεί ως πίνακας",
+	"jsonconfig-edit-dialog-error-field-name-missing": "Κάθε πεδίο πρέπει να έχει ένα όνομα",
+	"jsonconfig-edit-dialog-error-field-type-invalid": "Για να επεξεργαστεί ως πίνακας, κάθε πεδίο πρέπει να έχει τύπο <code>number</code> ή <code>string</code>",
+	"jsonconfig-edit-dialog-title": "Επεξεργασία ως JSON",
 	"jsonconfig-err-string": "πρέπει να είναι μια συμβολοσειρά (προαιρετικό)",
+	"jsonconfig-type-name-number": "αριθμός",
+	"jsonconfig-license-notice": "'''Σημείωση:''' Όταν επεξεργάζεστε αυτή τη σελίδα, συμφωνείτε να απελευθερώσετε τη συνεισφορά σας υπό την [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}].",
 	"right-jsonconfig-flush": "Χειριστείτε το JsonConfig μέσω API"
 }

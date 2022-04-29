@@ -2,8 +2,8 @@
 namespace JsonConfig;
 
 use ApiModuleManager;
-use Article;
 use ContentHandler;
+use EditPage;
 use Exception;
 use GenderCache;
 use Html;
@@ -11,12 +11,14 @@ use Language;
 use MalformedTitleException;
 use MapCacheLRU;
 use MediaWiki\Linker\LinkTarget;
+use MediaWiki\MediaWikiServices;
 use MediaWikiTitleCodec;
-use TitleParser;
+use OutputPage;
 use Status;
 use stdClass;
-use TitleValue;
 use Title;
+use TitleParser;
+use TitleValue;
 use User;
 
 /**
@@ -99,7 +101,7 @@ class JCSingleton {
 	) {
 		$defaultModelId = 'JsonConfig';
 		// @codingStandardsIgnoreStart - T154789
-		$warnFunc = $warn ? 'wfLogWarning' : function() {};
+		$warnFunc = $warn ? 'wfLogWarning' : function( $msg ) {};
 		// @codingStandardsIgnoreEnd
 
 		$namespaces = [];
@@ -285,12 +287,12 @@ class JCSingleton {
 
 	/**
 	 * Helper function to check if configuration has a field set, and if not, set it to default
-	 * @param stdClass $conf
+	 * @param stdClass &$conf
 	 * @param string $field
 	 * @param mixed $default
 	 * @return mixed
 	 */
-	private static function getConfVal( & $conf, $field, $default ) {
+	private static function getConfVal( &$conf, $field, $default ) {
 		if ( property_exists( $conf, $field ) ) {
 			return $conf->$field;
 		}
@@ -300,15 +302,15 @@ class JCSingleton {
 
 	/**
 	 * Helper function to check if configuration has a field set, and if not, set it to default
-	 * @param $warnFunc
-	 * @param $value
+	 * @param callable $warnFunc
+	 * @param stdClass &$value
 	 * @param string $field
-	 * @param string $confId
-	 * @param string $treatAsField
+	 * @param string|null $confId
+	 * @param string|null $treatAsField
 	 * @return null|object|stdClass
 	 */
 	private static function getConfObject(
-		$warnFunc, & $value, $field, $confId = null, $treatAsField = null
+		$warnFunc, &$value, $field, $confId = null, $treatAsField = null
 	) {
 		if ( !$confId ) {
 			$val = & $value;
@@ -417,7 +419,8 @@ class JCSingleton {
 	/**
 	 * Get the name of the class for a given content model
 	 * @param string $modelId
-	 * @return null|string
+	 * @return string
+	 * @phan-return class-string
 	 */
 	public static function getContentClass( $modelId ) {
 		global $wgJsonConfigModels;
@@ -493,24 +496,27 @@ class JCSingleton {
 			if ( is_string( $value ) ) {
 				$language = Language::factory( 'en' );
 				if ( !self::$titleParser ) {
-					self::$titleParser =
-						new MediaWikiTitleCodec(
-							$language,
-							new GenderCache(),
-							[],
-							new FauxInterwikiLookup() );
+					// XXX Direct instantiation of MediaWikiTitleCodec isn't allowed. If core
+					// doesn't support our use-case, core needs to be fixed to allow this.
+					self::$titleParser = new MediaWikiTitleCodec(
+						$language,
+						new GenderCache(),
+						[],
+						new FauxInterwikiLookup(),
+						MediaWikiServices::getInstance()->getNamespaceInfo()
+					);
 				}
 				// Interwiki prefixes are a special case for title parsing:
 				// first letter is not capitalized, namespaces are not resolved, etc.
 				// So we prepend an interwiki prefix to fool title codec, and later remove it.
 				try {
 					$value = FauxInterwikiLookup::INTERWIKI_PREFIX . ':' . $value;
-					$parts = self::$titleParser->splitTitleString( $value );
+					$title = self::$titleParser->parseTitle( $value );
 
 					// Defensive coding - ensure the parsing has proceeded as expected
-					if ( $parts['dbkey'] === '' || $parts['namespace'] !== 0 ||
-						$parts['fragment'] !== '' || $parts['local_interwiki'] !== false ||
-						$parts['interwiki'] !== FauxInterwikiLookup::INTERWIKI_PREFIX
+					if ( $title->getDBkey() === '' || $title->getNamespace() !== NS_MAIN ||
+						$title->hasFragment() ||
+						$title->getInterwiki() !== FauxInterwikiLookup::INTERWIKI_PREFIX
 					) {
 						return null;
 					}
@@ -524,7 +530,7 @@ class JCSingleton {
 				// places like commons and zerowiki.
 				// Another implicit limitation: there might be an issue if data is stored on a wiki
 				// with the non-default ucfirst(), e.g. az, kaa, kk, tr -- they convert "i" to "İ"
-				$dbKey = $language->ucfirst( $parts['dbkey'] );
+				$dbKey = $language->ucfirst( $title->getDBkey() );
 			} else {
 				$dbKey = $value->getDBkey();
 			}
@@ -649,27 +655,34 @@ class JCSingleton {
 	}
 
 	/**
-	 * CustomEditor hook handler
-	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/CustomEditor
-	 *
-	 * @param Article $article
-	 * @param User $user
+	 * AlternateEdit hook handler
+	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/AlternateEdit
+	 * @param EditPage $editpage
+	 */
+	public static function onAlternateEdit( EditPage $editpage ) {
+		if ( !self::jsonConfigIsStorage() ) {
+			return;
+		}
+		$jct = self::parseTitle( $editpage->getTitle() );
+		if ( $jct ) {
+			$editpage->contentFormat = JCContentHandler::CONTENT_FORMAT_JSON_PRETTY;
+		}
+	}
+
+	/**
+	 * @param EditPage $editPage
+	 * @param OutputPage $output
 	 * @return bool
 	 */
-	public static function onCustomEditor( $article, $user ) {
-		if ( !$article || !self::jsonConfigIsStorage() ) {
-			return true;
+	public static function onEditPage( EditPage $editPage, OutputPage $output ) {
+		global $wgJsonConfigUseGUI;
+		if (
+			$wgJsonConfigUseGUI &&
+			$editPage->getTitle()->getContentModel() === 'Tabular.JsonConfig'
+		) {
+			$output->addModules( 'ext.jsonConfig.edit' );
 		}
-		$jct = self::parseTitle( $article->getTitle() );
-		if ( !$jct ) {
-			return true;
-		}
-
-		$editor = new \EditPage( $article );
-		$editor->contentFormat = JCContentHandler::CONTENT_FORMAT_JSON_PRETTY;
-		$editor->edit();
-
-		return false;
+		return true;
 	}
 
 	/**
@@ -721,6 +734,24 @@ class JCSingleton {
 	}
 
 	/**
+	 * Get the license code for the title or false otherwise.
+	 * license code is identifier from https://spdx.org/licenses/
+	 *
+	 * @param JCTitle $jct
+	 * @return bool|string Returns licence code string, or false if license is unknown
+	 */
+	private static function getTitleLicenseCode( JCTitle $jct ) {
+		$jctContent = self::getContent( $jct );
+		if ( $jctContent && $jctContent instanceof JCDataContent ) {
+			$license = $jctContent->getLicenseObject();
+			if ( $license ) {
+				return $license['code'];
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Override a per-page specific edit page copyright warning
 	 *
 	 * @param Title $title
@@ -732,11 +763,18 @@ class JCSingleton {
 		if ( self::jsonConfigIsStorage() ) {
 			$jct = self::parseTitle( $title );
 			if ( $jct ) {
-				$code = $jct->getConfig()->license;
+				$code = self::getTitleLicenseCode( $jct );
 				if ( $code ) {
-					$msg = [ 'jsonconfig-license-copyrightwarning-' . $code ];
-					return false; // Do not allow any other hook handler to override this
+					$msg = [ 'jsonconfig-license-copyrightwarning', $code ];
+				} else {
+					$requireLicense = $jct->getConfig()->license ?? false;
+					// Check if page has license field to apply only if it is required
+					// https://phabricator.wikimedia.org/T203173
+					if ( $requireLicense ) {
+						$msg = [ 'jsonconfig-license-copyrightwarning-license-unset' ];
+					}
 				}
+				return false; // Do not allow any other hook handler to override this
 			}
 		}
 		return true;
@@ -754,13 +792,44 @@ class JCSingleton {
 		if ( self::jsonConfigIsStorage() ) {
 			$jct = self::parseTitle( $title );
 			if ( $jct ) {
-				$code = $jct->getConfig()->license;
+				$code = self::getTitleLicenseCode( $jct );
 				if ( $code ) {
-					$noticeText = wfMessage( 'jsonconfig-license-notice-' . $code )->parse();
-					$notices['jsonconfig'] =
-						wfMessage( 'jsonconfig-license-notice-box-' . $code )
-							->rawParams( $noticeText )
-							->parseAsBlock();
+					$noticeText = wfMessage( 'jsonconfig-license-notice', $code )->parse();
+					$iconCodes = '';
+					if ( preg_match_all( "/[a-z][a-z0-9]+/i", $code, $subcodes ) ) {
+						// Flip order due to dom ordering of the floating elements
+						foreach ( array_reverse( $subcodes[0] ) as $c => $match ) {
+							// Used classes:
+							// * mw-jsonconfig-editnotice-icon-BY
+							// * mw-jsonconfig-editnotice-icon-CC
+							// * mw-jsonconfig-editnotice-icon-CC0
+							// * mw-jsonconfig-editnotice-icon-ODbL
+							// * mw-jsonconfig-editnotice-icon-SA
+							$iconCodes .= Html::rawElement(
+								'span', [ 'class' => 'mw-jsonconfig-editnotice-icon-' . $match ], ''
+							);
+						}
+						$iconCodes = Html::rawElement(
+							'div', [ 'class' => 'mw-jsonconfig-editnotice-icons' ], $iconCodes
+						);
+					}
+
+					$noticeFooter = Html::rawElement(
+						'div', [ 'class' => 'mw-jsonconfig-editnotice-footer' ], ''
+					);
+
+					$notices['jsonconfig'] = Html::rawElement(
+						'div',
+						[ 'class' => 'mw-jsonconfig-editnotice' ],
+						$iconCodes . $noticeText . $noticeFooter
+					);
+				} else {
+					// Check if page has license field to apply notice msgs only when license is required
+					// https://phabricator.wikimedia.org/T203173
+					$requireLicense = $jct->getConfig()->license ?? false;
+					if ( $requireLicense ) {
+						$notices['jsonconfig'] = wfMessage( 'jsonconfig-license-notice-license-unset' )->parse();
+					}
 				}
 			}
 		}
@@ -781,7 +850,7 @@ class JCSingleton {
 		if ( self::jsonConfigIsStorage() ) {
 			$jct = self::parseTitle( $title );
 			if ( $jct ) {
-				$code = $jct->getConfig()->license;
+				$code = self::getTitleLicenseCode( $jct );
 				if ( $code ) {
 					$msg = 'jsonconfig-license';
 					$link = Html::element( 'a', [
@@ -844,7 +913,7 @@ class JCSingleton {
 
 	public static function onAbortMove(
 		/** @noinspection PhpUnusedParameterInspection */
-		Title $title, Title $newTitle, $wgUser, &$err, $reason
+		Title $title, Title $newTitle, $user, &$err, $reason
 	) {
 		if ( !self::jsonConfigIsStorage() ) {
 			return true;
@@ -875,12 +944,11 @@ class JCSingleton {
 		return true;
 	}
 
-	public static function onPageContentSaveComplete(
+	public static function onPageSaveComplete(
 		/** @noinspection PhpUnusedParameterInspection */
-		\WikiPage $wikiPage, $user, $content, $summary, $isMinor, $isWatch,
-		$section, $flags, $revision, $status, $baseRevId
+		\WikiPage $wikiPage, $user, $summary, $flags, $revisionRecord, $editResult
 	) {
-		return self::onArticleChangeComplete( $wikiPage, $content );
+		return self::onArticleChangeComplete( $wikiPage );
 	}
 
 	public static function onArticleDeleteComplete(
@@ -897,10 +965,12 @@ class JCSingleton {
 		return self::onArticleChangeComplete( $title );
 	}
 
-	public static function onTitleMoveComplete(
+	public static function onPageMoveComplete(
 		/** @noinspection PhpUnusedParameterInspection */
-		$title, $newTitle, $wgUser, $pageid, $redirid, $reason
+		$title, $newTitle, $user, $pageid, $redirid, $reason, $revisionRecord
 	) {
+		$title = Title::newFromLinkTarget( $title );
+		$newTitle = Title::newFromLinkTarget( $newTitle );
 		return self::onArticleChangeComplete( $title ) ||
 			self::onArticleChangeComplete( $newTitle );
 	}
@@ -933,7 +1003,7 @@ class JCSingleton {
 
 	/**
 	 * @param object $value
-	 * @param JCContent $content
+	 * @param JCContent|null $content
 	 * @return bool
 	 */
 	private static function onArticleChangeComplete( $value, $content = null ) {
@@ -952,9 +1022,12 @@ class JCSingleton {
 
 				// Handle remote site notification
 				$store = $jct->getConfig()->store;
+				// @phan-suppress-next-line PhanTypeExpectedObjectPropAccess
 				if ( $store->notifyUrl ) {
 					$req =
+						// @phan-suppress-next-line PhanTypeExpectedObjectPropAccess
 						JCUtils::initApiRequestObj( $store->notifyUrl, $store->notifyUsername,
+							// @phan-suppress-next-line PhanTypeExpectedObjectPropAccess
 							$store->notifyPassword );
 					if ( $req ) {
 						$query = [

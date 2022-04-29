@@ -2,12 +2,16 @@
 	"@metadata": {
 		"authors": [
 			"Maroen1990",
-			"ديفيد",
-			"Meno25"
+			"Meno25",
+			"Tala Ali",
+			"ديفيد"
 		]
 	},
 	"jsonconfig-desc": "يسمح بتخزين JSON ليتم تخزينها في الويكي",
 	"jsonconfig-duplicate-field": "تم العثور على أكثر من قيمة \"$1\"",
+	"jsonconfig-edit-action-apply": "تطبيق",
+	"jsonconfig-edit-action-cancel": "إلغاء",
+	"jsonconfig-edit-button-label": "تعديل كجدول",
 	"jsonconfig-err-array": "يجب أن يكون الوسيط\"$1\"  قائمة، على سبيل المثال [\"قيمة1\"، \"قيمة2\"، ...]",
 	"jsonconfig-err-array-count": "تحتوي القائمة \"$1\" على $2 {{PLURAL:$2|قيمة}}، لكن يجب أن تكون لها $3 {{PLURAL:$3|قيمة}}، نفس عدد قيم \"$4\"",
 	"jsonconfig-err-array-expected": "كان من المتوقع أن تكون القيمة في \"$1\" قائمة محاطة بأقواس [...]",
@@ -52,29 +56,10 @@
 	"jsonconfig-license-name-CC-BY-SA-4.0": "المشاع الإبداعي النسبة-الترخيص بالمثل 4.0",
 	"jsonconfig-license-name-CC-BY-SA-4.0+": "نسخة المشاع الإبداعي النسبة-الترخيص بالمثل 4.0 أو أحدث",
 	"jsonconfig-license-name-ODbL-1.0": "رخصة قاعدة البيانات المفتوحة ODC v1.0",
-	"jsonconfig-license-copyrightwarning-CC0-1.0": "بحفظ التغييرات، فإنك توافق على [https://foundation.wikimedia.org/wiki/Terms_of_Use شروط الاستخدام]، وتوافق بشكل لا رجعة فيه على نشر مساهمتك في الملكية العامة بموجب [https://creativecommons.org/publicdomain/zero/1.0/ CC0].",
 	"jsonconfig-license-copyrightwarning": "بحفظ التغييرات، فإنك توافق على [https://foundation.wikimedia.org/wiki/Terms_of_Use شروط الاستخدام]، وتوافق بشكل لا رجعة فيه على نشر مساهمتك بموجب [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}].",
 	"jsonconfig-license-copyrightwarning-license-unset": "بحفظ التغييرات، فإنك توافق على [https://foundation.wikimedia.org/wiki/Terms_of_Use شروط الاستخدام]، وتوافق بشكل لا رجعة فيه على الإفراج عن مساهمتك وفقا للترخيص المحدد في حقل \"الترخيص\".",
 	"jsonconfig-license-notice": "'''ملاحظة:''' عندما تحرر هذه الصفحة، فإنك توافق على تحرير مساهمتك بموجب [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}].",
-	"jsonconfig-license-notice-box-CC0-1.0": "{| class='mw-jsonconfig-editnotice'\n| style='mw-jsonconfig-editnotice-icon' | [[Image:PD-icon.svg|30px|link=|ملكية عامة]]\n| $1\n| style='mw-jsonconfig-editnotice-icon' | [[Image:PD-icon.svg|30px|link=|ملكية عامة]]\n|}",
-	"jsonconfig-license-notice-CC0-1.0": "'''ملاحظة:''' عندما تقوم بتحرير هذه الصفحة، فإنك توافق على نشر مساهمتك بموجب [https://creativecommons.org/publicdomain/zero/1.0/ CC0].",
 	"jsonconfig-license-notice-license-unset": "'''ملاحظة:''' عندما تحرر هذه الصفحة، فإنك توافق على تحرير مساهمتك وفقا للترخيص المحدد في حقل \"الترخيص\".",
 	"right-jsonconfig-flush": "معالجة JsonConfig عبر API",
-	"action-jsonconfig-flush": "معالجة JsonConfig عبر API",
-	"apihelp-jsonconfig-description": "يسمح بالوصول المباشر إلى النظام الفرعي لـJsonConfig.",
-	"apihelp-jsonconfig-summary": "يسمح بالوصول المباشر إلى النظام الفرعي لـJsonConfig.",
-	"apihelp-jsonconfig-param-command": "أي إجراء فرعي يتم تنفيذه على JsonConfig:\n;الحالة:يعرض تكوين JsonConfig.\n;إعادة تعيين:يمسح التكوينات من ذاكرة التخزين المؤقت، يتطلب الوسيط $1title وصلاحية jsonconfig-reset.\n;إعادة التحميل:يعيد تحميل ويخبئ التكوينات مخزن التكوين، يتطلب الوسيط $1title parameter وصلاحية jsonconfig-reset.",
-	"apihelp-jsonconfig-param-namespace": "عدد نطاق العنوان لمعالجته.",
-	"apihelp-jsonconfig-param-title": "عنوان للمعالجة بدون بادئة النطاق.",
-	"apihelp-jsonconfig-param-content": "بالنسلة لـ$1command=reload، استخدم هذا المحتوى بدلا من ذلك.",
-	"apihelp-jsonconfig-example-1": "إظهار التكوين",
-	"apihelp-jsonconfig-example-2": "إعادة ضبط [[Zero:TEST]]",
-	"apihelp-jsonconfig-example-3": "إعادة تحميل [[Zero:TEST]]",
-	"apihelp-jsondata-description": "استرداد بيانات JSON المترجمة.",
-	"apihelp-jsondata-summary": "استرداد بيانات JSON المترجمة.",
-	"apihelp-jsondata-param-title": "عنوان للحصول عليه، افتراضيا نطاق ليكون \"البيانات:\"",
-	"apihelp-jsondata-example-1": "احصل على محتوى JSON من صفحة Sample.tab، مترجمة إلى لغة المستخدم",
-	"apihelp-jsondata-example-2": "احصل على محتوى JSON من صفحة Sample.tab، مترجمة إلى الفرنسية",
-	"apierror-jsonconfig-paramrequired": "الوسيط <var>$1</var> مطلوب لهذا الأمر.",
-	"apierror-jsonconfig-badtitle": "الصفحة المحددة بواسطة الوسائط <var>namespace</var> و<var>title</var> إما غير صالحة أو غير مسجلة في تكوين JsonConfig."
+	"action-jsonconfig-flush": "معالجة JsonConfig عبر API"
 }

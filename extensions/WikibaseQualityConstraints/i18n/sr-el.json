@@ -1,0 +1,12 @@
+{
+	"@metadata": {
+		"authors": [
+			"Obsuser"
+		]
+	},
+	"wbqc-issues-short": "Problemi",
+	"wbqc-issues-long": "Ova izjava ima neke probleme.",
+	"wbqc-potentialissues-long": "Ova izjava ima neke moguće probleme.",
+	"wbqc-violation-message-contemporary-subject-earlier": "Entiteti $1 i $3 treba da su savremeni da bi bili povezani preko $2, ali najkasnija krajnja vrednost za $1 je $4 a najranija početna vrednost za $3 je $5.",
+	"wbqc-violation-message-contemporary-value-earlier": "Entiteti $1 i $3 treba da su savremeni da bi bili povezani preko $2, ali najkasnija krajnja vrednost za $3 je $4 a najranija početna vrednost za $1 je $5."
+}

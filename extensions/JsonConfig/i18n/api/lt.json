@@ -1,0 +1,11 @@
+{
+	"@metadata": {
+		"authors": [
+			"Eitvys200",
+			"Tomasdd"
+		]
+	},
+	"apihelp-jsonconfig-example-2": "Atstatyti [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsondata-description": "Gauti lokalizuotus JSON duomenys.",
+	"apierror-jsonconfig-paramrequired": "Parametras <var>$1</var> reikalingas šiai komandai."
+}

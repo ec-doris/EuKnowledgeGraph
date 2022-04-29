@@ -33,7 +33,7 @@ class JCCache {
 			'JsonConfig',
 			$wgJsonConfigCacheKeyPrefix,
 			$conf->cacheKey,
-			( $flRev === null ? '' : ( $flRev ? 'T' : 'F' ) ),
+			$flRev === null ? '' : ( $flRev ? 'T' : 'F' ),
 			$titleValue->getNamespace(),
 			$titleValue->getDBkey(),
 		];
@@ -86,19 +86,18 @@ class JCCache {
 	 */
 	private function memcSet() {
 		global $wgJsonConfigDisableCache;
-		if ( $wgJsonConfigDisableCache ) {
-			return true;
-		}
-		$value = $this->content;
-		$exp = $this->cacheExpiration;
-		if ( !$value ) {
-			$value = '';
-			$exp = 10; // caching an error condition for short time
-		} elseif ( !is_string( $value ) ) {
-			$value = $value->getNativeData();
-		}
+		if ( !$wgJsonConfigDisableCache ) {
+			$value = $this->content;
+			$exp = $this->cacheExpiration;
+			if ( !$value ) {
+				$value = '';
+				$exp = 10; // caching an error condition for short time
+			} elseif ( !is_string( $value ) ) {
+				$value = $value->getNativeData();
+			}
 
-		return $this->cache->set( $this->key, $value, $exp );
+			$this->cache->set( $this->key, $value, $exp );
+		}
 	}
 
 	/**
@@ -116,6 +115,7 @@ class JCCache {
 			$conf = $this->titleValue->getConfig();
 			if ( $this->content && ( $updateCacheContent === true ||
 				( $updateCacheContent === null && isset( $conf->store ) &&
+					// @phan-suppress-next-line PhanTypeExpectedObjectPropAccess
 					$conf->store->cacheNewValue ) )
 			) {
 				$this->memcSet(); // update cache with the new value
@@ -156,6 +156,7 @@ class JCCache {
 			$result = false;
 			$conf = $this->titleValue->getConfig();
 			$remote = $conf->remote;
+			// @phan-suppress-next-line PhanTypeExpectedObjectPropAccessButGotNull
 			$req = JCUtils::initApiRequestObj( $remote->url, $remote->username, $remote->password );
 			if ( !$req ) {
 				break;
@@ -171,6 +172,7 @@ class JCCache {
 						'titles' => $articleName,
 						'prop' => 'revisions',
 						'rvprop' => 'content',
+						'rvslots' => 'main',
 						'continue' => '',
 					]
 					: [
@@ -192,6 +194,7 @@ class JCCache {
 						? $res['flagged']['stable_revid'] : $res['lastrevid'],
 					'prop' => 'revisions',
 					'rvprop' => 'content',
+					'rvslots' => 'main',
 					'continue' => '',
 				] );
 			}
@@ -199,7 +202,7 @@ class JCCache {
 				break;
 			}
 
-			$result = $res['revisions'][0]['slots']['main']['*'] ?? $res['revisions'][0]['*'] ?? false;
+			$result = $res['revisions'][0]['slots']['main']['*'] ?? false;
 			if ( $result === false ) {
 				break;
 			}
@@ -211,7 +214,7 @@ class JCCache {
 
 	/** Given a legal set of API parameters, return page from API
 	 * @param string $articleName title name used for warnings
-	 * @param \CurlHttpRequest|\PhpHttpRequest $req logged-in session
+	 * @param \MWHttpRequest $req logged-in session
 	 * @param array $query
 	 * @return bool|mixed
 	 */

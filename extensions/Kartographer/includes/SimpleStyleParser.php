@@ -39,7 +39,7 @@ class SimpleStyleParser {
 	 * @param Parser $parser Parser used for wikitext processing
 	 * @param PPFrame|null $frame
 	 * @param array $options Set ['saveUnparsed' => true] to back up the original values of title
-	 *                       and descrition in _origtitle and _origdescription
+	 *                       and description in _origtitle and _origdescription
 	 */
 	public function __construct( Parser $parser, PPFrame $frame = null, array $options = [] ) {
 		$this->parser = $parser;
@@ -108,9 +108,6 @@ class SimpleStyleParser {
 	 */
 	public static function doCountersRecursive( array &$values, &$counters ) {
 		$firstMarker = false;
-		if ( !is_array( $values ) ) {
-			return $firstMarker;
-		}
 		foreach ( $values as $item ) {
 			if ( property_exists( $item, 'properties' ) &&
 				 property_exists( $item->properties, 'marker-symbol' )
