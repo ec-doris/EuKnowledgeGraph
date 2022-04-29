@@ -116,3 +116,5 @@ $wgDefaultExternalStore = [ 'DB://demoCluster' ];
 #Enable the compression
 $wgCompressRevisions = true;
 
+#Open external links in new tab
+$wgExternalLinkTarget = '_blank';
