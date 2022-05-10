@@ -109,10 +109,10 @@ require_once "$IP/extensions/CASAuth/CASAuth.php";
 
 #External Storage for Text/Blob table
 $wgExternalStores = [ 'DB' ];
-$wgExternalServers = [ 'demoCluster' => [
+$wgExternalServers = [ 'externalStorage01' => [
   [ 'host' => $_ENV["EXTERNAL_STORAGE_SERVICE"], 'user' => 'admin',  'password' =>$_ENV["EXTERNAL_STORAGE_PASSWORD"],  'dbname' => 'my_wiki',  'type' => "mysql", 'load' => 1 ]
 ] ];
-$wgDefaultExternalStore = [ 'DB://demoCluster' ];
+$wgDefaultExternalStore = [ 'DB://externalStorage01' ];
 #Enable the compression
 $wgCompressRevisions = true;
 
