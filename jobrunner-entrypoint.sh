@@ -16,7 +16,9 @@ kill_runner() {
 trap kill_runner SIGTERM
 
 while true; do
-	php maintenance/runJobs.php --memory-limit 512M --wait --maxjobs="$MAX_JOBS"  --conf /var/www/html/LocalSettings.d/LocalSettings.override.php &
+  export DOLLAR='$'
+  envsubst < /LocalSettings.php.template > /var/www/html/LocalSettings.php
+	php maintenance/runJobs.php --memory-limit 512M --wait --maxjobs="$MAX_JOBS"  --conf /var/www/html/LocalSettings.php &
 	PID=$!
 	wait "$PID"
 done
