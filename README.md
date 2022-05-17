@@ -35,7 +35,7 @@ aws ecr get-login-password --region eu-west-1 | docker login --username AWS --pa
 
 Login on ECR repository(prod)
 ```
-aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 550062732140.dkr.ecr.eu-central-1.amazonaws.com
+aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 550062732140.dkr.ecr.eu-central-1.amazonaws.com
 ```
 
 Push to repository(dev)
