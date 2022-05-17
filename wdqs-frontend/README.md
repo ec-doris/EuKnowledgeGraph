@@ -1,0 +1,33 @@
+# For DEV
+
+Build image (on Apple Silicon)
+```
+docker buildx build --platform linux/amd64 . -t 294118183257.dkr.ecr.eu-west-1.amazonaws.com/linkedopendata-wdqs-frontend:wmde.3
+```
+
+Login on ECR repository
+```
+aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 294118183257.dkr.ecr.eu-west-1.amazonaws.com
+```
+
+Push to repository
+```
+docker push 294118183257.dkr.ecr.eu-west-1.amazonaws.com/linkedopendata-wdqs-frontend:wmde.3
+```
+
+# For PROD
+
+Build image (on Apple Silicon)
+```
+docker buildx build --platform linux/amd64 . -t 550062732140.dkr.ecr.eu-central-1.amazonaws.com/linkedopendata-wdqs-frontend:wmde.3
+```
+
+Login on ECR repository
+```
+aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 550062732140.dkr.ecr.eu-central-1.amazonaws.com
+```
+
+Push to repository
+```
+docker push 550062732140.dkr.ecr.eu-central-1.amazonaws.com/linkedopendata-wdqs-frontend:wmde.3
+```
