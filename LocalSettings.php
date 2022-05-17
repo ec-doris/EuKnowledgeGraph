@@ -65,11 +65,11 @@ $wgWBRepoSettings['statementSections'] = array(
 
 #Enable Kartographer
 wfLoadExtension( 'JsonConfig' );
-#wfLoadExtension( 'Kartographer' );
-#$wgKartographerMapServer = 'https://a.tile.openstreetmap.org';
-#$wgKartographerDfltStyle = '';
-#$wgKartographerStyles = [];
-#$wgWBRepoSettings['useKartographerGlobeCoordinateFormatter'] = true;
+wfLoadExtension( 'Kartographer' );
+$wgKartographerMapServer = 'https://a.tile.openstreetmap.org';
+$wgKartographerDfltStyle = '';
+$wgKartographerStyles = [];
+$wgWBRepoSettings['useKartographerGlobeCoordinateFormatter'] = true;
 
 # Allow longer strings
 $wgWBRepoSettings['string-limits'] = array (
@@ -118,3 +118,10 @@ $wgCompressRevisions = true;
 
 #Open external links in new tab
 $wgExternalLinkTarget = '_blank';
+
+# plugins needed to render some templates related to SPARQL examples
+wfLoadExtension( 'TemplateData' );
+wfLoadExtension( 'TemplateStyles' );
+wfLoadExtension( 'SyntaxHighlight_GeSHi' );
+wfLoadExtension( 'ParserFunctions' );
+
