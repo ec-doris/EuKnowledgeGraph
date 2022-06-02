@@ -125,3 +125,5 @@ wfLoadExtension( 'TemplateStyles' );
 wfLoadExtension( 'SyntaxHighlight_GeSHi' );
 wfLoadExtension( 'ParserFunctions' );
 
+# Enable wikimedia commons images
+$wgUseInstantCommons = true;
