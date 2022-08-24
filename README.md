@@ -50,3 +50,6 @@ docker push 550062732140.dkr.ecr.eu-central-1.amazonaws.com/linkedopendata-wikib
 
 If you change the image tag you need to update the manifest on the gitops repository, 
 otherwise you can only delete the pod on the cluster and it will regenerate with the new version
+
+### Notes
+- Building composer image must be 2.1.4 in order to avoid extension dependency and deprecation conflicts.

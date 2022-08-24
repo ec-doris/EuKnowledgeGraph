@@ -118,3 +118,32 @@ $wgCompressRevisions = true;
 
 #Open external links in new tab
 $wgExternalLinkTarget = '_blank';
+
+
+# Activate S3 extension
+wfLoadExtension( 'AWS' );
+
+// Configure AWS credentials.
+$wgAWSCredentials = [
+	'key' => $_ENV["AWS_ACCESS_KEY_ID"],
+	'secret' => $_ENV["AWS_SECRET_ACCESS_KEY"],
+	'token' => false
+];
+
+$wgAWSRegion = $_ENV["AWS_REGION"]; # Northern Virginia
+
+// Replace <something> with the name of your S3 bucket, e.g. wonderfulbali234.
+$wgAWSBucketName = $_ENV["S3_BUCKET_NAME"];
+
+// If you anticipate using several hundred buckets, one per wiki, then it's probably better to use one bucket
+// with the top level subdirectory as the wiki's name, and permissions properly configured of course.
+// While there are no more performance losses by using such a scheme, it might make things messy. Hence, it's
+// still a good idea to use one bucket per wiki unless you are approaching your 1,000 bucket per account limit.
+// $wgAWSBucketTopSubdirectory = "/"; # leading slash is required
+
+$wgFileBackends['s3']['privateWiki'] = true;
+
+$wgShowExceptionDetails = true;
+
+$wgAWSRepoHashLevels = '2'; # Default 0
+$wgAWSRepoDeletedHashLevels = '3'; # Default 0

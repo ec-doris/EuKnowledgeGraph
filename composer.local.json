@@ -1,0 +1,13 @@
+{
+	"extra": {
+		"merge-plugin": {
+			"include": [
+				"extensions/AWS/composer.json",
+				"extensions/CASAuth/CAS/composer.json",
+				"extensions/JsonConfig/composer.json",
+				"extensions/Kartographer/composer.json",
+				"extensions/WikibaseQualityConstraints/composer.json"
+			]
+		}
+	}
+}
