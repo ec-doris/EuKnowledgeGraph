@@ -118,3 +118,6 @@ $wgCompressRevisions = true;
 
 #Open external links in new tab
 $wgExternalLinkTarget = '_blank';
+
+# Activate batch ingestion plugin
+wfLoadExtension( 'BatchIngestion' );
