@@ -119,6 +119,9 @@ $wgCompressRevisions = true;
 #Open external links in new tab
 $wgExternalLinkTarget = '_blank';
 
+
+# Activate batch ingestion plugin
+wfLoadExtension( 'BatchIngestion' );
 # plugins needed to render some templates related to SPARQL examples
 wfLoadExtension( 'TemplateData' );
 wfLoadExtension( 'TemplateStyles' );

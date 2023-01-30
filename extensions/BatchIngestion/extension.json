@@ -1,0 +1,23 @@
+{
+    "name": "BatchIngestion",
+    "author": "Quentin Januel",
+    "url": "https://www.mediawiki.org/wiki/Extension:BatchIngestion",
+    "description": "A batch ingestion API for WikiBase",
+    "version": "0.1",
+    "license-name": "GPL-2.0+",
+    "type": "other",
+    "manifest_version": 2,
+    "AutoloadNamespaces": {
+        "MediaWiki\\Extension\\BatchIngestion\\": "src/"
+    },
+    "HookHandlers": {},
+    "Hooks": {},
+    "config": {},
+    "RestRoutes": [
+        {
+            "path": "/BatchIngestion/v0/batchcreate",
+            "method": "POST",
+            "class": "MediaWiki\\Extension\\BatchIngestion\\BatchApi"
+        }
+    ]
+}
