@@ -7,10 +7,13 @@
       "uri": "/proxy/wikibase/w/api.php"
     },
     "examples": {
-      "server": "https://www.wikidata.org/",
+      "server": "https://linkedopendata.eu/",
       "endpoint": "api/rest_v1/page/html/",
-      "pageTitle": "Wikidata:SPARQL_query_service/queries/examples",
+      "pageTitle": "EuKnowledgeGraph:SPARQL_query_service/queries/examples",
       "pagePathElement": "wiki/"
+    },
+    "query-builder": {
+      "server": "https://linkedopendata.eu/wiki/QueryBuilder"
     },
     "urlShortener": "tinyurl"
   },

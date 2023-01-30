@@ -33,6 +33,7 @@ services:
 
       ## Uncomment this next line to mount your own LocalSettings.php file
       - ./LocalSettings.php:/var/www/html/LocalSettings.d/LocalSettings.override.php
+      - ./Wikibase.example.php:/var/www/html/extensions/Wikibase/repo/config/Wikibase.example.php
       - ./extensions/JsonConfig:/var/www/html/extensions/JsonConfig
       - ./extensions/Kartographer:/var/www/html/extensions/Kartographer
       - ./extensions/WikibaseQualityConstraints:/var/www/html/extensions/WikibaseQualityConstraints

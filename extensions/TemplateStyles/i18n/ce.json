@@ -1,0 +1,12 @@
+{
+	"@metadata": {
+		"authors": [
+			"Умар"
+		]
+	},
+	"templatestyles-desc": "ХӀора кепана хатӀийн таблицаш кечйо",
+	"templatestyles-bad-src-missing": "[[:$1|$2]] агӀонан чулацам бац.",
+	"templatestyles-bad-src": "TemplateStyles чохь лелайан [[:$1|$2]] агӀонан хила йеза чулацаман модель \"{{int:content-model-sanitized-css}}\"  (карара модель: \"$3\").",
+	"templatestyles-stylesheet-error-category": "ХетӀийн файлаш кепийн хетӀийн гӀалаташ долуш",
+	"templatestyles-page-error-category": "Кепийн хетӀийн гӀалаташ долу агӀонаш"
+}
