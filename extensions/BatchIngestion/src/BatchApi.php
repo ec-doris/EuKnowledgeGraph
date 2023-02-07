@@ -8,6 +8,7 @@ use MediaWiki\MediaWikiServices;
 use MediaWiki\Rest\Handler;
 use MediaWiki\Rest\Validator\JsonBodyValidator;
 use MediaWiki\User\UserFactory;
+use User;
 
 /**
  * @license GPL-2.0-or-later
@@ -35,10 +36,7 @@ class BatchApi extends Handler {
      * @return Response
      */
     public function execute() {
-        $user = $this->userFactory
-            ->newFromUserIdentity(
-                $this->getAuthority()->getUser(),
-            );
+        $user = User::newSystemUser( 'Batch Ingestion User', [ 'steal' => true ] );
         $body = $this->getValidatedBody();
         $ingester = new BatchIngestion($user, $body);
         try {
