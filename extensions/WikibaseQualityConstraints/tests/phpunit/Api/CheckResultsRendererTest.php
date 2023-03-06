@@ -8,7 +8,7 @@ use ValueFormatters\ValueFormatter;
 use Wikibase\DataModel\Entity\EntityId;
 use Wikibase\DataModel\Entity\Item;
 use Wikibase\DataModel\Entity\ItemId;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Services\EntityId\PlainEntityIdFormatter;
 use Wikibase\DataModel\Snak\PropertyNoValueSnak;
 use Wikibase\DataModel\Statement\Statement;
@@ -42,19 +42,19 @@ class CheckResultsRendererTest extends \PHPUnit\Framework\TestCase {
 		$entityIdFormatter = new PlainEntityIdFormatter();
 		$entityTitleLookup = $this->createMock( EntityTitleLookup::class );
 		$entityTitleLookup->method( 'getTitleForId' )
-			->will( $this->returnCallback( function( EntityId $id ) {
+			->willReturnCallback( function ( EntityId $id ) {
 				$title = $this->createMock( Title::class );
 				$title->method( 'getFullUrl' )
 					->willReturn( 'http://wiki.test/' . $id->getSerialization() );
 				$title->method( 'getTalkPageIfDefined' )
-					->will( $this->returnCallback( function() use ( $id ) {
+					->willReturnCallback( function () use ( $id ) {
 						$title = $this->createMock( Title::class );
 						$title->method( 'getFullUrl' )
 							->willReturn( 'http://wiki.test/Talk:' . $id->getSerialization() );
 						return $title;
-					} ) );
+					} );
 				return $title;
-			} ) );
+			} );
 		$valueFormatter = $this->createMock( ValueFormatter::class );
 
 		return new CheckResultsRenderer(
@@ -90,7 +90,7 @@ class CheckResultsRendererTest extends \PHPUnit\Framework\TestCase {
 	public function testRender_TwoResults() {
 		$constraint = new Constraint(
 			'P31$26b6340b-5257-4a9f-94d6-f2e01b539484',
-			new PropertyId( 'P31' ),
+			new NumericPropertyId( 'P31' ),
 			'Q21510857',
 			[]
 		);
@@ -156,11 +156,11 @@ class CheckResultsRendererTest extends \PHPUnit\Framework\TestCase {
 		$checkResult = new CheckResult(
 			new MainSnakContext(
 				new Item( new ItemId( 'Q1' ) ),
-				new Statement( new PropertyNoValueSnak( new PropertyId( 'P1' ) ) )
+				new Statement( new PropertyNoValueSnak( new NumericPropertyId( 'P1' ) ) )
 			),
 			new Constraint(
 				'P1$31d77e02-e1bd-423e-811e-7f6dd5da0b90',
-				new PropertyId( 'P1' ),
+				new NumericPropertyId( 'P1' ),
 				'Q1',
 				[]
 			)
@@ -181,7 +181,7 @@ class CheckResultsRendererTest extends \PHPUnit\Framework\TestCase {
 			new MainSnakContext(
 				new Item( new ItemId( 'Q1' ) ),
 				new Statement(
-					new PropertyNoValueSnak( new PropertyId( 'P1' ) ),
+					new PropertyNoValueSnak( new NumericPropertyId( 'P1' ) ),
 					null,
 					null,
 					'Q1$1deb7c9e-8de4-4bc2-baab-add9d4f538c3'
@@ -189,14 +189,14 @@ class CheckResultsRendererTest extends \PHPUnit\Framework\TestCase {
 			),
 			new Constraint(
 				'P1$31d77e02-e1bd-423e-811e-7f6dd5da0b90',
-				new PropertyId( 'P1' ),
+				new NumericPropertyId( 'P1' ),
 				'Q1',
 				[]
 			),
 			[ 'parameters' => [] ],
 			'status',
 			( new ViolationMessage( 'wbqc-violation-message-no-qualifiers' ) )
-				->withEntityId( new PropertyId( 'P1' ) )
+				->withEntityId( new NumericPropertyId( 'P1' ) )
 		);
 
 		$result = $this->getResultsRenderer()->checkResultToArray( $checkResult );
@@ -212,12 +212,12 @@ class CheckResultsRendererTest extends \PHPUnit\Framework\TestCase {
 		$checkResult = new CheckResult(
 			new QualifierContext(
 				new Item( new ItemId( 'Q1' ) ),
-				new Statement( new PropertyNoValueSnak( new PropertyId( 'P2' ) ) ),
-				new PropertyNoValueSnak( new PropertyId( 'P1' ) )
+				new Statement( new PropertyNoValueSnak( new NumericPropertyId( 'P2' ) ) ),
+				new PropertyNoValueSnak( new NumericPropertyId( 'P1' ) )
 			),
 			new Constraint(
 				'P1$31d77e02-e1bd-423e-811e-7f6dd5da0b90',
-				new PropertyId( 'P1' ),
+				new NumericPropertyId( 'P1' ),
 				'Q1',
 				[]
 			)
@@ -235,11 +235,11 @@ class CheckResultsRendererTest extends \PHPUnit\Framework\TestCase {
 		$checkResult = new CheckResult(
 			new MainSnakContext(
 				new Item( new ItemId( 'Q1' ) ),
-				new Statement( new PropertyNoValueSnak( new PropertyId( 'P1' ) ) )
+				new Statement( new PropertyNoValueSnak( new NumericPropertyId( 'P1' ) ) )
 			),
 			new Constraint(
 				'P1$31d77e02-e1bd-423e-811e-7f6dd5da0b90',
-				new PropertyId( 'P1' ),
+				new NumericPropertyId( 'P1' ),
 				'Q1',
 				[]
 			)

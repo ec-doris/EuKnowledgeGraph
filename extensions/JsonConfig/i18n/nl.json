@@ -7,9 +7,12 @@
 			"Romaine",
 			"Siebrand",
 			"Sjoerddebruin",
-			"Yurik"
+			"Yurik",
+			"McDutchie"
 		]
 	},
+	"nstab-data": "Gegevens",
+	"tooltip-ca-nstab-data": "Gegevenspagina bekijken",
 	"jsonconfig-desc": "Maakt het mogelijk JSON-instellingen op te slaan in een wiki",
 	"jsonconfig-duplicate-field": "Meer dan één waarde \"$1\" aangetroffen",
 	"jsonconfig-edit-action-apply": "Toepassen",
@@ -20,7 +23,7 @@
 	"jsonconfig-edit-dialog-title": "JSON bewerken",
 	"jsonconfig-err-array": "Parameter \"$1\" moet een lijst zijn, bijvoorbeeld <kbd>[\"waarde1\", \"waarde2\", ...]</kbd>",
 	"jsonconfig-err-array-count": "Lijst \"$1\" heeft $2 {{PLURAL:$2|waarde|waarden}}, maar moet $3 {{PLURAL:$3|waarde|waarden}} hebben, hetzelfde aantal waarden als \"$4\"",
-	"jsonconfig-err-array-expected": "De verwachting was dat \"$1\" een lijst was omringd door haakjes[...]",
+	"jsonconfig-err-array-expected": "De waarde van \"$1\" had een door vierkante haakjes [...] omringde lijst moeten zijn",
 	"jsonconfig-err-assoc-array": "Parameter \"$1\" moet een must be an associatieve array (dictionary) zijn, bijvoorbeeld <kbd>{\"key\": \"value\", ...}</kbd>",
 	"jsonconfig-err-bool": "Parameter \"$1\" moet op <code>true</code> of <code>false</code> zijn ingesteld",
 	"jsonconfig-err-integer": "Parameter \"$1\" moet een integer zijn",

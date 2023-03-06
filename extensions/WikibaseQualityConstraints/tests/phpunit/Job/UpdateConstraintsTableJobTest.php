@@ -5,12 +5,12 @@ namespace WikibaseQuality\ConstraintReport\Tests\Job;
 use DataValues\TimeValue;
 use DataValues\UnboundedQuantityValue;
 use MediaWiki\MediaWikiServices;
-use MediaWikiTestCase;
+use MediaWikiIntegrationTestCase;
 use Title;
 use Wikibase\DataModel\Entity\EntityIdValue;
 use Wikibase\DataModel\Entity\ItemId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Entity\Property;
-use Wikibase\DataModel\Entity\PropertyId;
 use Wikibase\DataModel\Snak\PropertyNoValueSnak;
 use Wikibase\DataModel\Snak\PropertySomeValueSnak;
 use Wikibase\DataModel\Snak\PropertyValueSnak;
@@ -20,6 +20,7 @@ use Wikibase\DataModel\Statement\StatementList;
 use Wikibase\Lib\Store\EntityRevision;
 use Wikibase\Lib\Store\EntityRevisionLookup;
 use Wikibase\Lib\Store\LookupConstants;
+use Wikibase\Lib\Tests\Store\Sql\Terms\Util\FakeLBFactory;
 use Wikibase\Lib\Tests\Store\Sql\Terms\Util\FakeLoadBalancer;
 use Wikibase\Repo\Tests\NewStatement;
 use Wikibase\Repo\WikibaseRepo;
@@ -27,6 +28,9 @@ use WikibaseQuality\ConstraintReport\ConstraintRepositoryStore;
 use WikibaseQuality\ConstraintReport\ConstraintsServices;
 use WikibaseQuality\ConstraintReport\Job\UpdateConstraintsTableJob;
 use WikibaseQuality\ConstraintReport\Tests\DefaultConfig;
+use Wikimedia\Rdbms\IDatabase;
+use Wikimedia\Rdbms\ILBFactory;
+use Wikimedia\Rdbms\ILoadBalancer;
 
 /**
  * @covers WikibaseQuality\ConstraintReport\Job\UpdateConstraintsTableJob
@@ -38,18 +42,18 @@ use WikibaseQuality\ConstraintReport\Tests\DefaultConfig;
  * @author Lucas Werkmeister
  * @license GPL-2.0-or-later
  */
-class UpdateConstraintsTableJobTest extends MediaWikiTestCase {
+class UpdateConstraintsTableJobTest extends MediaWikiIntegrationTestCase {
 
 	use DefaultConfig;
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 
 		MediaWikiServices::getInstance()->resetServiceForTesting( ConstraintsServices::CONSTRAINT_LOOKUP );
 		$this->tablesUsed[] = 'wbqc_constraints';
 	}
 
-	protected function tearDown() : void {
+	protected function tearDown(): void {
 		MediaWikiServices::getInstance()->resetServiceForTesting( ConstraintsServices::CONSTRAINT_LOOKUP );
 		parent::tearDown();
 	}
@@ -92,26 +96,26 @@ class UpdateConstraintsTableJobTest extends MediaWikiTestCase {
 		$quantity = UnboundedQuantityValue::newFromNumber( 50, 'kg' );
 		$date = $this->getTimeValue( '2000-01-01' );
 		$snakP2308A = new PropertyValueSnak(
-			new PropertyId( 'P2308' ),
+			new NumericPropertyId( 'P2308' ),
 			$class1
 		);
 		$snakP1646 = new PropertyNoValueSnak(
-			new PropertyId( 'P1646' )
+			new NumericPropertyId( 'P1646' )
 		);
 		$snakP2308B = new PropertyValueSnak(
-			new PropertyId( 'P2308' ),
+			new NumericPropertyId( 'P2308' ),
 			$class2
 		);
 		$snakP2313 = new PropertyValueSnak(
-			new PropertyId( 'P2313' ),
+			new NumericPropertyId( 'P2313' ),
 			$quantity
 		);
 		$snakP2310 = new PropertyValueSnak(
-			new PropertyId( 'P2310' ),
+			new NumericPropertyId( 'P2310' ),
 			$date
 		);
 		$snakP2305 = new PropertySomeValueSnak(
-			new PropertyId( 'P2305' )
+			new NumericPropertyId( 'P2305' )
 		);
 		$qualifiers = new SnakList( [
 			$snakP2308A,
@@ -122,8 +126,7 @@ class UpdateConstraintsTableJobTest extends MediaWikiTestCase {
 			$snakP2305,
 		] );
 		$parameters = $job->extractParametersFromQualifiers( $qualifiers );
-		$deserializer = WikibaseRepo::getDefaultInstance()
-			->getBaseDataModelDeserializerFactory()
+		$deserializer = WikibaseRepo::getBaseDataModelDeserializerFactory()
 			->newSnakDeserializer();
 		$this->assertEquals( $snakP2308A, $deserializer->deserialize( $parameters['P2308'][0] ) );
 		$this->assertEquals( $snakP1646, $deserializer->deserialize( $parameters['P1646'][0] ) );
@@ -143,16 +146,16 @@ class UpdateConstraintsTableJobTest extends MediaWikiTestCase {
 		$statementGuid = 'P2$484b7eaf-e86c-4f25-91dc-7ae19f8be8de';
 		$statement = new Statement(
 			new PropertyValueSnak(
-				new PropertyId( $config->get( 'WBQualityConstraintsPropertyConstraintId' ) ),
+				new NumericPropertyId( $config->get( 'WBQualityConstraintsPropertyConstraintId' ) ),
 				new EntityIdValue( new ItemId( $singleValueId ) )
 			)
 		);
 		$statement->setGuid( $statementGuid );
 
-		$constraint = $job->extractConstraintFromStatement( new PropertyId( 'P2' ), $statement );
+		$constraint = $job->extractConstraintFromStatement( new NumericPropertyId( 'P2' ), $statement );
 
 		$this->assertEquals( $singleValueId, $constraint->getConstraintTypeItemId() );
-		$this->assertEquals( new PropertyId( 'P2' ), $constraint->getPropertyId() );
+		$this->assertEquals( new NumericPropertyId( 'P2' ), $constraint->getPropertyId() );
 		$this->assertEquals( $statementGuid, $constraint->getConstraintId() );
 		$this->assertEquals( [], $constraint->getConstraintParameters() );
 
@@ -173,22 +176,22 @@ class UpdateConstraintsTableJobTest extends MediaWikiTestCase {
 		$instanceOfRelationId = $config->get( 'WBQualityConstraintsInstanceOfRelationId' );
 
 		$classHumanSnak = new PropertyValueSnak(
-			new PropertyId( $classId ),
+			new NumericPropertyId( $classId ),
 			new EntityIdValue( new ItemId( 'Q5' ) )
 		);
 		$classFictionalHumanSnak = new PropertyValueSnak(
-			new PropertyId( $classId ),
+			new NumericPropertyId( $classId ),
 			new EntityIdValue( new ItemId( 'Q15632617' ) )
 		);
 		$relationInstanceOfSnak = new PropertyValueSnak(
-			new PropertyId( $relationId ),
+			new NumericPropertyId( $relationId ),
 			new EntityIdValue( new ItemId( $instanceOfRelationId ) )
 		);
 
 		$statementGuid = 'P2$e95e1eb9-eaa5-48d1-a3d6-0b34fc5d3cd0';
 		$statement = new Statement(
 			new PropertyValueSnak(
-				new PropertyId( $propertyConstraintId ),
+				new NumericPropertyId( $propertyConstraintId ),
 				new EntityIdValue( new ItemId( $typeId ) )
 			),
 			new SnakList( [ $classHumanSnak, $classFictionalHumanSnak, $relationInstanceOfSnak ] ),
@@ -196,15 +199,14 @@ class UpdateConstraintsTableJobTest extends MediaWikiTestCase {
 			$statementGuid
 		);
 
-		$constraint = $job->extractConstraintFromStatement( new PropertyId( 'P2' ), $statement );
+		$constraint = $job->extractConstraintFromStatement( new NumericPropertyId( 'P2' ), $statement );
 
-		$snakSerializer = WikibaseRepo::getDefaultInstance()
-			->getBaseDataModelSerializerFactory()
+		$snakSerializer = WikibaseRepo::getBaseDataModelSerializerFactory()
 			->newSnakSerializer();
 		$this->assertEquals( $typeId, $constraint->getConstraintTypeItemId() );
-		$this->assertEquals( new PropertyId( 'P2' ), $constraint->getPropertyId() );
+		$this->assertEquals( new NumericPropertyId( 'P2' ), $constraint->getPropertyId() );
 		$this->assertEquals( $statementGuid, $constraint->getConstraintId() );
-		$this->assertEquals(
+		$this->assertSame(
 			[
 				$classId => [
 					$snakSerializer->serialize( $classHumanSnak ),
@@ -225,7 +227,7 @@ class UpdateConstraintsTableJobTest extends MediaWikiTestCase {
 			[ 'propertyId' => 'P2' ]
 		);
 		$singleValueId = new ItemId( $config->get( 'WBQualityConstraintsSingleValueConstraintId' ) );
-		$propertyConstraintId = new PropertyId( $config->get( 'WBQualityConstraintsPropertyConstraintId' ) );
+		$propertyConstraintId = new NumericPropertyId( $config->get( 'WBQualityConstraintsPropertyConstraintId' ) );
 		$statementGuid = 'P2$484b7eaf-e86c-4f25-91dc-7ae19f8be8de';
 		$statement = new Statement(
 			new PropertyValueSnak(
@@ -235,7 +237,7 @@ class UpdateConstraintsTableJobTest extends MediaWikiTestCase {
 		);
 		$statement->setGuid( $statementGuid );
 		$property = new Property(
-			new PropertyId( 'P2' ),
+			new NumericPropertyId( 'P2' ),
 			null, '',
 			new StatementList( [ $statement ] )
 		);
@@ -307,7 +309,7 @@ class UpdateConstraintsTableJobTest extends MediaWikiTestCase {
 			->withDeprecatedRank()
 			->build();
 		$property = new Property(
-			new PropertyId( 'P3' ),
+			new NumericPropertyId( 'P3' ),
 			null,
 			'string',
 			new StatementList( [
@@ -321,13 +323,11 @@ class UpdateConstraintsTableJobTest extends MediaWikiTestCase {
 			->with( $property->getId(), 0, LookupConstants::LATEST_FROM_REPLICA )
 			->willReturn( new EntityRevision( $property ) );
 
-		$constraintRepository = $this->getMockBuilder( ConstraintRepositoryStore::class )
-			->disableOriginalConstructor()
-			->getMock();
+		$constraintRepository = $this->createMock( ConstraintRepositoryStore::class );
 		$constraintRepository->expects( $this->once() )
 			->method( 'insertBatch' )
 			->with( $this->callback(
-				function( array $constraints ) use ( $usedForValuesOnlyId, $usedAsQualifierId ) {
+				function ( array $constraints ) use ( $usedForValuesOnlyId, $usedAsQualifierId ) {
 					$this->assertCount( 2, $constraints );
 					$this->assertSame( $usedForValuesOnlyId, $constraints[0]->getConstraintTypeItemId() );
 					$this->assertSame( $usedAsQualifierId, $constraints[1]->getConstraintTypeItemId() );
@@ -342,13 +342,15 @@ class UpdateConstraintsTableJobTest extends MediaWikiTestCase {
 			null,
 			$config,
 			$constraintRepository,
+			$this->mockLBFactory(),
 			$entityRevisionLookup,
-			WikibaseRepo::getDefaultInstance()->getBaseDataModelSerializerFactory()->newSnakSerializer()
+			WikibaseRepo::getBaseDataModelSerializerFactory()->newSnakSerializer(),
+			$this->getServiceContainer()->getJobQueueGroup()
 		);
 		$job->importConstraintsForProperty(
 			$property,
 			$constraintRepository,
-			new PropertyId( $propertyConstraintId )
+			new NumericPropertyId( $propertyConstraintId )
 		);
 	}
 
@@ -357,7 +359,7 @@ class UpdateConstraintsTableJobTest extends MediaWikiTestCase {
 		$propertyConstraintId = $config->get( 'WBQualityConstraintsPropertyConstraintId' );
 		$singleValueConstraintId = $config->get( 'WBQualityConstraintsSingleValueConstraintId' );
 		$property = new Property(
-			new PropertyId( 'P2' ),
+			new NumericPropertyId( 'P2' ),
 			null,
 			'wikibase-item',
 			new StatementList(
@@ -372,15 +374,18 @@ class UpdateConstraintsTableJobTest extends MediaWikiTestCase {
 			->with( $property->getId(), 0, LookupConstants::LATEST_FROM_REPLICA )
 			->willReturn( new EntityRevision( $property ) );
 
+		$lb = new FakeLoadBalancer( [ 'dbr' => $this->db ] );
 		$job = new UpdateConstraintsTableJob(
 			Title::newFromText( 'constraintsTableUpdate' ),
 			[],
 			'P2',
 			null,
 			$this->getDefaultConfig(),
-			new ConstraintRepositoryStore( new FakeLoadBalancer( [ 'dbr' => $this->db ] ), false ),
+			new ConstraintRepositoryStore( $lb, false ),
+			new FakeLBFactory( [ 'lb' => $lb ] ),
 			$entityRevisionLookup,
-			WikibaseRepo::getDefaultInstance()->getBaseDataModelSerializerFactory()->newSnakSerializer()
+			WikibaseRepo::getBaseDataModelSerializerFactory()->newSnakSerializer(),
+			$this->getServiceContainer()->getJobQueueGroup()
 		);
 
 		$job->run();
@@ -430,6 +435,15 @@ class UpdateConstraintsTableJobTest extends MediaWikiTestCase {
 			TimeValue::PRECISION_DAY,
 			TimeValue::CALENDAR_GREGORIAN
 		);
+	}
+
+	private function mockLBFactory(): ILBFactory {
+		$connection = $this->createMock( IDatabase::class );
+		$loadBalancer = $this->createMock( ILoadBalancer::class );
+		$loadBalancer->method( 'getConnection' )->willReturn( $connection );
+		$lbFactory = $this->createMock( ILBFactory::class );
+		$lbFactory->method( 'getMainLB' )->willReturn( $loadBalancer );
+		return $lbFactory;
 	}
 
 }

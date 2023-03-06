@@ -23,7 +23,7 @@ class ValueCountCheckerHelper {
 	public function getPropertyCount( array $snaks, PropertyId $propertyId ) {
 		return count( array_filter(
 			$snaks,
-			function ( Snak $snak ) use ( $propertyId ) {
+			static function ( Snak $snak ) use ( $propertyId ) {
 				return $snak->getPropertyId()->equals( $propertyId );
 			}
 		) );

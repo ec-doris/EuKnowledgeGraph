@@ -1,11 +1,12 @@
 {
 	"@metadata": {
 		"authors": [
-			"Stam.nikos",
 			"Geraki",
-			"Norhorn"
+			"Norhorn",
+			"Stam.nikos"
 		]
 	},
+	"nstab-data": "Δεδομένα",
 	"jsonconfig-edit-action-apply": "Εφαρμογή",
 	"jsonconfig-edit-action-cancel": "Ακύρωση",
 	"jsonconfig-edit-button-label": "Επεξεργασία ως πίνακα",

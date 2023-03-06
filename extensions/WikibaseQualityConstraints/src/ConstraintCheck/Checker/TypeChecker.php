@@ -49,11 +49,7 @@ class TypeChecker implements ConstraintChecker {
 	 * @codeCoverageIgnore This method is purely declarative.
 	 */
 	public function getSupportedContextTypes() {
-		return [
-			Context::TYPE_STATEMENT => CheckResult::STATUS_COMPLIANCE,
-			Context::TYPE_QUALIFIER => CheckResult::STATUS_COMPLIANCE,
-			Context::TYPE_REFERENCE => CheckResult::STATUS_COMPLIANCE,
-		];
+		return self::ALL_CONTEXT_TYPES_SUPPORTED;
 	}
 
 	/**
@@ -63,6 +59,11 @@ class TypeChecker implements ConstraintChecker {
 		return [
 			Context::TYPE_STATEMENT,
 		];
+	}
+
+	/** @codeCoverageIgnore This method is purely declarative. */
+	public function getSupportedEntityTypes() {
+		return self::ALL_ENTITY_TYPES_SUPPORTED;
 	}
 
 	/**
@@ -92,7 +93,7 @@ class TypeChecker implements ConstraintChecker {
 			$constraintTypeItemId
 		);
 		$parameters['class'] = array_map(
-			function( $id ) {
+			static function ( $id ) {
 				return new ItemId( $id );
 			},
 			$classes

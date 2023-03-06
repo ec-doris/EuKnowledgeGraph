@@ -9,11 +9,12 @@ use DataValues\MultilingualTextValue;
 use DataValues\StringValue;
 use DataValues\UnboundedQuantityValue;
 use LogicException;
-use Wikibase\DataModel\DeserializerFactory;
+use Wikibase\DataModel\Deserializers\DeserializerFactory;
 use Wikibase\DataModel\Deserializers\SnakDeserializer;
 use Wikibase\DataModel\Entity\EntityId;
 use Wikibase\DataModel\Entity\EntityIdValue;
 use Wikibase\DataModel\Entity\ItemId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Entity\PropertyId;
 use Wikibase\DataModel\Snak\PropertyNoValueSnak;
 use Wikibase\DataModel\Snak\PropertySomeValueSnak;
@@ -99,7 +100,7 @@ class ConstraintParameterParser {
 		if ( count( $parameters[$parameterId] ) !== 1 ) {
 			throw new ConstraintParameterException(
 				( new ViolationMessage( 'wbqc-violation-message-parameter-single' ) )
-					->withEntityId( new PropertyId( $parameterId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
+					->withEntityId( new NumericPropertyId( $parameterId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
 			);
 		}
 	}
@@ -115,7 +116,7 @@ class ConstraintParameterParser {
 		if ( !( $snak instanceof PropertyValueSnak ) ) {
 			throw new ConstraintParameterException(
 				( new ViolationMessage( 'wbqc-violation-message-parameter-value' ) )
-					->withEntityId( new PropertyId( $parameterId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
+					->withEntityId( new NumericPropertyId( $parameterId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
 			);
 		}
 	}
@@ -136,7 +137,7 @@ class ConstraintParameterParser {
 		} else {
 			throw new ConstraintParameterException(
 				( new ViolationMessage( 'wbqc-violation-message-parameter-entity' ) )
-					->withEntityId( new PropertyId( $parameterId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
+					->withEntityId( new NumericPropertyId( $parameterId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
 					->withDataValue( $value, Role::CONSTRAINT_PARAMETER_VALUE )
 			);
 		}
@@ -155,7 +156,7 @@ class ConstraintParameterParser {
 			throw new ConstraintParameterException(
 				( new ViolationMessage( 'wbqc-violation-message-parameter-needed' ) )
 					->withEntityId( new ItemId( $constraintTypeItemId ), Role::CONSTRAINT_TYPE_ITEM )
-					->withEntityId( new PropertyId( $classId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
+					->withEntityId( new NumericPropertyId( $classId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
 			);
 		}
 
@@ -179,36 +180,24 @@ class ConstraintParameterParser {
 			throw new ConstraintParameterException(
 				( new ViolationMessage( 'wbqc-violation-message-parameter-needed' ) )
 					->withEntityId( new ItemId( $constraintTypeItemId ), Role::CONSTRAINT_TYPE_ITEM )
-					->withEntityId( new PropertyId( $relationId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
+					->withEntityId( new NumericPropertyId( $relationId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
 			);
 		}
 
 		$this->requireSingleParameter( $constraintParameters, $relationId );
 		$relationEntityId = $this->parseEntityIdParameter( $constraintParameters[$relationId][0], $relationId );
-		$instanceId = $this->config->get( 'WBQualityConstraintsInstanceOfRelationId' );
-		$subclassId = $this->config->get( 'WBQualityConstraintsSubclassOfRelationId' );
-		$instanceOrSubclassId = $this->config->get( 'WBQualityConstraintsInstanceOrSubclassOfRelationId' );
-		switch ( $relationEntityId ) {
-			case $instanceId:
-				return 'instance';
-			case $subclassId:
-				return 'subclass';
-			case $instanceOrSubclassId:
-				return 'instanceOrSubclass';
-			default:
-				throw new ConstraintParameterException(
-					( new ViolationMessage( 'wbqc-violation-message-parameter-oneof' ) )
-						->withEntityId( new PropertyId( $relationId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
-						->withEntityIdList(
-							[
-								new ItemId( $instanceId ),
-								new ItemId( $subclassId ),
-								new ItemId( $instanceOrSubclassId ),
-							],
-							Role::CONSTRAINT_PARAMETER_VALUE
-						)
-				);
+		if ( !( $relationEntityId instanceof ItemId ) ) {
+			throw new ConstraintParameterException(
+				( new ViolationMessage( 'wbqc-violation-message-parameter-item' ) )
+					->withEntityId( new NumericPropertyId( $relationId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
+					->withDataValue( new EntityIdValue( $relationEntityId ), Role::CONSTRAINT_PARAMETER_VALUE )
+			);
 		}
+		return $this->mapItemId( $relationEntityId, [
+			$this->config->get( 'WBQualityConstraintsInstanceOfRelationId' ) => 'instance',
+			$this->config->get( 'WBQualityConstraintsSubclassOfRelationId' ) => 'subclass',
+			$this->config->get( 'WBQualityConstraintsInstanceOrSubclassOfRelationId' ) => 'instanceOrSubclass',
+		], $relationId );
 	}
 
 	/**
@@ -230,7 +219,7 @@ class ConstraintParameterParser {
 		}
 		throw new ConstraintParameterException(
 			( new ViolationMessage( 'wbqc-violation-message-parameter-property' ) )
-				->withEntityId( new PropertyId( $parameterId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
+				->withEntityId( new NumericPropertyId( $parameterId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
 				->withDataValue( $value, Role::CONSTRAINT_PARAMETER_VALUE )
 		);
 	}
@@ -249,7 +238,7 @@ class ConstraintParameterParser {
 			throw new ConstraintParameterException(
 				( new ViolationMessage( 'wbqc-violation-message-parameter-needed' ) )
 					->withEntityId( new ItemId( $constraintTypeItemId ), Role::CONSTRAINT_TYPE_ITEM )
-					->withEntityId( new PropertyId( $propertyId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
+					->withEntityId( new NumericPropertyId( $propertyId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
 			);
 		}
 
@@ -267,7 +256,7 @@ class ConstraintParameterParser {
 		}
 		throw new ConstraintParameterException(
 			( new ViolationMessage( 'wbqc-violation-message-parameter-item' ) )
-				->withEntityId( new PropertyId( $parameterId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
+				->withEntityId( new NumericPropertyId( $parameterId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
 				->withDataValue( $dataValue, Role::CONSTRAINT_PARAMETER_VALUE )
 		);
 	}
@@ -295,7 +284,7 @@ class ConstraintParameterParser {
 				throw new ConstraintParameterException(
 					( new ViolationMessage( 'wbqc-violation-message-parameter-needed' ) )
 						->withEntityId( new ItemId( $constraintTypeItemId ), Role::CONSTRAINT_TYPE_ITEM )
-						->withEntityId( new PropertyId( $parameterId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
+						->withEntityId( new NumericPropertyId( $parameterId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
 				);
 			} else {
 				return [];
@@ -321,6 +310,59 @@ class ConstraintParameterParser {
 	}
 
 	/**
+	 * Parse a parameter that must contain item IDs.
+	 * @param array $constraintParameters see {@link \WikibaseQuality\ConstraintReport\Constraint::getConstraintParameters()}
+	 * @param string $constraintTypeItemId used in error messages
+	 * @param bool $required whether the parameter is required (error if absent) or not ([] if absent)
+	 * @param string $parameterId the property ID to use
+	 * @throws ConstraintParameterException
+	 * @return ItemId[]
+	 */
+	private function parseItemIdsParameter(
+		array $constraintParameters,
+		string $constraintTypeItemId,
+		bool $required,
+		string $parameterId
+	): array {
+		return array_map( static function ( ItemIdSnakValue $value ) use ( $parameterId ): ItemId {
+			if ( $value->isValue() ) {
+				return $value->getItemId();
+			} else {
+				throw new ConstraintParameterException(
+					( new ViolationMessage( 'wbqc-violation-message-parameter-value' ) )
+						->withEntityId( new NumericPropertyId( $parameterId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
+				);
+			}
+		}, $this->parseItemsParameter(
+			$constraintParameters,
+			$constraintTypeItemId,
+			$required,
+			$parameterId
+		) );
+	}
+
+	/**
+	 * Map an item ID parameter to a well-known value or throw an appropriate error.
+	 * @throws ConstraintParameterException
+	 * @return mixed elements of $mapping
+	 */
+	private function mapItemId( ItemId $itemId, array $mapping, string $parameterId ) {
+		$serialization = $itemId->getSerialization();
+		if ( array_key_exists( $serialization, $mapping ) ) {
+			return $mapping[$serialization];
+		} else {
+			$allowed = array_map( static function ( $id ) {
+				return new ItemId( $id );
+			}, array_keys( $mapping ) );
+			throw new ConstraintParameterException(
+				( new ViolationMessage( 'wbqc-violation-message-parameter-oneof' ) )
+					->withEntityId( new NumericPropertyId( $parameterId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
+					->withEntityIdList( $allowed, Role::CONSTRAINT_PARAMETER_VALUE )
+			);
+		}
+	}
+
+	/**
 	 * @param array $constraintParameters see {@link \WikibaseQuality\Constraint::getConstraintParameters()}
 	 * @param string $constraintTypeItemId used in error messages
 	 * @throws ConstraintParameterException if the parameter is invalid or missing
@@ -333,7 +375,7 @@ class ConstraintParameterParser {
 			throw new ConstraintParameterException(
 				( new ViolationMessage( 'wbqc-violation-message-parameter-needed' ) )
 					->withEntityId( new ItemId( $constraintTypeItemId ), Role::CONSTRAINT_TYPE_ITEM )
-					->withEntityId( new PropertyId( $propertyId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
+					->withEntityId( new NumericPropertyId( $propertyId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
 			);
 		}
 
@@ -366,7 +408,7 @@ class ConstraintParameterParser {
 		} else {
 			throw new ConstraintParameterException(
 				( new ViolationMessage( 'wbqc-violation-message-parameter-value-or-novalue' ) )
-					->withEntityId( new PropertyId( $parameterId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
+					->withEntityId( new NumericPropertyId( $parameterId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
 			);
 		}
 	}
@@ -420,8 +462,8 @@ class ConstraintParameterParser {
 			throw new ConstraintParameterException(
 				( new ViolationMessage( 'wbqc-violation-message-range-parameters-needed' ) )
 					->withDataValueType( $type )
-					->withEntityId( new PropertyId( $minimumId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
-					->withEntityId( new PropertyId( $maximumId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
+					->withEntityId( new NumericPropertyId( $minimumId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
+					->withEntityId( new NumericPropertyId( $maximumId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
 					->withEntityId( new ItemId( $constraintTypeItemId ), Role::CONSTRAINT_TYPE_ITEM )
 			);
 		}
@@ -442,8 +484,8 @@ class ConstraintParameterParser {
 			$min !== null && $max !== null && $min->equals( $max ) ) {
 			throw new ConstraintParameterException(
 				( new ViolationMessage( 'wbqc-violation-message-range-parameters-same' ) )
-					->withEntityId( new PropertyId( $minimumId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
-					->withEntityId( new PropertyId( $maximumId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
+					->withEntityId( new NumericPropertyId( $minimumId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
+					->withEntityId( new NumericPropertyId( $maximumId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
 			);
 		}
 
@@ -485,6 +527,30 @@ class ConstraintParameterParser {
 	}
 
 	/**
+	 * Parse language parameter.
+	 * @param array $constraintParameters
+	 * @throws ConstraintParameterException
+	 * @return string[]
+	 */
+	public function parseLanguageParameter( array $constraintParameters, $constraintTypeItemId ): array {
+		$this->checkError( $constraintParameters );
+		$languagePropertyId = $this->config->get( 'WBQualityConstraintsLanguagePropertyId' );
+		if ( !array_key_exists( $languagePropertyId, $constraintParameters ) ) {
+			throw new ConstraintParameterException(
+				( new ViolationMessage( 'wbqc-violation-message-parameter-needed' ) )
+					->withEntityId( new ItemId( $constraintTypeItemId ), Role::CONSTRAINT_TYPE_ITEM )
+					->withEntityId( new NumericPropertyId( $languagePropertyId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
+			);
+		}
+
+		$languages = [];
+		foreach ( $constraintParameters[$languagePropertyId] as $snak ) {
+			$languages[] = $this->parseStringParameter( $snak, $languagePropertyId );
+		}
+		return $languages;
+	}
+
+	/**
 	 * Parse a single string parameter.
 	 * @param array $snakSerialization
 	 * @param string $parameterId
@@ -500,7 +566,7 @@ class ConstraintParameterParser {
 		} else {
 			throw new ConstraintParameterException(
 				( new ViolationMessage( 'wbqc-violation-message-parameter-string' ) )
-					->withEntityId( new PropertyId( $parameterId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
+					->withEntityId( new NumericPropertyId( $parameterId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
 					->withDataValue( $value, Role::CONSTRAINT_PARAMETER_VALUE )
 			);
 		}
@@ -536,7 +602,7 @@ class ConstraintParameterParser {
 			throw new ConstraintParameterException(
 				( new ViolationMessage( 'wbqc-violation-message-parameter-needed' ) )
 					->withEntityId( new ItemId( $constraintTypeItemId ), Role::CONSTRAINT_TYPE_ITEM )
-					->withEntityId( new PropertyId( $formatId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
+					->withEntityId( new NumericPropertyId( $formatId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
 			);
 		}
 
@@ -557,7 +623,7 @@ class ConstraintParameterParser {
 		}
 
 		return array_map(
-			function( $snakSerialization ) use ( $exceptionId ) {
+			function ( $snakSerialization ) use ( $exceptionId ) {
 				return $this->parseEntityIdParameter( $snakSerialization, $exceptionId );
 			},
 			$constraintParameters[$exceptionId]
@@ -601,7 +667,7 @@ class ConstraintParameterParser {
 		} else {
 			throw new ConstraintParameterException(
 				( new ViolationMessage( 'wbqc-violation-message-parameter-oneof' ) )
-					->withEntityId( new PropertyId( $constraintStatusId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
+					->withEntityId( new NumericPropertyId( $constraintStatusId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
 					->withEntityIdList(
 						$supportedStatuses,
 						Role::CONSTRAINT_PARAMETER_VALUE
@@ -621,7 +687,7 @@ class ConstraintParameterParser {
 		if ( !( $dataValue instanceof MonolingualTextValue ) ) {
 			throw new ConstraintParameterException(
 				( new ViolationMessage( 'wbqc-violation-message-parameter-monolingualtext' ) )
-					->withEntityId( new PropertyId( $parameterId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
+					->withEntityId( new NumericPropertyId( $parameterId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
 					->withDataValue( $dataValue, Role::CONSTRAINT_PARAMETER_VALUE )
 			);
 		}
@@ -651,7 +717,7 @@ class ConstraintParameterParser {
 			if ( array_key_exists( $code, $result ) ) {
 				throw new ConstraintParameterException(
 					( new ViolationMessage( 'wbqc-violation-message-parameter-single-per-language' ) )
-						->withEntityId( new PropertyId( $parameterId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
+						->withEntityId( new NumericPropertyId( $parameterId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
 						->withLanguage( $code )
 				);
 			}
@@ -683,45 +749,95 @@ class ConstraintParameterParser {
 	}
 
 	/**
-	 * @param array $constraintParameters see {@link \WikibaseQuality\Constraint::getConstraintParameters()}
+	 * Parse the constraint scope parameters:
+	 * the context types and entity types where the constraint should be checked.
+	 * Depending on configuration, this may be the same property ID or two different ones.
+	 *
+	 * @param array $constraintParameters see {@link \WikibaseQuality\ConstraintReport\Constraint::getConstraintParameters()}
 	 * @param string $constraintTypeItemId used in error messages
-	 * @param string[]|null $validScopes a list of Context::TYPE_* constants which are valid where this parameter appears.
-	 * If this is not null and one of the specified scopes is not in this list, a ConstraintParameterException is thrown.
-	 * @throws ConstraintParameterException if the parameter is invalid
-	 * @return string[]|null Context::TYPE_* constants
+	 * @param string[] $validContextTypes a list of Context::TYPE_* constants which are valid for this constraint type.
+	 * If one of the specified scopes is not in this list, a ConstraintParameterException is thrown.
+	 * @param string[] $validEntityTypes a list of entity types which are valid for this constraint type.
+	 * If one of the specified entity types is not in this list, a ConstraintParameterException is thrown.
+	 * @throws ConstraintParameterException
+	 * @return array [ string[]|null $contextTypes, string[]|null $entityTypes ]
+	 * the context types and entity types in the parameters (each may be null if not specified)
+	 * @suppress PhanTypeArraySuspicious
 	 */
-	public function parseConstraintScopeParameter( array $constraintParameters, $constraintTypeItemId, array $validScopes = null ) {
-		$contextTypes = [];
-		$parameterId = $this->config->get( 'WBQualityConstraintsConstraintScopeId' );
-		$items = $this->parseItemsParameter(
+	public function parseConstraintScopeParameters(
+		array $constraintParameters,
+		string $constraintTypeItemId,
+		array $validContextTypes,
+		array $validEntityTypes
+	): array {
+		$contextTypeParameterId = $this->config->get( 'WBQualityConstraintsConstraintScopeId' );
+		$contextTypeItemIds = $this->parseItemIdsParameter(
 			$constraintParameters,
 			$constraintTypeItemId,
 			false,
-			$parameterId
+			$contextTypeParameterId
+		);
+		$entityTypeParameterId = $this->config->get( 'WBQualityConstraintsConstraintEntityTypesId' );
+		$entityTypeItemIds = $this->parseItemIdsParameter(
+			$constraintParameters,
+			$constraintTypeItemId,
+			false,
+			$entityTypeParameterId
 		);
 
-		if ( $items === [] ) {
-			return null;
-		}
+		$contextTypeMapping = $this->getConstraintScopeContextTypeMapping();
+		$entityTypeMapping = $this->getEntityTypeMapping();
 
-		foreach ( $items as $item ) {
-			$contextTypes[] = $this->parseContextTypeItem( $item, 'constraint scope', $parameterId );
-		}
+		// these nulls will turn into arrays the first time $contextTypes[] or $entityTypes[] is reached,
+		// so they’ll be returned as null iff the parameter was not specified
+		$contextTypes = null;
+		$entityTypes = null;
 
-		if ( $validScopes !== null ) {
-			$invalidScopes = array_diff( $contextTypes, $validScopes );
-			if ( $invalidScopes !== [] ) {
-				$invalidScope = array_pop( $invalidScopes );
-				throw new ConstraintParameterException(
-					( new ViolationMessage( 'wbqc-violation-message-invalid-scope' ) )
-						->withConstraintScope( $invalidScope, Role::CONSTRAINT_PARAMETER_VALUE )
-						->withEntityId( new ItemId( $constraintTypeItemId ), Role::CONSTRAINT_TYPE_ITEM )
-						->withConstraintScopeList( $validScopes, Role::CONSTRAINT_PARAMETER_VALUE )
+		if ( $contextTypeParameterId === $entityTypeParameterId ) {
+			$itemIds = $contextTypeItemIds;
+			$mapping = $contextTypeMapping + $entityTypeMapping;
+			foreach ( $itemIds as $itemId ) {
+				$mapped = $this->mapItemId( $itemId, $mapping, $contextTypeParameterId );
+				if ( in_array( $mapped, $contextTypeMapping, true ) ) {
+					$contextTypes[] = $mapped;
+				} else {
+					$entityTypes[] = $mapped;
+				}
+			}
+		} else {
+			foreach ( $contextTypeItemIds as $contextTypeItemId ) {
+				$contextTypes[] = $this->mapItemId(
+					$contextTypeItemId,
+					$contextTypeMapping,
+					$contextTypeParameterId
+				);
+			}
+			foreach ( $entityTypeItemIds as $entityTypeItemId ) {
+				$entityTypes[] = $this->mapItemId(
+					$entityTypeItemId,
+					$entityTypeMapping,
+					$entityTypeParameterId
 				);
 			}
 		}
 
-		return $contextTypes;
+		$this->checkValidScope( $constraintTypeItemId, $contextTypes, $validContextTypes );
+		$this->checkValidScope( $constraintTypeItemId, $entityTypes, $validEntityTypes );
+
+		return [ $contextTypes, $entityTypes ];
+	}
+
+	private function checkValidScope( string $constraintTypeItemId, ?array $types, array $validTypes ): void {
+		$invalidTypes = array_diff( $types ?: [], $validTypes );
+		if ( $invalidTypes !== [] ) {
+			$invalidType = array_pop( $invalidTypes );
+			throw new ConstraintParameterException(
+				( new ViolationMessage( 'wbqc-violation-message-invalid-scope' ) )
+					->withConstraintScope( $invalidType, Role::CONSTRAINT_PARAMETER_VALUE )
+					->withEntityId( new ItemId( $constraintTypeItemId ), Role::CONSTRAINT_TYPE_ITEM )
+					->withConstraintScopeList( $validTypes, Role::CONSTRAINT_PARAMETER_VALUE )
+			);
+		}
 	}
 
 	/**
@@ -754,7 +870,7 @@ class ConstraintParameterParser {
 				$qualifierId = $this->config->get( 'WBQualityConstraintsQualifierOfPropertyConstraintId' );
 				throw new ConstraintParameterException(
 					( new ViolationMessage( 'wbqc-violation-message-parameter-value-or-novalue' ) )
-						->withEntityId( new PropertyId( $qualifierId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
+						->withEntityId( new NumericPropertyId( $qualifierId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
 				);
 			case $item->isNoValue():
 				return new UnitsParameter( [], [], true );
@@ -789,60 +905,15 @@ class ConstraintParameterParser {
 		return new UnitsParameter( $unitItems, $unitQuantities, $unitlessAllowed );
 	}
 
-	/**
-	 * Turn an ItemIdSnakValue into a single entity type parameter.
-	 *
-	 * @param ItemIdSnakValue $item
-	 * @return EntityTypesParameter
-	 * @throws ConstraintParameterException
-	 */
-	private function parseEntityTypeItem( ItemIdSnakValue $item ) {
-		$parameterId = $this->config->get( 'WBQualityConstraintsQualifierOfPropertyConstraintId' );
-
-		if ( !$item->isValue() ) {
-			throw new ConstraintParameterException(
-				( new ViolationMessage( 'wbqc-violation-message-parameter-value' ) )
-					->withEntityId( new PropertyId( $parameterId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
-			);
-		}
-
-		$itemId = $item->getItemId();
-		switch ( $itemId->getSerialization() ) {
-			case $this->config->get( 'WBQualityConstraintsWikibaseItemId' ):
-				$entityType = 'item';
-				break;
-			case $this->config->get( 'WBQualityConstraintsWikibasePropertyId' ):
-				$entityType = 'property';
-				break;
-			case $this->config->get( 'WBQualityConstraintsWikibaseLexemeId' ):
-				$entityType = 'lexeme';
-				break;
-			case $this->config->get( 'WBQualityConstraintsWikibaseFormId' ):
-				$entityType = 'form';
-				break;
-			case $this->config->get( 'WBQualityConstraintsWikibaseSenseId' ):
-				$entityType = 'sense';
-				break;
-			case $this->config->get( 'WBQualityConstraintsWikibaseMediaInfoId' ):
-				$entityType = 'mediainfo';
-				break;
-			default:
-				$allowed = [
-					new ItemId( $this->config->get( 'WBQualityConstraintsWikibaseItemId' ) ),
-					new ItemId( $this->config->get( 'WBQualityConstraintsWikibasePropertyId' ) ),
-					new ItemId( $this->config->get( 'WBQualityConstraintsWikibaseLexemeId' ) ),
-					new ItemId( $this->config->get( 'WBQualityConstraintsWikibaseFormId' ) ),
-					new ItemId( $this->config->get( 'WBQualityConstraintsWikibaseSenseId' ) ),
-					new ItemId( $this->config->get( 'WBQualityConstraintsWikibaseMediaInfoId' ) ),
-				];
-				throw new ConstraintParameterException(
-					( new ViolationMessage( 'wbqc-violation-message-parameter-oneof' ) )
-						->withEntityId( new PropertyId( $parameterId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
-						->withEntityIdList( $allowed, Role::CONSTRAINT_PARAMETER_VALUE )
-				);
-		}
-
-		return new EntityTypesParameter( [ $entityType ], [ $itemId ] );
+	private function getEntityTypeMapping(): array {
+		return [
+			$this->config->get( 'WBQualityConstraintsWikibaseItemId' ) => 'item',
+			$this->config->get( 'WBQualityConstraintsWikibasePropertyId' ) => 'property',
+			$this->config->get( 'WBQualityConstraintsWikibaseLexemeId' ) => 'lexeme',
+			$this->config->get( 'WBQualityConstraintsWikibaseFormId' ) => 'form',
+			$this->config->get( 'WBQualityConstraintsWikibaseSenseId' ) => 'sense',
+			$this->config->get( 'WBQualityConstraintsWikibaseMediaInfoId' ) => 'mediainfo',
+		];
 	}
 
 	/**
@@ -854,12 +925,19 @@ class ConstraintParameterParser {
 	public function parseEntityTypesParameter( array $constraintParameters, $constraintTypeItemId ) {
 		$entityTypes = [];
 		$entityTypeItemIds = [];
-		$items = $this->parseItemsParameter( $constraintParameters, $constraintTypeItemId, true );
+		$parameterId = $this->config->get( 'WBQualityConstraintsQualifierOfPropertyConstraintId' );
+		$itemIds = $this->parseItemIdsParameter(
+			$constraintParameters,
+			$constraintTypeItemId,
+			true,
+			$parameterId
+		);
 
-		foreach ( $items as $item ) {
-			$entityType = $this->parseEntityTypeItem( $item );
-			$entityTypes = array_merge( $entityTypes, $entityType->getEntityTypes() );
-			$entityTypeItemIds = array_merge( $entityTypeItemIds, $entityType->getEntityTypeItemIds() );
+		$mapping = $this->getEntityTypeMapping();
+		foreach ( $itemIds as $itemId ) {
+			$entityType = $this->mapItemId( $itemId, $mapping, $parameterId );
+			$entityTypes[] = $entityType;
+			$entityTypeItemIds[] = $itemId;
 		}
 
 		if ( empty( $entityTypes ) ) {
@@ -896,49 +974,20 @@ class ConstraintParameterParser {
 		return $separators;
 	}
 
-	/**
-	 * Turn an ItemIdSnakValue into a single context type parameter.
-	 *
-	 * @param ItemIdSnakValue $item
-	 * @param string $use 'constraint scope' or 'property scope'
-	 * @param string $parameterId used in error messages
-	 * @return string one of the Context::TYPE_* constants
-	 * @throws ConstraintParameterException
-	 */
-	private function parseContextTypeItem( ItemIdSnakValue $item, $use, $parameterId ) {
-		if ( !$item->isValue() ) {
-			throw new ConstraintParameterException(
-				( new ViolationMessage( 'wbqc-violation-message-parameter-value' ) )
-					->withEntityId( new PropertyId( $parameterId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
-			);
-		}
+	private function getConstraintScopeContextTypeMapping(): array {
+		return [
+			$this->config->get( 'WBQualityConstraintsConstraintCheckedOnMainValueId' ) => Context::TYPE_STATEMENT,
+			$this->config->get( 'WBQualityConstraintsConstraintCheckedOnQualifiersId' ) => Context::TYPE_QUALIFIER,
+			$this->config->get( 'WBQualityConstraintsConstraintCheckedOnReferencesId' ) => Context::TYPE_REFERENCE,
+		];
+	}
 
-		if ( $use === 'constraint scope' ) {
-			$mainSnakId = $this->config->get( 'WBQualityConstraintsConstraintCheckedOnMainValueId' );
-			$qualifiersId = $this->config->get( 'WBQualityConstraintsConstraintCheckedOnQualifiersId' );
-			$referencesId = $this->config->get( 'WBQualityConstraintsConstraintCheckedOnReferencesId' );
-		} else {
-			$mainSnakId = $this->config->get( 'WBQualityConstraintsAsMainValueId' );
-			$qualifiersId = $this->config->get( 'WBQualityConstraintsAsQualifiersId' );
-			$referencesId = $this->config->get( 'WBQualityConstraintsAsReferencesId' );
-		}
-
-		$itemId = $item->getItemId();
-		switch ( $itemId->getSerialization() ) {
-			case $mainSnakId:
-				return Context::TYPE_STATEMENT;
-			case $qualifiersId:
-				return Context::TYPE_QUALIFIER;
-			case $referencesId:
-				return Context::TYPE_REFERENCE;
-			default:
-				$allowed = [ $mainSnakId, $qualifiersId, $referencesId ];
-				throw new ConstraintParameterException(
-					( new ViolationMessage( 'wbqc-violation-message-parameter-oneof' ) )
-						->withEntityId( new PropertyId( $parameterId ), Role::CONSTRAINT_PARAMETER_PROPERTY )
-						->withEntityIdList( $allowed, Role::CONSTRAINT_PARAMETER_VALUE )
-				);
-		}
+	private function getPropertyScopeContextTypeMapping(): array {
+		return [
+			$this->config->get( 'WBQualityConstraintsAsMainValueId' ) => Context::TYPE_STATEMENT,
+			$this->config->get( 'WBQualityConstraintsAsQualifiersId' ) => Context::TYPE_QUALIFIER,
+			$this->config->get( 'WBQualityConstraintsAsReferencesId' ) => Context::TYPE_REFERENCE,
+		];
 	}
 
 	/**
@@ -950,15 +999,16 @@ class ConstraintParameterParser {
 	public function parsePropertyScopeParameter( array $constraintParameters, $constraintTypeItemId ) {
 		$contextTypes = [];
 		$parameterId = $this->config->get( 'WBQualityConstraintsPropertyScopeId' );
-		$items = $this->parseItemsParameter(
+		$itemIds = $this->parseItemIdsParameter(
 			$constraintParameters,
 			$constraintTypeItemId,
 			true,
 			$parameterId
 		);
 
-		foreach ( $items as $item ) {
-			$contextTypes[] = $this->parseContextTypeItem( $item, 'property scope', $parameterId );
+		$mapping = $this->getPropertyScopeContextTypeMapping();
+		foreach ( $itemIds as $itemId ) {
+			$contextTypes[] = $this->mapItemId( $itemId, $mapping, $parameterId );
 		}
 
 		if ( empty( $contextTypes ) ) {

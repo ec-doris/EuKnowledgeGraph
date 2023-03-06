@@ -5,7 +5,7 @@ namespace WikibaseQuality\ConstraintReport\Tests\Checker;
 use DataValues\StringValue;
 use Wikibase\DataModel\Entity\Item;
 use Wikibase\DataModel\Entity\ItemId;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Reference;
 use Wikibase\DataModel\ReferenceList;
 use Wikibase\DataModel\Snak\PropertyValueSnak;
@@ -47,8 +47,8 @@ class CitationNeededCheckerTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function provideStatements() {
-		$mainSnak = new PropertyValueSnak( new PropertyId( 'P1' ), new StringValue( 'emacs forever' ) );
-		$referenceSnak = new PropertyValueSnak( new PropertyId( 'P2' ), new StringValue( 'Everyone says so' ) );
+		$mainSnak = new PropertyValueSnak( new NumericPropertyId( 'P1' ), new StringValue( 'emacs forever' ) );
+		$referenceSnak = new PropertyValueSnak( new NumericPropertyId( 'P2' ), new StringValue( 'Everyone says so' ) );
 
 		$statementWithoutReference = new Statement( $mainSnak );
 		$statementWithReference = new Statement(
@@ -76,16 +76,11 @@ class CitationNeededCheckerTest extends \PHPUnit\Framework\TestCase {
 	 * @return Constraint
 	 */
 	private function getConstraintMock() {
-		$mock = $this
-			->getMockBuilder( Constraint::class )
-			->disableOriginalConstructor()
-			->getMock();
-		$mock->expects( $this->any() )
-			->method( 'getConstraintParameters' )
-			->will( $this->returnValue( [] ) );
-		$mock->expects( $this->any() )
-			->method( 'getConstraintTypeItemId' )
-			->will( $this->returnValue( 'Q54554025' ) );
+		$mock = $this->createMock( Constraint::class );
+		$mock->method( 'getConstraintParameters' )
+			->willReturn( [] );
+		$mock->method( 'getConstraintTypeItemId' )
+			->willReturn( 'Q54554025' );
 
 		return $mock;
 	}

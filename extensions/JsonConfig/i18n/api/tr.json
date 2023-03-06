@@ -8,7 +8,7 @@
 	},
 	"apihelp-jsonconfig-description": "JsonConfig alt sistemine doğrudan erişim sağlar.",
 	"apihelp-jsonconfig-summary": "JsonConfig alt sistemine doğrudan erişim sağlar.",
-	"apihelp-jsonconfig-param-command": "JsonConfig üzerinde hangi alt eylemin gerçekleştirileceği:\n;status:JsonConfig yapılandırmasını gösterir.\n;reset:Yapılandırmaları önbellekten temizler. $1title parametresi ve jsonconfig-reset hakkı gerektirir.\n;reload:Yapılandırma deposundan yapılandırmaları yeniden yükler ve önbelleğe alır. $1title parametresi ve jsonconfig-reset hakkı gerektirir.",
+	"apihelp-jsonconfig-param-command": "JsonConfig üzerinde hangi alt eylemin gerçekleştirileceği:\n;status:JsonConfig yapılandırmasını gösterir.\n;reset:Yapılandırmaları önbellekten temizler. $1title parametresi ve jsonconfig-flush hakkı gerektirir.\n;reload:Yapılandırma deposundan yapılandırmaları yeniden yükler ve önbelleğe alır. $1title parametresi ve jsonconfig-reset hakkı gerektirir.",
 	"apihelp-jsonconfig-param-namespace": "İşlenecek başlığın ad alanı numarası.",
 	"apihelp-jsonconfig-param-title": "Ad alanı öneki olmadan işlenecek başlık.",
 	"apihelp-jsonconfig-param-content": "$1command=reload yükleme için bunun yerine bu içeriği kullanın.",

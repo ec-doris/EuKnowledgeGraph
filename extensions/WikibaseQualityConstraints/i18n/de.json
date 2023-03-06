@@ -141,6 +141,8 @@
 	"wbqc-violation-message-integer": "Werte für $1 sollten Ganzzahlen sein, $2 hat jedoch einen Bruchteil.",
 	"wbqc-violation-message-integer-bounds": "Werte für $1 sollten Ganzzahlen sein, aber die Begrenzungen von $2 haben einen Bruchteil.",
 	"wbqc-violation-message-citationNeeded": "Aussagen für $1 sollten mindestens einen Einzelnachweis haben.",
+	"wbqc-violation-message-language": "Aussagen für $1 sollten nur auf Lexemen mit {{PLURAL:$2|1=der Spracheinstellung $4.|2=den Spracheinstellungen $4 oder $5.|eine der folgenden Spracheinstellungen: $3}}",
+	"wbqc-violation-message-label-lacking": "Objekte mit Aussagen für $1 sollten auch eine Bezeichnung mindestens in {{PLURAL:$2|1=der Sprache $4 haben|einer der folgenden Sprachen haben: $3}}.",
 	"wbqc-violation-message-property-scope": "Die Eigenschaft $1 sollte nicht an diesem Ort verwendet werden ($2). {{PLURAL:$3|Der einzig gültige Ort|Die einzig gültigen Orte}} für diese Eigenschaft {{PLURAL:$3|ist $5.|sind: $4}}",
 	"wbqc-violation-message-exception": "Dieses Objekt ist eine bekannte Ausnahme für diese Beschränkung und wurde als solche markiert."
 }

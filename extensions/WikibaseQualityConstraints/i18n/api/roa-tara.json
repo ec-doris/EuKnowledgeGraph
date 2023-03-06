@@ -9,7 +9,7 @@
 	"apihelp-wbcheckconstraints-param-id": "ID de l'elenghe de l'endità da addò pigghià le date. Valore separate cu '|' o 'n'otre simbole.",
 	"apihelp-wbcheckconstraints-param-claimid": "L'elenghe de GUID idendifichescene 'na richieste da condrollà jndr'à 'nu reipiloghe de vingole. Valore separate cu '|'.",
 	"apihelp-wbcheckconstraints-param-constraintid": "Filtre opzionale torne sulamende le vingole ca onne l'ID d'u vingole specificate.",
-	"apihelp-wbcheckconstraints-param-status": "'U filtre opzionale torne sulamende le resultate condrollate de le state scacchiate.\n\nNote ca sulamende le resultate pe le state 'violation', 'warning' e 'bad-parameters' avènene memorizzate, accussì le richieste ca scacchie ogne state rrete a chiste ttrede non ge onne 'u benefice d'a cache.",
+	"apihelp-wbcheckconstraints-param-status": "'U filtre opzionale torne sulamende le resultate condrollate de le state scacchiate.\n\nNote ca sulamende le resultate pe le state 'violation', 'warning', 'suggestion' e 'bad-parameters' avènene memorizzate, accussì le richieste ca scacchie ogne state rrete a chiste e quattre non ge onne 'u benefice d'a cache.",
 	"apihelp-wbcheckconstraints-paramvalue-status-compliance": "'A dichiarazione soddisfe 'u vingole.",
 	"apihelp-wbcheckconstraints-paramvalue-status-violation": "'A dichiarazione viole 'u vingole.",
 	"apihelp-wbcheckconstraints-paramvalue-status-exception": "L'endità oggette d'a dichiarazzione jè 'n'eccezzione canusciute a 'u vingole.",

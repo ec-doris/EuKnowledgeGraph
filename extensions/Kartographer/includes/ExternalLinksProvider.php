@@ -19,7 +19,7 @@ class ExternalLinksProvider {
 	/**
 	 * @param ResourceLoaderContext $context
 	 *
-	 * @return stdClass|array
+	 * @return stdClass
 	 */
 	public static function getData( ResourceLoaderContext $context ) {
 		$json = file_get_contents( __DIR__ . '/../externalLinks.json' );
@@ -36,10 +36,10 @@ class ExternalLinksProvider {
 		$data = $status->getValue();
 		$allTypes = [];
 
-		foreach ( $data->services as &$service ) {
+		foreach ( $data->services as $service ) {
 			$service->name = $context->msg( 'kartographer-link-' . $service->id )->plain();
 
-			foreach ( $service->links as &$link ) {
+			foreach ( $service->links as $link ) {
 				$allTypes[ $link->type ] = true;
 			}
 		}

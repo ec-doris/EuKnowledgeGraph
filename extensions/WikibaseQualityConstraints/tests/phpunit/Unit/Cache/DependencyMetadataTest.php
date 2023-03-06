@@ -4,7 +4,7 @@ namespace WikibaseQuality\ConstraintReport\Tests\Unit\Cache;
 
 use DataValues\TimeValue;
 use Wikibase\DataModel\Entity\ItemId;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Cache\CachingMetadata;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Cache\DependencyMetadata;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Cache\Metadata;
@@ -49,7 +49,7 @@ class DependencyMetadataTest extends \MediaWikiUnitTestCase {
 
 	public function testMerge_entityIds() {
 		$q42 = new ItemId( 'Q42' );
-		$p31 = new PropertyId( 'P31' );
+		$p31 = new NumericPropertyId( 'P31' );
 		$dm = DependencyMetadata::merge( [
 			DependencyMetadata::blank(),
 			DependencyMetadata::ofEntityId( $q42 ),
@@ -66,7 +66,7 @@ class DependencyMetadataTest extends \MediaWikiUnitTestCase {
 
 	public function testMerge_entityIds_deduplicate() {
 		$q42 = new ItemId( 'Q42' );
-		$p31 = new PropertyId( 'P31' );
+		$p31 = new NumericPropertyId( 'P31' );
 		$dm = DependencyMetadata::merge( [
 			DependencyMetadata::ofEntityId( $q42 ),
 			DependencyMetadata::blank(),

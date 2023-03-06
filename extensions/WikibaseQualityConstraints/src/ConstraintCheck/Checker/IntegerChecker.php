@@ -23,22 +23,19 @@ class IntegerChecker implements ConstraintChecker {
 	 * @codeCoverageIgnore This method is purely declarative.
 	 */
 	public function getSupportedContextTypes() {
-		return [
-			Context::TYPE_STATEMENT => CheckResult::STATUS_COMPLIANCE,
-			Context::TYPE_QUALIFIER => CheckResult::STATUS_COMPLIANCE,
-			Context::TYPE_REFERENCE => CheckResult::STATUS_COMPLIANCE,
-		];
+		return self::ALL_CONTEXT_TYPES_SUPPORTED;
 	}
 
 	/**
 	 * @codeCoverageIgnore This method is purely declarative.
 	 */
 	public function getDefaultContextTypes() {
-		return [
-			Context::TYPE_STATEMENT,
-			Context::TYPE_QUALIFIER,
-			Context::TYPE_REFERENCE,
-		];
+		return Context::ALL_CONTEXT_TYPES;
+	}
+
+	/** @codeCoverageIgnore This method is purely declarative. */
+	public function getSupportedEntityTypes() {
+		return self::ALL_ENTITY_TYPES_SUPPORTED;
 	}
 
 	public function checkConstraint( Context $context, Constraint $constraint ) {

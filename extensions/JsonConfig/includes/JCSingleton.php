@@ -13,6 +13,7 @@ use MapCacheLRU;
 use MediaWiki\Linker\LinkTarget;
 use MediaWiki\MediaWikiServices;
 use MediaWikiTitleCodec;
+use MessageSpecifier;
 use OutputPage;
 use Status;
 use stdClass;
@@ -82,6 +83,7 @@ class JCSingleton {
 			),
 			array_replace_recursive(
 				\ExtensionRegistry::getInstance()->getAttribute( 'JsonConfigModels' ),
+				// @phan-suppress-next-line PhanPossiblyUndeclaredVariable
 				$wgJsonConfigModels
 			)
 		);
@@ -100,9 +102,10 @@ class JCSingleton {
 		array $configs, array $models, $warn = true
 	) {
 		$defaultModelId = 'JsonConfig';
-		// @codingStandardsIgnoreStart - T154789
-		$warnFunc = $warn ? 'wfLogWarning' : function( $msg ) {};
-		// @codingStandardsIgnoreEnd
+		$warnFunc = $warn
+			? 'wfLogWarning'
+			: static function ( $msg ) {
+			};
 
 		$namespaces = [];
 		$titleMap = [];
@@ -113,7 +116,7 @@ class JCSingleton {
 				);
 				continue;
 			}
-			if ( null === self::getConfObject( $warnFunc, $conf, $confId ) ) {
+			if ( self::getConfObject( $warnFunc, $conf, $confId ) === null ) {
 				continue; // warned inside the function
 			}
 
@@ -163,7 +166,7 @@ class JCSingleton {
 				// 'store' does not exist, use it as a flag to indicate remote storage
 				$conf->store = false;
 				$remote = self::getConfObject( $warnFunc, $conf, 'remote', $confId, 'url' );
-				if ( null === $remote ) {
+				if ( $remote === null ) {
 					continue; // warned inside the function
 				}
 				if ( self::getConfVal( $remote, 'url', '' ) === '' ) {
@@ -183,7 +186,7 @@ class JCSingleton {
 				}
 				$conf->remote = null;
 				$store = self::getConfObject( $warnFunc, $conf, 'store', $confId );
-				if ( null === $store ) {
+				if ( $store === null ) {
 					continue; // warned inside the function
 				}
 				self::getConfVal( $store, 'cacheNewValue', true );
@@ -307,7 +310,7 @@ class JCSingleton {
 	 * @param string $field
 	 * @param string|null $confId
 	 * @param string|null $treatAsField
-	 * @return null|object|stdClass
+	 * @return null|stdClass
 	 */
 	private static function getConfObject(
 		$warnFunc, &$value, $field, $confId = null, $treatAsField = null
@@ -321,7 +324,7 @@ class JCSingleton {
 			$val = & $value->$field;
 		}
 		if ( $val === null || $val === true ) {
-			$val = new stdClass();
+			$val = (object)[];
 		} elseif ( is_array( $val ) ) {
 			$val = (object)$val;
 		} elseif ( is_string( $val ) && $treatAsField !== null ) {
@@ -443,7 +446,7 @@ class JCSingleton {
 			}
 		}
 		if ( !$class ) {
-			$class = __NAMESPACE__ . '\JCContent';
+			$class = JCContent::class;
 		}
 		return $class;
 	}
@@ -630,6 +633,27 @@ class JCSingleton {
 	}
 
 	/**
+	 * Ensure that ContentHandler knows about our dynamic models (T259126)
+	 * @param string[] &$models
+	 * @return bool
+	 */
+	public static function onGetContentModels( array &$models ) {
+		global $wgJsonConfigModels;
+		if ( !self::jsonConfigIsStorage() ) {
+			return true;
+		}
+
+		self::init();
+		// TODO: this is copied from onContentHandlerForModelID()
+		$ourModels = array_replace_recursive(
+			\ExtensionRegistry::getInstance()->getAttribute( 'JsonConfigModels' ),
+			$wgJsonConfigModels
+		);
+		$models = array_merge( $models, array_keys( $ourModels ) );
+		return true;
+	}
+
+	/**
 	 * Instantiate JCContentHandler if we can handle this modelId
 	 * @param string $modelId
 	 * @param \ContentHandler &$handler
@@ -724,10 +748,13 @@ class JCSingleton {
 			return true;
 		}
 
-		if ( is_a( $content, JCContent::class ) ) {
+		if ( $content instanceof JCContent ) {
 			$status->merge( $content->getStatus() );
 			if ( !$status->isGood() ) {
-				$status->setResult( false, $status->getValue() );
+				// @todo Use $status->setOK() instead after this extension
+				// do not support mediawiki version 1.36 and before
+				$status->setResult( false, $status->getValue() ?: \EditPage::AS_HOOK_ERROR_EXPECTED );
+				return false;
 			}
 		}
 		return true;
@@ -911,24 +938,6 @@ class JCSingleton {
 		return true;
 	}
 
-	public static function onAbortMove(
-		/** @noinspection PhpUnusedParameterInspection */
-		Title $title, Title $newTitle, $user, &$err, $reason
-	) {
-		if ( !self::jsonConfigIsStorage() ) {
-			return true;
-		}
-
-		$status = new \Status();
-		self::onMovePageIsValidMove( $title, $newTitle, $status );
-		if ( !$status->isOK() ) {
-			$err = $status->getHTML();
-			return false;
-		}
-
-		return true;
-	}
-
 	/**
 	 * Conditionally load API module 'jsondata' depending on whether or not
 	 * this wiki stores any jsonconfig data
@@ -977,16 +986,16 @@ class JCSingleton {
 
 	/**
 	 * Prohibit creation of the pages that are part of our namespaces but have not been explicitly
-	 * allowed. Bad capitalization is due to "userCan" hook name
+	 * allowed.
 	 * @param Title &$title
 	 * @param User &$user
 	 * @param string $action
-	 * @param null &$result
+	 * @param array|string|MessageSpecifier &$result
 	 * @return bool
 	 */
-	public static function onuserCan(
+	public static function onGetUserPermissionsErrors(
 		/** @noinspection PhpUnusedParameterInspection */
-		&$title, &$user, $action, &$result = null
+		&$title, &$user, $action, &$result
 	) {
 		if ( !self::jsonConfigIsStorage() ) {
 			return true;
@@ -995,14 +1004,14 @@ class JCSingleton {
 		if ( $action === 'create' && self::parseTitle( $title ) === null ) {
 			// prohibit creation of the pages for the namespace that we handle,
 			// if the title is not matching declared rules
-			$result = false;
+			$result = 'jsonconfig-blocked-page-creation';
 			return false;
 		}
 		return true;
 	}
 
 	/**
-	 * @param object $value
+	 * @param \WikiPage|Title $value
 	 * @param JCContent|null $content
 	 * @return bool
 	 */
@@ -1011,7 +1020,7 @@ class JCSingleton {
 			return true;
 		}
 
-		if ( $value && ( !$content || is_a( $content, JCContent::class ) ) ) {
+		if ( $value && ( !$content || $content instanceof JCContent ) ) {
 			if ( method_exists( $value, 'getTitle' ) ) {
 				$value = $value->getTitle();
 			}

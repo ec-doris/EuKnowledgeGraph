@@ -7,7 +7,7 @@ use DomainException;
 use InvalidArgumentException;
 use Wikibase\DataModel\Entity\EntityIdValue;
 use Wikibase\DataModel\Entity\ItemId;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Snak\PropertyNoValueSnak;
 use Wikibase\DataModel\Snak\PropertySomeValueSnak;
 use Wikibase\DataModel\Snak\PropertyValueSnak;
@@ -59,7 +59,7 @@ class ItemIdSnakValueTest extends \MediaWikiUnitTestCase {
 	public function testFromSnak_ItemId() {
 		$itemId = new ItemId( 'Q1' );
 		$snak = new PropertyValueSnak(
-			new PropertyId( 'P100' ),
+			new NumericPropertyId( 'P100' ),
 			new EntityIdValue( $itemId )
 		);
 
@@ -70,9 +70,9 @@ class ItemIdSnakValueTest extends \MediaWikiUnitTestCase {
 	}
 
 	public function testFromSnak_PropertyId() {
-		$propertyId = new PropertyId( 'P1' );
+		$propertyId = new NumericPropertyId( 'P1' );
 		$snak = new PropertyValueSnak(
-			new PropertyId( 'P100' ),
+			new NumericPropertyId( 'P100' ),
 			new EntityIdValue( $propertyId )
 		);
 
@@ -82,7 +82,7 @@ class ItemIdSnakValueTest extends \MediaWikiUnitTestCase {
 
 	public function testFromSnak_String() {
 		$snak = new PropertyValueSnak(
-			new PropertyId( 'P100' ),
+			new NumericPropertyId( 'P100' ),
 			new StringValue( 'Q1' )
 		);
 
@@ -91,7 +91,7 @@ class ItemIdSnakValueTest extends \MediaWikiUnitTestCase {
 	}
 
 	public function testFromSnak_SomeValue() {
-		$snak = new PropertySomeValueSnak( new PropertyId( 'P100' ) );
+		$snak = new PropertySomeValueSnak( new NumericPropertyId( 'P100' ) );
 
 		$value = ItemIdSnakValue::fromSnak( $snak );
 
@@ -99,7 +99,7 @@ class ItemIdSnakValueTest extends \MediaWikiUnitTestCase {
 	}
 
 	public function testFromSnak_NoValue() {
-		$snak = new PropertyNoValueSnak( new PropertyId( 'P100' ) );
+		$snak = new PropertyNoValueSnak( new NumericPropertyId( 'P100' ) );
 
 		$value = ItemIdSnakValue::fromSnak( $snak );
 
@@ -109,7 +109,7 @@ class ItemIdSnakValueTest extends \MediaWikiUnitTestCase {
 	public function testMatchesSnak_ItemId() {
 		$itemId = new ItemId( 'Q1' );
 		$snak = new PropertyValueSnak(
-			new PropertyId( 'P100' ),
+			new NumericPropertyId( 'P100' ),
 			new EntityIdValue( $itemId )
 		);
 
@@ -120,9 +120,9 @@ class ItemIdSnakValueTest extends \MediaWikiUnitTestCase {
 
 	public function testMatchesSnak_PropertyId() {
 		$itemId = new ItemId( 'Q1' );
-		$propertyId = new PropertyId( 'P1' );
+		$propertyId = new NumericPropertyId( 'P1' );
 		$snak = new PropertyValueSnak(
-			new PropertyId( 'P100' ),
+			new NumericPropertyId( 'P100' ),
 			new EntityIdValue( $propertyId )
 		);
 
@@ -133,9 +133,9 @@ class ItemIdSnakValueTest extends \MediaWikiUnitTestCase {
 
 	public function testMatchesSnak_String() {
 		$itemId = new ItemId( 'Q1' );
-		$propertyId = new PropertyId( 'P1' );
+		$propertyId = new NumericPropertyId( 'P1' );
 		$snak = new PropertyValueSnak(
-			new PropertyId( 'P100' ),
+			new NumericPropertyId( 'P100' ),
 			new StringValue( 'Q1' )
 		);
 
@@ -146,7 +146,7 @@ class ItemIdSnakValueTest extends \MediaWikiUnitTestCase {
 
 	public function testMatchesSnak_SomeValue() {
 		$itemId = new ItemId( 'Q1' );
-		$snak = new PropertySomeValueSnak( new PropertyId( 'P100' ) );
+		$snak = new PropertySomeValueSnak( new NumericPropertyId( 'P100' ) );
 
 		$this->assertFalse( ItemIdSnakValue::fromItemId( $itemId )->matchesSnak( $snak ) );
 		$this->assertTrue( ItemIdSnakValue::someValue()->matchesSnak( $snak ) );
@@ -155,7 +155,7 @@ class ItemIdSnakValueTest extends \MediaWikiUnitTestCase {
 
 	public function testMatchesSnak_NoValue() {
 		$itemId = new ItemId( 'Q1' );
-		$snak = new PropertyNoValueSnak( new PropertyId( 'P100' ) );
+		$snak = new PropertyNoValueSnak( new NumericPropertyId( 'P100' ) );
 
 		$this->assertFalse( ItemIdSnakValue::fromItemId( $itemId )->matchesSnak( $snak ) );
 		$this->assertFalse( ItemIdSnakValue::someValue()->matchesSnak( $snak ) );

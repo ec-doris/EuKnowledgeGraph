@@ -4,7 +4,7 @@ namespace WikibaseQuality\ConstraintReport\Tests\Checker\OneOfChecker;
 
 use DataValues\StringValue;
 use Wikibase\DataModel\Entity\ItemId;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Snak\PropertyNoValueSnak;
 use Wikibase\DataModel\Snak\PropertySomeValueSnak;
 use Wikibase\Repo\Tests\NewItem;
@@ -24,16 +24,17 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  * @author BP2014N1
  * @license GPL-2.0-or-later
  */
-class OneOfCheckerTest extends \MediaWikiTestCase {
+class OneOfCheckerTest extends \MediaWikiIntegrationTestCase {
 
-	use ConstraintParameters, ResultAssertions;
+	use ConstraintParameters;
+	use ResultAssertions;
 
 	/**
 	 * @var OneOfChecker
 	 */
 	private $oneOfChecker;
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 		$this->oneOfChecker = new OneOfChecker(
 			$this->getConstraintParameterParser()
@@ -80,8 +81,8 @@ class OneOfCheckerTest extends \MediaWikiTestCase {
 	}
 
 	public function testOneOfConstraintArraySomevalueNovalue() {
-		$somevalueSnak = new PropertySomeValueSnak( new PropertyId( 'P123' ) );
-		$novalueSnak = new PropertyNoValueSnak( new PropertyId( 'P123' ) );
+		$somevalueSnak = new PropertySomeValueSnak( new NumericPropertyId( 'P123' ) );
+		$novalueSnak = new PropertyNoValueSnak( new NumericPropertyId( 'P123' ) );
 
 		foreach ( [ $somevalueSnak, $novalueSnak ] as $allowed ) {
 			foreach ( [ $somevalueSnak, $novalueSnak ] as $present ) {
@@ -125,16 +126,11 @@ class OneOfCheckerTest extends \MediaWikiTestCase {
 	 * @return Constraint
 	 */
 	private function getConstraintMock( array $parameters ) {
-		$mock = $this
-			->getMockBuilder( Constraint::class )
-			->disableOriginalConstructor()
-			->getMock();
-		$mock->expects( $this->any() )
-			 ->method( 'getConstraintParameters' )
-			 ->will( $this->returnValue( $parameters ) );
-		$mock->expects( $this->any() )
-			 ->method( 'getConstraintTypeItemId' )
-			 ->will( $this->returnValue( 'Q21510859' ) );
+		$mock = $this->createMock( Constraint::class );
+		$mock->method( 'getConstraintParameters' )
+			 ->willReturn( $parameters );
+		$mock->method( 'getConstraintTypeItemId' )
+			 ->willReturn( 'Q21510859' );
 
 		return $mock;
 	}

@@ -1,10 +1,10 @@
 {
-    "sources": [
-        "a"
-    ],
-    "license": "CC0-1.0",
-    "schema": {
-        "fields": []
-    },
-    "data": []
+	"sources": [
+		"a"
+	],
+	"license": "CC0-1.0",
+	"schema": {
+		"fields": []
+	},
+	"data": []
 }

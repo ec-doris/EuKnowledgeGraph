@@ -1,9 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
+			"Func",
 			"Liuxinyu970226",
-			"Shizhao",
-			"Func"
+			"Shizhao"
 		]
 	},
 	"apihelp-sanitize-mapdata-description": "为Kartographer扩展执行数据验证",

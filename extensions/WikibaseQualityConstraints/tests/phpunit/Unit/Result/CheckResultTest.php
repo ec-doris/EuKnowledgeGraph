@@ -5,7 +5,7 @@ namespace WikibaseQuality\ConstraintReport\Tests\Unit\Result;
 use DataValues\StringValue;
 use Wikibase\DataModel\Entity\Item;
 use Wikibase\DataModel\Entity\ItemId;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Snak\PropertyNoValueSnak;
 use Wikibase\DataModel\Snak\PropertyValueSnak;
 use WikibaseQuality\ConstraintReport\Constraint;
@@ -26,12 +26,12 @@ use WikibaseQuality\ConstraintReport\Tests\Fake\FakeSnakContext;
 class CheckResultTest extends \MediaWikiUnitTestCase {
 
 	public function testConstructAndGetters_Context() {
-		$propertyId = new PropertyId( 'P1' );
+		$propertyId = new NumericPropertyId( 'P1' );
 		$entityId = new ItemId( 'Q1' );
 		$snak = new PropertyValueSnak( $propertyId, new StringValue( 'Foo' ) );
 		$constraintId = '1';
 		$parameters = [ 'test' => 'parameters' ];
-		$constraint = new Constraint( $constraintId, new PropertyId( 'P1' ), 'Q100', $parameters );
+		$constraint = new Constraint( $constraintId, new NumericPropertyId( 'P1' ), 'Q100', $parameters );
 		$status = CheckResult::STATUS_COMPLIANCE;
 		$message = new ViolationMessage( 'wbqc-violation-message-single-value' );
 		$context = new FakeSnakContext( $snak, new Item( $entityId ) );
@@ -52,12 +52,12 @@ class CheckResultTest extends \MediaWikiUnitTestCase {
 	}
 
 	public function testConstructAndGetters_Cursor() {
-		$propertyId = new PropertyId( 'P1' );
+		$propertyId = new NumericPropertyId( 'P1' );
 		$entityId = new ItemId( 'Q1' );
 		$snak = new PropertyValueSnak( $propertyId, new StringValue( 'Foo' ) );
 		$constraintId = '1';
 		$parameters = [ 'test' => 'parameters' ];
-		$constraint = new Constraint( $constraintId, new PropertyId( 'P1' ), 'Q100', $parameters );
+		$constraint = new Constraint( $constraintId, new NumericPropertyId( 'P1' ), 'Q100', $parameters );
 		$status = CheckResult::STATUS_COMPLIANCE;
 		$message = new ViolationMessage( 'wbqc-violation-message-single-value' );
 		$context = new AppendingContextCursor();
@@ -78,8 +78,8 @@ class CheckResultTest extends \MediaWikiUnitTestCase {
 	}
 
 	public function testAddParameter() {
-		$context = new FakeSnakContext( new PropertyNoValueSnak( new PropertyId( 'P1' ) ) );
-		$constraint = new Constraint( '', new PropertyId( 'P1' ), 'Q1', [] );
+		$context = new FakeSnakContext( new PropertyNoValueSnak( new NumericPropertyId( 'P1' ) ) );
+		$constraint = new Constraint( '', new NumericPropertyId( 'P1' ), 'Q1', [] );
 		$checkResult = new CheckResult( $context, $constraint );
 
 		$this->assertSame( [], $checkResult->getParameters() );
@@ -89,8 +89,8 @@ class CheckResultTest extends \MediaWikiUnitTestCase {
 	}
 
 	public function testSetStatus() {
-		$context = new FakeSnakContext( new PropertyNoValueSnak( new PropertyId( 'P1' ) ) );
-		$constraint = new Constraint( '', new PropertyId( 'P1' ), 'Q1', [] );
+		$context = new FakeSnakContext( new PropertyNoValueSnak( new NumericPropertyId( 'P1' ) ) );
+		$constraint = new Constraint( '', new NumericPropertyId( 'P1' ), 'Q1', [] );
 		$checkResult = new CheckResult( $context, $constraint, [], CheckResult::STATUS_VIOLATION );
 
 		$this->assertSame( CheckResult::STATUS_VIOLATION, $checkResult->getStatus() );

@@ -3,10 +3,12 @@
 namespace WikibaseQuality\ConstraintReport\Maintenance;
 
 use Maintenance;
+use MediaWiki\MediaWikiServices;
 use Title;
 use Wikibase\Lib\Store\PropertyInfoLookup;
 use Wikibase\Repo\WikibaseRepo;
 use WikibaseQuality\ConstraintReport\Job\UpdateConstraintsTableJob;
+use Wikimedia\Rdbms\ILBFactory;
 
 // @codeCoverageIgnoreStart
 $basePath = getenv( "MW_INSTALL_PATH" ) !== false
@@ -27,17 +29,24 @@ class ImportConstraintStatements extends Maintenance {
 	 */
 	private $propertyInfoLookup;
 
+	/** @var ILBFactory */
+	private $lbFactory;
+
 	/**
 	 * @var callable
 	 * @phan-var callable(string):UpdateConstraintsTableJob
 	 */
 	private $newUpdateConstraintsTableJob;
 
+	/**
+	 * @var callable
+	 * @phan-var callable():void
+	 */
 	private $setupServices;
 
 	public function __construct() {
 		parent::__construct();
-		$this->newUpdateConstraintsTableJob = function ( $propertyIdSerialization ) {
+		$this->newUpdateConstraintsTableJob = static function ( $propertyIdSerialization ) {
 			return UpdateConstraintsTableJob::newFromGlobalState(
 				Title::newMainPage(),
 				[ 'propertyId' => $propertyIdSerialization ]
@@ -46,12 +55,14 @@ class ImportConstraintStatements extends Maintenance {
 
 		$this->addDescription( 'Imports property constraints from statements on properties' );
 		$this->requireExtension( 'WikibaseQualityConstraints' );
+		$this->setBatchSize( 10 );
 
 		// Wikibase classes are not yet loaded, so setup services in a callback run in execute
 		// that can be overridden in tests.
 		$this->setupServices = function () {
-			$repo = WikibaseRepo::getDefaultInstance();
-			$this->propertyInfoLookup = $repo->getStore()->getPropertyInfoLookup();
+			$services = MediaWikiServices::getInstance();
+			$this->propertyInfoLookup = WikibaseRepo::getStore( $services )->getPropertyInfoLookup();
+			$this->lbFactory = $services->getDBLoadBalancerFactory();
 		};
 	}
 
@@ -62,14 +73,30 @@ class ImportConstraintStatements extends Maintenance {
 			return;
 		}
 
-		foreach ( $this->propertyInfoLookup->getAllPropertyInfo() as $propertyIdSerialization => $info ) {
-			$this->output( sprintf( 'Importing constraint statements for % 6s... ', $propertyIdSerialization ), $propertyIdSerialization );
+		$propertyInfos = $this->propertyInfoLookup->getAllPropertyInfo();
+		$propertyIds = array_keys( $propertyInfos );
+
+		foreach ( array_chunk( $propertyIds, $this->getBatchSize() ) as $propertyIdsChunk ) {
+			foreach ( $propertyIdsChunk as $propertyIdSerialization ) {
+				$this->output( sprintf(
+					'Importing constraint statements for % 6s... ',
+					$propertyIdSerialization ),
+					$propertyIdSerialization
+				);
+				$startTime = microtime( true );
+				$job = call_user_func( $this->newUpdateConstraintsTableJob, $propertyIdSerialization );
+				$job->run();
+				$endTime = microtime( true );
+				$millis = ( $endTime - $startTime ) * 1000;
+				$this->output( sprintf( 'done in % 6.2f ms.', $millis ), $propertyIdSerialization );
+			}
+
+			$this->output( 'Waiting for replication... ', 'waitForReplication' );
 			$startTime = microtime( true );
-			$job = call_user_func( $this->newUpdateConstraintsTableJob, $propertyIdSerialization );
-			$job->run();
+			$this->lbFactory->waitForReplication();
 			$endTime = microtime( true );
 			$millis = ( $endTime - $startTime ) * 1000;
-			$this->output( sprintf( 'done in % 6.2f ms.', $millis ), $propertyIdSerialization );
+			$this->output( sprintf( 'done in % 6.2f ms.', $millis ), 'waitForReplication' );
 		}
 	}
 

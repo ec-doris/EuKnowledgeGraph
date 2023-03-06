@@ -5,21 +5,21 @@ use ApiMain;
 use ApiUsageException;
 use DerivativeContext;
 use FauxRequest;
-use MediaWikiTestCase;
+use MediaWikiIntegrationTestCase;
 use RequestContext;
 
 /**
  * @covers \Kartographer\ApiSanitizeMapData
  * @group Kartographer
  */
-class ApiSanitizeMapDataTest extends MediaWikiTestCase {
+class ApiSanitizeMapDataTest extends MediaWikiIntegrationTestCase {
 
-	public function setUp() : void {
+	protected function setUp(): void {
+		parent::setUp();
 		$this->setMwGlobals( [
 			'wgScriptPath' => '/w',
 			'wgScript' => '/w/index.php',
 		] );
-		parent::setUp();
 	}
 
 	/**
@@ -56,7 +56,7 @@ class ApiSanitizeMapDataTest extends MediaWikiTestCase {
 	}
 
 	public function provideTest() {
-		// @codingStandardsIgnoreStart
+		// phpcs:disable Generic.Files.LineLength
 		return [
 			[ 'Foo', '{', false, '<p>Couldn\'t parse JSON: Syntax error
 </p>' ],
@@ -87,7 +87,7 @@ class ApiSanitizeMapDataTest extends MediaWikiTestCase {
 		}
 	}]' ],
 		];
-		// @codingStandardsIgnoreEnd
+		// phpcs:enable
 	}
 
 	public function provideErrors() {

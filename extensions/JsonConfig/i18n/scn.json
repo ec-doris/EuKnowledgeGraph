@@ -7,5 +7,6 @@
 	"jsonconfig-edit-action-cancel": "Annulla",
 	"jsonconfig-edit-dialog-title": "Cancia JSON",
 	"jsonconfig-type-name-invalid": "nun vàliddu",
-	"jsonconfig-type-name-number": "nùmmiru"
+	"jsonconfig-type-name-number": "nùmmiru",
+	"jsonconfig-type-name-boolean": "booleanu"
 }

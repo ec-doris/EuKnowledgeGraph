@@ -2,7 +2,7 @@
 
 namespace WikibaseQuality\ConstraintReport\Tests\Checker\QualifierChecker;
 
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Snak\PropertyNoValueSnak;
 use Wikibase\DataModel\Snak\SnakList;
 use Wikibase\DataModel\Statement\Statement;
@@ -22,16 +22,17 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  * @author BP2014N1
  * @license GPL-2.0-or-later
  */
-class MandatoryQualifiersCheckerTest extends \MediaWikiTestCase {
+class MandatoryQualifiersCheckerTest extends \MediaWikiIntegrationTestCase {
 
-	use ConstraintParameters, ResultAssertions;
+	use ConstraintParameters;
+	use ResultAssertions;
 
 	/**
 	 * @var MandatoryQualifiersChecker
 	 */
 	private $checker;
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 		$this->checker = new MandatoryQualifiersChecker(
 			$this->getConstraintParameterParser()
@@ -40,9 +41,9 @@ class MandatoryQualifiersCheckerTest extends \MediaWikiTestCase {
 
 	public function testMandatoryQualifiersConstraintValid() {
 		$statement = new Statement(
-			new PropertyNoValueSnak( new PropertyId( 'P1' ) ),
+			new PropertyNoValueSnak( new NumericPropertyId( 'P1' ) ),
 			new SnakList( [
-				new PropertyNoValueSnak( new PropertyId( 'P2' ) )
+				new PropertyNoValueSnak( new NumericPropertyId( 'P2' ) )
 			] )
 		);
 		$entity = NewItem::withId( 'Q5' )
@@ -59,9 +60,9 @@ class MandatoryQualifiersCheckerTest extends \MediaWikiTestCase {
 
 	public function testMandatoryQualifiersConstraintInvalid() {
 		$statement = new Statement(
-			new PropertyNoValueSnak( new PropertyId( 'P1' ) ),
+			new PropertyNoValueSnak( new NumericPropertyId( 'P1' ) ),
 			new SnakList( [
-				new PropertyNoValueSnak( new PropertyId( 'P2' ) )
+				new PropertyNoValueSnak( new NumericPropertyId( 'P2' ) )
 			] )
 		);
 		$entity = NewItem::withId( 'Q5' )
@@ -103,16 +104,11 @@ class MandatoryQualifiersCheckerTest extends \MediaWikiTestCase {
 	 * @return Constraint
 	 */
 	private function getConstraintMock( array $parameters ) {
-		$mock = $this
-			->getMockBuilder( Constraint::class )
-			->disableOriginalConstructor()
-			->getMock();
-		$mock->expects( $this->any() )
-			 ->method( 'getConstraintParameters' )
-			 ->will( $this->returnValue( $parameters ) );
-		$mock->expects( $this->any() )
-			 ->method( 'getConstraintTypeItemId' )
-			 ->will( $this->returnValue( 'Q21510856' ) );
+		$mock = $this->createMock( Constraint::class );
+		$mock->method( 'getConstraintParameters' )
+			 ->willReturn( $parameters );
+		$mock->method( 'getConstraintTypeItemId' )
+			 ->willReturn( 'Q21510856' );
 
 		return $mock;
 	}

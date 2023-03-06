@@ -5,7 +5,7 @@ namespace WikibaseQuality\ConstraintReport\Tests\Checker;
 use DataValues\DecimalValue;
 use DataValues\QuantityValue;
 use DataValues\UnboundedQuantityValue;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Snak\PropertyValueSnak;
 use Wikibase\DataModel\Snak\Snak;
 use WikibaseQuality\ConstraintReport\Constraint;
@@ -47,10 +47,10 @@ class NoBoundsCheckerTest extends \PHPUnit\Framework\TestCase {
 		$decimalValue = new DecimalValue( 7251 );
 
 		$quantityValue = new QuantityValue( $decimalValue, '1', $decimalValue, $decimalValue );
-		$quantitySnak = new PropertyValueSnak( new PropertyId( 'P1' ), $quantityValue );
+		$quantitySnak = new PropertyValueSnak( new NumericPropertyId( 'P1' ), $quantityValue );
 
 		$unboundedQuantityValue = new UnboundedQuantityValue( $decimalValue, '1' );
-		$unboundedQuantitySnak = new PropertyValueSnak( new PropertyId( 'P1' ), $unboundedQuantityValue );
+		$unboundedQuantitySnak = new PropertyValueSnak( new NumericPropertyId( 'P1' ), $unboundedQuantityValue );
 
 		return [
 			[ $quantitySnak, 'wbqc-violation-message-noBounds' ],
@@ -71,16 +71,11 @@ class NoBoundsCheckerTest extends \PHPUnit\Framework\TestCase {
 	 * @return Constraint
 	 */
 	private function getConstraintMock() {
-		$mock = $this
-			->getMockBuilder( Constraint::class )
-			->disableOriginalConstructor()
-			->getMock();
-		$mock->expects( $this->any() )
-			->method( 'getConstraintParameters' )
-			->will( $this->returnValue( [] ) );
-		$mock->expects( $this->any() )
-			->method( 'getConstraintTypeItemId' )
-			->will( $this->returnValue( 'Q51723761' ) );
+		$mock = $this->createMock( Constraint::class );
+		$mock->method( 'getConstraintParameters' )
+			->willReturn( [] );
+		$mock->method( 'getConstraintTypeItemId' )
+			->willReturn( 'Q51723761' );
 
 		return $mock;
 	}

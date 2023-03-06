@@ -5,7 +5,7 @@ namespace WikibaseQuality\ConstraintReport\Tests\Checker\TypeChecker;
 use NullStatsdDataFactory;
 use Wikibase\DataModel\Entity\EntityIdValue;
 use Wikibase\DataModel\Entity\ItemId;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Services\Lookup\EntityLookup;
 use Wikibase\DataModel\Services\Lookup\InMemoryEntityLookup;
 use Wikibase\DataModel\Snak\PropertyValueSnak;
@@ -66,7 +66,7 @@ class TypeCheckerHelperTest extends \PHPUnit\Framework\TestCase {
 		$spy = $this->createMock( EntityLookup::class );
 		$spy->expects( $this->exactly( $maxEntities ) )
 			->method( 'getEntity' )
-			->will( $this->returnCallback( [ $lookup, 'getEntity' ] ) );
+			->willReturnCallback( [ $lookup, 'getEntity' ] );
 
 		return $spy;
 	}
@@ -93,22 +93,39 @@ class TypeCheckerHelperTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testHasClassInRelation_Valid() {
-		$statement1 = new Statement( new PropertyValueSnak( new PropertyId( 'P1' ), new EntityIdValue( new ItemId( 'Q42' ) ) ) );
-		$statement2 = new Statement( new PropertyValueSnak( new PropertyId( 'P31' ), new EntityIdValue( new ItemId( 'Q1' ) ) ) );
+		$statement1 = new Statement( new PropertyValueSnak(
+			new NumericPropertyId( 'P1' ),
+			new EntityIdValue( new ItemId( 'Q42' ) )
+		) );
+		$statement2 = new Statement( new PropertyValueSnak(
+			new NumericPropertyId( 'P31' ),
+			new EntityIdValue( new ItemId( 'Q1' ) )
+		) );
 		$statements = new StatementList( [ $statement1, $statement2 ] );
 		$this->assertTrue( $this->getHelper()->hasClassInRelation( $statements, [ 'P31' ], [ 'Q1' ] )->getBool() );
 	}
 
 	public function testHasClassInRelation_Invalid() {
-		$statement1 = new Statement( new PropertyValueSnak( new PropertyId( 'P1' ), new EntityIdValue( new ItemId( 'Q42' ) ) ) );
-		$statement2 = new Statement( new PropertyValueSnak( new PropertyId( 'P31' ), new EntityIdValue( new ItemId( 'Q100' ) ) ) );
+		$statement1 = new Statement( new PropertyValueSnak(
+			new NumericPropertyId( 'P1' ),
+			new EntityIdValue( new ItemId( 'Q42' ) )
+		) );
+		$statement2 = new Statement(
+			new PropertyValueSnak( new NumericPropertyId( 'P31' ), new EntityIdValue( new ItemId( 'Q100' ) ) )
+		);
 		$statements = new StatementList( [ $statement1, $statement2 ] );
 		$this->assertFalse( $this->getHelper()->hasClassInRelation( $statements, [ 'P31' ], [ 'Q1' ] )->getBool() );
 	}
 
 	public function testHasClassInRelation_ValidWithIndirection() {
-		$statement1 = new Statement( new PropertyValueSnak( new PropertyId( 'P1' ), new EntityIdValue( new ItemId( 'Q42' ) ) ) );
-		$statement2 = new Statement( new PropertyValueSnak( new PropertyId( 'P31' ), new EntityIdValue( new ItemId( 'Q5' ) ) ) );
+		$statement1 = new Statement( new PropertyValueSnak(
+			new NumericPropertyId( 'P1' ),
+			new EntityIdValue( new ItemId( 'Q42' ) )
+		) );
+		$statement2 = new Statement( new PropertyValueSnak(
+			new NumericPropertyId( 'P31' ),
+			new EntityIdValue( new ItemId( 'Q5' ) )
+		) );
 		$statements = new StatementList( [ $statement1, $statement2 ] );
 		$this->assertTrue( $this->getHelper()->hasClassInRelation( $statements, [ 'P31' ], [ 'Q4' ] )->getBool() );
 	}
@@ -165,6 +182,36 @@ class TypeCheckerHelperTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame( $expected, $result->getBool() );
 	}
 
+	public function testHasClassInRelation_IgnoresDeprecatedStatement() {
+		$statement = new Statement( new PropertyValueSnak(
+			new NumericPropertyId( 'P31' ),
+			new EntityIdValue( new ItemId( 'Q1' ) )
+		) );
+		$statement->setRank( Statement::RANK_DEPRECATED );
+		$statements = new StatementList( [ $statement ] );
+		$this->assertFalse( $this->getHelper()->hasClassInRelation( $statements, [ 'P31' ], [ 'Q1' ] )->getBool() );
+	}
+
+	public function testHasClassInRelation_IgnoresDeprecatedSubclassOfStatement() {
+		$statement = new Statement( new PropertyValueSnak(
+			new NumericPropertyId( 'P31' ),
+			new EntityIdValue( new ItemId( 'Q11' ) ) // Q11 has a deprecated subclass of statement with Q4 as its value
+		) );
+		$statements = new StatementList( [ $statement ] );
+		$this->assertFalse( $this->getHelper()->hasClassInRelation( $statements, [ 'P31' ], [ 'Q4' ] )->getBool() );
+	}
+
+	public function testHasClassInRelation_IgnoresNonBestSubclassOfStatement() {
+		$statement = new Statement( new PropertyValueSnak(
+			new NumericPropertyId( 'P31' ),
+			new EntityIdValue( new ItemId( 'Q12' ) )
+			// Q12 has a normal-rank subclass of statement with Q4 as its value,
+			// and a preferred-rank subclass of statement with no value
+		) );
+		$statements = new StatementList( [ $statement ] );
+		$this->assertFalse( $this->getHelper()->hasClassInRelation( $statements, [ 'P31' ], [ 'Q4' ] )->getBool() );
+	}
+
 	public function provideRelations() {
 		return [
 			'direct instance' => [ 'instance', null, 'Q1', true ],
@@ -178,11 +225,15 @@ class TypeCheckerHelperTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testIsSubclassOf_ValidWithIndirection() {
-		$this->assertTrue( $this->getHelper()->isSubclassOfWithSparqlFallback( new ItemId( 'Q6' ), [ 'Q100', 'Q101' ] )->getBool() );
+		$this->assertTrue(
+			$this->getHelper()->isSubclassOfWithSparqlFallback( new ItemId( 'Q6' ), [ 'Q100', 'Q101' ] )->getBool()
+		);
 	}
 
 	public function testIsSubclassOf_Invalid() {
-		$this->assertFalse( $this->getHelper()->isSubclassOfWithSparqlFallback( new ItemId( 'Q6' ), [ 'Q200', 'Q201' ] )->getBool() );
+		$this->assertFalse(
+			$this->getHelper()->isSubclassOfWithSparqlFallback( new ItemId( 'Q6' ), [ 'Q200', 'Q201' ] )->getBool()
+		);
 	}
 
 	public function testIsSubclassOf_Cyclic() {

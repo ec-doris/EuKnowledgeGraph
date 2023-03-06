@@ -12,9 +12,12 @@
 			"Verdy p",
 			"Wladek92",
 			"Yasten",
-			"Yurik"
+			"Yurik",
+			"McDutchie"
 		]
 	},
+	"nstab-data": "Données",
+	"tooltip-ca-nstab-data": "Voir la page de données",
 	"jsonconfig-desc": "Permet de stocker une configuration JSON dans un wiki",
 	"jsonconfig-duplicate-field": "Plus d’une valeur « $1 » trouvée",
 	"jsonconfig-edit-action-apply": "Appliquer",
@@ -32,7 +35,7 @@
 	"jsonconfig-err-array": "Le paramètre « $1 » doit être une liste, c'est à dire  <kbd>[\"valeur1\", \"valeur2\", …]</kbd>",
 	"jsonconfig-err-array-count": "La liste « $1 » a $2 {{PLURAL:$2|valeur|valeurs}}, mais doit en avoir {{PLURAL:$3|$3}}, le même nombre de valeurs que « $4 »",
 	"jsonconfig-err-array-expected": "La valeur en « $1 » était censée être une liste entourée de crochets […]",
-	"jsonconfig-err-assoc-array": "Le paramètre « $1 » doit être un tableau associatif (dictionnaire), par ex. <code>schema</code>",
+	"jsonconfig-err-assoc-array": "Le paramètre « $1 » doit être un tableau associatif (dictionnaire), par ex. <kbd>{\"clé\": \"valeur\", ...}</kbd>",
 	"jsonconfig-err-bad-header-string": "L’entête « $1 » doit être constituée uniquement de lettres, chiffres et caractères souligné, et ne doit pas commencer par un chiffre",
 	"jsonconfig-err-bad-geojson": "Le paramètre « $1 » doit être une donnée GeoJSON valide, ou un tableau d’objets GeoJSON. Si le champ <code>properties</code> contient <code>title</code> ou <code>description</code>, ils doivent être des chaînes sur une seule ligne sans tabulations ni espaces à la fin, ou des objets multilingues de ce genre de chaînes, par ex. <kbd>{ \"en\":\"String in English\", ... }</kbd>",
 	"jsonconfig-err-bad-type": "Le paramètre « $1 » doit être un type valide, comme <code>string</code>, <code>number</code> ou <code>boolean</code>",
@@ -98,7 +101,7 @@
 	"jsonconfig-license-url-dl-de-zero-2.0": "https://www.govdata.de/dl-de/zero-2-0",
 	"jsonconfig-license-url-dl-de-by-1.0": "https://www.govdata.de/dl-de/by-1-0",
 	"jsonconfig-license-url-dl-de-by-2.0": "https://www.govdata.de/dl-de/by-2-0",
-	"jsonconfig-license-copyrightwarning": "En enregistrant les modifications, vous acceptez les [https://foundation.wikimedia.org/wiki/Terms_of_Use Conditions d’utilisation], et acceptez de façon irrévocable de mettre votre contribution sous [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}].",
+	"jsonconfig-license-copyrightwarning": "En enregistrant les modifications, vous acceptez les [https://foundation.wikimedia.org/wiki/Terms_of_Use/fr Conditions d’utilisation] et le placement irrévocable de votre contribution sous [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}].",
 	"jsonconfig-license-copyrightwarning-license-unset": "En enregistrant les modifications, vous acceptez les [https://foundation.wikimedia.org/wiki/Terms_of_Use Conditions d’utilisation], et acceptez de façon irrévocable de mettre votre contribution en accord avec la licence spécifiée dans le champ <code>licence</code>.",
 	"jsonconfig-license-notice": "'''Note :''' Quand vous modifiez cette page, vous acceptez de mettre votre contribution sous  [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}].",
 	"jsonconfig-license-notice-license-unset": "'''Note :''' Quand vous modifiez cette page, vous acceptez de placer votre contribution sous la licence spécifiée dans le champ <code>licence</code>.",

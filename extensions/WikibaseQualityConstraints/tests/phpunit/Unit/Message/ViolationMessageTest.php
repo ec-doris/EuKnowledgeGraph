@@ -8,7 +8,7 @@ use DataValues\StringValue;
 use DataValues\UnboundedQuantityValue;
 use InvalidArgumentException;
 use Wikibase\DataModel\Entity\ItemId;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\Context;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\ItemIdSnakValue;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Message\ViolationMessage;
@@ -42,7 +42,7 @@ class ViolationMessageTest extends \MediaWikiUnitTestCase {
 	}
 
 	public function testWithEntityId() {
-		$value = new PropertyId( 'P1' );
+		$value = new NumericPropertyId( 'P1' );
 		$role = Role::CONSTRAINT_PROPERTY;
 		$message = ( new ViolationMessage( 'wbqc-violation-message-no-qualifiers' ) )
 			->withEntityId( $value, $role );
@@ -55,14 +55,14 @@ class ViolationMessageTest extends \MediaWikiUnitTestCase {
 
 	public function testWithEntityId_returnsClone() {
 		$message1 = ( new ViolationMessage( 'wbqc-violation-message-no-qualifiers' ) );
-		$message2 = $message1->withEntityId( new PropertyId( 'P1' ), Role::CONSTRAINT_PROPERTY );
+		$message2 = $message1->withEntityId( new NumericPropertyId( 'P1' ), Role::CONSTRAINT_PROPERTY );
 
 		$this->assertNotSame( $message1, $message2 );
 		$this->assertSame( [], $message1->getArguments() );
 	}
 
 	public function testWithEntityIdList() {
-		$value = [ new ItemId( 'Q1' ), new PropertyId( 'P2' ) ];
+		$value = [ new ItemId( 'Q1' ), new NumericPropertyId( 'P2' ) ];
 		$role = Role::CONSTRAINT_PARAMETER_VALUE;
 		$message = ( new ViolationMessage( 'wbqc-violation-message-unique-value' ) )
 			->withEntityIdList( $value, $role );
@@ -89,8 +89,8 @@ class ViolationMessageTest extends \MediaWikiUnitTestCase {
 		$value = ItemIdSnakValue::noValue();
 		$role = Role::OBJECT;
 		$message = ( new ViolationMessage( 'wbqc-violation-message-conflicts-with-claim' ) )
-			->withEntityId( new PropertyId( 'P1' ), Role::CONSTRAINT_PROPERTY )
-			->withEntityId( new PropertyId( 'P2' ), Role::PREDICATE )
+			->withEntityId( new NumericPropertyId( 'P1' ), Role::CONSTRAINT_PROPERTY )
+			->withEntityId( new NumericPropertyId( 'P2' ), Role::PREDICATE )
 			->withItemIdSnakValue( $value, $role );
 
 		$this->assertSame(
@@ -129,7 +129,7 @@ class ViolationMessageTest extends \MediaWikiUnitTestCase {
 		$value = UnboundedQuantityValue::newFromNumber( 0 );
 		$role = Role::OBJECT;
 		$message = ( new ViolationMessage( 'wbqc-violation-message-range-quantity-rightopen' ) )
-			->withEntityId( new PropertyId( 'P1' ), Role::PREDICATE )
+			->withEntityId( new NumericPropertyId( 'P1' ), Role::PREDICATE )
 			->withDataValue( $value, $role )
 			->withDataValue( $value, $role );
 
@@ -210,7 +210,7 @@ class ViolationMessageTest extends \MediaWikiUnitTestCase {
 		$value = Context::TYPE_STATEMENT;
 		$role = Role::CONSTRAINT_PARAMETER_VALUE;
 		$message = ( new ViolationMessage( 'wbqc-violation-message-property-scope' ) )
-			->withEntityId( new PropertyId( 'P1' ) )
+			->withEntityId( new NumericPropertyId( 'P1' ) )
 			->withPropertyScope( $value, $role )
 			->withPropertyScopeList( [] );
 
@@ -224,7 +224,7 @@ class ViolationMessageTest extends \MediaWikiUnitTestCase {
 		$value = [ Context::TYPE_STATEMENT, Context::TYPE_REFERENCE ];
 		$role = Role::CONSTRAINT_PARAMETER_VALUE;
 		$message = ( new ViolationMessage( 'wbqc-violation-message-property-scope' ) )
-			->withEntityId( new PropertyId( 'P1' ) )
+			->withEntityId( new NumericPropertyId( 'P1' ) )
 			->withPropertyScope( Context::TYPE_STATEMENT )
 			->withPropertyScopeList( $value, $role );
 
@@ -238,7 +238,7 @@ class ViolationMessageTest extends \MediaWikiUnitTestCase {
 		$value = [];
 		$role = Role::CONSTRAINT_PARAMETER_VALUE;
 		$message = ( new ViolationMessage( 'wbqc-violation-message-property-scope' ) )
-			->withEntityId( new PropertyId( 'P1' ) )
+			->withEntityId( new NumericPropertyId( 'P1' ) )
 			->withPropertyScope( Context::TYPE_STATEMENT )
 			->withPropertyScopeList( $value, $role );
 
@@ -252,7 +252,7 @@ class ViolationMessageTest extends \MediaWikiUnitTestCase {
 		$value = 'pt';
 		$role = null;
 		$message = ( new ViolationMessage( 'wbqc-violation-message-parameter-single-per-language' ) )
-			->withEntityId( new PropertyId( 'P1' ) )
+			->withEntityId( new NumericPropertyId( 'P1' ) )
 			->withLanguage( $value );
 
 		$this->assertSame(

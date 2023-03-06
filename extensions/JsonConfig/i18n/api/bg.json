@@ -8,7 +8,7 @@
 	},
 	"apihelp-jsonconfig-description": "Позволява директен достъп до подсистемата JsonConfig.",
 	"apihelp-jsonconfig-summary": "Позволява директен достъп до подсистемата JsonConfig.",
-	"apihelp-jsonconfig-param-command": "Кое поддействие да се извърши на JsonConfig:\n;status: Показва конфигурацията на JsonConfig.\n;reset: Изчиства конфигурации от кеша. Изисква параметъра $1title и правото „jsonconfig-reset“.\n;reload: Презарежда и кешира конфигурации от склада на настройки. Изисква параметъра $1title и правото „jsonconfig-reset“.",
+	"apihelp-jsonconfig-param-command": "Кое поддействие да се извърши на JsonConfig:\n;status: Показва конфигурацията на JsonConfig.\n;reset: Изчиства конфигурации от кеша. Изисква параметъра $1title и правото „jsonconfig-flush“.\n;reload: Презарежда и кешира конфигурации от склада на настройки. Изисква параметъра $1title и правото „jsonconfig-reset“.",
 	"apihelp-jsonconfig-param-namespace": "Номер на именното пространство на заглавието за обработка.",
 	"apihelp-jsonconfig-param-title": "Заглавие за обработка без представка за именно пространство.",
 	"apihelp-jsonconfig-param-content": "За $1command=reload, използвайте това съдържание.",

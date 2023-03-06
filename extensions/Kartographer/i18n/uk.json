@@ -2,13 +2,15 @@
 	"@metadata": {
 		"authors": [
 			"Base",
+			"DDPAT",
+			"Ice bulldog",
 			"Movses",
 			"Piramidion",
 			"Vlad5250",
-			"Ата",
-			"DDPAT"
+			"Ата"
 		]
 	},
+	"apierror-kartographer-conflicting-revids": "Запит картографічних даних з кількох версій однієї сторінки в одному запиті ще не підтримується.",
 	"kartographer-attribution": "[https://foundation.wikimedia.org/wiki/Maps_Terms_of_Use Карти Вікімедіа] | Картографічні дані © [https://www.openstreetmap.org/copyright Дописувачі OpenStreetMap]",
 	"kartographer-attribution-externaldata": "$1: $2",
 	"kartographer-attribution-short": "[https://foundation.wikimedia.org/wiki/Maps_Terms_of_Use Вікімедіа] | © [https://www.openstreetmap.org/copyright OpenStreetMap]",
@@ -20,7 +22,7 @@
 	"kartographer-error-json": "Помилка JSON: $1",
 	"kartographer-error-missing-attr": "Відсутній атрибут «$1»",
 	"kartographer-error-bad_attr": "Атрибут '$1' має недійсне значення",
-	"kartographer-error-bad_data": "JSON-вміст не є правильним GeoJSON+simplestyle",
+	"kartographer-error-bad_data": "JSON-вміст не є правильним GeoJSON+simplestyle. Перша помилка валідації — в елементі «$1»: «$2».",
 	"kartographer-error-latlon": "Мають бути вказані або обидва параметри широти і довготи, або жоден",
 	"kartographer-error-title": "Назва «$1» не є дійсною сторінкою картографічних даних",
 	"kartographer-tracking-category": "Сторінки з мапами",

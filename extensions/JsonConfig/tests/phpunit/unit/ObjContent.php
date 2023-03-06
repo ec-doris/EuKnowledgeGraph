@@ -4,6 +4,7 @@ namespace JsonConfig\Tests;
 use JsonConfig\JCObjContent;
 
 class ObjContent extends JCObjContent {
+	/** @var callable */
 	private $validators;
 
 	public function __construct( $data, $validators, $thorough, $isRootArray = false ) {

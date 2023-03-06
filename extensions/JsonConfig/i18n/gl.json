@@ -1,11 +1,11 @@
 {
 	"@metadata": {
 		"authors": [
+			"ArenaL5",
 			"Banjo",
 			"Elisardojm",
 			"Toliño",
-			"Yurik",
-			"ArenaL5"
+			"Yurik"
 		]
 	},
 	"jsonconfig-desc": "Permite que a configuración JSON se garde nunha wiki",

@@ -75,7 +75,6 @@ class ViolationMessageRenderer {
 
 	/**
 	 * @param ViolationMessage $violationMessage
-	 * (temporarily, pre-rendered strings are allowed and returned without changes)
 	 * @return string
 	 */
 	public function render( ViolationMessage $violationMessage ) {
@@ -133,6 +132,7 @@ class ViolationMessageRenderer {
 			ViolationMessage::TYPE_PROPERTY_SCOPE => 'renderPropertyScope',
 			ViolationMessage::TYPE_PROPERTY_SCOPE_LIST => 'renderPropertyScopeList',
 			ViolationMessage::TYPE_LANGUAGE => 'renderLanguage',
+			ViolationMessage::TYPE_LANGUAGE_LIST => 'renderLanguageList',
 		];
 
 		$type = $argument['type'];
@@ -177,13 +177,13 @@ class ViolationMessageRenderer {
 			array_fill( 0, count( $list ), $role )
 		);
 		$renderedParams = array_map(
-			function ( $params ) {
+			static function ( $params ) {
 				return $params[0];
 			},
 			$renderedParamsLists
 		);
 		$renderedElements = array_map(
-			function ( $param ) {
+			static function ( $param ) {
 				return $param['raw'];
 			},
 			$renderedParams
@@ -402,9 +402,20 @@ class ViolationMessageRenderer {
 	 */
 	private function renderLanguage( $languageCode, $role ) {
 		return [
-			Message::plaintextParam( Language::fetchLanguageName( $languageCode ) ),
+			// ::renderList (through ::renderLanguageList) requires 'raw' parameter
+			// so we effectively build Message::plaintextParam here
+			Message::rawParam( htmlspecialchars( Language::fetchLanguageName( $languageCode ) ) ),
 			Message::plaintextParam( $languageCode ),
 		];
+	}
+
+	/**
+	 * @param string[] $languageCodes MediaWiki language codes
+	 * @param string|null $role one of the Role::* constants
+	 * @return array[] list of parameters as accepted by Message::params()
+	 */
+	private function renderLanguageList( $languageCodes, $role ) {
+		return $this->renderList( $languageCodes, $role, [ $this, 'renderLanguage' ] );
 	}
 
 }

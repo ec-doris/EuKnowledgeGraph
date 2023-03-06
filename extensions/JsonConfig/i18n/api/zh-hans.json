@@ -2,14 +2,15 @@
 	"@metadata": {
 		"authors": [
 			"Liuxinyu970226",
-			"御坂美琴",
 			"Xiplus",
-			"坑触可"
+			"坑触可",
+			"御坂美琴",
+			"Stang"
 		]
 	},
 	"apihelp-jsonconfig-description": "允许直接访问JsonConfig子系统。",
 	"apihelp-jsonconfig-summary": "允许直接访问JsonConfig子系统。",
-	"apihelp-jsonconfig-param-command": "要在JsonConfig上执行的子操作：\n;status:显示JsonConfig配置。\n;reset:从缓存中清空配置。需要$1title参数和jsonconfig-reset权限。\n;reload:从配置库中重新载入并缓存配置。需要$1title参数和jsonconfig-reset权限。",
+	"apihelp-jsonconfig-param-command": "要在JsonConfig上执行的子操作：\n;status:显示JsonConfig配置。\n;reset:从缓存中清空配置。需要$1title参数和jsonconfig-flush权限。\n;reload:从配置库中重新加载并缓存配置。需要$1title参数和jsonconfig-reset权限。",
 	"apihelp-jsonconfig-param-namespace": "要处理的标题的命名空间编号。",
 	"apihelp-jsonconfig-param-title": "要不带命名空间前缀处理的标题。",
 	"apihelp-jsonconfig-param-content": "对于$1command=reload，使用此内容。",

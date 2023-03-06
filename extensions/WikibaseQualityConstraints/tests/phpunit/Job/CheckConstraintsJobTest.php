@@ -3,7 +3,7 @@
 namespace WikibaseQuality\ConstraintReport\Tests\Job;
 
 use Job;
-use MediaWikiTestCase;
+use MediaWikiIntegrationTestCase;
 use Title;
 use Wikibase\DataModel\Entity\ItemId;
 use WikibaseQuality\ConstraintReport\Api\CachingResultsSource;
@@ -19,10 +19,10 @@ use WikibaseQuality\ConstraintReport\Job\CheckConstraintsJob;
  * @author Jonas Kress
  * @license GPL-2.0-or-later
  */
-class CheckConstraintsJobTest extends MediaWikiTestCase {
+class CheckConstraintsJobTest extends MediaWikiIntegrationTestCase {
 
-	const ENTITY_ID = 'Q101';
-	const JOB_TITLE_STRING = 'CheckConstraintsJobTitleString';
+	private const ENTITY_ID = 'Q101';
+	private const JOB_TITLE_STRING = 'CheckConstraintsJobTitleString';
 
 	private function createJob( $titleString, $params ) {
 		$title = Title::makeTitle( NS_MAIN, $titleString );
@@ -46,7 +46,7 @@ class CheckConstraintsJobTest extends MediaWikiTestCase {
 		];
 		$job = $this->createJob( self::JOB_TITLE_STRING, $params );
 
-		$this->assertEquals(
+		$this->assertSame(
 			[
 				'type' => CheckConstraintsJob::COMMAND,
 				'params' => $params

@@ -4,9 +4,9 @@ namespace JsonConfig;
 
 use Html;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Page\PageReference;
 use ParserOptions;
 use ParserOutput;
-use Title;
 
 /**
  * This class is used in case when there is no custom view defined for JCContent object
@@ -19,7 +19,7 @@ class JCTabularContentView extends JCContentView {
 	 * Called from an override of AbstractContent::fillParserOutput()
 	 *
 	 * @param JCContent|JCTabularContent $content
-	 * @param Title $pageTitle Context title for parsing
+	 * @param PageReference $page Context title for parsing
 	 * @param int|null $revId Revision ID (for {{REVISIONID}})
 	 * @param ParserOptions $options Parser options
 	 * @param bool $generateHtml Whether or not to generate HTML
@@ -27,7 +27,7 @@ class JCTabularContentView extends JCContentView {
 	 * @return string
 	 */
 	public function valueToHtml(
-		JCContent $content, Title $pageTitle, $revId,
+		JCContent $content, PageReference $page, $revId,
 		ParserOptions $options, $generateHtml, ParserOutput &$output
 	) {
 		// Use user's language, and split parser cache.  This should not have a big
@@ -43,7 +43,7 @@ class JCTabularContentView extends JCContentView {
 		$headerAttributes = [];
 
 		// Helper to add a class value to an array of attributes
-		$addErr = function ( array $attrs, $isValid ) {
+		$addErr = static function ( array $attrs, $isValid ) {
 			if ( !$isValid ) {
 				$attrs['class'] = 'mw-tabular-error';
 			}
@@ -51,7 +51,7 @@ class JCTabularContentView extends JCContentView {
 		};
 
 		// Helper to create a <tr> element out of an array of raw HTML values
-		$makeRow = function ( array $values, array $attrs = [] ) {
+		$makeRow = static function ( array $values, array $attrs = [] ) {
 			return Html::rawElement( 'tr', $attrs, implode( '', $values ) );
 		};
 
@@ -111,7 +111,13 @@ class JCTabularContentView extends JCContentView {
 					$colIsValid = $column && $column instanceof JCValue && !$column->error();
 					$column =
 						( $column && $column instanceof JCValue ) ? $column->getValue() : $column;
-					$header = $headerAttributes[ count( $vals ) ];
+
+					if ( count( $vals ) >= count( $headerAttributes ) ) {
+						$header = [];
+					} else {
+						$header = $headerAttributes[ count( $vals ) ];
+					}
+
 					if ( !$colIsValid ) {
 						$header['class'] = 'mw-tabular-error';
 					}
@@ -126,6 +132,10 @@ class JCTabularContentView extends JCContentView {
 					} elseif ( $column === null ) {
 						$header['class'] = 'mw-tabular-value-null';
 						$column = '';
+					} else {
+						$column = is_string( $column ) || is_numeric( $column )
+							? htmlspecialchars( (string)$column )
+							: '';
 					}
 					$vals[] = Html::rawElement( 'td', $header, $column );
 				}
@@ -142,7 +152,7 @@ class JCTabularContentView extends JCContentView {
 				] ) ) . Html::rawElement( 'tbody', [], implode( "\n", $rows ) ) ) .
 			$content->renderSources(
 				MediaWikiServices::getInstance()->getParser()->getFreshParser(),
-				$pageTitle,
+				$page,
 				$revId,
 				$options
 			) . $content->renderLicense();

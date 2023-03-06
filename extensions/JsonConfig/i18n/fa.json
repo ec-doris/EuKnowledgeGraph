@@ -6,11 +6,14 @@
 			"Huji",
 			"Ladsgroup",
 			"Mjbmr",
-			"Reza1615"
+			"Reza1615",
+			"Jeeputer"
 		]
 	},
+	"nstab-data": "داده‌ها",
 	"jsonconfig-desc": "اجازه می‌دهد که پیکربندی JSON در یک ویکی ذخیره شود",
 	"jsonconfig-duplicate-field": "بیشتر از یک مقدار برای «$1» یافت شده‌است",
+	"jsonconfig-edit-action-apply": "اعمال",
 	"jsonconfig-edit-action-cancel": "لغو",
 	"jsonconfig-edit-button-label": "ویرایش به‌عنوان جدول",
 	"jsonconfig-edit-dialog-error-data-too-large": "مجموعه‌داده بزرگ‌تر از آن است که قابل ویرایش به‌عنوان جدول باشد",

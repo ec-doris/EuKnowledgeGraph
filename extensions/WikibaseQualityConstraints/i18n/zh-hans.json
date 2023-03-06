@@ -4,16 +4,16 @@
 			"A Chinese Wikipedian",
 			"A Retired User",
 			"Deathkon",
+			"Hudafu",
 			"Liuxinyu970226",
 			"NeverBehave",
-			"予弦",
-			"神樂坂秀吉",
-			"铁桶",
-			"Hudafu",
 			"Shizhao",
 			"Xiplus",
+			"Xzonn",
+			"予弦",
 			"列维劳德",
-			"Xzonn"
+			"神樂坂秀吉",
+			"铁桶"
 		]
 	},
 	"wbqc-constraintreport": "约束报告",
@@ -151,6 +151,8 @@
 	"wbqc-violation-message-integer": "用于$1的值应为整数，但$2有小数部分。",
 	"wbqc-violation-message-integer-bounds": "$1的值应为整数，但$2的界限有小数部分。",
 	"wbqc-violation-message-citationNeeded": "$1的陈述应有至少一个参考文献。",
+	"wbqc-violation-message-language": "$1的陈述应该只在语言设置为{{PLURAL:$2|1=$4的词形上。|2=$4或$5的词形上。|以下之一的词形上：$3}}",
+	"wbqc-violation-message-label-lacking": "$1 的实体声明{{PLURAL:$2|1=还需要$4版的标签。|至少还需要以下任意语言版本的标签：$3}}",
 	"wbqc-violation-message-property-scope": "属性$1不应在此位置（$2）使用。可用于此属性的{{PLURAL:$3|位置}}{{PLURAL:$3|只有$5。|只有：$4}}",
 	"wbqc-violation-message-exception": "此实体是此约束的已知例外，并已标记为例外。"
 }

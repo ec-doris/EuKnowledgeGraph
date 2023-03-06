@@ -38,6 +38,7 @@ services:
       - ./extensions/Kartographer:/var/www/html/extensions/Kartographer
       - ./extensions/WikibaseQualityConstraints:/var/www/html/extensions/WikibaseQualityConstraints
       - ./extensions/CASAuth:/var/www/html/extensions/CASAuth
+      - ./extensions/BatchIngestion:/var/www/html/extensions/BatchIngestion
       - ./images:/var/www/html/images
     networks:
       default:

@@ -2,7 +2,9 @@
 	"@metadata": {
 		"authors": [
 			"BaRaN6161 TURK",
-			"Incelemeelemani"
+			"Incelemeelemani",
+			"SaldırganSincap",
+			"Sezgin İbiş"
 		]
 	},
 	"apihelp-wbcheckconstraints-description": "İstediğiniz varlık üzerinde kısıtlama kontrollerini yapar ve sonucunu döndürür.",
@@ -10,7 +12,7 @@
 	"apihelp-wbcheckconstraints-param-id": "Verilerin alınacağı varlıkların kimlik listesi. Birden fazla varlık için '|' veya alternatifi değer kullanın.",
 	"apihelp-wbcheckconstraints-param-claimid": "Bir kısıtlama raporunu kontrol etme talebini tanımlayan GUID listesi. '|' ile değerleri ayırın.",
 	"apihelp-wbcheckconstraints-param-constraintid": "Yalnızca belirtilen kısıtlama kimliğine sahip kısıtlamaları döndürmek için isteğe bağlı filtre.",
-	"apihelp-wbcheckconstraints-param-status": "İsteğe bağlı filtre yalnızca sonuçları seçilen durumlarla kontrol etmek için döndürür.\n\nYalnızca 'ihlal', 'uyarı' ve 'kötü parametreler' durumlarının sonuçlarının önbelleğe alındığını, bu nedenle bu üçünün dışındaki durumları seçen isteklerin önbelleğe almanın faydası olmadığını unutmayın.",
+	"apihelp-wbcheckconstraints-param-status": "İsteğe bağlı filtre yalnızca sonuçları seçilen durumlarla kontrol etmek için döndürür.\n\nYalnızca 'violation', 'warning', 'suggestion' ve 'bad-parameters' durumları için sonuçların önbelleğe alındığını, dolayısıyla bu dördünün dışındaki durumları seçen isteklerin önbelleğe alma işleminden faydalanmadığını unutmayın.",
 	"apihelp-wbcheckconstraints-paramvalue-status-compliance": "Bu ifade kısıtlamayı yerine getirir.",
 	"apihelp-wbcheckconstraints-paramvalue-status-violation": "Bu ifade kısıtlamayı ihlal ediyor.",
 	"apihelp-wbcheckconstraints-paramvalue-status-exception": "İfadenin özniteliği, kısıtlamanın bilinen bir istisnasıdır.",

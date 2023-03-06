@@ -4,6 +4,7 @@
 			"Yuri Astrakhan"
 		]
 	},
+	"apierror-kartographer-conflicting-revids": "Querying mapdata from multiple revisions of the same page in one request is not supported yet.",
 	"kartographer-attribution": "[https://foundation.wikimedia.org/wiki/Maps_Terms_of_Use Wikimedia maps] | Map data © [https://www.openstreetmap.org/copyright OpenStreetMap contributors]",
 	"kartographer-attribution-externaldata": "$1: $2",
 	"kartographer-attribution-short": "[https://foundation.wikimedia.org/wiki/Maps_Terms_of_Use Wikimedia] | © [https://www.openstreetmap.org/copyright OpenStreetMap]",
@@ -15,7 +16,7 @@
 	"kartographer-error-json": "Couldn't parse JSON: $1",
 	"kartographer-error-missing-attr": "Attribute \"$1\" is missing",
 	"kartographer-error-bad_attr": "Attribute \"$1\" has an invalid value",
-	"kartographer-error-bad_data": "The JSON content is not valid GeoJSON+simplestyle",
+	"kartographer-error-bad_data": "The JSON content is not valid GeoJSON+simplestyle. The first validation error is on the element \"$1\": \"$2\".",
 	"kartographer-error-latlon": "Either both \"latitude\" and \"longitude\" parameters should be supplied or neither of them",
 	"kartographer-error-title": "Title \"$1\" is not a valid map data page",
 	"kartographer-tracking-category": "Pages with maps",

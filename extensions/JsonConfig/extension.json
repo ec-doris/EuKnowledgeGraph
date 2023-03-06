@@ -10,7 +10,7 @@
 	"type": "other",
 	"license-name": "GPL-2.0-or-later",
 	"requires": {
-		"MediaWiki": ">= 1.35.0"
+		"MediaWiki": ">= 1.38.0"
 	},
 	"namespaces": [
 		{
@@ -100,7 +100,6 @@
 		"remoteExtPath": "JsonConfig/modules"
 	},
 	"Hooks": {
-		"AbortMove": "JsonConfig\\JCSingleton::onAbortMove",
 		"ApiMain::moduleManager": "JsonConfig\\JCSingleton::onApiMainModuleManager",
 		"ArticleDeleteComplete": "JsonConfig\\JCSingleton::onArticleDeleteComplete",
 		"ArticleUndelete": "JsonConfig\\JCSingleton::onArticleUndelete",
@@ -109,6 +108,7 @@
 		"CodeEditorGetPageLanguage": "JsonConfig\\JCSingleton::onCodeEditorGetPageLanguage",
 		"ContentHandlerDefaultModelFor": "JsonConfig\\JCSingleton::onContentHandlerDefaultModelFor",
 		"ContentHandlerForModelID": "JsonConfig\\JCSingleton::onContentHandlerForModelID",
+		"GetContentModels": "JsonConfig\\JCSingleton::onGetContentModels",
 		"AlternateEdit": "JsonConfig\\JCSingleton::onAlternateEdit",
 		"EditPage::showEditForm:initial": "JsonConfig\\JCSingleton::onEditPage",
 		"EditFilterMergedContent": "JsonConfig\\JCSingleton::onEditFilterMergedContent",
@@ -119,7 +119,7 @@
 		"SkinCopyrightFooter": "JsonConfig\\JCSingleton::onSkinCopyrightFooter",
 		"TitleGetEditNotices": "JsonConfig\\JCSingleton::onTitleGetEditNotices",
 		"PageMoveComplete": "JsonConfig\\JCSingleton::onPageMoveComplete",
-		"userCan": "JsonConfig\\JCSingleton::onuserCan"
+		"getUserPermissionsErrors": "JsonConfig\\JCSingleton::onGetUserPermissionsErrors"
 	},
 	"config": {
 		"JsonConfigs": {

@@ -15,6 +15,7 @@ use Wikibase\DataModel\Statement\StatementListProvider;
 use Wikibase\Lib\Store\EntityStore;
 use Wikibase\Lib\Store\StorageException;
 use Wikibase\Repo\WikibaseRepo;
+use WikiMap;
 
 // @codeCoverageIgnoreStart
 $basePath = getenv( "MW_INSTALL_PATH" ) !== false
@@ -79,11 +80,11 @@ class ImportConstraintEntities extends Maintenance {
 	 * (This cannot happen in the constructor because the autoloader is not yet initialized there.)
 	 */
 	private function setupServices() {
-		$repo = WikibaseRepo::getDefaultInstance();
-		$this->entitySerializer = $repo->getAllTypesEntitySerializer();
-		$this->entityDeserializer = $repo->getInternalFormatEntityDeserializer();
-		$this->entityStore = $repo->getEntityStore();
-		$this->httpRequestFactory = MediaWikiServices::getInstance()->getHttpRequestFactory();
+		$services = MediaWikiServices::getInstance();
+		$this->entitySerializer = WikibaseRepo::getAllTypesEntitySerializer( $services );
+		$this->entityDeserializer = WikibaseRepo::getInternalFormatEntityDeserializer( $services );
+		$this->entityStore = WikibaseRepo::getEntityStore( $services );
+		$this->httpRequestFactory = $services->getHttpRequestFactory();
 		if ( !$this->getOption( 'dry-run', false ) ) {
 			$this->user = User::newSystemUser( 'WikibaseQualityConstraints importer' );
 		}
@@ -232,11 +233,11 @@ class ImportConstraintEntities extends Maintenance {
 	 * @param array[] $configUpdates
 	 */
 	private function outputConfigUpdatesWgConf( array $configUpdates ) {
+		$wikiIdCode = var_export( WikiMap::getCurrentWikiId(), true );
 		foreach ( $configUpdates as $key => $value ) {
 			$keyCode = var_export( "wg$key", true );
 			$wikidataValueCode = var_export( $value['wikidata'], true );
 			$localValueCode = var_export( $value['local'], true );
-			$wikiIdCode = var_export( wfWikiID(), true );
 			$block = <<< EOF
 $keyCode => [
 	'default' => $wikidataValueCode,

@@ -1,8 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
-			"Patriot Kur"
+			"Patriot Kur",
+			"Patriot Kor"
 		]
 	},
-	"jsonconfig-edit-action-cancel": "Ləğv karde"
+	"jsonconfig-edit-action-cancel": "Ləğv karde",
+	"jsonconfig-type-name-number": "aşmard"
 }

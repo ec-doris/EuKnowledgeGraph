@@ -6,27 +6,50 @@ use ApiBase;
 use ApiQuery;
 use ApiQueryBase;
 use FormatJson;
+use MediaWiki\Page\WikiPageFactory;
 use ParserOptions;
-use WikiPage;
+use Wikimedia\ParamValidator\ParamValidator;
+use Wikimedia\ParamValidator\TypeDef\IntegerDef;
 
 class ApiQueryMapData extends ApiQueryBase {
+
+	/** @var WikiPageFactory */
+	private $pageFactory;
 
 	/**
 	 * @param ApiQuery $query
 	 * @param string $moduleName
+	 * @param WikiPageFactory $pageFactory
 	 */
-	public function __construct( ApiQuery $query, $moduleName ) {
+	public function __construct( ApiQuery $query, $moduleName,
+		WikiPageFactory $pageFactory
+	) {
 		parent::__construct( $query, $moduleName, 'mpd' );
+		$this->pageFactory = $pageFactory;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public function execute() {
 		$params = $this->extractRequestParams();
 		$limit = $params['limit'];
-		$continue = $params['continue'] ?? 0;
-		$groups = $params['groups'] === '' ? false : explode( '|', $params['groups'] );
-		$titles = $this->getPageSet()->getGoodTitles();
+		$groupIds = $params['groups'] === '' ? false : explode( '|', $params['groups'] );
+		$titles = $this->getPageSet()->getGoodPages();
 		if ( !$titles ) {
 			return;
+		}
+
+		$revIds = [];
+		// Temporary feature flag to control whether we support fetching mapdata from older revisions
+		if ( $this->getConfig()->get( 'KartographerVersionedMapdata' ) ) {
+			$revisionToPageMap = $this->getPageSet()->getLiveRevisionIDs();
+			$revIds = array_flip( $revisionToPageMap );
+			// Note: It's probably possible to merge data from multiple revisions of the same page
+			// because of the way group IDs are unique. Intentionally not implemented yet.
+			if ( count( $revisionToPageMap ) > count( $revIds ) ) {
+				$this->dieWithError( 'apierror-kartographer-conflicting-revids' );
+			}
 		}
 
 		$count = 0;
@@ -36,22 +59,29 @@ class ApiQueryMapData extends ApiQueryBase {
 				break;
 			}
 
-			$page = WikiPage::factory( $title );
-			$parserOutput = $page->getParserOutput( ParserOptions::newCanonical( 'canonical' ) );
-			$state = State::getState( $parserOutput );
+			$revId = $revIds[$pageId] ?? null;
+			if ( $revId ) {
+				// This isn't strictly needed, but the only way a consumer can distinguish an
+				// endpoint that supports revids from an endpoint that doesn't
+				$this->getResult()->addValue( [ 'query', 'pages', $pageId ], 'revid', $revId );
+			}
+
+			$page = $this->pageFactory->newFromTitle( $title );
+			$parserOutput = $page->getParserOutput( ParserOptions::newFromAnon(), $revId );
+			$state = $parserOutput ? State::getState( $parserOutput ) : null;
 			if ( !$state ) {
 				continue;
 			}
 			$data = $state->getData();
 
 			$result = [];
-			if ( $groups ) {
-				foreach ( $groups as $group ) {
-					if ( array_key_exists( $group, $data ) ) {
-						$result[$group] = $data[$group];
+			if ( $groupIds ) {
+				foreach ( $groupIds as $groupId ) {
+					if ( array_key_exists( $groupId, $data ) ) {
+						$result[$groupId] = $data[$groupId];
 					} else {
 						// Let the client know there is no data found for this group
-						$result[$group] = null;
+						$result[$groupId] = null;
 					}
 				}
 			} else {
@@ -72,18 +102,18 @@ class ApiQueryMapData extends ApiQueryBase {
 	public function getAllowedParams() {
 		return [
 			'groups' => [
-				ApiBase::PARAM_TYPE => 'string',
-				ApiBase::PARAM_DFLT => '',
+				ParamValidator::PARAM_TYPE => 'string',
+				ParamValidator::PARAM_DEFAULT => '',
 			],
 			'limit' => [
-				ApiBase::PARAM_TYPE => 'limit',
-				ApiBase::PARAM_DFLT => 10,
-				ApiBase::PARAM_MIN => 1,
-				ApiBase::PARAM_MAX => ApiBase::LIMIT_BIG1,
-				ApiBase::PARAM_MAX2 => ApiBase::LIMIT_BIG2
+				ParamValidator::PARAM_TYPE => 'limit',
+				ParamValidator::PARAM_DEFAULT => 10,
+				IntegerDef::PARAM_MIN => 1,
+				IntegerDef::PARAM_MAX => ApiBase::LIMIT_BIG1,
+				IntegerDef::PARAM_MAX2 => ApiBase::LIMIT_BIG2
 			],
 			'continue' => [
-				ApiBase::PARAM_TYPE => 'integer',
+				ParamValidator::PARAM_TYPE => 'integer',
 				ApiBase::PARAM_HELP_MSG => 'api-help-param-continue',
 			],
 		];
@@ -107,6 +137,9 @@ class ApiQueryMapData extends ApiQueryBase {
 		return 'public';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public function isInternal() {
 		return true;
 	}

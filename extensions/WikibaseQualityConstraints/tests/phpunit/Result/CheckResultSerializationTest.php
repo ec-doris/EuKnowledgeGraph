@@ -7,7 +7,7 @@ use DataValues\TimeValue;
 use PHPUnit\Framework\TestCase;
 use Wikibase\DataModel\Entity\BasicEntityIdParser;
 use Wikibase\DataModel\Entity\ItemId;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\Lib\DataValueFactory;
 use WikibaseQuality\ConstraintReport\Constraint;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Cache\CachingMetadata;
@@ -130,7 +130,7 @@ class CheckResultSerializationTest extends TestCase {
 		);
 		$constraint = new Constraint(
 			'P370$f3ef0b09-4a58-3e69-1db6-b6abb5449f89',
-			new PropertyId( 'P370' ),
+			new NumericPropertyId( 'P370' ),
 			'Q5',
 			[]
 		);
@@ -168,7 +168,7 @@ class CheckResultSerializationTest extends TestCase {
 		);
 		$constraint = new Constraint(
 			'P370$1b1678e7-4871-0172-037a-98dfa9bb6986',
-			new PropertyId( 'P370' ),
+			new NumericPropertyId( 'P370' ),
 			'Q21502404',
 			[]
 		);
@@ -180,7 +180,10 @@ class CheckResultSerializationTest extends TestCase {
 				CheckResult::STATUS_BAD_PARAMETERS,
 				( new ViolationMessage( 'wbqc-violation-message-parameter-needed' ) )
 					->withEntityId( new ItemId( 'Q21502404' ), Role::CONSTRAINT_TYPE_ITEM )
-					->withEntityId( new PropertyId( 'P1793' ), Role::CONSTRAINT_PARAMETER_PROPERTY )
+					->withEntityId(
+						new NumericPropertyId( 'P1793' ),
+						Role::CONSTRAINT_PARAMETER_PROPERTY
+					)
 			) )->withMetadata( Metadata::merge( [
 				Metadata::ofCachingMetadata( CachingMetadata::ofMaximumAgeInSeconds( 5 * 60 ) ),
 				Metadata::ofDependencyMetadata( DependencyMetadata::merge( [

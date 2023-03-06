@@ -23,7 +23,8 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  * @license GPL-2.0-or-later
  */
 class PropertyScopeCheckerTest extends \PHPUnit\Framework\TestCase {
-	use ResultAssertions, ConstraintParameters;
+	use ResultAssertions;
+	use ConstraintParameters;
 
 	/**
 	 * @param Context $context
@@ -87,16 +88,11 @@ class PropertyScopeCheckerTest extends \PHPUnit\Framework\TestCase {
 	 * @return Constraint
 	 */
 	private function getConstraintMock( array $parameters ) {
-		$mock = $this
-			->getMockBuilder( Constraint::class )
-			->disableOriginalConstructor()
-			->getMock();
-		$mock->expects( $this->any() )
-			->method( 'getConstraintParameters' )
-			->will( $this->returnValue( $parameters ) );
-		$mock->expects( $this->any() )
-			->method( 'getConstraintTypeItemId' )
-			->will( $this->returnValue( 'Q53869507' ) );
+		$mock = $this->createMock( Constraint::class );
+		$mock->method( 'getConstraintParameters' )
+			->willReturn( $parameters );
+		$mock->method( 'getConstraintTypeItemId' )
+			->willReturn( 'Q53869507' );
 
 		return $mock;
 	}

@@ -6,6 +6,8 @@
 			"Yurik"
 		]
 	},
+	"nstab-data": "Податоци",
+	"tooltip-ca-nstab-data": "Погл. податочната страница",
 	"jsonconfig-desc": "Овозможува поставеност на JSON да се складира на вики",
 	"jsonconfig-duplicate-field": "Пронајдов повеќе од една вредност „$1“",
 	"jsonconfig-edit-action-apply": "Примени",

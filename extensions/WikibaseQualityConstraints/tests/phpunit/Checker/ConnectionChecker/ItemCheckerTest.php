@@ -4,7 +4,7 @@ namespace WikibaseQuality\ConstraintReport\Tests\Checker\ConnectionChecker;
 
 use Wikibase\DataModel\Entity\EntityIdValue;
 use Wikibase\DataModel\Entity\ItemId;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Snak\PropertyValueSnak;
 use Wikibase\DataModel\Statement\Statement;
 use Wikibase\Repo\Tests\NewItem;
@@ -24,16 +24,17 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  * @author BP2014N1
  * @license GPL-2.0-or-later
  */
-class ItemCheckerTest extends \MediaWikiTestCase {
+class ItemCheckerTest extends \MediaWikiIntegrationTestCase {
 
-	use ConstraintParameters, ResultAssertions;
+	use ConstraintParameters;
+	use ResultAssertions;
 
 	/**
 	 * @var ItemChecker
 	 */
 	private $checker;
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 		$this->checker = new ItemChecker(
 			$this->getConstraintParameterParser(),
@@ -47,7 +48,7 @@ class ItemCheckerTest extends \MediaWikiTestCase {
 		$constraintParameters = $this->propertyParameter( 'P2' );
 
 		$value = new EntityIdValue( new ItemId( 'Q100' ) );
-		$statement = new Statement( new PropertyValueSnak( new PropertyId( 'P188' ), $value ) );
+		$statement = new Statement( new PropertyValueSnak( new NumericPropertyId( 'P188' ), $value ) );
 
 		$constraint = $this->getConstraintMock( $constraintParameters );
 
@@ -63,7 +64,7 @@ class ItemCheckerTest extends \MediaWikiTestCase {
 		$constraintParameters = $this->propertyParameter( 'P2' );
 
 		$value = new EntityIdValue( new ItemId( 'Q100' ) );
-		$statement = new Statement( new PropertyValueSnak( new PropertyId( 'P188' ), $value ) );
+		$statement = new Statement( new PropertyValueSnak( new NumericPropertyId( 'P188' ), $value ) );
 
 		$constraint = $this->getConstraintMock( $constraintParameters );
 
@@ -82,7 +83,7 @@ class ItemCheckerTest extends \MediaWikiTestCase {
 		);
 
 		$value = new EntityIdValue( new ItemId( 'Q100' ) );
-		$statement = new Statement( new PropertyValueSnak( new PropertyId( 'P188' ), $value ) );
+		$statement = new Statement( new PropertyValueSnak( new NumericPropertyId( 'P188' ), $value ) );
 
 		$constraint = $this->getConstraintMock( $constraintParameters );
 
@@ -101,7 +102,7 @@ class ItemCheckerTest extends \MediaWikiTestCase {
 		);
 
 		$value = new EntityIdValue( new ItemId( 'Q100' ) );
-		$statement = new Statement( new PropertyValueSnak( new PropertyId( 'P188' ), $value ) );
+		$statement = new Statement( new PropertyValueSnak( new NumericPropertyId( 'P188' ), $value ) );
 
 		$constraint = $this->getConstraintMock( $constraintParameters );
 
@@ -137,16 +138,11 @@ class ItemCheckerTest extends \MediaWikiTestCase {
 	 * @return Constraint
 	 */
 	private function getConstraintMock( array $parameters ) {
-		$mock = $this
-			->getMockBuilder( Constraint::class )
-			->disableOriginalConstructor()
-			->getMock();
-		$mock->expects( $this->any() )
-			 ->method( 'getConstraintParameters' )
-			 ->will( $this->returnValue( $parameters ) );
-		$mock->expects( $this->any() )
-			 ->method( 'getConstraintTypeItemId' )
-			 ->will( $this->returnValue( 'Q21503247' ) );
+		$mock = $this->createMock( Constraint::class );
+		$mock->method( 'getConstraintParameters' )
+			 ->willReturn( $parameters );
+		$mock->method( 'getConstraintTypeItemId' )
+			 ->willReturn( 'Q21503247' );
 
 		return $mock;
 	}

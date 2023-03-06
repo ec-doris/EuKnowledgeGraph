@@ -1,10 +1,9 @@
 <?php
 
-
 namespace WikibaseQuality\ConstraintReport\Api;
 
 use Wikibase\DataModel\Entity\ItemId;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Services\EntityId\EntityIdFormatter;
 use Wikibase\Lib\Store\EntityTitleLookup;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Cache\CachedCheckConstraintsResponse;
@@ -70,7 +69,7 @@ class CheckResultsRenderer {
 
 		$constraintId = $checkResult->getConstraint()->getConstraintId();
 		$typeItemId = $checkResult->getConstraint()->getConstraintTypeItemId();
-		$constraintPropertyId = new PropertyId( $checkResult->getContextCursor()->getSnakPropertyId() );
+		$constraintPropertyId = new NumericPropertyId( $checkResult->getContextCursor()->getSnakPropertyId() );
 
 		$title = $this->entityTitleLookup->getTitleForId( $constraintPropertyId );
 		$talkTitle = $title->getTalkPageIfDefined();

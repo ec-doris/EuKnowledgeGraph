@@ -74,7 +74,6 @@ class JCApi extends ApiBase {
 
 			case 'reset':
 			case 'reload':
-
 				// FIXME: this should be POSTed, not GETed.
 				// This code should match JCSingleton::onArticleChangeComplete()
 				// Currently, that action is not used because in production store->notifyUrl is null
@@ -123,13 +122,11 @@ class JCApi extends ApiBase {
 							'badparam-content'
 						);
 					}
-					// @phan-suppress-next-line PhanTypeMismatchArgumentNullable T240141
 					$content = JCSingleton::parseContent( $jct, $params['content'], true );
 				} else {
 					$content = false;
 				}
 
-				// @phan-suppress-next-line PhanTypeMismatchArgumentNullable T240141
 				$jc = new JCCache( $jct, $content );
 				if ( $command === 'reset' ) {
 					$jc->resetCache( false ); // clear cache

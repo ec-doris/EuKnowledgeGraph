@@ -11,7 +11,7 @@
     "license-name": "GPL-2.0-or-later",
     "type": "wikibase",
     "requires": {
-        "MediaWiki": ">= 1.31.0"
+        "MediaWiki": ">= 1.37.0"
     },
     "MessagesDirs": {
         "WikibaseQualityConstraints": [
@@ -36,10 +36,14 @@
     "SpecialPages": {
         "ConstraintReport": {
             "class": "WikibaseQuality\\ConstraintReport\\Specials\\SpecialConstraintReport",
-            "factory": "WikibaseQuality\\ConstraintReport\\Specials\\SpecialConstraintReport::newFromGlobalState",
+            "factory": "WikibaseQuality\\ConstraintReport\\Specials\\SpecialConstraintReport::factory",
             "services": [
                 "MainConfig",
                 "StatsdDataFactory",
+                "WikibaseRepo.EntityIdHtmlLinkFormatterFactory",
+                "WikibaseRepo.EntityIdParser",
+                "WikibaseRepo.EntityTitleLookup",
+                "WikibaseRepo.ValueFormatterFactory",
                 "WBQC_EntityLookup",
                 "WBQC_DelegatingConstraintChecker"
             ]
@@ -48,10 +52,16 @@
     "APIModules": {
         "wbcheckconstraints": {
             "class": "WikibaseQuality\\ConstraintReport\\Api\\CheckConstraints",
-            "factory": "WikibaseQuality\\ConstraintReport\\Api\\CheckConstraints::newFromGlobalState",
+            "factory": "WikibaseQuality\\ConstraintReport\\Api\\CheckConstraints::factory",
             "services": [
                 "MainConfig",
                 "StatsdDataFactory",
+                "WikibaseRepo.ApiHelperFactory",
+                "WikibaseRepo.EntityIdHtmlLinkFormatterFactory",
+                "WikibaseRepo.EntityIdParser",
+                "WikibaseRepo.EntityTitleLookup",
+                "WikibaseRepo.StatementGuidValidator",
+                "WikibaseRepo.ValueFormatterFactory",
                 "WBQC_ResultsSource"
             ]
         },
@@ -61,6 +71,10 @@
             "services": [
                 "MainConfig",
                 "StatsdDataFactory",
+                "WikibaseRepo.ApiHelperFactory",
+                "WikibaseRepo.EntityIdHtmlLinkFormatterFactory",
+                "WikibaseRepo.StatementGuidParser",
+                "WikibaseRepo.ValueFormatterFactory",
                 "WBQC_DelegatingConstraintChecker"
             ]
         }
@@ -128,6 +142,10 @@
             "styles": [
                 "ui/ConstraintReportPanel.less",
                 "ui/ConstraintReportGroup.less"
+            ],
+            "targets": [
+                "mobile",
+                "desktop"
             ]
         },
         "wikibase.quality.constraints.gadget": {
@@ -146,6 +164,7 @@
         "wikibase.quality.constraints.suggestions": {
             "packageFiles": [
                 "suggestions.js",
+                "suggestions/EntitySelectorHookHandlerFactory.js",
                 {
                     "name": "config.json",
                     "config": [
@@ -440,6 +459,21 @@
             "description": "The item ID of the 'property scope constraint' item, which, when used in a 'property constraint' statement on a property, indicates that the property should only be used in some locations (main value, qualifiers, and/or references, but not all of them).",
             "public": true
         },
+        "WBQualityConstraintsLexemeLanguageConstraintId": {
+            "value": "Q239952",
+            "description": "The item ID of the 'lexeme language constraint' item, which, when used in a 'property constraint' statement on a property, indicates that the property should only be used in lexeme that have the given language set.",
+            "public": true
+        },
+        "WBQualityConstraintsLabelInLanguageConstraintId": {
+            "value": "Q4700936",
+            "description": "The item ID of the 'label in language constraint' item, which, when used in a 'property constraint' statement on a property, indicates that the property should only be used in entities that have label in the given languages.",
+            "public": true
+        },
+        "WBQualityConstraintsLanguagePropertyId": {
+            "value": "P663",
+            "description": "The property ID of the 'Wikimedia language code' property (data type: string), which specifies the language code of a 'label in language' constraint.",
+            "public": true
+        },
         "WBQualityConstraintsClassId": {
             "value": "P1118",
             "description": "The property ID of the 'class' property (data type: item), which specifies the class/type of a 'type' or 'value type' constraint.",
@@ -513,6 +547,11 @@
         "WBQualityConstraintsConstraintScopeId": {
             "value": "P1176",
             "description": "The property ID of the 'constraint scope' property (data type: item), which specifies the context(s) in which a constraint is checked.",
+            "public": true
+        },
+        "WBQualityConstraintsConstraintEntityTypesId": {
+            "value": "P1176",
+            "description": "The property ID of the property (data type: item) which specifies the entity types on which a constraint is checked. By default, this is the same as the 'constraint scope' property, but may also be set to a different one. The recognized values (items representing entity types) are the same as for the 'allowed entity types' constraint.",
             "public": true
         },
         "WBQualityConstraintsSeparatorId": {
@@ -638,6 +677,11 @@
         "WBQualityConstraintsEnableSuggestionConstraintStatus": {
             "value": false,
             "description": "Whether to enable the 'constraint suggestion' constraint status or not. This is a temporary configuration that will be removed once constraint suggestions are permanently enabled on Wikidata.",
+            "public": true
+        },
+        "WBQualityConstraintsFormatCheckerShellboxRatio": {
+            "value": 0,
+            "description": "Float value between 0 and 1 determining ratio of requests made to shellbox (vs. WDQS) in FormatChecker in evaluating regexes. Zero disables requesting to shellbox (all going to WDQS) and one means all requests will go to shellbox.",
             "public": true
         }
     },

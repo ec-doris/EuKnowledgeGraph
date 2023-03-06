@@ -1,11 +1,10 @@
 <?php
 
-
 namespace WikibaseQuality\ConstraintReport\Tests;
 
 use HashConfig;
 use MediaWiki\MediaWikiServices;
-use MediaWikiTestCase;
+use MediaWikiIntegrationTestCase;
 use Wikibase\DataModel\Services\Lookup\EntityLookup;
 use Wikibase\DataModel\Services\Lookup\PropertyDataTypeLookup;
 use WikibaseQuality\ConstraintReport\Api\ExpiryLock;
@@ -63,7 +62,7 @@ use WikibaseQuality\ConstraintReport\WikibaseServices;
  *
  * @license GPL-2.0-or-later
  */
-class ServicesTest extends MediaWikiTestCase {
+class ServicesTest extends MediaWikiIntegrationTestCase {
 
 	public function provideConstraintsServiceClasses() {
 		return [
@@ -78,12 +77,18 @@ class ServicesTest extends MediaWikiTestCase {
 			[ ConstraintParameterParser::class ],
 			[ ConnectionCheckerHelper::class ],
 			[ RangeCheckerHelper::class ],
-			[ SparqlHelper::class, [ 'config' => new HashConfig( [ 'WBQualityConstraintsSparqlEndpoint' => 'http://f.oo/sparql' ] ) ] ],
+			[ SparqlHelper::class, [
+				'config' => new HashConfig( [ 'WBQualityConstraintsSparqlEndpoint' => 'http://f.oo/sparql' ] ) ]
+			],
 			[ SparqlHelper::class, [ 'config' => new HashConfig( [ 'WBQualityConstraintsSparqlEndpoint' => '' ] ) ] ],
 			[ TypeCheckerHelper::class ],
 			[ DelegatingConstraintChecker::class ],
-			[ ResultsSource::class, [ 'config' => new HashConfig( [ 'WBQualityConstraintsCacheCheckConstraintsResults' => true ] ) ] ],
-			[ ResultsSource::class, [ 'config' => new HashConfig( [ 'WBQualityConstraintsCacheCheckConstraintsResults' => false ] ) ] ],
+			[ ResultsSource::class, [
+				'config' => new HashConfig( [ 'WBQualityConstraintsCacheCheckConstraintsResults' => true ] ) ]
+			],
+			[ ResultsSource::class, [
+				'config' => new HashConfig( [ 'WBQualityConstraintsCacheCheckConstraintsResults' => false ] ) ]
+			],
 		];
 	}
 

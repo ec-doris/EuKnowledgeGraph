@@ -11,7 +11,7 @@ use MockMessageLocalizer;
 use ValueFormatters\StringFormatter;
 use ValueFormatters\ValueFormatter;
 use Wikibase\DataModel\Entity\ItemId;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Services\EntityId\EntityIdFormatter;
 use Wikibase\DataModel\Services\EntityId\PlainEntityIdFormatter;
 use Wikibase\Lib\Formatters\UnDeserializableValueFormatter;
@@ -90,7 +90,7 @@ class ViolationMessageRendererTest extends \PHPUnit\Framework\TestCase {
 	 */
 	public function testRender_entityId() {
 		$messageKey = 'wbqc-violation-message-no-qualifiers';
-		$entityId = new PropertyId( 'P1' );
+		$entityId = new NumericPropertyId( 'P1' );
 		$message = ( new ViolationMessage( $messageKey ) )
 			->withEntityId( $entityId );
 		$renderer = $this->newViolationMessageRenderer();
@@ -107,7 +107,7 @@ class ViolationMessageRendererTest extends \PHPUnit\Framework\TestCase {
 	 */
 	public function testRender_entityIdList() {
 		$messageKey = 'wbqc-violation-message-unique-value';
-		$entityIdList = [ new ItemId( 'Q1' ), new PropertyId( 'P2' ) ];
+		$entityIdList = [ new ItemId( 'Q1' ), new NumericPropertyId( 'P2' ) ];
 		$message = ( new ViolationMessage( $messageKey ) )
 			->withEntityIdList( $entityIdList );
 		$renderer = $this->newViolationMessageRenderer();
@@ -128,8 +128,8 @@ class ViolationMessageRendererTest extends \PHPUnit\Framework\TestCase {
 		$messageKey = 'wbqc-violation-message-conflicts-with-claim';
 		$itemIdSnakValue = ItemIdSnakValue::someValue();
 		$message = ( new ViolationMessage( $messageKey ) )
-			->withEntityId( new PropertyId( 'P1' ) )
-			->withEntityId( new PropertyId( 'P2' ) )
+			->withEntityId( new NumericPropertyId( 'P1' ) )
+			->withEntityId( new NumericPropertyId( 'P2' ) )
 			->withItemIdSnakValue( $itemIdSnakValue );
 		$renderer = $this->newViolationMessageRenderer();
 
@@ -149,7 +149,7 @@ class ViolationMessageRendererTest extends \PHPUnit\Framework\TestCase {
 		$messageKey = 'wbqc-violation-message-one-of';
 		$valueList = [ ItemIdSnakValue::fromItemId( new ItemId( 'Q1' ) ) ];
 		$message = ( new ViolationMessage( $messageKey ) )
-			->withEntityId( new PropertyId( 'P1' ) )
+			->withEntityId( new NumericPropertyId( 'P1' ) )
 			->withItemIdSnakValueList( $valueList );
 		$renderer = $this->newViolationMessageRenderer();
 
@@ -167,7 +167,7 @@ class ViolationMessageRendererTest extends \PHPUnit\Framework\TestCase {
 		$messageKey = 'wbqc-violation-message-range-quantity-rightopen';
 		$dataValue = new StringValue( 'a string' );
 		$message = ( new ViolationMessage( $messageKey ) )
-			->withEntityId( new PropertyId( 'P1' ) )
+			->withEntityId( new NumericPropertyId( 'P1' ) )
 			->withDataValue( $dataValue )
 			->withDataValue( $dataValue );
 		$renderer = $this->newViolationMessageRenderer( null, new StringFormatter() );
@@ -298,7 +298,7 @@ class ViolationMessageRendererTest extends \PHPUnit\Framework\TestCase {
 		$messageKey = 'wbqc-violation-message-parameter-single-per-language';
 		$languageCode = 'pt';
 		$message = ( new ViolationMessage( $messageKey ) )
-			->withEntityId( new PropertyId( 'P1' ) )
+			->withEntityId( new NumericPropertyId( 'P1' ) )
 			->withLanguage( $languageCode );
 		$renderer = $this->newViolationMessageRenderer();
 
@@ -314,9 +314,7 @@ class ViolationMessageRendererTest extends \PHPUnit\Framework\TestCase {
 	 * @covers WikibaseQuality\ConstraintReport\ConstraintCheck\Message\ViolationMessageRenderer::renderArgument
 	 */
 	public function testRender_unknownArgumentType() {
-		$message = $this->getMockBuilder( ViolationMessage::class )
-			->disableOriginalConstructor()
-			->getMock();
+		$message = $this->createMock( ViolationMessage::class );
 		$message->method( 'getArguments' )
 			->willReturn( [ [ 'type' => 'unknown', 'value' => null, 'role' => null ] ] );
 		$renderer = $this->newViolationMessageRenderer();
@@ -333,7 +331,7 @@ class ViolationMessageRendererTest extends \PHPUnit\Framework\TestCase {
 		$role = null;
 		$renderer = $this->newViolationMessageRenderer();
 		$renderMock = $this->getMockBuilder( \stdClass::class )
-			->setMethods( [ 'render' ] )
+			->addMethods( [ 'render' ] )
 			->getMock();
 		$renderMock->expects( $this->exactly( 2 ) )
 			->method( 'render' )
@@ -369,7 +367,7 @@ class ViolationMessageRendererTest extends \PHPUnit\Framework\TestCase {
 		$role = null;
 		$renderer = $this->newViolationMessageRenderer();
 		$renderMock = $this->getMockBuilder( \stdClass::class )
-			->setMethods( [ 'render' ] )
+			->addMethods( [ 'render' ] )
 			->getMock();
 		$renderMock->expects( $this->never() )
 			->method( 'render' );
@@ -395,7 +393,7 @@ class ViolationMessageRendererTest extends \PHPUnit\Framework\TestCase {
 		$role = null;
 		$renderer = $this->newViolationMessageRenderer( null, null, null, 2 );
 		$renderMock = $this->getMockBuilder( \stdClass::class )
-			->setMethods( [ 'render' ] )
+			->addMethods( [ 'render' ] )
 			->getMock();
 		$renderMock->expects( $this->exactly( 2 ) )
 			->method( 'render' )
@@ -427,7 +425,7 @@ class ViolationMessageRendererTest extends \PHPUnit\Framework\TestCase {
 		$role = Role::OBJECT;
 		$renderer = $this->newViolationMessageRenderer();
 		$renderMock = $this->getMockBuilder( \stdClass::class )
-			->setMethods( [ 'render' ] )
+			->addMethods( [ 'render' ] )
 			->getMock();
 		$renderMock->expects( $this->once() )
 			->method( 'render' )
@@ -478,7 +476,7 @@ class ViolationMessageRendererTest extends \PHPUnit\Framework\TestCase {
 	 * @covers WikibaseQuality\ConstraintReport\ConstraintCheck\Message\ViolationMessageRenderer::addRole
 	 */
 	public function testRenderEntityId_withRole() {
-		$entityId = new PropertyId( 'P1' );
+		$entityId = new NumericPropertyId( 'P1' );
 		$role = Role::PREDICATE;
 		$entityIdFormatter = $this->createMock( EntityIdFormatter::class );
 		$entityIdFormatter
@@ -500,7 +498,7 @@ class ViolationMessageRendererTest extends \PHPUnit\Framework\TestCase {
 	 * @covers WikibaseQuality\ConstraintReport\ConstraintCheck\Message\ViolationMessageRenderer::addRole
 	 */
 	public function testRenderEntityIdList() {
-		$entityIdList = [ new ItemId( 'Q1' ), new PropertyId( 'P2' ) ];
+		$entityIdList = [ new ItemId( 'Q1' ), new NumericPropertyId( 'P2' ) ];
 		$role = null;
 		$entityIdFormatter = $this->createMock( EntityIdFormatter::class );
 		$entityIdFormatter->expects( $this->exactly( 2 ) )
@@ -990,7 +988,7 @@ class ViolationMessageRendererTest extends \PHPUnit\Framework\TestCase {
 
 		$this->assertSame(
 			[
-				Message::plaintextParam( 'português' ),
+				Message::rawParam( 'português' ),
 				Message::plaintextParam( 'pt' ),
 			],
 			$params

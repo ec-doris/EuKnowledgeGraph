@@ -2,7 +2,7 @@
 
 namespace WikibaseQuality\ConstraintReport;
 
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 
 /**
  * A ConstraintLookup that caches the results of another lookup in memory
@@ -31,11 +31,11 @@ class CachingConstraintLookup implements ConstraintLookup {
 	}
 
 	/**
-	 * @param PropertyId $propertyId
+	 * @param NumericPropertyId $propertyId
 	 *
 	 * @return Constraint[]
 	 */
-	public function queryConstraintsForProperty( PropertyId $propertyId ) {
+	public function queryConstraintsForProperty( NumericPropertyId $propertyId ) {
 		$id = $propertyId->getSerialization();
 		if ( !array_key_exists( $id, $this->cache ) ) {
 			$this->cache[$id] = $this->lookup->queryConstraintsForProperty( $propertyId );

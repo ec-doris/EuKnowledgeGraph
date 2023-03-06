@@ -2,6 +2,7 @@
 
 namespace WikibaseQuality\ConstraintReport\Tests\Helper;
 
+use BufferingStatsdDataFactory;
 use Config;
 use DataValues\Deserializers\DataValueDeserializer;
 use DataValues\Geo\Values\GlobeCoordinateValue;
@@ -16,29 +17,29 @@ use MediaWiki\Http\HttpRequestFactory;
 use MultiConfig;
 use NullStatsdDataFactory;
 use WANObjectCache;
-use Wikibase\DataAccess\EntitySource;
+use Wikibase\DataAccess\DatabaseEntitySource;
 use Wikibase\DataAccess\EntitySourceDefinitions;
 use Wikibase\DataModel\Entity\EntityIdParser;
 use Wikibase\DataModel\Entity\EntityIdValue;
 use Wikibase\DataModel\Entity\ItemId;
 use Wikibase\DataModel\Entity\ItemIdParser;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Services\Lookup\InMemoryDataTypeLookup;
 use Wikibase\DataModel\Services\Lookup\PropertyDataTypeLookup;
 use Wikibase\DataModel\Snak\PropertyValueSnak;
 use Wikibase\DataModel\Statement\Statement;
 use Wikibase\Lib\DataValueFactory;
-use Wikibase\Lib\EntityTypeDefinitions;
+use Wikibase\Lib\SubEntityTypesMapper;
 use Wikibase\Repo\Rdf\RdfVocabulary;
 use WikibaseQuality\ConstraintReport\Api\ExpiryLock;
 use WikibaseQuality\ConstraintReport\Constraint;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Cache\CachedQueryResults;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Cache\Metadata;
-use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\Context;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\ContextCursor;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\ConstraintParameterException;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\LoggingHelper;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\SparqlHelper;
+use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\SparqlHelperException;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\TooManySparqlRequestsException;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Message\ViolationMessage;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Message\ViolationMessageDeserializer;
@@ -60,9 +61,10 @@ use Wikimedia\Timestamp\ConvertibleTimestamp;
  */
 class SparqlHelperTest extends \PHPUnit\Framework\TestCase {
 
-	use DefaultConfig, ResultAssertions;
+	use DefaultConfig;
+	use ResultAssertions;
 
-	public function tearDown() : void {
+	public function tearDown(): void {
 		ConvertibleTimestamp::setFakeTime( false );
 
 		parent::tearDown();
@@ -105,8 +107,7 @@ class SparqlHelperTest extends \PHPUnit\Framework\TestCase {
 				new RdfVocabulary(
 					[ '' => 'http://www.wikidata.org/entity/' ],
 					[ '' => 'http://www.wikidata.org/wiki/Special:EntityData/' ],
-					new EntitySourceDefinitions( [], new EntityTypeDefinitions( [] ) ),
-					'',
+					new EntitySourceDefinitions( [], new SubEntityTypesMapper( [] ) ),
 					[ '' => 'wd' ],
 					[ '' => '' ]
 				),
@@ -124,7 +125,7 @@ class SparqlHelperTest extends \PHPUnit\Framework\TestCase {
 				'A fancy user agent',
 				$this->createMock( HttpRequestFactory::class )
 			] )
-			->setMethods( [ 'runQuery' ] )
+			->onlyMethods( [ 'runQuery' ] )
 			->getMock();
 	}
 
@@ -168,17 +169,88 @@ EOF;
 		$this->assertTrue( $sparqlHelper->hasType( 'Q1', [ 'Q100', 'Q101' ] )->getBool() );
 	}
 
-	public function testFindEntitiesWithSameStatement() {
+	public function provideSeparatorIdsAndExpectedFilters() {
+		$p21 = new NumericPropertyId( 'P21' );
+		$p22 = new NumericPropertyId( 'P22' );
+
+		yield [
+			[],  // No separators shouldn't add filtering or declaration
+			''
+		];
+
+		yield [
+			[
+				$p21, $p22
+			],
+<<<EOF
+  MINUS {
+    ?statement pq:P21 ?qualifier.
+    FILTER NOT EXISTS {
+      ?otherStatement pq:P21 ?qualifier.
+    }
+  }
+  MINUS {
+    ?otherStatement pq:P21 ?qualifier.
+    FILTER NOT EXISTS {
+      ?statement pq:P21 ?qualifier.
+    }
+  }
+  MINUS {
+    ?statement a wdno:P21.
+    FILTER NOT EXISTS {
+      ?otherStatement a wdno:P21.
+    }
+  }
+  MINUS {
+    ?otherStatement a wdno:P21.
+    FILTER NOT EXISTS {
+      ?statement a wdno:P21.
+    }
+  }
+  MINUS {
+    ?statement pq:P22 ?qualifier.
+    FILTER NOT EXISTS {
+      ?otherStatement pq:P22 ?qualifier.
+    }
+  }
+  MINUS {
+    ?otherStatement pq:P22 ?qualifier.
+    FILTER NOT EXISTS {
+      ?statement pq:P22 ?qualifier.
+    }
+  }
+  MINUS {
+    ?statement a wdno:P22.
+    FILTER NOT EXISTS {
+      ?otherStatement a wdno:P22.
+    }
+  }
+  MINUS {
+    ?otherStatement a wdno:P22.
+    FILTER NOT EXISTS {
+      ?statement a wdno:P22.
+    }
+  }
+EOF
+		];
+	}
+
+	/**
+	 * @dataProvider provideSeparatorIdsAndExpectedFilters
+	 */
+	public function testFindEntitiesWithSameStatement(
+		array $separators,
+		$expectedFilter
+	) {
 		$guid = 'Q1$8542690f-dfab-4846-944f-8382df730d2c';
 		$statement = new Statement(
-			new PropertyValueSnak( new PropertyId( 'P1' ), new EntityIdValue( new ItemId( 'Q1' ) ) ),
+			new PropertyValueSnak( new NumericPropertyId( 'P1' ), new EntityIdValue( new ItemId( 'Q1' ) ) ),
 			null,
 			null,
 			$guid
 		);
 
 		$sparqlHelper = $this->getSparqlHelper();
-
 		$query = <<<EOF
 SELECT DISTINCT ?otherEntity WHERE {
   BIND(wds:Q1-8542690f-dfab-4846-944f-8382df730d2c AS ?statement)
@@ -190,6 +262,7 @@ SELECT DISTINCT ?otherEntity WHERE {
   ?otherEntity ?p ?otherStatement.
   FILTER(?otherEntity != ?entity)
   MINUS { ?otherStatement wikibase:rank wikibase:DeprecatedRank. }
+  $expectedFilter
 }
 LIMIT 10
 EOF;
@@ -203,7 +276,7 @@ EOF;
 			->withConsecutive( [ $this->equalTo( $query ) ] );
 
 		$this->assertEquals(
-			$sparqlHelper->findEntitiesWithSameStatement( $statement, true )->getArray(),
+			$sparqlHelper->findEntitiesWithSameStatement( $statement, $separators )->getArray(),
 			[ new ItemId( 'Q100' ), new ItemId( 'Q101' ) ]
 		);
 	}
@@ -257,7 +330,7 @@ EOF;
 	}
 
 	public function provideSnaksWithSparqlValuesAndPropertyPaths() {
-		$pid = new PropertyId( 'P1' );
+		$pid = new NumericPropertyId( 'P1' );
 		$globeCoordinateValue = new GlobeCoordinateValue( new LatLongValue( 42.0, 13.37 ) );
 		$quantityValue = UnboundedQuantityValue::newFromNumber( -10, 'ms' );
 		$timeValue = new TimeValue(
@@ -319,7 +392,7 @@ EOF;
 				'pq:P1'
 			],
 			'property, reference' => [
-				new PropertyValueSnak( $pid, new EntityIdValue( new PropertyId( 'P100' ) ) ),
+				new PropertyValueSnak( $pid, new EntityIdValue( new NumericPropertyId( 'P100' ) ) ),
 				'wikibase-property',
 				'reference',
 				'wd:P100',
@@ -428,12 +501,15 @@ EOF;
 
 		try {
 			call_user_func_array( [ $sparqlHelper, 'matchesRegularExpressionWithSparql' ], [ $text, $regex ] );
-			$this->assertTrue( false,
-				"matchesRegularExpressionWithSparql should have thrown a ConstraintParameterException with message ⧼${messageKey}⧽." );
+			$this->assertTrue(
+				false,
+				"matchesRegularExpressionWithSparql should have thrown a ConstraintParameterException with message "
+			. "⧼${messageKey}⧽."
+			);
 		} catch ( ConstraintParameterException $exception ) {
 			$checkResult = new CheckResult(
 				$this->createMock( ContextCursor::class ),
-				$this->getMockBuilder( Constraint::class )->disableOriginalConstructor()->getMock(),
+				$this->createMock( Constraint::class ),
 				[],
 				CheckResult::STATUS_VIOLATION,
 				$exception->getViolationMessage()
@@ -750,7 +826,7 @@ EOF;
 		$requestFactory->expects( $this->atLeastOnce() )
 			->method( 'create' )
 			->with(
-				$this->callback( function( $url ) {
+				$this->callback( function ( $url ) {
 					$query = substr( $url, strpos( $url, '?query=' ) );
 					$query = substr( $query, strlen( '?query=' ) );
 					$query = substr( $query, 0, strpos( $query, '&format=' ) );
@@ -783,7 +859,7 @@ END;
 			[ 'wd' => 'http://wiki/entity/' ],
 			[ 'wd' => 'http://data.wiki/' ],
 			new EntitySourceDefinitions( [
-				new EntitySource(
+				new DataBaseEntitySource(
 					'wd',
 					false,
 					[
@@ -795,8 +871,7 @@ END;
 					'',
 					'd'
 				)
-			], new EntityTypeDefinitions( [] ) ),
-			'wd',
+			], new SubEntityTypesMapper( [] ) ),
 			[ 'wd' => 'wd' ],
 			[ 'wd' => '' ]
 		);
@@ -826,6 +901,106 @@ WHERE
 END;
 
 		$sparqlHelper->runQuery( $query, $needsPrefixes = true );
+	}
+
+	public function testRunQueryTracksError_http() {
+		$request = $this->createMock( \MWHttpRequest::class );
+		$request->method( 'getStatus' )
+			->willReturn( 500 );
+		$request->method( 'getResponseHeaders' )
+			->willReturn( [] );
+		$request->method( 'execute' )
+			->willReturn( \Status::newFatal( 'http-bad-status' ) );
+		$request->method( 'getContent' )
+			->willReturn( '' );
+
+		$requestFactory = $this->createMock( HttpRequestFactory::class );
+		$requestFactory->method( 'create' )
+			->willReturn( $request );
+
+		$dataFactory = new BufferingStatsdDataFactory( '' );
+
+		$sparqlHelper = new SparqlHelper(
+			$this->getDefaultConfig(),
+			$this->createMock( RdfVocabulary::class ),
+			$this->createMock( EntityIdParser::class ),
+			$this->createMock( PropertyDataTypeLookup::class ),
+			WANObjectCache::newEmpty(),
+			$this->createMock( ViolationMessageSerializer::class ),
+			$this->createMock( ViolationMessageDeserializer::class ),
+			$dataFactory,
+			new ExpiryLock( new HashBagOStuff() ),
+			$this->createMock( LoggingHelper::class ),
+			'',
+			$requestFactory
+		);
+
+		try {
+			$sparqlHelper->runQuery( 'query' );
+			$this->fail( 'should have thrown' );
+		} catch ( SparqlHelperException $e ) {
+			$statsdData = $dataFactory->getData();
+			// three data events: timing (ignored here), HTTP error, generic error
+			$this->assertCount( 3, $statsdData );
+			$this->assertSame(
+				'wikibase.quality.constraints.sparql.error.http.500',
+				$statsdData[1]->getKey()
+			);
+			$this->assertSame(
+				'wikibase.quality.constraints.sparql.error',
+				$statsdData[2]->getKey()
+			);
+		}
+	}
+
+	public function testRunQueryTracksError_json() {
+		$request = $this->createMock( \MWHttpRequest::class );
+		$request->method( 'getStatus' )
+			->willReturn( 200 );
+		$request->method( 'getResponseHeaders' )
+			->willReturn( [] );
+		$request->method( 'execute' )
+			->willReturn( \Status::newGood() );
+		$request->method( 'getContent' )
+			->willReturn( '{"truncated json":' );
+
+		$requestFactory = $this->createMock( HttpRequestFactory::class );
+		$requestFactory->method( 'create' )
+			->willReturn( $request );
+
+		$dataFactory = new BufferingStatsdDataFactory( '' );
+
+		$sparqlHelper = new SparqlHelper(
+			$this->getDefaultConfig(),
+			$this->createMock( RdfVocabulary::class ),
+			$this->createMock( EntityIdParser::class ),
+			$this->createMock( PropertyDataTypeLookup::class ),
+			WANObjectCache::newEmpty(),
+			$this->createMock( ViolationMessageSerializer::class ),
+			$this->createMock( ViolationMessageDeserializer::class ),
+			$dataFactory,
+			new ExpiryLock( new HashBagOStuff() ),
+			$this->createMock( LoggingHelper::class ),
+			'',
+			$requestFactory
+		);
+
+		try {
+			$sparqlHelper->runQuery( 'query' );
+			$this->fail( 'should have thrown' );
+		} catch ( SparqlHelperException $e ) {
+			$statsdData = $dataFactory->getData();
+			// three data events: timing (ignored here), JSON error, generic error
+			$this->assertCount( 3, $statsdData );
+			$this->assertSame(
+				'wikibase.quality.constraints.sparql.error.json.json_error_syntax',
+				$statsdData[1]->getKey()
+			);
+			$this->assertSame(
+				'wikibase.quality.constraints.sparql.error',
+				$statsdData[2]->getKey()
+			);
+		}
 	}
 
 }

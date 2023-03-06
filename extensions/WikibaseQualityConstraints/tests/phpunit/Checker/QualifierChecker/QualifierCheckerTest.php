@@ -2,7 +2,7 @@
 
 namespace WikibaseQuality\ConstraintReport\Tests\Checker\QualifierChecker;
 
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Snak\PropertyNoValueSnak;
 use Wikibase\DataModel\Statement\Statement;
 use Wikibase\DataModel\Statement\StatementListProvider;
@@ -22,7 +22,7 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  * @author BP2014N1
  * @license GPL-2.0-or-later
  */
-class QualifierCheckerTest extends \MediaWikiTestCase {
+class QualifierCheckerTest extends \MediaWikiIntegrationTestCase {
 
 	use ResultAssertions;
 
@@ -42,7 +42,7 @@ class QualifierCheckerTest extends \MediaWikiTestCase {
 	 * @dataProvider provideContextTypes
 	 */
 	public function testQualifierConstraint( $type, $messageKey ) {
-		$snak = new PropertyNoValueSnak( new PropertyId( 'P1' ) );
+		$snak = new PropertyNoValueSnak( new NumericPropertyId( 'P1' ) );
 		$context = $this->createMock( Context::class );
 		$context->method( 'getType' )->willReturn( $type );
 		$context->method( 'getSnak' )->willReturn( $snak );
@@ -96,16 +96,11 @@ class QualifierCheckerTest extends \MediaWikiTestCase {
 	 * @return Constraint
 	 */
 	private function getConstraintMock( array $parameters ) {
-		$mock = $this
-			->getMockBuilder( Constraint::class )
-			->disableOriginalConstructor()
-			->getMock();
-		$mock->expects( $this->any() )
-			 ->method( 'getConstraintParameters' )
-			 ->will( $this->returnValue( $parameters ) );
-		$mock->expects( $this->any() )
-			 ->method( 'getConstraintTypeItemId' )
-			 ->will( $this->returnValue( 'Q21510863' ) );
+		$mock = $this->createMock( Constraint::class );
+		$mock->method( 'getConstraintParameters' )
+			 ->willReturn( $parameters );
+		$mock->method( 'getConstraintTypeItemId' )
+			 ->willReturn( 'Q21510863' );
 
 		return $mock;
 	}

@@ -4,7 +4,7 @@ namespace WikibaseQuality\ConstraintReport\Tests\Unit\Cache;
 
 use DataValues\TimeValue;
 use Wikibase\DataModel\Entity\ItemId;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Cache\CachingMetadata;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Cache\DependencyMetadata;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Cache\Metadata;
@@ -43,7 +43,7 @@ class MetadataTest extends \MediaWikiUnitTestCase {
 
 	public function testMerge() {
 		$q42 = new ItemId( 'Q42' );
-		$p31 = new PropertyId( 'P31' );
+		$p31 = new NumericPropertyId( 'P31' );
 		$future = new TimeValue(
 			'+2117-02-15T00:00:00Z',
 			0,

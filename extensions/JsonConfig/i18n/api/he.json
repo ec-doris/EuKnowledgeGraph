@@ -7,7 +7,7 @@
 	},
 	"apihelp-jsonconfig-description": "מאפשר גישה ישירה לתת־מערכת JsonConfig.",
 	"apihelp-jsonconfig-summary": "אפשרות לגישה ישירה לתת־מערכת של JsonConfig.",
-	"apihelp-jsonconfig-param-command": "איזו תת־פעולה לבצע ב־JsonConfig:\n;status:הצגת הגדרות JsonConfig.\n;reset:ניקוי הגדרות מהמטמון. דורש את הפרמטר $1title ואת ההרשאה jsonconfig-reset.\n;reload:מרענן ומטמין את ההגדרות ממאגר ההגדרות. דורש את הפרמטר $1title ואת ההרשאה jsonconfig-reset.",
+	"apihelp-jsonconfig-param-command": "איזו תת־פעולה לבצע ב־JsonConfig:\n;status:הצגת הגדרות JsonConfig.\n;reset:ניקוי הגדרות מהמטמון. דורש את הפרמטר $1title ואת ההרשאה jsonconfig-flush.\n;reload:מרענן ומטמין את ההגדרות ממאגר ההגדרות. דורש את הפרמטר $1title ואת ההרשאה jsonconfig-reset.",
 	"apihelp-jsonconfig-param-namespace": "מספר מרחב שם של הכותרת לעיבוד.",
 	"apihelp-jsonconfig-param-title": "כותרת לעיבוד ללא תחיליות מרחב שם.",
 	"apihelp-jsonconfig-param-content": "עבור $1command=reload, להשתמש בתוכן הזה במקום.",

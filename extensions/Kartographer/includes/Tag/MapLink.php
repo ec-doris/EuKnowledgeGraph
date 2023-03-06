@@ -11,19 +11,27 @@ use Kartographer\SpecialMap;
  * The <maplink> tag creates a link that, when clicked,
  */
 class MapLink extends TagHandler {
-	protected $tag = 'maplink';
 
-	protected $cssClass;
+	public const TAG = 'maplink';
 
-	protected function parseArgs() {
+	/** @var string */
+	private $cssClass = '';
+
+	/**
+	 * @inheritDoc
+	 */
+	protected function parseArgs(): void {
 		$this->state->useMaplink();
 		parent::parseArgs();
 		$this->cssClass = $this->getText( 'class', '', '/^(|[a-zA-Z][-_a-zA-Z0-9]*)$/' );
 	}
 
-	protected function render() {
-		$output = $this->parser->getOutput();
-		$output->addModules( 'ext.kartographer.link' );
+	/**
+	 * @inheritDoc
+	 */
+	protected function render(): string {
+		$parserOutput = $this->parser->getOutput();
+		$parserOutput->addModules( [ 'ext.kartographer.link' ] );
 
 		// @todo: Mapbox markers don't support localized numbers yet
 		$text = $this->getText( 'text', null, '/\S+/' );
@@ -70,19 +78,15 @@ class MapLink extends TagHandler {
 	 * Extracts CSS style to be used by the link from GeoJSON
 	 * @return string
 	 */
-	private function extractMarkerCss() {
-		global $wgKartographerUseMarkerStyle;
-
-		if ( $wgKartographerUseMarkerStyle
+	private function extractMarkerCss(): string {
+		if ( $this->config->get( 'KartographerUseMarkerStyle' )
 			&& $this->markerProperties
-			&& property_exists( $this->markerProperties, 'marker-color' )
-		) {
+			&& isset( $this->markerProperties->{'marker-color'} )
 			// JsonSchema already validates this value for us, however this regex will also fail
 			// if the color is invalid
-			preg_match( '/^#?(([0-9a-fA-F]{3}){1,2})$/', $this->markerProperties->{'marker-color'}, $m );
-			if ( $m && isset( $m[1] ) && isset( $m[2] ) ) {
-				return "background: #{$m[1]};";
-			}
+			&& preg_match( '/^#?((?:[\da-f]{3}){1,2})$/i', $this->markerProperties->{'marker-color'}, $m )
+		) {
+			return "background: #{$m[1]};";
 		}
 
 		return '';

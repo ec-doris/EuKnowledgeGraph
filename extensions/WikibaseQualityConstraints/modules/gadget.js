@@ -48,7 +48,7 @@ module.exports = ( function ( mw, wb, $, OO ) {
 				}.bind( this ) );
 			}.bind( this ) );
 
-			mw.hook( 'wikibase.statement.saved' ).add( function ( entityId, statementId ) {
+			mw.hook( 'wikibase.statement.saved' ).add( function ( savedEntityId, statementId ) {
 				mw.track( 'counter.MediaWiki.wikibase.quality.constraints.gadget.saveStatement' );
 				this.snakCheck( api, lang, statementId );
 			}.bind( this ) );
@@ -75,8 +75,6 @@ module.exports = ( function ( mw, wb, $, OO ) {
 			uselang: lang,
 			id: ids,
 			status: this.config.CACHED_STATUSES
-		} ).then( function ( result ) {
-			return result;
 		} );
 	};
 
@@ -217,8 +215,10 @@ module.exports = ( function ( mw, wb, $, OO ) {
 	 * @param {string} [flags] Optional custom flags the {@link OO.ui.PopupButtonWidget} can understand.
 	 */
 	SELF.prototype._buildPopup = function ( $content, $container, icon, titleMessageKey, classes, flags /* = '' */ ) {
+		// eslint-disable-next-line mediawiki/class-doc
 		var widget = new OO.ui.PopupButtonWidget( {
 			icon: icon,
+			// eslint-disable-next-line mediawiki/msg-doc
 			title: mw.message( titleMessageKey ).text(),
 			flags: flags || '',
 			framed: false,

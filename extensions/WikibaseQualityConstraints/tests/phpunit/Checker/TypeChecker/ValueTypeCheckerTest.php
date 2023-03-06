@@ -6,7 +6,7 @@ use DataValues\StringValue;
 use NullStatsdDataFactory;
 use Wikibase\DataModel\Entity\EntityIdValue;
 use Wikibase\DataModel\Entity\ItemId;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Snak\PropertyNoValueSnak;
 use Wikibase\DataModel\Snak\PropertyValueSnak;
 use Wikibase\Repo\Tests\NewItem;
@@ -29,9 +29,10 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  * @author BP2014N1
  * @license GPL-2.0-or-later
  */
-class ValueTypeCheckerTest extends \MediaWikiTestCase {
+class ValueTypeCheckerTest extends \MediaWikiIntegrationTestCase {
 
-	use ConstraintParameters, ResultAssertions;
+	use ConstraintParameters;
+	use ResultAssertions;
 
 	/**
 	 * @var JsonFileEntityLookup
@@ -44,11 +45,11 @@ class ValueTypeCheckerTest extends \MediaWikiTestCase {
 	private $checker;
 
 	/**
-	 * @var PropertyId
+	 * @var NumericPropertyId
 	 */
 	private $valueTypePropertyId;
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 
 		$this->lookup = new JsonFileEntityLookup( __DIR__ );
@@ -63,7 +64,7 @@ class ValueTypeCheckerTest extends \MediaWikiTestCase {
 			),
 			$this->getDefaultConfig()
 		);
-		$this->valueTypePropertyId = new PropertyId( 'P1234' );
+		$this->valueTypePropertyId = new NumericPropertyId( 'P1234' );
 	}
 
 	public function testValueTypeConstraintInstanceValid() {
@@ -271,7 +272,7 @@ class ValueTypeCheckerTest extends \MediaWikiTestCase {
 	}
 
 	public function testValueTypeConstraintNoValueSnak() {
-		$snak = new PropertyNoValueSnak( new PropertyId( 'P1' ) );
+		$snak = new PropertyNoValueSnak( new NumericPropertyId( 'P1' ) );
 		$constraintParameters = array_merge(
 			$this->relationParameter( 'instance' ),
 			$this->classParameter( [ 'Q100', 'Q101' ] )
@@ -309,16 +310,11 @@ class ValueTypeCheckerTest extends \MediaWikiTestCase {
 	 * @return Constraint
 	 */
 	private function getConstraintMock( array $parameters ) {
-		$mock = $this
-			->getMockBuilder( Constraint::class )
-			->disableOriginalConstructor()
-			->getMock();
-		$mock->expects( $this->any() )
-			 ->method( 'getConstraintParameters' )
-			 ->will( $this->returnValue( $parameters ) );
-		$mock->expects( $this->any() )
-			 ->method( 'getConstraintTypeItemId' )
-			 ->will( $this->returnValue( 'Q21510865' ) );
+		$mock = $this->createMock( Constraint::class );
+		$mock->method( 'getConstraintParameters' )
+			 ->willReturn( $parameters );
+		$mock->method( 'getConstraintTypeItemId' )
+			 ->willReturn( 'Q21510865' );
 
 		return $mock;
 	}

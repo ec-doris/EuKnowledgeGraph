@@ -8,7 +8,7 @@ use MockMessageLocalizer;
 use ValueFormatters\StringFormatter;
 use ValueFormatters\ValueFormatter;
 use Wikibase\DataModel\Entity\ItemId;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Services\EntityId\EntityIdFormatter;
 use Wikibase\DataModel\Services\EntityId\PlainEntityIdFormatter;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\ItemIdSnakValue;
@@ -22,7 +22,7 @@ use WikibaseQuality\ConstraintReport\ConstraintParameterRenderer;
  * @author Lucas Werkmeister
  * @license GPL-2.0-or-later
  */
-class ConstraintParameterRendererTest extends \MediaWikiTestCase {
+class ConstraintParameterRendererTest extends \MediaWikiIntegrationTestCase {
 
 	use DefaultConfig;
 
@@ -46,7 +46,7 @@ class ConstraintParameterRendererTest extends \MediaWikiTestCase {
 	}
 
 	public function testFormatEntityId() {
-		$value = new PropertyId( 'P1234' );
+		$value = new NumericPropertyId( 'P1234' );
 		$entityIdFormatter = $this->createMock( EntityIdFormatter::class );
 		$entityIdFormatter->expects( $this->once() )
 			->method( 'formatEntityId' )
@@ -74,7 +74,7 @@ class ConstraintParameterRendererTest extends \MediaWikiTestCase {
 				new MockMessageLocalizer(),
 				$this->getDefaultConfig()
 			] )
-			->setMethods( [ 'formatEntityId' ] )
+			->onlyMethods( [ 'formatEntityId' ] )
 			->getMock();
 		$constraintParameterRenderer->expects( $this->once() )
 			->method( 'formatEntityId' )
@@ -95,7 +95,7 @@ class ConstraintParameterRendererTest extends \MediaWikiTestCase {
 				new MockMessageLocalizer(),
 				$this->getDefaultConfig()
 			] )
-			->setMethods( [ 'formatEntityId' ] )
+			->onlyMethods( [ 'formatEntityId' ] )
 			->getMock();
 		$constraintParameterRenderer->expects( $this->never() )->method( 'formatEntityId' );
 		$this->setMwGlobals( [ 'wgLang' => Language::factory( 'en' ) ] );
@@ -114,7 +114,7 @@ class ConstraintParameterRendererTest extends \MediaWikiTestCase {
 				new MockMessageLocalizer(),
 				$this->getDefaultConfig()
 			] )
-			->setMethods( [ 'formatEntityId' ] )
+			->onlyMethods( [ 'formatEntityId' ] )
 			->getMock();
 		$constraintParameterRenderer->expects( $this->never() )->method( 'formatEntityId' );
 		$this->setMwGlobals( [ 'wgLang' => Language::factory( 'en' ) ] );

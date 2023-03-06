@@ -4,10 +4,10 @@ namespace JsonConfig;
 
 use Html;
 use Language;
+use MediaWiki\Page\PageReference;
 use Parser;
 use ParserOptions;
 use stdClass;
-use Title;
 
 /**
  * @package JsonConfig
@@ -33,7 +33,7 @@ abstract class JCDataContent extends JCObjContent {
 	 * @return callable
 	 */
 	public static function isValidLicense() {
-		return function ( JCValue $v, array $path ) {
+		return static function ( JCValue $v, array $path ) {
 			global $wgJsonConfigAllowedLicenses, $wgLang;
 			if ( !in_array( $v->getValue(), $wgJsonConfigAllowedLicenses, true ) ) {
 				$v->error( 'jsonconfig-err-license', $path,
@@ -53,7 +53,7 @@ abstract class JCDataContent extends JCObjContent {
 		if ( !$this->isValid() ) {
 			return null;
 		}
-		$result = new stdClass();
+		$result = (object)[];
 		$this->localizeData( $result, $lang );
 		return $result;
 	}
@@ -138,13 +138,13 @@ abstract class JCDataContent extends JCObjContent {
 		return false;
 	}
 
-	public function renderSources( Parser $parser, Title $title, $revId, ParserOptions $options ) {
+	public function renderSources( Parser $parser, PageReference $page, $revId, ParserOptions $options ) {
 		$sources = $this->getField( 'sources' );
 
 		if ( $sources && !$sources->error() ) {
 			$markup = $sources->getValue();
 			$html = Html::rawElement( 'p', [ 'class' => 'mw-jsonconfig-sources' ],
-				$parser->parse( $markup, $title, $options, true, true, $revId )->getRawText() );
+				$parser->parse( $markup, $page, $options, true, true, $revId )->getRawText() );
 		} else {
 			$html = '';
 		}

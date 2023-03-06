@@ -1,8 +1,11 @@
 {
 	"@metadata": {
 		"authors": [
-			"Seipinne"
+			"Seipinne",
+			"Yupik"
 		]
 	},
+	"wbqc-constraintreport-status-warning": "Váruttâs",
+	"wbqc-issues-short": "Čuolmah",
 	"wbqc-constrainttypehelp-short": "Iše"
 }

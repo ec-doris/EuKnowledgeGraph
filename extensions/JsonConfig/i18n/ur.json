@@ -1,8 +1,11 @@
 {
 	"@metadata": {
 		"authors": [
-			"Muhammad Shuaib"
+			"Muhammad Shuaib",
+			"Rizwan",
+			"Roovinn"
 		]
 	},
+	"nstab-data": "ڈیٹا/اعداد و شمار",
 	"right-jsonconfig-flush": "اے پی آئی کے ذریعہ JsonConfig کا استعمال"
 }

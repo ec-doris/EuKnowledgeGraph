@@ -4,10 +4,12 @@ namespace WikibaseQuality\ConstraintReport\Tests\Checker\ValueCountChecker;
 
 use DataValues\StringValue;
 use Wikibase\DataModel\Entity\EntityIdValue;
+use Wikibase\DataModel\Entity\Item;
 use Wikibase\DataModel\Entity\ItemId;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Reference;
 use Wikibase\DataModel\Snak\PropertyValueSnak;
+use Wikibase\DataModel\Snak\SnakList;
 use Wikibase\DataModel\Statement\Statement;
 use Wikibase\Repo\Tests\NewItem;
 use Wikibase\Repo\Tests\NewStatement;
@@ -16,7 +18,9 @@ use WikibaseQuality\ConstraintReport\ConstraintCheck\Checker\UniqueValueChecker;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\MainSnakContext;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\QualifierContext;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\ReferenceContext;
+use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\ConstraintParameterParser;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\DummySparqlHelper;
+use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\SparqlHelper;
 use WikibaseQuality\ConstraintReport\Tests\ConstraintParameters;
 use WikibaseQuality\ConstraintReport\Tests\Helper\JsonFileEntityLookup;
 use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
@@ -32,17 +36,17 @@ use WikibaseQuality\ConstraintReport\Tests\SparqlHelperMock;
  */
 class UniqueValueCheckerTest extends \PHPUnit\Framework\TestCase {
 
-	use ConstraintParameters, SparqlHelperMock;
+	use ConstraintParameters;
+	use SparqlHelperMock;
+	use ResultAssertions;
 
 	/**
 	 * @var JsonFileEntityLookup
 	 */
 	private $lookup;
 
-	use ResultAssertions;
-
 	/**
-	 * @var PropertyId
+	 * @var NumericPropertyId
 	 */
 	private $uniquePropertyId;
 
@@ -51,10 +55,10 @@ class UniqueValueCheckerTest extends \PHPUnit\Framework\TestCase {
 	 */
 	private $checker;
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 		$this->lookup = new JsonFileEntityLookup( __DIR__ );
-		$this->uniquePropertyId = new PropertyId( 'P31' );
+		$this->uniquePropertyId = new NumericPropertyId( 'P31' );
 	}
 
 	public function testCheckUniqueValueConstraintInvalid() {
@@ -63,7 +67,7 @@ class UniqueValueCheckerTest extends \PHPUnit\Framework\TestCase {
 
 		$mock = $this->getSparqlHelperMockFindEntities( $statement, [ new ItemId( 'Q42' ) ] );
 
-		$this->checker = new UniqueValueChecker( $mock );
+		$this->checker = $this->newUniqueValueChecker( $mock );
 
 		$entity = $this->lookup->getEntity( new ItemId( 'Q6' ) );
 
@@ -78,9 +82,9 @@ class UniqueValueCheckerTest extends \PHPUnit\Framework\TestCase {
 		$statement = new Statement( new PropertyValueSnak( $this->uniquePropertyId, new EntityIdValue( new ItemId( 'Q6' ) ) ) );
 		$statement->setGuid( 'Q6$e35707be-4a84-61fe-9b52-623784a316a7' );
 
-		$mock = $this->getSparqlHelperMockFindEntities( $statement, [ new PropertyId( 'P42' ) ] );
+		$mock = $this->getSparqlHelperMockFindEntities( $statement, [ new NumericPropertyId( 'P42' ) ] );
 
-		$this->checker = new UniqueValueChecker( $mock );
+		$this->checker = $this->newUniqueValueChecker( $mock );
 
 		$entity = $this->lookup->getEntity( new ItemId( 'Q6' ) );
 
@@ -97,7 +101,7 @@ class UniqueValueCheckerTest extends \PHPUnit\Framework\TestCase {
 
 		$mock = $this->getSparqlHelperMockFindEntities( $statement, [] );
 
-		$this->checker = new UniqueValueChecker( $mock );
+		$this->checker = $this->newUniqueValueChecker( $mock );
 
 		$entity = $this->lookup->getEntity( new ItemId( 'Q1' ) );
 
@@ -112,14 +116,14 @@ class UniqueValueCheckerTest extends \PHPUnit\Framework\TestCase {
 		$entity = NewItem::withId( 'Q6' )->build();
 		$statement = NewStatement::noValueFor( 'P1' )->build();
 		$entity->getStatements()->addStatement( $statement );
-		$snak = new PropertyValueSnak( new PropertyId( 'P7' ), new StringValue( 'O8' ) );
+		$snak = new PropertyValueSnak( new NumericPropertyId( 'P7' ), new StringValue( 'O8' ) );
 		$sparqlHelper = $this->getSparqlHelperMockFindEntitiesQualifierReference(
 			new ItemId( 'Q6' ),
 			$snak,
 			'qualifier',
 			[ new ItemId( 'Q42' ) ]
 		);
-		$this->checker = new UniqueValueChecker( $sparqlHelper );
+		$this->checker = $this->newUniqueValueChecker( $sparqlHelper );
 		$context = new QualifierContext( $entity, $statement, $snak );
 		$constraint = $this->getConstraintMock( [] );
 
@@ -134,7 +138,7 @@ class UniqueValueCheckerTest extends \PHPUnit\Framework\TestCase {
 		$entity->getStatements()->addStatement( $statement );
 		$reference = new Reference();
 		$statement->getReferences()->addReference( $reference );
-		$snak = new PropertyValueSnak( new PropertyId( 'P7' ), new StringValue( 'O8' ) );
+		$snak = new PropertyValueSnak( new NumericPropertyId( 'P7' ), new StringValue( 'O8' ) );
 		$reference->getSnaks()->addSnak( $snak );
 		$sparqlHelper = $this->getSparqlHelperMockFindEntitiesQualifierReference(
 			new ItemId( 'Q6' ),
@@ -142,7 +146,7 @@ class UniqueValueCheckerTest extends \PHPUnit\Framework\TestCase {
 			'reference',
 			[]
 		);
-		$this->checker = new UniqueValueChecker( $sparqlHelper );
+		$this->checker = $this->newUniqueValueChecker( $sparqlHelper );
 		$context = new ReferenceContext( $entity, $statement, $reference, $snak );
 		$constraint = $this->getConstraintMock( [] );
 
@@ -155,7 +159,7 @@ class UniqueValueCheckerTest extends \PHPUnit\Framework\TestCase {
 		$statement = new Statement( new PropertyValueSnak( $this->uniquePropertyId, new EntityIdValue( new ItemId( 'Q1' ) ) ) );
 		$statement->setGuid( "Q1$56e6a474-4431-fb24-cc15-1d580e467559" );
 
-		$this->checker = new UniqueValueChecker( new DummySparqlHelper() );
+		$this->checker = $this->newUniqueValueChecker( new DummySparqlHelper() );
 
 		$entity = $this->lookup->getEntity( new ItemId( 'Q1' ) );
 
@@ -167,7 +171,7 @@ class UniqueValueCheckerTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testUniqueValueConstraintDeprecatedStatement() {
-		$this->checker = new UniqueValueChecker( new DummySparqlHelper() );
+		$this->checker = $this->newUniqueValueChecker( new DummySparqlHelper() );
 		$statement = NewStatement::noValueFor( 'P1' )
 				   ->withDeprecatedRank()
 				   ->build();
@@ -181,12 +185,56 @@ class UniqueValueCheckerTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testCheckConstraintParameters() {
-		$this->checker = new UniqueValueChecker( new DummySparqlHelper() );
+		$this->checker = $this->newUniqueValueChecker( new DummySparqlHelper() );
 		$constraint = $this->getConstraintMock( [] );
 
 		$result = $this->checker->checkConstraintParameters( $constraint );
 
 		$this->assertEmpty( $result );
+	}
+
+	public function testUsesStatementValidQualifiersAsSeparators() {
+		$firstQualifier = new NumericPropertyId( 'P10' );
+		$secondQualifier = new NumericPropertyId( 'P11' );
+
+		$statement = new Statement(
+			new PropertyValueSnak(
+				new NumericPropertyId( 'P1' ),
+				new StringValue( 'something' )
+			),
+			new SnakList(
+				[
+					new PropertyValueSnak( $firstQualifier, new StringValue( 'something' ) ),
+					new PropertyValueSnak( $secondQualifier, new StringValue( 'something' ) )
+				]
+			)
+		);
+		$paramParser = $this->getConstraintParameterParserMock( [ $secondQualifier ] );
+
+		$mock = $this->getSparqlHelperMockFindEntities( $statement, [], [ $secondQualifier ] );
+		$this->checker = $this->newUniqueValueChecker( $mock, $paramParser );
+		$checkResult = $this->checker->checkConstraint(
+			new MainSnakContext( new Item( new ItemId( 'Q1' ) ), $statement ),
+			$this->getConstraintMock( [] )
+		);
+
+		$this->assertCompliance( $checkResult );
+	}
+
+	private function newUniqueValueChecker(
+		SparqlHelper $sparqlHelper,
+		ConstraintParameterParser $paramParser = null
+	): UniqueValueChecker {
+		$paramParser = $paramParser ?? $this->getConstraintParameterParserMock();
+		return new UniqueValueChecker( $sparqlHelper, $paramParser );
+	}
+
+	private function getConstraintParameterParserMock( array $separators = [] ): ConstraintParameterParser {
+		$paramParser = $this->createMock( ConstraintParameterParser::class );
+		$paramParser->method( 'parseSeparatorsParameter' )
+			->willReturn( $separators );
+
+		return $paramParser;
 	}
 
 	/**
@@ -195,16 +243,11 @@ class UniqueValueCheckerTest extends \PHPUnit\Framework\TestCase {
 	 * @return Constraint
 	 */
 	private function getConstraintMock( array $parameters ) {
-		$mock = $this
-			->getMockBuilder( Constraint::class )
-			->disableOriginalConstructor()
-			->getMock();
-		$mock->expects( $this->any() )
-			 ->method( 'getConstraintParameters' )
-			 ->will( $this->returnValue( $parameters ) );
-		$mock->expects( $this->any() )
-			 ->method( 'getConstraintTypeItemId' )
-			 ->will( $this->returnValue( 'Q21502410' ) );
+		$mock = $this->createMock( Constraint::class );
+		$mock->method( 'getConstraintParameters' )
+			 ->willReturn( $parameters );
+		$mock->method( 'getConstraintTypeItemId' )
+			 ->willReturn( 'Q21502410' );
 
 		return $mock;
 	}

@@ -1,6 +1,5 @@
-FROM wikibase/wikibase-bundle:1.35.5-wmde.3
+FROM wikibase/wikibase-bundle:1.38.5-wmde.10
 COPY LocalSettings.php /var/www/html/LocalSettings.d/LocalSettings.override.php
-COPY Wikibase.example.php /var/www/html/extensions/Wikibase/repo/config/Wikibase.example.php
 COPY extensions/JsonConfig /var/www/html/extensions/JsonConfig/
 COPY extensions/Kartographer /var/www/html/extensions/Kartographer/
 COPY extensions/WikibaseQualityConstraints /var/www/html/extensions/WikibaseQualityConstraints/

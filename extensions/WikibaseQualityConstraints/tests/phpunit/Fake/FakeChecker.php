@@ -42,6 +42,10 @@ class FakeChecker implements ConstraintChecker {
 		];
 	}
 
+	public function getSupportedEntityTypes() {
+		return self::ALL_ENTITY_TYPES_SUPPORTED;
+	}
+
 	/**
 	 * @see ConstraintChecker::checkConstraint
 	 */

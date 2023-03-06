@@ -6,6 +6,7 @@ use Http;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use ObjectCache;
+use RuntimeException;
 use Wikibase\DataModel\Entity\Property;
 use Wikibase\Repo\WikibaseRepo;
 use WikibaseQuality\ConstraintReport\Api\CachingResultsSource;
@@ -26,13 +27,14 @@ use WikibaseQuality\ConstraintReport\ConstraintCheck\Message\ViolationMessageDes
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Message\ViolationMessageSerializer;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Result\CheckResultDeserializer;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Result\CheckResultSerializer;
+use WikiMap;
 
 return [
-	ConstraintsServices::EXPIRY_LOCK => function( MediaWikiServices $services ) {
+	ConstraintsServices::EXPIRY_LOCK => static function ( MediaWikiServices $services ) {
 		return new ExpiryLock( ObjectCache::getInstance( CACHE_ANYTHING ) );
 	},
 
-	ConstraintsServices::LOGGING_HELPER => function( MediaWikiServices $services ) {
+	ConstraintsServices::LOGGING_HELPER => static function ( MediaWikiServices $services ) {
 		return new LoggingHelper(
 			$services->getStatsdDataFactory(),
 			LoggerFactory::getInstance( 'WikibaseQualityConstraints' ),
@@ -40,26 +42,32 @@ return [
 		);
 	},
 
-	ConstraintsServices::CONSTRAINT_STORE => function( MediaWikiServices $services ) {
-		$wbRepo = WikibaseRepo::getDefaultInstance();
-		$sourceDefinitions = $wbRepo->getEntitySourceDefinitions();
-		$propertySource = $sourceDefinitions->getSourceForEntityType( Property::ENTITY_TYPE );
-		$dbName = $propertySource->getDatabaseName();
-
-		if ( $propertySource->getSourceName() !== $wbRepo->getLocalEntitySource()->getSourceName() ) {
-			throw new \RuntimeException( 'Can\'t get a ConstraintStore for a non local entity source.' );
+	ConstraintsServices::CONSTRAINT_STORE => static function ( MediaWikiServices $services ) {
+		$sourceDefinitions = WikibaseRepo::getEntitySourceDefinitions( $services );
+		$propertySource = $sourceDefinitions->getDatabaseSourceForEntityType( Property::ENTITY_TYPE );
+		if ( $propertySource === null ) {
+			throw new RuntimeException( 'Can\'t get a ConstraintStore for properties not stored in a database.' );
 		}
 
+		$localEntitySourceName = WikibaseRepo::getLocalEntitySource( $services )->getSourceName();
+		if ( $propertySource->getSourceName() !== $localEntitySourceName ) {
+			throw new RuntimeException( 'Can\'t get a ConstraintStore for a non local entity source.' );
+		}
+
+		$dbName = $propertySource->getDatabaseName();
 		return new ConstraintRepositoryStore(
 			$services->getDBLoadBalancerFactory()->getMainLB( $dbName ),
 			$dbName
 		);
 	},
 
-	ConstraintsServices::CONSTRAINT_LOOKUP => function( MediaWikiServices $services ) {
-		$wbRepo = WikibaseRepo::getDefaultInstance();
-		$sourceDefinitions = $wbRepo->getEntitySourceDefinitions();
-		$propertySource = $sourceDefinitions->getSourceForEntityType( Property::ENTITY_TYPE );
+	ConstraintsServices::CONSTRAINT_LOOKUP => static function ( MediaWikiServices $services ) {
+		$sourceDefinitions = WikibaseRepo::getEntitySourceDefinitions( $services );
+		$propertySource = $sourceDefinitions->getDatabaseSourceForEntityType( Property::ENTITY_TYPE );
+		if ( $propertySource === null ) {
+			throw new RuntimeException( 'Can\'t get a ConstraintStore for properties not stored in a database.' );
+		}
+
 		$dbName = $propertySource->getDatabaseName();
 		$rawLookup = new ConstraintRepositoryLookup(
 			$services->getDBLoadBalancerFactory()->getMainLB( $dbName ),
@@ -68,7 +76,7 @@ return [
 		return new CachingConstraintLookup( $rawLookup );
 	},
 
-	ConstraintsServices::CHECK_RESULT_SERIALIZER => function( MediaWikiServices $services ) {
+	ConstraintsServices::CHECK_RESULT_SERIALIZER => static function ( MediaWikiServices $services ) {
 		return new CheckResultSerializer(
 			new ConstraintSerializer(
 				false // constraint parameters are not exposed
@@ -79,11 +87,9 @@ return [
 		);
 	},
 
-	ConstraintsServices::CHECK_RESULT_DESERIALIZER => function( MediaWikiServices $services ) {
-		// TODO in the future, get EntityIdParser and DataValueFactory from $services?
-		$repo = WikibaseRepo::getDefaultInstance();
-		$entityIdParser = $repo->getEntityIdParser();
-		$dataValueFactory = $repo->getDataValueFactory();
+	ConstraintsServices::CHECK_RESULT_DESERIALIZER => static function ( MediaWikiServices $services ) {
+		$entityIdParser = WikibaseRepo::getEntityIdParser( $services );
+		$dataValueFactory = WikibaseRepo::getDataValueFactory( $services );
 
 		return new CheckResultDeserializer(
 			new ConstraintDeserializer(),
@@ -96,15 +102,13 @@ return [
 		);
 	},
 
-	ConstraintsServices::VIOLATION_MESSAGE_SERIALIZER => function( MediaWikiServices $services ) {
+	ConstraintsServices::VIOLATION_MESSAGE_SERIALIZER => static function ( MediaWikiServices $services ) {
 		return new ViolationMessageSerializer();
 	},
 
-	ConstraintsServices::VIOLATION_MESSAGE_DESERIALIZER => function( MediaWikiServices $services ) {
-		// TODO in the future, get EntityIdParser and DataValueFactory from $services?
-		$repo = WikibaseRepo::getDefaultInstance();
-		$entityIdParser = $repo->getEntityIdParser();
-		$dataValueFactory = $repo->getDataValueFactory();
+	ConstraintsServices::VIOLATION_MESSAGE_DESERIALIZER => static function ( MediaWikiServices $services ) {
+		$entityIdParser = WikibaseRepo::getEntityIdParser( $services );
+		$dataValueFactory = WikibaseRepo::getDataValueFactory( $services );
 
 		return new ViolationMessageDeserializer(
 			$entityIdParser,
@@ -112,45 +116,37 @@ return [
 		);
 	},
 
-	ConstraintsServices::CONSTRAINT_PARAMETER_PARSER => function( MediaWikiServices $services ) {
-		// TODO in the future, get DeserializerFactory and entity source definitions from $services?
-		$repo = WikibaseRepo::getDefaultInstance();
-		$deserializerFactory = $repo->getBaseDataModelDeserializerFactory();
-		$entitySourceDefinitions = $repo->getEntitySourceDefinitions();
+	ConstraintsServices::CONSTRAINT_PARAMETER_PARSER => static function ( MediaWikiServices $services ) {
+		$deserializerFactory = WikibaseRepo::getBaseDataModelDeserializerFactory( $services );
+		$entitySourceDefinitions = WikibaseRepo::getEntitySourceDefinitions( $services );
 
 		return new ConstraintParameterParser(
 			$services->getMainConfig(),
 			$deserializerFactory,
-			$entitySourceDefinitions->getSourceForEntityType( 'item' )->getConceptBaseUri()
+			$entitySourceDefinitions->getDatabaseSourceForEntityType( 'item' )->getConceptBaseUri()
 		);
 	},
 
-	ConstraintsServices::CONNECTION_CHECKER_HELPER => function( MediaWikiServices $services ) {
+	ConstraintsServices::CONNECTION_CHECKER_HELPER => static function ( MediaWikiServices $services ) {
 		return new ConnectionCheckerHelper();
 	},
 
-	ConstraintsServices::RANGE_CHECKER_HELPER => function( MediaWikiServices $services ) {
-		// TODO in the future, get UnitConverter from $services?
-		$repo = WikibaseRepo::getDefaultInstance();
-		$unitConverter = $repo->getUnitConverter();
-
+	ConstraintsServices::RANGE_CHECKER_HELPER => static function ( MediaWikiServices $services ) {
 		return new RangeCheckerHelper(
 			$services->getMainConfig(),
-			$unitConverter
+			WikibaseRepo::getUnitConverter( $services )
 		);
 	},
 
-	ConstraintsServices::SPARQL_HELPER => function( MediaWikiServices $services ) {
+	ConstraintsServices::SPARQL_HELPER => static function ( MediaWikiServices $services ) {
 		$endpoint = $services->getMainConfig()->get( 'WBQualityConstraintsSparqlEndpoint' );
 		if ( $endpoint === '' ) {
 			return new DummySparqlHelper();
 		}
 
-		// TODO in the future, get RDFVocabulary, EntityIdParser and PropertyDataTypeLookup from $services?
-		$repo = WikibaseRepo::getDefaultInstance();
-		$rdfVocabulary = $repo->getRdfVocabulary();
-		$entityIdParser = $repo->getEntityIdParser();
-		$propertyDataTypeLookup = $repo->getPropertyDataTypeLookup();
+		$rdfVocabulary = WikibaseRepo::getRdfVocabulary( $services );
+		$entityIdParser = WikibaseRepo::getEntityIdParser( $services );
+		$propertyDataTypeLookup = WikibaseRepo::getPropertyDataTypeLookup( $services );
 
 		return new SparqlHelper(
 			$services->getMainConfig(),
@@ -162,13 +158,13 @@ return [
 			ConstraintsServices::getViolationMessageDeserializer( $services ),
 			$services->getStatsdDataFactory(),
 			ConstraintsServices::getExpiryLock( $services ),
-			ConstraintsServices::getLoggingHelper(),
-			wfWikiID() . ' WikibaseQualityConstraints ' . Http::userAgent(),
+			ConstraintsServices::getLoggingHelper( $services ),
+			WikiMap::getCurrentWikiId() . ' WikibaseQualityConstraints ' . Http::userAgent(),
 			$services->getHttpRequestFactory()
 		);
 	},
 
-	ConstraintsServices::TYPE_CHECKER_HELPER => function( MediaWikiServices $services ) {
+	ConstraintsServices::TYPE_CHECKER_HELPER => static function ( MediaWikiServices $services ) {
 		return new TypeCheckerHelper(
 			WikibaseServices::getEntityLookup( $services ),
 			$services->getMainConfig(),
@@ -177,10 +173,8 @@ return [
 		);
 	},
 
-	ConstraintsServices::DELEGATING_CONSTRAINT_CHECKER => function( MediaWikiServices $services ) {
-		// TODO in the future, get StatementGuidParser from $services?
-		$repo = WikibaseRepo::getDefaultInstance();
-		$statementGuidParser = $repo->getStatementGuidParser();
+	ConstraintsServices::DELEGATING_CONSTRAINT_CHECKER => static function ( MediaWikiServices $services ) {
+		$statementGuidParser = WikibaseRepo::getStatementGuidParser( $services );
 
 		$config = $services->getMainConfig();
 		$checkerMap = [
@@ -242,6 +236,10 @@ return [
 				=> ConstraintCheckerServices::getPropertyScopeChecker( $services ),
 			$config->get( 'WBQualityConstraintsContemporaryConstraintId' )
 				=> ConstraintCheckerServices::getContemporaryChecker( $services ),
+			$config->get( 'WBQualityConstraintsLexemeLanguageConstraintId' )
+				=> ConstraintCheckerServices::getLexemeLanguageChecker( $services ),
+			$config->get( 'WBQualityConstraintsLabelInLanguageConstraintId' )
+				=> ConstraintCheckerServices::getLabelInLanguageChecker( $services ),
 		];
 
 		return new DelegatingConstraintChecker(
@@ -257,7 +255,7 @@ return [
 		);
 	},
 
-	ConstraintsServices::RESULTS_SOURCE => function( MediaWikiServices $services ) {
+	ConstraintsServices::RESULTS_SOURCE => static function ( MediaWikiServices $services ) {
 		$config = $services->getMainConfig();
 		$resultsSource = new CheckingResultsSource(
 			ConstraintsServices::getDelegatingConstraintChecker( $services )
@@ -269,9 +267,11 @@ return [
 			$cacheCheckConstraintsResults = true;
 			// check that we can use getLocalRepoWikiPageMetaDataAccessor()
 			// TODO we should always be able to cache constraint check results (T244726)
-			$repo = WikibaseRepo::getDefaultInstance();
-			foreach ( $repo->getEntitySourceDefinitions()->getSources() as $entitySource ) {
-				if ( $entitySource->getSourceName() !== $repo->getLocalEntitySource()->getSourceName() ) {
+			$entitySources = WikibaseRepo::getEntitySourceDefinitions( $services )->getSources();
+			$localEntitySourceName = WikibaseRepo::getLocalEntitySource( $services )->getSourceName();
+
+			foreach ( $entitySources as $entitySource ) {
+				if ( $entitySource->getSourceName() !== $localEntitySourceName ) {
 					LoggerFactory::getInstance( 'WikibaseQualityConstraints' )->warning(
 						'Cannot cache constraint check results for non-local source: ' .
 						$entitySource->getSourceName()
@@ -289,10 +289,9 @@ return [
 				$config->get( 'WBQualityConstraintsValueTypeConstraintId' ),
 				$config->get( 'WBQualityConstraintsDistinctValuesConstraintId' ),
 			];
-			// TODO in the future, get EntityIdParser and WikiPageEntityMetaDataAccessor from $services?
-			$repo = WikibaseRepo::getDefaultInstance();
-			$entityIdParser = $repo->getEntityIdParser();
-			$wikiPageEntityMetaDataAccessor = $repo->getLocalRepoWikiPageMetaDataAccessor();
+			$entityIdParser = WikibaseRepo::getEntityIdParser( $services );
+			$wikiPageEntityMetaDataAccessor = WikibaseRepo::getLocalRepoWikiPageMetaDataAccessor(
+				$services );
 
 			$resultsSource = new CachingResultsSource(
 				$resultsSource,

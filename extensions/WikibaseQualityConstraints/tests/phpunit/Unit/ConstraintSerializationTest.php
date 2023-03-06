@@ -2,7 +2,7 @@
 
 namespace WikibaseQuality\ConstraintReport\Tests\Unit;
 
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use WikibaseQuality\ConstraintReport\Constraint;
 use WikibaseQuality\ConstraintReport\ConstraintDeserializer;
 use WikibaseQuality\ConstraintReport\ConstraintSerializer;
@@ -86,7 +86,7 @@ class ConstraintSerializationTest extends \MediaWikiUnitTestCase {
 		yield 'date of birth conflicts with coordinate location' => [
 			new Constraint(
 				$constraintId,
-				new PropertyId( $propertyIdSerialization ),
+				new NumericPropertyId( $propertyIdSerialization ),
 				$constraintTypeItemId,
 				$constraintParameters
 			),

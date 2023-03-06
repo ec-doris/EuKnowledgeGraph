@@ -5,7 +5,7 @@ namespace WikibaseQuality\ConstraintReport\Tests\Checker;
 use DataValues\TimeValue;
 use Wikibase\DataModel\Entity\Item;
 use Wikibase\DataModel\Entity\ItemId;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Services\Lookup\InMemoryEntityLookup;
 use Wikibase\DataModel\Statement\Statement;
 use Wikibase\Repo\Tests\NewItem;
@@ -28,7 +28,8 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  */
 class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 
-	use DefaultConfig, ResultAssertions;
+	use DefaultConfig;
+	use ResultAssertions;
 
 	/**
 	 * @var RangeCheckerHelper
@@ -58,7 +59,7 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 	/**
 	 * @throws \ConfigException
 	 */
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 		$this->startPropertyIds = $this->getDefaultConfig()
 			->get( ContemporaryChecker::CONFIG_VARIABLE_START_PROPERTY_IDS );
@@ -294,7 +295,7 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 		$subjectItem = NewItem::withId( 'Q1' )
 			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
 			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
-			->andStatement( NewStatement::noValueFor( new PropertyId( $this->linkingPropertyId ) ) )
+			->andStatement( NewStatement::noValueFor( new NumericPropertyId( $this->linkingPropertyId ) ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, null, CheckResult::STATUS_COMPLIANCE );
 	}
@@ -303,7 +304,7 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 		$subjectItem = NewItem::withId( 'Q1' )
 			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
 			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
-			->andStatement( NewStatement::someValueFor( new PropertyId( $this->linkingPropertyId ) ) )
+			->andStatement( NewStatement::someValueFor( new NumericPropertyId( $this->linkingPropertyId ) ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, null, CheckResult::STATUS_COMPLIANCE );
 	}
@@ -956,16 +957,11 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 	 * @return Constraint
 	 */
 	private function getConstraintMock() {
-		$mock = $this
-			->getMockBuilder( Constraint::class )
-			->disableOriginalConstructor()
-			->getMock();
-		$mock->expects( $this->any() )
-			->method( 'getConstraintParameters' )
-			->will( $this->returnValue( [] ) );
-		$mock->expects( $this->any() )
-			->method( 'getConstraintTypeItemId' )
-			->will( $this->returnValue( 'Q25796498' ) );
+		$mock = $this->createMock( Constraint::class );
+		$mock->method( 'getConstraintParameters' )
+			->willReturn( [] );
+		$mock->method( 'getConstraintTypeItemId' )
+			->willReturn( 'Q25796498' );
 		return $mock;
 	}
 
@@ -1074,7 +1070,7 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 	private function getLinkingStatement( Item $subjectItem, $linkingPropertyId ) {
 		return $subjectItem
 			->getStatements()
-			->getByPropertyId( new PropertyId( $linkingPropertyId ) )
+			->getByPropertyId( new NumericPropertyId( $linkingPropertyId ) )
 			->toArray()[0];
 	}
 

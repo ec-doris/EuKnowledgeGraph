@@ -11,12 +11,12 @@
 namespace Kartographer;
 
 use ApiBase;
+use ApiMain;
 use FormatJson;
-use MediaWiki\MediaWikiServices;
 use Parser;
 use ParserOptions;
-use stdClass;
 use Title;
+use Wikimedia\ParamValidator\ParamValidator;
 
 /**
  * This class implements action=sanitize-mapdata API, validating and sanitizing user-entered
@@ -25,6 +25,26 @@ use Title;
  */
 class ApiSanitizeMapData extends ApiBase {
 
+	/** @var Parser */
+	private $parser;
+
+	/**
+	 * @param ApiMain $main
+	 * @param string $action
+	 * @param Parser $parser
+	 */
+	public function __construct(
+		ApiMain $main,
+		$action,
+		Parser $parser
+	) {
+		parent::__construct( $main, $action );
+		$this->parser = $parser;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public function execute() {
 		$params = $this->extractRequestParams();
 
@@ -34,28 +54,28 @@ class ApiSanitizeMapData extends ApiBase {
 			$this->dieWithError( [ 'apierror-invalidtitle', wfEscapeWikiText( $params['title'] ) ] );
 		}
 
-		// @phan-suppress-next-line PhanTypeMismatchArgumentNullable T240141
 		$this->checkTitleUserPermissions( $title, 'read' );
 
-		// @phan-suppress-next-line PhanTypeMismatchArgumentNullable T240141
 		$this->sanitizeJson( $title, $params['text'] );
 	}
 
+	/**
+	 * @param Title $title
+	 * @param string $text
+	 */
 	private function sanitizeJson( Title $title, $text ) {
-		$parser = MediaWikiServices::getInstance()->getParser();
 		$parserOptions = new ParserOptions( $this->getUser() );
-		$parser->startExternalParse( $title, $parserOptions, Parser::OT_HTML );
-		$parser->setTitle( $title );
-		$parser->clearState();
-		$simpleStyle = new SimpleStyleParser( $parser, null, [ 'saveUnparsed' => true ] );
+		$this->parser->startExternalParse( $title, $parserOptions, Parser::OT_HTML );
+		$this->parser->setPage( $title );
+		$this->parser->clearState();
+		$simpleStyle = new SimpleStyleParser( $this->parser, null, [ 'saveUnparsed' => true ] );
 		$status = $simpleStyle->parse( $text );
 		if ( !$status->isOK() ) {
 			$error = $status->getHTML( false, false, $this->getLanguage() );
 			$this->getResult()->addValue( null, $this->getModuleName(), [ 'error' => $error ] );
 		} else {
 			$data = $status->getValue();
-			$counters = new stdClass();
-			SimpleStyleParser::doCountersRecursive( $data, $counters );
+			SimpleStyleParser::updateMarkerSymbolCounters( $data );
 			$this->getResult()
 				->addValue( null,
 					$this->getModuleName(),
@@ -70,16 +90,19 @@ class ApiSanitizeMapData extends ApiBase {
 	public function getAllowedParams() {
 		return [
 			'title' => [
-				ApiBase::PARAM_TYPE => 'string',
-				ApiBase::PARAM_DFLT => 'Dummy title (called from ' . __CLASS__ . ')',
+				ParamValidator::PARAM_TYPE => 'string',
+				ParamValidator::PARAM_DEFAULT => 'Dummy title (called from ' . __CLASS__ . ')',
 			],
 			'text' => [
-				ApiBase::PARAM_TYPE => 'string',
-				ApiBase::PARAM_REQUIRED => true,
+				ParamValidator::PARAM_TYPE => 'string',
+				ParamValidator::PARAM_REQUIRED => true,
 			]
 		];
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public function mustBePosted() {
 		return true;
 	}

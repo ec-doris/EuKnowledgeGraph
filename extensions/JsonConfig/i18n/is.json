@@ -6,7 +6,7 @@
 			"Sveinn í Felli"
 		]
 	},
-	"jsonconfig-err-bad-type": "Viðfang \"$1\" verður að vera gilt tag, eins og \"string\", \"number\" eða \"boolean\"",
+	"jsonconfig-err-bad-type": "Viðfangið \"$1\" verður að vera gild tegund, eins og <code>string</code>, <code>number</code> eða <code>boolean</code>",
 	"jsonconfig-optional-field": "(valfrjálst)",
 	"jsonconfig-type-name-invalid": "ógilt",
 	"jsonconfig-type-abbr-string": "(S)",

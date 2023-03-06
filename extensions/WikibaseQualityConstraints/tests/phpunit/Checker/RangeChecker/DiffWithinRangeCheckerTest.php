@@ -4,7 +4,7 @@ namespace WikibaseQuality\ConstraintReport\Tests\Checker\RangeChecker;
 
 use DataValues\TimeValue;
 use DataValues\UnboundedQuantityValue;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Reference;
 use Wikibase\DataModel\ReferenceList;
 use Wikibase\DataModel\Snak\PropertySomeValueSnak;
@@ -32,9 +32,10 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  * @author BP2014N1
  * @license GPL-2.0-or-later
  */
-class DiffWithinRangeCheckerTest extends \MediaWikiTestCase {
+class DiffWithinRangeCheckerTest extends \MediaWikiIntegrationTestCase {
 
-	use ConstraintParameters, ResultAssertions;
+	use ConstraintParameters;
+	use ResultAssertions;
 
 	/**
 	 * A TimeValue for the year 1.
@@ -111,7 +112,7 @@ class DiffWithinRangeCheckerTest extends \MediaWikiTestCase {
 	 */
 	private $checker;
 
-	public static function setUpBeforeClass() : void {
+	public static function setUpBeforeClass(): void {
 		parent::setUpBeforeClass();
 		self::$t0001 = self::getTimeValue( '0001-01-01' );
 		self::$t1800 = self::getTimeValue( '1800-01-01' );
@@ -122,7 +123,7 @@ class DiffWithinRangeCheckerTest extends \MediaWikiTestCase {
 		self::$i1970 = NewItem::withId( 'Q1' )->andStatement( self::$s1970 );
 	}
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 		$config = $this->getDefaultConfig();
 		$yearUnit = $config->get( 'WBQualityConstraintsYearUnit' );
@@ -328,7 +329,7 @@ class DiffWithinRangeCheckerTest extends \MediaWikiTestCase {
 			)
 			->build();
 		$snak = new PropertyValueSnak(
-			new PropertyId( 'P2068' ),
+			new NumericPropertyId( 'P2068' ),
 			UnboundedQuantityValue::newFromNumber( 5500.0, 'g' )
 		);
 		$context = new MainSnakContext( $entity, new Statement( $snak ) );
@@ -355,7 +356,7 @@ class DiffWithinRangeCheckerTest extends \MediaWikiTestCase {
 			)
 			->build();
 		$snak = new PropertyValueSnak(
-			new PropertyId( 'P2068' ),
+			new NumericPropertyId( 'P2068' ),
 			UnboundedQuantityValue::newFromNumber( 5500.0, 'g' )
 		);
 		$context = new MainSnakContext( $entity, new Statement( $snak ) );
@@ -382,7 +383,7 @@ class DiffWithinRangeCheckerTest extends \MediaWikiTestCase {
 			)
 			->build();
 		$snak = new PropertyValueSnak(
-			new PropertyId( 'P2068' ),
+			new NumericPropertyId( 'P2068' ),
 			UnboundedQuantityValue::newFromNumber( 6500.0, 'g' )
 		);
 		$context = new MainSnakContext( $entity, new Statement( $snak ) );
@@ -594,10 +595,10 @@ class DiffWithinRangeCheckerTest extends \MediaWikiTestCase {
 	}
 
 	public function testDiffWithinRangeConstraint_Qualifier() {
-		$qualifier1 = new PropertyValueSnak( new PropertyId( 'P569' ), self::$t1900 );
-		$qualifier2 = new PropertyValueSnak( new PropertyId( 'P570' ), self::$t1970 );
+		$qualifier1 = new PropertyValueSnak( new NumericPropertyId( 'P569' ), self::$t1900 );
+		$qualifier2 = new PropertyValueSnak( new NumericPropertyId( 'P570' ), self::$t1970 );
 		$statement = new Statement(
-			new PropertySomeValueSnak( new PropertyId( 'P10' ) ),
+			new PropertySomeValueSnak( new NumericPropertyId( 'P10' ) ),
 			new SnakList( [ $qualifier1, $qualifier2 ] ),
 			null,
 			'Q1$c5f1968c-c8f9-4edd-9f2d-f12c93cd8b2b'
@@ -616,11 +617,11 @@ class DiffWithinRangeCheckerTest extends \MediaWikiTestCase {
 	}
 
 	public function testDiffWithinRangeConstraint_Reference() {
-		$snak1 = new PropertyValueSnak( new PropertyId( 'P569' ), self::$t2000 );
-		$snak2 = new PropertyValueSnak( new PropertyId( 'P570' ), self::$t1970 );
+		$snak1 = new PropertyValueSnak( new NumericPropertyId( 'P569' ), self::$t2000 );
+		$snak2 = new PropertyValueSnak( new NumericPropertyId( 'P570' ), self::$t1970 );
 		$reference = new Reference( [ $snak1, $snak2 ] );
 		$statement = new Statement(
-			new PropertySomeValueSnak( new PropertyId( 'P10' ) ),
+			new PropertySomeValueSnak( new NumericPropertyId( 'P10' ) ),
 			null,
 			new ReferenceList( [ $reference ] ),
 			'Q1$80a5fb6c-8b14-4f18-a60e-2c853d5dfbd1'
@@ -668,16 +669,11 @@ class DiffWithinRangeCheckerTest extends \MediaWikiTestCase {
 	 * @return Constraint
 	 */
 	private function getConstraintMock( array $parameters ) {
-		$mock = $this
-			->getMockBuilder( Constraint::class )
-			->disableOriginalConstructor()
-			->getMock();
-		$mock->expects( $this->any() )
-			 ->method( 'getConstraintParameters' )
-			 ->will( $this->returnValue( $parameters ) );
-		$mock->expects( $this->any() )
-			 ->method( 'getConstraintTypeItemId' )
-			 ->will( $this->returnValue( 'Q21510854' ) );
+		$mock = $this->createMock( Constraint::class );
+		$mock->method( 'getConstraintParameters' )
+			 ->willReturn( $parameters );
+		$mock->method( 'getConstraintTypeItemId' )
+			 ->willReturn( 'Q21510854' );
 
 		return $mock;
 	}

@@ -3,7 +3,7 @@
 namespace WikibaseQuality\ConstraintReport\Tests\Context;
 
 use LogicException;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Snak\PropertyNoValueSnak;
 use Wikibase\DataModel\Snak\PropertySomeValueSnak;
 use Wikibase\DataModel\Statement\Statement;
@@ -122,7 +122,7 @@ class MainSnakContextTest extends \PHPUnit\Framework\TestCase {
 
 	public function testGetSnakGroup_OneSeparator_CustomValues() {
 		$mode = Context::GROUP_NON_DEPRECATED; // shouldn’t matter
-		$separator = new PropertyId( 'P2' );
+		$separator = new NumericPropertyId( 'P2' );
 		$statement1 = NewStatement::noValueFor( 'P1' )
 			->withQualifier( $separator, 'foo' )
 			->build();
@@ -153,7 +153,7 @@ class MainSnakContextTest extends \PHPUnit\Framework\TestCase {
 
 	public function testGetSnakGroup_OneSeparator_MultipleValues() {
 		$mode = Context::GROUP_NON_DEPRECATED; // shouldn’t matter
-		$separator = new PropertyId( 'P2' );
+		$separator = new NumericPropertyId( 'P2' );
 		$statement1 = NewStatement::noValueFor( 'P1' )
 			->withQualifier( $separator, 'foo' )
 			->withQualifier( $separator, 'bar' )
@@ -189,7 +189,7 @@ class MainSnakContextTest extends \PHPUnit\Framework\TestCase {
 
 	public function testGetSnakGroup_OneSeparator_UnknownValues() {
 		$mode = Context::GROUP_NON_DEPRECATED; // shouldn’t matter
-		$separator = new PropertyId( 'P2' );
+		$separator = new NumericPropertyId( 'P2' );
 		$statement1 = NewStatement::noValueFor( 'P1' )
 			->build();
 		$statement1->getQualifiers()->addSnak( new PropertySomeValueSnak( $separator ) );
@@ -210,7 +210,7 @@ class MainSnakContextTest extends \PHPUnit\Framework\TestCase {
 
 	public function testGetSnakGroup_OneSeparator_NoValues() {
 		$mode = Context::GROUP_NON_DEPRECATED; // shouldn’t matter
-		$separator = new PropertyId( 'P2' );
+		$separator = new NumericPropertyId( 'P2' );
 		$statement1 = NewStatement::noValueFor( 'P1' )
 			->build();
 		$statement1->getQualifiers()->addSnak( new PropertyNoValueSnak( $separator ) );
@@ -234,10 +234,10 @@ class MainSnakContextTest extends \PHPUnit\Framework\TestCase {
 
 	public function testGetSnakGroup_MultipleSeparators() {
 		$mode = Context::GROUP_NON_DEPRECATED; // shouldn’t matter
-		$separator1 = new PropertyId( 'P2' );
-		$separator2 = new PropertyId( 'P3' );
-		$separator3 = new PropertyId( 'P4' );
-		$separator4 = new PropertyId( 'P5' );
+		$separator1 = new NumericPropertyId( 'P2' );
+		$separator2 = new NumericPropertyId( 'P3' );
+		$separator3 = new NumericPropertyId( 'P4' );
+		$separator4 = new NumericPropertyId( 'P5' );
 		$separators = [ $separator1, $separator2, $separator3, $separator4 ];
 		$statement1 = NewStatement::noValueFor( 'P1' )
 			->withQualifier( $separator1, 'foo' )

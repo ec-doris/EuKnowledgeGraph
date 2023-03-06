@@ -11,7 +11,7 @@ use WANObjectCache;
 use Wikibase\DataModel\Entity\EntityId;
 use Wikibase\DataModel\Entity\ItemId;
 use Wikibase\DataModel\Entity\ItemIdParser;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\Lib\Store\LookupConstants;
 use Wikibase\Lib\Store\Sql\WikiPageEntityMetaDataAccessor;
 use WikibaseQuality\ConstraintReport\Api\CachingResultsSource;
@@ -51,7 +51,7 @@ class CachingResultsSourceTest extends \PHPUnit\Framework\TestCase {
 			),
 			new Constraint(
 				'P1$00000000-0000-0000-0000-000000000000',
-				new PropertyId( 'P1' ),
+				new NumericPropertyId( 'P1' ),
 				'Q12345',
 				[]
 			),
@@ -65,11 +65,9 @@ class CachingResultsSourceTest extends \PHPUnit\Framework\TestCase {
 	 * @return CheckResultSerializer
 	 */
 	private function getCheckResultSerializer() {
-		$mock = $this->getMockBuilder( CheckResultSerializer::class )
-			->disableOriginalConstructor()
-			->getMock();
+		$mock = $this->createMock( CheckResultSerializer::class );
 		$mock->method( 'serialize' )
-			->willReturnCallback( function( CheckResult $checkResult ) {
+			->willReturnCallback( function ( CheckResult $checkResult ) {
 				$entityId = $checkResult->getContextCursor()->getEntityId();
 				if ( $checkResult instanceof NullResult ) {
 					return [ 'NullResult for ' . $entityId ];
@@ -84,11 +82,9 @@ class CachingResultsSourceTest extends \PHPUnit\Framework\TestCase {
 	 * @return CheckResultDeserializer
 	 */
 	private function getCheckResultDeserializer() {
-		$mock = $this->getMockBuilder( CheckResultDeserializer::class )
-			->disableOriginalConstructor()
-			->getMock();
+		$mock = $this->createMock( CheckResultDeserializer::class );
 		$mock->method( 'deserialize' )
-			->willReturnCallback( function( $serialization ) {
+			->willReturnCallback( function ( $serialization ) {
 				if ( strpos( $serialization[0], 'NullResult for ' ) === 0 ) {
 					$id = str_replace( 'NullResult for ', '', $serialization[0] );
 					return new NullResult( new EntityContextCursor( $id ) );
@@ -161,7 +157,7 @@ class CachingResultsSourceTest extends \PHPUnit\Framework\TestCase {
 				10000,
 				$this->getLoggingHelper()
 			] )
-			->setMethods( [ 'getStoredResults', 'getAndStoreResults' ] )
+			->onlyMethods( [ 'getStoredResults', 'getAndStoreResults' ] )
 			->getMock();
 	}
 
@@ -278,7 +274,7 @@ class CachingResultsSourceTest extends \PHPUnit\Framework\TestCase {
 	public function testGetAndStoreResults_StoreLatestRevisionIds() {
 		$q100 = new ItemId( 'Q100' );
 		$q101 = new ItemId( 'Q101' );
-		$p102 = new PropertyId( 'P102' );
+		$p102 = new NumericPropertyId( 'P102' );
 		$expectedResults = new CachedCheckResults(
 			[ $this->getCheckResult( 'Q100' ) ],
 			Metadata::ofDependencyMetadata( DependencyMetadata::merge( [
@@ -452,7 +448,7 @@ class CachingResultsSourceTest extends \PHPUnit\Framework\TestCase {
 
 		$this->assertNotFalse( $cachedResults );
 		$this->assertArrayHasKey( 'futureTime', $cachedResults );
-		$this->assertEquals( $timeValue->getArrayValue(), $cachedResults['futureTime'] );
+		$this->assertSame( $timeValue->getArrayValue(), $cachedResults['futureTime'] );
 	}
 
 	public function testGetAndStoreResults_DontStoreWithoutRevisionInformation() {
@@ -717,7 +713,7 @@ class CachingResultsSourceTest extends \PHPUnit\Framework\TestCase {
 		$cachingResultsSource->method( 'getStoredResults' )->willReturn( null );
 		$cachingResultsSource->method( 'getAndStoreResults' )
 			->with( $entityIds, [], null, $statuses )
-			->willReturnCallback( function( $entityIds, $claimIds, $constraintIds ) {
+			->willReturnCallback( function ( $entityIds, $claimIds, $constraintIds ) {
 				$results = [];
 				foreach ( $entityIds as $entityId ) {
 					$serialization = $entityId->getSerialization();
@@ -837,7 +833,7 @@ class CachingResultsSourceTest extends \PHPUnit\Framework\TestCase {
 			$statuses
 		);
 
-		$this->assertEquals( $expected->getArray(), $results->getArray() );
+		$this->assertSame( $expected->getArray(), $results->getArray() );
 		$this->assertEquals( $expected->getMetadata(), $results->getMetadata() );
 	}
 
@@ -984,7 +980,7 @@ class CachingResultsSourceTest extends \PHPUnit\Framework\TestCase {
 		$actual = $results->getArray();
 		sort( $expected );
 		sort( $actual );
-		$this->assertEquals( $expected, $actual );
+		$this->assertSame( $expected, $actual );
 	}
 
 	public function testGetResults_SkipCacheWithExtraStatuses() {

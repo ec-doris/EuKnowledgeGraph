@@ -28,8 +28,8 @@ describe( 'wikibase.quality.constraints.gadget', function () {
 				then: function ( func ) {
 					var thenResult = func.apply( {}, results );
 					return {
-						then: function ( func ) {
-							func( thenResult );
+						then: function ( func2 ) {
+							func2( thenResult );
 							return {
 								promise: sinon.spy()
 							};
@@ -322,9 +322,7 @@ describe( 'wikibase.quality.constraints.gadget', function () {
 				id: [ entityId ],
 				status: gadget.config.CACHED_STATUSES
 			} ).returns( {
-				then: sinon.stub().returns( {
-					then: sinon.stub().yields( responseData )
-				} )
+				then: sinon.stub().yields( responseData )
 			} );
 			global.jQuery.withArgs( '.wbqc-constraint-warning' ).returns( {
 				remove: preExistingReportButtonsRemovedSpy

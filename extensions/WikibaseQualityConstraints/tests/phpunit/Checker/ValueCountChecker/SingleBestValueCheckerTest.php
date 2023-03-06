@@ -21,14 +21,15 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  */
 class SingleBestValueCheckerTest extends \PHPUnit\Framework\TestCase {
 
-	use ConstraintParameters, ResultAssertions;
+	use ConstraintParameters;
+	use ResultAssertions;
 
 	/**
 	 * @var SingleBestValueChecker
 	 */
 	private $checker;
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 
 		$this->checker = new SingleBestValueChecker( $this->getConstraintParameterParser() );
@@ -120,16 +121,11 @@ class SingleBestValueCheckerTest extends \PHPUnit\Framework\TestCase {
 	 * @return Constraint
 	 */
 	private function getConstraintMock( array $parameters = [] ) {
-		$mock = $this
-			->getMockBuilder( Constraint::class )
-			->disableOriginalConstructor()
-			->getMock();
-		$mock->expects( $this->any() )
-			->method( 'getConstraintParameters' )
-			->will( $this->returnValue( $parameters ) );
-		$mock->expects( $this->any() )
-			->method( 'getConstraintTypeItemId' )
-			->will( $this->returnValue( 'Q52060874' ) );
+		$mock = $this->createMock( Constraint::class );
+		$mock->method( 'getConstraintParameters' )
+			->willReturn( $parameters );
+		$mock->method( 'getConstraintTypeItemId' )
+			->willReturn( 'Q52060874' );
 
 		return $mock;
 	}

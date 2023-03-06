@@ -33,7 +33,7 @@ class JsonFileEntityLookup implements EntityLookup {
 	public function __construct( $baseDir ) {
 		$this->baseDir = $baseDir;
 
-		$this->entityContentDataCodec = WikibaseRepo::getDefaultInstance()->getEntityContentDataCodec();
+		$this->entityContentDataCodec = WikibaseRepo::getEntityContentDataCodec();
 	}
 
 	/**

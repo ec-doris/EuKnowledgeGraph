@@ -1,9 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
+			"Daud I.F. Argana",
 			"Pebaryan",
-			"Zakiy",
-			"RXerself"
+			"RXerself",
+			"Zakiy"
 		]
 	},
 	"wbqc-constraintreport": "Laporan pewatas",
@@ -62,6 +63,7 @@
 	"wbqc-violation-message-value-needed-of-type": "Atribut dengan pewatas \"$1\" seharusnya memiliki nilai dengan jenis \"$2\".",
 	"wbqc-violation-message-value-needed-of-types-2": "Atribut dengan pewatas \"$1\" seharusnya memiliki nilai dengan jenis \"$2\" atau \"$3\".",
 	"wbqc-violation-message-parameter-needed": "Atribut dengan pewatas \"$1\" seharusnya memiliki parameter \"$2\".",
+	"wbqc-violation-message-parameters-needed-3": "Atribut dengan pewatas \"$1\" seharusnya memiliki parameter \"$2\", \n\"$3\", dan \"$4\".",
 	"wbqc-violation-message-target-entity-must-exist": "Entitas yang dituju tidak ditemukan.",
 	"wbqc-violation-message-value-entity-must-exist": "Entitas nilai tidak ditemukan.",
 	"wbqc-violation-message-parameter-value": "Parameter \"$1\" seharusnya memiliki nilai tertentu selain \"tanpa nilai\" atau \"nilai tidak diketahui\".",
@@ -140,6 +142,8 @@
 	"wbqc-violation-message-integer": "Nilai untuk $1 seharusnya berupa bilangan bulat (integer) sedangkan $2 sebagian adalah pecahan atau bilangan desimal.",
 	"wbqc-violation-message-integer-bounds": "Nilai untuk $1 seharusnya berupa bilangan bulat sedangkan batas atas atau bawah $2 sebagian adalah pecahan atau bilangan desimal.",
 	"wbqc-violation-message-citationNeeded": "Pernyataan $1 sebaiknya memiliki paling tidak satu rujukan.",
+	"wbqc-violation-message-language": "Pernyataan untuk $1 seharusnya hanya terdapat pada Leksem dengan {{PLURAL:$2|1=bahasa $4.|2=bahasa $4 atau $5.|salah satu di antara bahasa berikut: $3}}",
+	"wbqc-violation-message-label-lacking": "Entitas dengan pernyataan untuk $1 seharusnya juga punya label paling tidak dalam {{PLURAL:$2|1=bahasa $4.|salah satu di antara bahasa-bahasa berikut: $3}}",
 	"wbqc-violation-message-property-scope": "Atribut $1 seharusnya tidak digunakan di sini ($2) dan hanya digunakan di {{PLURAL:$3|$5.|: $4}}",
 	"wbqc-violation-message-exception": "Entitas ini mendapat pengecualian khusus terhadap pewatas. Pengecualian tersebut telah ditandai."
 }

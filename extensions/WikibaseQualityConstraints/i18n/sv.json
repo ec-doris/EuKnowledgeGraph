@@ -2,8 +2,9 @@
 	"@metadata": {
 		"authors": [
 			"Jon Harald Søby",
+			"Sabelöga",
 			"WikiPhoenix",
-			"Sabelöga"
+			"Larske"
 		]
 	},
 	"wbqc-constraintreport": "Begränsningrapporter",
@@ -116,7 +117,7 @@
 	"wbqc-violation-message-range-time-rightopen-leftnow": "Värdet för $1 ($2) bör vara i det förflutna.",
 	"wbqc-violation-message-single-value": "Denna egenskap bör endast innehåll ett enda värde.",
 	"wbqc-violation-message-single-value-separators": "Denna egenskap bör endast ha ett enda värde med samma {{PLURAL:$2|1=$4 bestämning.|grupp av bestämningar för dessa egenskaper: $3}}",
-	"wbqc-violation-message-single-best-value-no-preferred": "Denna egenskap borde bara innehålla ett enda \"bästa\" värde. En av de nu flera värdena borde markeras med \"föredragen\" rank.",
+	"wbqc-violation-message-single-best-value-no-preferred": "Denna egenskap borde bara innehålla ett enda \"bästa\" värde. Ett av de nu flera värdena borde markeras med \"föredragen\" rank.",
 	"wbqc-violation-message-single-best-value-no-preferred-separators": "Den här egenskapen borde bara innehålla ett enda \"bästa\" värde med samma {{PLURAL:$2|1=$4-bestämning.|bestämningar för dessa egenskaper: $3}} En av de nu flera värdena borde markeras med \"föredragen\" rank.",
 	"wbqc-violation-message-single-best-value-multi-preferred": "Den här egenskapen borde bara innehålla ett enda \"bästa\" värde. En av de nu flera värdena borde markeras med \"föredragen\" rank.",
 	"wbqc-violation-message-single-best-value-multi-preferred-separators": "Den här egenskapen borde bara innehålla ett enda \"bästa\" värde med samma {{PLURAL:$2|1=$4-bestämning.|bestämningar för dessa egenskaper: $3}} Det ska inte finnas fler än ett värde med \"föredragen\" rank.",
@@ -140,6 +141,8 @@
 	"wbqc-violation-message-integer": "Värden för $1 borde vara heltal, men $2 har en bråkdel.",
 	"wbqc-violation-message-integer-bounds": "Värden för $1 bör vara heltal, men gränserna för $2 har en en bråkdel.",
 	"wbqc-violation-message-citationNeeded": "Uttalanden för $1 bör ha minst en referens.",
+	"wbqc-violation-message-language": "Uttalanden för $1 borde bara finnas på lexem som har ställt in {{PLURAL:$2|1=$4|2=antingen $4 eller $5|en av följande: $3,}} som språk.",
+	"wbqc-violation-message-label-lacking": "Entiteter med uttalanden för $1 borde också minst ha en etikett på {{PLURAL:$2|1=$4.|något av följande språk: $3}}",
 	"wbqc-violation-message-property-scope": "Egenskapen $1 borde inte användas på den här platsen ($2). {{PLURAL:$3|Den enda giltiga platsen|De enda giltiga platserna}} för denna egenskap {{PLURAL:$3|är $5.|är: $4}}",
 	"wbqc-violation-message-exception": "Denna entitet är ett känt undantag för denna begränsning och har märkts som sådan."
 }

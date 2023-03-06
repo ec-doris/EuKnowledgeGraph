@@ -7,6 +7,7 @@
 			"Yurik"
 		]
 	},
+	"nstab-data": "Dati",
 	"jsonconfig-desc": "Permette di memorizzare la configurazione JSON in un wiki",
 	"jsonconfig-duplicate-field": "Trovato più di un valore \"$1\"",
 	"jsonconfig-edit-action-apply": "Applica",

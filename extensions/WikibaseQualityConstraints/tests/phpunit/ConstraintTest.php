@@ -3,7 +3,7 @@
 namespace WikibaseQuality\ConstraintReport\Tests;
 
 use MediaWiki\MediaWikiServices;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\Lib\Tests\Store\Sql\Terms\Util\FakeLoadBalancer;
 use WikibaseQuality\ConstraintReport\ConstraintRepositoryLookup;
 use WikibaseQuality\ConstraintReport\ConstraintsServices;
@@ -18,14 +18,14 @@ use WikibaseQuality\ConstraintReport\ConstraintsServices;
  * @author BP2014N1
  * @license GPL-2.0-or-later
  */
-class ConstraintTest extends \MediaWikiTestCase {
+class ConstraintTest extends \MediaWikiIntegrationTestCase {
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 		MediaWikiServices::getInstance()->resetServiceForTesting( ConstraintsServices::CONSTRAINT_LOOKUP );
 	}
 
-	protected function tearDown() : void {
+	protected function tearDown(): void {
 		MediaWikiServices::getInstance()->resetServiceForTesting( ConstraintsServices::CONSTRAINT_LOOKUP );
 		parent::tearDown();
 	}
@@ -36,15 +36,15 @@ class ConstraintTest extends \MediaWikiTestCase {
 			false,
 			true
 		);
-		$constraints = $repo->queryConstraintsForProperty( new PropertyId( 'P1' ) );
+		$constraints = $repo->queryConstraintsForProperty( new NumericPropertyId( 'P1' ) );
 
 		$this->assertEquals( 'Item', $constraints[0]->getConstraintTypeItemId() );
-		$this->assertEquals( new PropertyId( 'P1' ), $constraints[0]->getPropertyId() );
+		$this->assertEquals( new NumericPropertyId( 'P1' ), $constraints[0]->getPropertyId() );
 		$this->assertSame( '1', $constraints[0]->getConstraintId() );
 		$constraintParameters = $constraints[0]->getConstraintParameters();
-		$this->assertEquals( 2, count( $constraintParameters ) );
-		$this->assertEquals( 'P21', $constraintParameters['property'] );
-		$this->assertEquals( 'mandatory', $constraintParameters['constraint_status'] );
+		$this->assertCount( 2, $constraintParameters );
+		$this->assertSame( 'P21', $constraintParameters['property'] );
+		$this->assertSame( 'mandatory', $constraintParameters['constraint_status'] );
 	}
 
 	public function addDBData() {

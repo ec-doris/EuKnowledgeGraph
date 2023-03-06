@@ -10,10 +10,15 @@ use Message;
  */
 final class JCValue {
 
+	/** @var int */
 	private $status;
+	/** @var mixed */
 	private $value;
+	/** @var bool|null */
 	private $sameAsDefault = false;
+	/** @var bool|null */
 	private $defaultUsed = false;
+	/** @var bool|Message */
 	private $error = false;
 
 	/** Value has not been checked */
@@ -28,7 +33,8 @@ final class JCValue {
 	/** field was not explicitly tested, but it was listed as a parent of one of the tested fields */
 	public const VISITED = 3;
 
-	/** @param int $status
+	/**
+	 * @param int $status
 	 * @param mixed $value
 	 */
 	public function __construct( $status, $value ) {

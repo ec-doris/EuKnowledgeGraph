@@ -15,10 +15,10 @@ class EPSG3857 {
 	/**
 	 * (LatLon) -> Point
 	 *
-	 * @param float[] $latLon
+	 * @param float[] $latLon Latitude (north–south) and longitude (east-west) in degree.
 	 * @return float[]
 	 */
-	public static function project( $latLon ) {
+	public static function project( $latLon ): array {
 		$projectedPoint = SphericalMercator::project( $latLon );
 
 		return [ $projectedPoint[0] * self::EARTH_RADIUS, $projectedPoint[1] * self::EARTH_RADIUS ];
@@ -27,11 +27,11 @@ class EPSG3857 {
 	/**
 	 * (LatLon, Number) -> Point
 	 *
-	 * @param float[] $latLon
+	 * @param float[] $latLon Latitude (north–south) and longitude (east-west) in degree.
 	 * @param int $zoom
 	 * @return float[]
 	 */
-	public static function latLonToPoint( $latLon, $zoom ) {
+	public static function latLonToPoint( $latLon, $zoom ): array {
 		$projectedPoint = SphericalMercator::project( $latLon );
 		$scale = self::scale( $zoom );
 
@@ -43,9 +43,9 @@ class EPSG3857 {
 	 *
 	 * @param float[] $point
 	 * @param int $zoom
-	 * @return float[]
+	 * @return float[] Latitude (north–south) and longitude (east-west) in degree.
 	 */
-	public static function pointToLatLon( $point, $zoom ) {
+	public static function pointToLatLon( $point, $zoom ): array {
 		$scale = self::scale( $zoom );
 		$untransformedPoint = Transformation::untransform( $point, $scale );
 
@@ -66,7 +66,7 @@ class EPSG3857 {
 	 *
 	 * @return int[]
 	 */
-	public static function getSize( $zoom ) {
+	public static function getSize( $zoom ): array {
 		$size = self::scale( $zoom );
 
 		return [ $size, $size ];

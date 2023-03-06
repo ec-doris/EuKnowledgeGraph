@@ -10,6 +10,7 @@ use Kartographer\Tag\TagHandler;
  * @author Thiemo Kreuz
  */
 trait TagHandlerTest {
+
 	/**
 	 * @covers \Kartographer\Tag\TagHandler::finalParseStep
 	 */
@@ -20,7 +21,7 @@ trait TagHandlerTest {
 
 		$output = $this->createMock( \ParserOutput::class );
 		$output->expects( $this->once() )
-			->method( 'addJsConfigVars' )
+			->method( 'setJsConfigVar' )
 			->with(
 				'wgKartographerLiveData',
 				(object)[
@@ -33,7 +34,7 @@ trait TagHandlerTest {
 			$state,
 			$output,
 			false,
-			$this->createMock( \Title::class )
+			$this->createMock( \Parser::class )
 		);
 	}
 

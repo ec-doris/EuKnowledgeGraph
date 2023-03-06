@@ -2,7 +2,7 @@
 
 namespace WikibaseQuality\ConstraintReport\Tests;
 
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\Lib\Tests\Store\Sql\Terms\Util\FakeLoadBalancer;
 use WikibaseQuality\ConstraintReport\Constraint;
 use WikibaseQuality\ConstraintReport\ConstraintRepositoryStore;
@@ -17,7 +17,7 @@ use WikibaseQuality\ConstraintReport\ConstraintRepositoryStore;
  * @author BP2014N1
  * @license GPL-2.0-or-later
  */
-class ConstraintRepositoryStoreTest extends \MediaWikiTestCase {
+class ConstraintRepositoryStoreTest extends \MediaWikiIntegrationTestCase {
 
 	private function newConstraintRepositoryStore() {
 		return new ConstraintRepositoryStore(
@@ -30,9 +30,9 @@ class ConstraintRepositoryStoreTest extends \MediaWikiTestCase {
 		$this->insertTestData();
 
 		$constraints = [
-			new Constraint( 'foo', new PropertyId( 'P42' ), 'TestConstraint', [ 'foo' => 'bar' ] ),
-			new Constraint( 'bar', new PropertyId( 'P42' ), 'TestConstraint', [ 'bar' => 'baz' ] ),
-			new Constraint( 'baz', new PropertyId( 'P42' ), 'TestConstraint', [] ),
+			new Constraint( 'foo', new NumericPropertyId( 'P42' ), 'TestConstraint', [ 'foo' => 'bar' ] ),
+			new Constraint( 'bar', new NumericPropertyId( 'P42' ), 'TestConstraint', [ 'bar' => 'baz' ] ),
+			new Constraint( 'baz', new NumericPropertyId( 'P42' ), 'TestConstraint', [] ),
 		];
 		$repo = $this->newConstraintRepositoryStore();
 		$repo->insertBatch( $constraints );
@@ -101,7 +101,7 @@ class ConstraintRepositoryStoreTest extends \MediaWikiTestCase {
 		$repo->insertBatch( [
 			new Constraint(
 				'P1$13510cdc-0f91-4ea3-b71d-db2a33c27dff',
-				new PropertyId( 'P1' ),
+				new NumericPropertyId( 'P1' ),
 				'Q1',
 				$constraintParameters
 			)

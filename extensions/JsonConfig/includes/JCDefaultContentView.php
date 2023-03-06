@@ -4,9 +4,9 @@ namespace JsonConfig;
 
 use FormatJson;
 use Html;
+use MediaWiki\Page\PageReference;
 use ParserOptions;
 use ParserOutput;
-use Title;
 
 /**
  * This class is used in case when there is no custom view defined for JCContent object
@@ -20,7 +20,7 @@ class JCDefaultContentView extends JCContentView {
 	 *
 	 * Render JCContent object as HTML - replaces valueToHtml()
 	 * @param JCContent $content
-	 * @param Title $title Context title for parsing
+	 * @param PageReference $page Context title for parsing
 	 * @param int|null $revId Revision ID (for {{REVISIONID}})
 	 * @param ParserOptions $options Parser options
 	 * @param bool $generateHtml Whether or not to generate HTML
@@ -28,7 +28,7 @@ class JCDefaultContentView extends JCContentView {
 	 * @return string
 	 */
 	public function valueToHtml(
-		JCContent $content, Title $title, $revId, ParserOptions $options, $generateHtml,
+		JCContent $content, PageReference $page, $revId, ParserOptions $options, $generateHtml,
 		 ParserOutput &$output
 	) {
 		return $this->renderValue( $content, $content->getData(), [] );
@@ -92,7 +92,7 @@ class JCDefaultContentView extends JCContentView {
 	/**
 	 * Convert $data into a table row, returning <tr>...</tr> element.
 	 * @param JCContent $content
-	 * @param mixed $data - treats it as opaque - renderValue will know how to handle it
+	 * @param mixed $data treats it as opaque - renderValue will know how to handle it
 	 * @param array $path path to this field
 	 * @return string
 	 */
@@ -105,7 +105,7 @@ class JCDefaultContentView extends JCContentView {
 	 * Converts $data into the content of the <tr>...</tr> tag.
 	 * By default returns <th> with the last path element and <td> with the renderValue() result.
 	 * @param JCContent $content
-	 * @param mixed $data - treats it as opaque - renderValue will know how to handle it
+	 * @param mixed $data treats it as opaque - renderValue will know how to handle it
 	 * @param array $path
 	 * @return string
 	 */
@@ -127,7 +127,7 @@ class JCDefaultContentView extends JCContentView {
 	/**
 	 * Determine if data is a container and should be rendered as a complex structure
 	 * @param JCContent $content
-	 * @param array|object $data
+	 * @param array|\stdClass $data
 	 * @param array $path
 	 * @return bool
 	 */
@@ -142,7 +142,7 @@ class JCDefaultContentView extends JCContentView {
 	 * Determine if data is a special container that needs to be rendered as a comma-separated list.
 	 * By default,
 	 * @param JCContent $content
-	 * @param array|object $data
+	 * @param array|\stdClass $data
 	 * @param array $path
 	 * @return bool
 	 */

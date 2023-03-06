@@ -9,7 +9,7 @@
 	"apihelp-wbcheckconstraints-param-id": "Назнака на единиците за кои ги барате податоците. Одделете ги вредностите со права црта (|) или нешто друго.",
 	"apihelp-wbcheckconstraints-param-claimid": "GUID-список што пронаоѓа тврдење за проверка на извод од услови. Одделете ги вредностите со права црта (|).",
 	"apihelp-wbcheckconstraints-param-constraintid": "Филтер (по избор) што ги дава само условите со укажаната назнака.",
-	"apihelp-wbcheckconstraints-param-status": "Незадолжителен филтер за исход од проверка само со избраните состојби.\n\nИмајте на ум дека се меѓускладираат само исходите од состојбите „violation“, „warning“ и „bad-parameters“, така што полза од меѓускладирање нема да имаат барањата што бираат состојби вон тие три.",
+	"apihelp-wbcheckconstraints-param-status": "Незадолжителен филтер за исход од проверка само со избраните состојби.\n\nИмајте на ум дека се меѓускладираат само исходите од состојбите „violation“, „warning“, „suggestion“ и „bad-parameters“, така што полза од меѓускладирање нема да имаат барањата што бираат состојби вон тие четири.",
 	"apihelp-wbcheckconstraints-paramvalue-status-compliance": "Исказот го задоволува условот.",
 	"apihelp-wbcheckconstraints-paramvalue-status-violation": "Исказот го нарушува условот.",
 	"apihelp-wbcheckconstraints-paramvalue-status-exception": "Предметната единица на исказот е познат исклучок од условот.",

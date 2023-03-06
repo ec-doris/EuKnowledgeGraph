@@ -3,7 +3,7 @@
 namespace WikibaseQuality\ConstraintReport\ConstraintCheck\Result;
 
 use DomainException;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use WikibaseQuality\ConstraintReport\Constraint;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\ContextCursor;
 
@@ -14,20 +14,21 @@ use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\ContextCursor;
  *
  * @author Lucas Werkmeister
  * @license GPL-2.0-or-later
+ * @phan-file-suppress PhanPluginNeverReturnMethod
  */
 class NullResult extends CheckResult {
 
 	/**
 	 * The property ID that is used for the fake constraint passed to the superclass.
-	 * Since the PropertyId constructor prevents invalid property IDs like “P0”,
+	 * Since the NumericPropertyId constructor prevents invalid property IDs like “P0”,
 	 * we use the maximum permitted property ID and assume that it’s unlikely to actually exist.
 	 */
-	const NULL_PROPERTY_ID = 'P2147483647';
+	private const NULL_PROPERTY_ID = 'P2147483647';
 
 	public function __construct( ContextCursor $contextCursor ) {
 		$constraint = new Constraint(
 			'null',
-			new PropertyId( self::NULL_PROPERTY_ID ),
+			new NumericPropertyId( self::NULL_PROPERTY_ID ),
 			'none',
 			[]
 		);

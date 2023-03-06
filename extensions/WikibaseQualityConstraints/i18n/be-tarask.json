@@ -12,6 +12,7 @@
 	"wbqc-constraintreport-form-section": "Праверыць абмежаваньні для сутнасьці",
 	"wbqc-constraintreport-form-submit-label": "Праверыць",
 	"wbqc-constraintreport-form-entityid-label": "Ідэнтыфікатар сутнасьці:",
+	"wbqc-constraintreport-form-entityid-placeholder": "Qxx або Pxx",
 	"wbqc-constraintreport-result-headline": "Вынік для",
 	"wbqc-constraintreport-invalid-entity-id": "Памылковы ідэнтыфікатар сутнасьці.",
 	"wbqc-constraintreport-not-existent-entity": "Сутнасьці не існуе.",
@@ -139,6 +140,8 @@
 	"wbqc-violation-message-integer": "Значэньні для $1 мусяць быць цэлымі, аднак $2 мае дробную частку.",
 	"wbqc-violation-message-integer-bounds": "Значэньні для $1 мусяць быць цэлымі, аднак граніцы $2 маюць дробную частку.",
 	"wbqc-violation-message-citationNeeded": "Сьцьверджаньні для $1 мусяць мець прынамсі адну крыніцу.",
+	"wbqc-violation-message-language": "Сьцьверджаньні для $1 мусяць быць толькі на лексэмах з {{PLURAL:$2|1=$4 мовай.|2=альбо $4, альбо $5 мовай.|адной з гэтых моваў: $3}}",
+	"wbqc-violation-message-label-lacking": "Існасьці з сьцьверджаньнямі для $1 мусяць таксама мець метку прынамсі {{PLURAL:$2|1=$4 мовай.|адной з гэткіх моваў: $3}}",
 	"wbqc-violation-message-property-scope": "Уласьцівасьць $1 ня мусіць выкарыстоўвацца ў гэтай мясцовасьці ($2). {{PLURAL:$3|Адзіная слушная мясцовасьць|Адзіныя слушныя мясцовасьці}} для гэтай уласьцівасьці{{PLURAL:$3| — $5.|: $4}}",
 	"wbqc-violation-message-exception": "Гэтая сутнасьць — вядомы вынятак для дадзенага абмежаваньня і пазначаная такой."
 }

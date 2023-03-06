@@ -1,14 +1,14 @@
 {
 	"@metadata": {
 		"authors": [
+			"Felba",
 			"Lokal Profil",
-			"WikiPhoenix",
-			"Felba"
+			"WikiPhoenix"
 		]
 	},
 	"apihelp-jsonconfig-description": "Ger direkt åtkomst till JsonConfig-undersystemet.",
 	"apihelp-jsonconfig-summary": "Tillåter direkt tillgång till JsonConfigs undersystem",
-	"apihelp-jsonconfig-param-command": "Wilken underåtgärd som ska utföras på JsonConfig:\n;status:Visar JsonConfig-konfiguration.\n;reset:Rensar konfigurationer från cache. Kräver $1title parametern och jsonconfig-reset-rättighet.\n;reload:Ladda om och cachar konfigurationer från config-lagringen.  Kräver $1title parametern och jsonconfig-reset-rättighet.",
+	"apihelp-jsonconfig-param-command": "Wilken underåtgärd som ska utföras på JsonConfig:\n;status:Visar JsonConfig-konfiguration.\n;reset:Rensar konfigurationer från cache. Kräver $1title parametern och jsonconfig-flush-rättighet.\n;reload:Ladda om och cachar konfigurationer från config-lagringen.  Kräver $1title parametern och jsonconfig-reset-rättighet.",
 	"apihelp-jsonconfig-param-namespace": "Namespace-siffra av titeln som ska bearbetas.",
 	"apihelp-jsonconfig-param-title": "Titel att bearbeta utan namnrymdsprefix.",
 	"apihelp-jsonconfig-param-content": "För $1command=reload, använd detta innehåll istället.",

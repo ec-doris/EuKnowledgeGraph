@@ -2,7 +2,7 @@
 
 namespace WikibaseQuality\ConstraintReport\Tests\Checker;
 
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Snak\PropertyNoValueSnak;
 use Wikibase\Repo\Tests\NewItem;
 use Wikibase\Repo\Tests\NewStatement;
@@ -30,7 +30,7 @@ class ReferenceCheckerTest extends \PHPUnit\Framework\TestCase {
 	 * @dataProvider provideContextTypes
 	 */
 	public function testReferenceConstraint( $type, $messageKey ) {
-		$snak = new PropertyNoValueSnak( new PropertyId( 'P1' ) );
+		$snak = new PropertyNoValueSnak( new NumericPropertyId( 'P1' ) );
 		$context = $this->createMock( Context::class );
 		$context->method( 'getType' )->willReturn( $type );
 		$context->method( 'getSnak' )->willReturn( $snak );
@@ -82,16 +82,11 @@ class ReferenceCheckerTest extends \PHPUnit\Framework\TestCase {
 	 * @return Constraint
 	 */
 	private function getConstraintMock() {
-		$mock = $this
-			->getMockBuilder( Constraint::class )
-			->disableOriginalConstructor()
-			->getMock();
-		$mock->expects( $this->any() )
-			->method( 'getConstraintParameters' )
-			->will( $this->returnValue( [] ) );
-		$mock->expects( $this->any() )
-			->method( 'getConstraintTypeItemId' )
-			->will( $this->returnValue( 'Q21528959' ) );
+		$mock = $this->createMock( Constraint::class );
+		$mock->method( 'getConstraintParameters' )
+			->willReturn( [] );
+		$mock->method( 'getConstraintTypeItemId' )
+			->willReturn( 'Q21528959' );
 
 		return $mock;
 	}
