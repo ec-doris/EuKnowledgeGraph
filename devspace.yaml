@@ -1,0 +1,155 @@
+version: v1beta11
+
+vars:
+  - name: APP_IMAGE
+    value: maven:3.6.0-jdk-11-slim
+
+deployments:
+  - name: wikibase-config
+    kubectl:
+      manifests:
+        - devspace/wikibase.yaml
+  - name: wikibase-bundle
+    helm:
+      componentChart: true
+      values:
+        containers:
+          - name: wikibase-bundle
+            image: ${WIKIBASE_BUNDLE_IMAGE_NAME}
+            env:
+              - name: DB_SERVER
+                value: maria-db:3306
+              - name: MW_ADMIN_NAME
+                value: ${MW_ADMIN_NAME}
+              - name: MW_ADMIN_PASS
+                value: ${MW_ADMIN_PASS}
+              - name: MW_ADMIN_EMAIL
+                value: ${MW_ADMIN_EMAIL}
+              - name: MW_WG_SECRET_KEY
+                value: ${MW_SECRET_KEY}
+              - name: CAS_CLIENT_ID
+                value: ${CAS_CLIENT_ID}
+              - name: CAS_CLIENT_SECRET
+                value: ${CAS_CLIENT_SECRET}
+              - name: MW_WG_JOB_RUN_RATE
+                value: "0"
+              - name: DB_USER
+                value: ${DB_USER}
+              - name: DB_PASS
+                value: ${DB_PASS}
+              - name: DB_NAME
+                value: ${DB_NAME}
+              - name: WIKIBASE_HOST
+                value: wikibase.local.europa.eu
+              - name: QS_PUBLIC_SCHEME_HOST_AND_PORT
+                value: http://${QUICKSTATEMENTS_HOST}:${QUICKSTATEMENTS_PORT}
+        service:
+          ports:
+            - port: 80
+#  - name: wikibase-jobrunner
+#    helm:
+#      componentChart: true
+#      values:
+#        containers:
+#          - name: wikibase-jobrunner
+#            image: ${WIKIBASE_BUNDLE_IMAGE_NAME}
+#            command:
+#              - "/bin/sh"
+#            args:
+#              - "-c"
+#              - |
+#                sleep 9999999
+#            env:
+#              - name: DB_SERVER
+#                value: maria-db:3306
+#              - name: MW_ADMIN_NAME
+#                value: ${MW_ADMIN_NAME}
+#              - name: MW_ADMIN_PASS
+#                value: ${MW_ADMIN_PASS}
+#              - name: MW_ADMIN_EMAIL
+#                value: ${MW_ADMIN_EMAIL}
+#              - name: MW_WG_SECRET_KEY
+#                value: ${MW_SECRET_KEY}
+#              - name: CAS_CLIENT_ID
+#                value: ${CAS_CLIENT_ID}
+#              - name: CAS_CLIENT_SECRET
+#                value: ${CAS_CLIENT_SECRET}
+#              - name: MW_WG_JOB_RUN_RATE
+#                value: "0"
+#              - name: DB_USER
+#                value: ${DB_USER}
+#              - name: DB_PASS
+#                value: ${DB_PASS}
+#              - name: DB_NAME
+#                value: ${DB_NAME}
+#              - name: WIKIBASE_HOST
+#                value: wikibase.local.europa.eu
+#              - name: QS_PUBLIC_SCHEME_HOST_AND_PORT
+#                value: http://${QUICKSTATEMENTS_HOST}:${QUICKSTATEMENTS_PORT}
+#              - name: MAX_JOBS
+#                value: ${MAX_JOBS}
+  - name: maria-db
+    helm:
+      componentChart: true
+      values:
+        containers:
+          - name: maria-db
+            image: ${MYSQL_IMAGE_NAME}
+            env:
+              - name: MYSQL_DATABASE
+                value: ${DB_NAME}
+              - name: MYSQL_USER
+                value: ${DB_USER}
+              - name: MYSQL_PASSWORD
+                value: ${DB_PASS}
+              - name: MYSQL_RANDOM_ROOT_PASSWORD
+                value: 'yes'
+        service:
+          ports:
+            - port: 3306
+
+dev:
+  sync:
+    - imageSelector: ${WIKIBASE_BUNDLE_IMAGE_NAME}
+      containerPath: /app
+      excludePaths:
+        - .git/
+        - .github/
+        - .idea/
+        - .devspace/
+        - devspace/
+        - README.md
+        - target
+      uploadExcludePaths:
+        - Dockerfile
+        - devspace.yaml
+        - deploy/
+        - node_modules/
+        - dist/
+        - target
+
+hooks:
+  - command: |
+      ln -sf /app/LocalSettings.php /var/www/html/LocalSettings.d/LocalSettings.override.php
+      rm -Rf /var/www/html/extensions/ParserFunctions
+      rm -Rf /var/www/html/extensions/SyntaxHighlight_GeSHi
+      rm -Rf /var/www/html/extensions/TemplateData
+      ln -sf /app/extensions/* /var/www/html/extensions
+      ln -sf /app/images/* /var/www/html/images
+    container:
+      imageSelector: ${WIKIBASE_BUNDLE_IMAGE_NAME}
+    events: ["after:initialSync:*"]
+
+#  - command: |
+#      chmod +x /app/jobrunner-entrypoint.sh
+#      /app/jobrunner-entrypoint.sh
+#    container:
+#      labelSelector:
+#        app.kubernetes.io/component: wikibase-jobrunner
+#    events: ["after:initialSync:*"]
+
+commands:
+  - name: start-app
+    description: Run the application on local
+    command: devspace enter -c maven -- mvn spring-boot:run -Dspring-boot.run.arguments="--spring.config.location=src/main/resources/config/application-k8s-prod.properties"
+    appendArgs: true
