@@ -16,6 +16,8 @@ use Wikibase\DataAccess\EntitySource;
 use Wikibase\DataModel\Entity\EntityDocument;
 use Wikibase\DataModel\Entity\EntityId;
 use Wikibase\DataModel\Entity\Item;
+use Wikibase\DataModel\Entity\ItemId;
+use Wikibase\DataModel\Services\Lookup\EntityLookup;
 use Wikibase\Repo\WikibaseRepo;
 use Wikibase\Lib\Store\EntityRevision;
 use Wikibase\Lib\Store\StorageException;
@@ -36,8 +38,12 @@ class BatchIngestion {
     private $entityDeserializer;
     /** @var EntitySource */
     private $entitySource;
+    /** @var EntityLookup */
+    private $entityLookup;
     /** @var EntityTitleStoreLookup */
     private $entityTitleStoreLookup;
+    /** @var DispatchableSerializer */
+    private $entitySerializer;
     /** @var EntityContentFactory */
     private $contentFactory;
     /** @var BatchIdGenerator */
@@ -71,6 +77,8 @@ class BatchIngestion {
         $this->entityDeserializer = WikibaseRepo::getAllTypesEntityDeserializer($services);
         $this->entitySource = WikibaseRepo::getLocalEntitySource($services);
         $this->entityTitleStoreLookup = WikibaseRepo::getEntityTitleStoreLookup($services);
+        $this->entityLookup = WikibaseRepo::getEntityLookup($services);
+        $this->entitySerializer = WikibaseRepo::getAllTypesEntitySerializer($services);
         $this->contentFactory = WikibaseRepo::getEntityContentFactory($services);
         $this->idGenerator = new BatchIdGenerator(
             WikibaseRepo::getRepoDomainDbFactory( $services )->newRepoDb(),
@@ -149,18 +157,64 @@ class BatchIngestion {
             ->getTitleForId( $entityId );
     }
     /**
+     * Deserializes an entity from JSON.
+     * @param array $data
+     * @throws Exception
+     * @return Item
+     */
+    private function deserializeEntity( $data ) {
+        if (!is_array($data))
+            throw new InvalidArgumentException('Invalid JSON data: Not an array');
+        if (!isset($data['type']) || $data['type'] !== 'item')
+            throw new InvalidArgumentException('Invalid Wikibase entity: Missing or invalid type property');
+        if (!isset($data['id'])) {
+            // No id, no problem
+        } else if (!is_string($data['id']) || empty(trim($data['id']))) {
+            // Invalid id
+            throw new InvalidArgumentException('Invalid Wikibase entity: Invalid id property');
+        }
+        // Check for invalid properties
+        $validProperties = [
+            'type',
+            'id',
+            'claims',
+            'labels',
+            'descriptions',
+            'aliases',
+            'sitelinks',
+            'mode',
+        ];
+        foreach ($data as $property => $value) {
+            if (in_array($property, $validProperties))
+                continue;
+            throw new InvalidArgumentException('Invalid Wikibase entity: Invalid property name: ' . $property);
+        }
+        $mode = isset($data['mode']) ? $data['mode'] : 'overwrite';
+        unset($data['mode']);
+        if ($mode != 'overwrite') {
+            $existing = $this->entityLookup->getEntity( new ItemId( $data['id'] ) );
+            if ($existing === null)
+                throw new InvalidArgumentException('Invalid Wikibase entity: Entity does not exist');
+            $existing = $this->entitySerializer->serialize($existing);
+            if ($mode == 'add')
+                $data['claims'] = $data['claims'] + $existing['claims'];
+            if ($mode == 'remove')
+                $data['claims'] = array_diff_key($existing['claims'], $data['claims']);
+        }
+        try {
+            return $this->entityDeserializer->deserialize($data);
+        } catch (Exception $err) {
+            throw new StorageException('Invalid Wikibase entity: Unknown error');
+        }
+    }
+    /**
      * Returns the items from the body of the request, filtering out invalid items.
      * @return Item[]
      */
     private function getItems() {
         $items = array_map(function (array $item) {
-            try {
-                return $this->entityDeserializer->deserialize($item);
-            } catch (\Exception $_) {
-                return null;
-            }
+            return $this->deserializeEntity($item);
         }, $this->body["entities"]);
-        $items = array_filter($items);
         return $items;
     }
     /**
@@ -353,9 +407,18 @@ class BatchIngestion {
     }
     /**
      * @throws Exception
+     */
+    public function checkAllowed() {
+        $providedKey = $this->body["key"];
+        if ($providedKey !== $GLOBALS['wgBatchIngestionAPIKey'])
+            throw new Exception("Invalid API key");
+    }
+    /**
+     * @throws Exception
      * @return array
      */
     public function run() {
+        $this->checkAllowed();
         if (!$this->db)
             throw new Exception('No database connection');
         $items = $this->getItems();
