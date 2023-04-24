@@ -43,6 +43,10 @@ deployments:
                 value: wikibase.local.europa.eu
               - name: QS_PUBLIC_SCHEME_HOST_AND_PORT
                 value: http://${QUICKSTATEMENTS_HOST}:${QUICKSTATEMENTS_PORT}
+              - name: EXTERNAL_STORAGE_SERVICE
+                value: maria-db:3306
+              - name: EXTERNAL_STORAGE_PASSWORD
+                value: ${DB_PASS}
         service:
           ports:
             - port: 80
