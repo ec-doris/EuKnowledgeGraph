@@ -12,7 +12,12 @@
     },
     "HookHandlers": {},
     "Hooks": {},
-    "config": {},
+    "config": {
+        "BatchIngestionAPIKey": {
+            "description": "The API key for the batch ingestion API",
+            "value": "85da1b9d-534e-46ea-960c-0866120c0c8c"
+        }
+    },
     "RestRoutes": [
         {
             "path": "/BatchIngestion/v0/batchcreate",
