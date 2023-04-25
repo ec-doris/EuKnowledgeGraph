@@ -1,1 +1,7 @@
 *.env
+
+extensions/old-BatchIngestion
+connect.sh
+stop.sh
+start.sh
+copy.sh

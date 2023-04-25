@@ -13,3 +13,5 @@ COPY extensions/BatchIngestion /var/www/html/extensions/BatchIngestion
 COPY images /var/www/html/images/
 COPY --chown=www-data:www-data jobrunner-entrypoint.sh /var/www/html/maintenance/jobrunner-entrypoint.sh
 RUN chmod +x /var/www/html/maintenance/jobrunner-entrypoint.sh
+RUN apt update
+RUN apt install -y vim
