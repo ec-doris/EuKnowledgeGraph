@@ -11,7 +11,7 @@
 	"apihelp-wbcheckconstraints-param-id": "معرف العناصر للحصول على البيانات منه. قيم منفصلة بـ '|'.",
 	"apihelp-wbcheckconstraints-param-claimid": "قائمة غويد تحدد إدعاء للتحقق من تقرير المحددات. قيم منفصلة مع '|'.",
 	"apihelp-wbcheckconstraints-param-constraintid": "مرشح اختياري لإرجاع المحددات/القيود التي تحتوي على معرف القيد المحدد فقط.",
-	"apihelp-wbcheckconstraints-param-status": "مرشح اختياري لعرض نتائج الفحص مع الحالات المحددة فقط.\n\nلاحظ أنه يتم تخزين نتائج حالة 'المخالفات' و'التحذير' و'الوسائط السيئة' فقط في ذاكرة التخزين المؤقت; لذلك لا تستفيد الطلبات التي تحدد أية حالات خارج تلك الثلاثة من التخزين المؤقت.",
+	"apihelp-wbcheckconstraints-param-status": "عامل تصفية اختياري لإرجاع نتائج التحقق مع الحالات المحددة فقط.\n\nلاحظ أن النتائج فقط لحالات \"الانتهاك\" و \"التحذير\" و \"الاقتراح\" و \"المعلمات السيئة\" يتم تخزينها مؤقتًا ، لذا فإن الطلبات التي تحدد أيًا الحالات التي تتجاوز تلك الأربعة لا تستفيد من التخزين المؤقت.",
 	"apihelp-wbcheckconstraints-paramvalue-status-compliance": "البيان يطابق القيد.",
 	"apihelp-wbcheckconstraints-paramvalue-status-violation": "البيان ينتهك القيد.",
 	"apihelp-wbcheckconstraints-paramvalue-status-exception": "الكيان موضوع البيان هو استثناء معروف لدى القيد.",

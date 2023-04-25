@@ -9,6 +9,8 @@ use WikibaseQuality\ConstraintReport\Constraint;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Cache\Metadata;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\ConstraintChecker;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\Context;
+use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\ConstraintParameterException;
+use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\ConstraintParameterParser;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\DummySparqlHelper;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\SparqlHelper;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\SparqlHelperException;
@@ -28,23 +30,27 @@ class UniqueValueChecker implements ConstraintChecker {
 	private $sparqlHelper;
 
 	/**
+	 * @var ConstraintParameterParser
+	 */
+	private $constraintParameterParser;
+
+	/**
 	 * @param SparqlHelper $sparqlHelper
+	 * @param ConstraintParameterParser $constraintParameterParser
 	 */
 	public function __construct(
-		SparqlHelper $sparqlHelper
+		SparqlHelper $sparqlHelper,
+		ConstraintParameterParser $constraintParameterParser
 	) {
 		$this->sparqlHelper = $sparqlHelper;
+		$this->constraintParameterParser = $constraintParameterParser;
 	}
 
 	/**
 	 * @codeCoverageIgnore This method is purely declarative.
 	 */
 	public function getSupportedContextTypes() {
-		return [
-			Context::TYPE_STATEMENT => CheckResult::STATUS_COMPLIANCE,
-			Context::TYPE_QUALIFIER => CheckResult::STATUS_COMPLIANCE,
-			Context::TYPE_REFERENCE => CheckResult::STATUS_COMPLIANCE,
-		];
+		return self::ALL_CONTEXT_TYPES_SUPPORTED;
 	}
 
 	/**
@@ -54,6 +60,11 @@ class UniqueValueChecker implements ConstraintChecker {
 		return [
 			Context::TYPE_STATEMENT,
 		];
+	}
+
+	/** @codeCoverageIgnore This method is purely declarative. */
+	public function getSupportedEntityTypes() {
+		return self::ALL_ENTITY_TYPES_SUPPORTED;
 	}
 
 	/**
@@ -69,14 +80,19 @@ class UniqueValueChecker implements ConstraintChecker {
 		if ( $context->getSnakRank() === Statement::RANK_DEPRECATED ) {
 			return new CheckResult( $context, $constraint, [], CheckResult::STATUS_DEPRECATED );
 		}
-
 		$parameters = [];
 
 		if ( !( $this->sparqlHelper instanceof DummySparqlHelper ) ) {
+
+			$separators = $this->constraintParameterParser->parseSeparatorsParameter(
+				$constraint->getConstraintParameters()
+			);
+			$parameters['separator'] = $separators;
+
 			if ( $context->getType() === 'statement' ) {
 				$result = $this->sparqlHelper->findEntitiesWithSameStatement(
 					$context->getSnakStatement(),
-					true // ignore deprecated statements
+					$separators
 				);
 			} else {
 				$snak = $context->getSnak();
@@ -116,8 +132,14 @@ class UniqueValueChecker implements ConstraintChecker {
 	}
 
 	public function checkConstraintParameters( Constraint $constraint ) {
-		// no parameters
-		return [];
+		$constraintParameters = $constraint->getConstraintParameters();
+		$exceptions = [];
+		try {
+			$this->constraintParameterParser->parseSeparatorsParameter( $constraintParameters );
+		} catch ( ConstraintParameterException $e ) {
+			$exceptions[] = $e;
+		}
+		return $exceptions;
 	}
 
 }

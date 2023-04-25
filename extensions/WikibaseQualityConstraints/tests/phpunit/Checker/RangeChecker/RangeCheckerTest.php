@@ -6,7 +6,7 @@ use DataValues\DecimalValue;
 use DataValues\QuantityValue;
 use DataValues\TimeValue;
 use DataValues\UnboundedQuantityValue;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Services\Lookup\InMemoryDataTypeLookup;
 use Wikibase\DataModel\Snak\PropertyNoValueSnak;
 use Wikibase\DataModel\Snak\PropertyValueSnak;
@@ -30,9 +30,10 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  * @author BP2014N1
  * @license GPL-2.0-or-later
  */
-class RangeCheckerTest extends \MediaWikiTestCase {
+class RangeCheckerTest extends \MediaWikiIntegrationTestCase {
 
-	use ConstraintParameters, ResultAssertions;
+	use ConstraintParameters;
+	use ResultAssertions;
 
 	/**
 	 * @var TimeValue
@@ -45,16 +46,16 @@ class RangeCheckerTest extends \MediaWikiTestCase {
 	private $checker;
 
 	/**
-	 * @var PropertyId
+	 * @var NumericPropertyId
 	 */
 	private $p1457;
 
 	/**
-	 * @var PropertyId
+	 * @var NumericPropertyId
 	 */
 	private $p2067;
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 		$this->timeValue = $this->getTimeValue( '1970-01-01' );
 		$rangeCheckerHelper = new RangeCheckerHelper(
@@ -62,15 +63,15 @@ class RangeCheckerTest extends \MediaWikiTestCase {
 			new UnitConverter( new CSVUnitStorage( __DIR__ . '/units.csv' ), '' )
 		);
 		$dataTypeLookup = new InMemoryDataTypeLookup();
-		$dataTypeLookup->setDataTypeForProperty( new PropertyId( 'P1' ), 'time' );
-		$dataTypeLookup->setDataTypeForProperty( new PropertyId( 'P2' ), 'quantity' );
+		$dataTypeLookup->setDataTypeForProperty( new NumericPropertyId( 'P1' ), 'time' );
+		$dataTypeLookup->setDataTypeForProperty( new NumericPropertyId( 'P2' ), 'quantity' );
 		$this->checker = new RangeChecker(
 			$dataTypeLookup,
 			$this->getConstraintParameterParser(),
 			$rangeCheckerHelper
 		);
-		$this->p1457 = new PropertyId( 'P1457' );
-		$this->p2067 = new PropertyId( 'P2067' );
+		$this->p1457 = new NumericPropertyId( 'P1457' );
+		$this->p2067 = new NumericPropertyId( 'P2067' );
 	}
 
 	public function testRangeConstraintWithinRange() {
@@ -180,7 +181,7 @@ class RangeCheckerTest extends \MediaWikiTestCase {
 	}
 
 	public function testRangeConstraintNoValueSnak() {
-		$snak = new PropertyNoValueSnak( new PropertyId( 'P1' ) );
+		$snak = new PropertyNoValueSnak( new NumericPropertyId( 'P1' ) );
 		$constraintParameters = [];
 		$constraint = $this->getConstraintMock( $constraintParameters );
 
@@ -372,19 +373,13 @@ class RangeCheckerTest extends \MediaWikiTestCase {
 	 * @return Constraint
 	 */
 	private function getConstraintMock( array $parameters, $propertyId = 'P1' ) {
-		$mock = $this
-			->getMockBuilder( Constraint::class )
-			->disableOriginalConstructor()
-			->getMock();
-		$mock->expects( $this->any() )
-			 ->method( 'getConstraintParameters' )
-			 ->will( $this->returnValue( $parameters ) );
-		$mock->expects( $this->any() )
-			 ->method( 'getConstraintTypeItemId' )
-			 ->will( $this->returnValue( 'Q21510860' ) );
-		$mock->expects( $this->any() )
-			 ->method( 'getPropertyId' )
-			 ->will( $this->returnValue( new PropertyId( $propertyId ) ) );
+		$mock = $this->createMock( Constraint::class );
+		$mock->method( 'getConstraintParameters' )
+			 ->willReturn( $parameters );
+		$mock->method( 'getConstraintTypeItemId' )
+			 ->willReturn( 'Q21510860' );
+		$mock->method( 'getPropertyId' )
+			 ->willReturn( new NumericPropertyId( $propertyId ) );
 
 		return $mock;
 	}

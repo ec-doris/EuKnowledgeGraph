@@ -1,0 +1,23 @@
+{
+	"@metadata": {
+		"authors": [
+			"Eleassar"
+		]
+	},
+	"apihelp-jsonconfig-description": "Omogoča neposreden dostop do podsistema JsonConfig.",
+	"apihelp-jsonconfig-summary": "Omogoča neposreden dostop do podsistema JsonConfig.",
+	"apihelp-jsonconfig-param-command": "Katero poddejanje izvesti na JsonConfig:\n;status:Prikaže konfiguracijo JsonConfig.\n;reset:Počisti konfiguracije iz predpomnilnika. Zahteva parameter $1title in pravico jsonconfig-flush.\n;reload:Ponovno naloži in predpomni konfiguracije iz shrambe konfiguracij. Zahteva parameter $1title in pravico jsonconfig-reset.",
+	"apihelp-jsonconfig-param-namespace": "Številka imenskega prostora naslova za obdelavo.",
+	"apihelp-jsonconfig-param-title": "Naslov za obdelavo brez predpone imenskega prostora.",
+	"apihelp-jsonconfig-param-content": "Za $1command=reload namesto tega uporabite to vsebino.",
+	"apihelp-jsonconfig-example-1": "Prikaži konfiguracijo",
+	"apihelp-jsonconfig-example-2": "Ponastavite [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsonconfig-example-3": "Ponovno naložite [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsondata-description": "Pridobite lokalizirane podatke JSON.",
+	"apihelp-jsondata-summary": "Pridobi lokalizirane podatke JSON.",
+	"apihelp-jsondata-param-title": "Naslov za pridobitev. Privzeto predpostavi, da je imenski prostor »Data:«.",
+	"apihelp-jsondata-example-1": "Pridobite JSON-vsebino strani Sample.tab, lokalizirano v jeziku uporabnika",
+	"apihelp-jsondata-example-2": "Pridobite JSON-vsebino strani Sample.tab, lokalizirano v francoščini",
+	"apierror-jsonconfig-paramrequired": "Za ta ukaz je potreben parameter <var>$1</var>.",
+	"apierror-jsonconfig-badtitle": "Stran, določena s parametroma <var>namespace</var> in <var>title</var>, je neveljavna ali pa ni registrirana v konfiguraciji JsonConfig."
+}

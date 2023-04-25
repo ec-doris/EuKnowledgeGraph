@@ -52,7 +52,6 @@ class MultilingualTextViolationMessageRenderer extends ViolationMessageRenderer 
 
 	/**
 	 * @param ViolationMessage $violationMessage
-	 * (temporarily, pre-rendered strings are allowed and returned without changes)
 	 * @return string
 	 */
 	public function render( ViolationMessage $violationMessage ) {
@@ -63,7 +62,9 @@ class MultilingualTextViolationMessageRenderer extends ViolationMessageRenderer 
 		$arguments = $violationMessage->getArguments();
 		$multilingualTextArgument = array_pop( $arguments );
 		$multilingualTextParams = $this->renderMultilingualText(
+			// @phan-suppress-next-line PhanTypeArraySuspiciousNullable TODO Ensure this is not an actual issue
 			$multilingualTextArgument['value'],
+			// @phan-suppress-next-line PhanTypeArraySuspiciousNullable
 			$multilingualTextArgument['role']
 		);
 

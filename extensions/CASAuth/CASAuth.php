@@ -78,9 +78,11 @@ $wgHooks["GetPreferences"][] = "casPrefs";
 	];
 };*/
 $wgHooks['PersonalUrls'][] = function( array &$personal_urls, Title $title ) {
-        global $wgUser;
-        if( $wgUser->isLoggedIn() ) return true;
-	$personal_urls['eulogin_login'] = array(
+        $user = RequestContext::getMain()->getUser();
+        if ( $user->isRegistered() ) {
+            return true;
+        }
+    	$personal_urls['eulogin_login'] = array(
                 'text' => 'EU Login',
                 'active' => false,
                 'href' => 'w/index.php?title=Special:UserLogin&returnto=Main+Page&eulogin=true'
@@ -98,8 +100,7 @@ function casLogoutCheck() {
         global $CASAuth;
 
         if(isset($_SESSION['wsCASLoggedOut']) && $_SESSION['wsCASLoggedOut']) {
-                global $wgUser;
-                $wgUser->logout();
+                RequestContext::getMain()->getUser()->logout();
 
                 unset($_SESSION['wsCASLoggedOut']);
                 unset($_SESSION['phpCAS']);
@@ -195,9 +196,9 @@ function casLogin($user) {
                         }
 
                         // Login successful
-                        if ($CASAuth["RememberMe"]) {
+                        /*if ($CASAuth["RememberMe"]) {
                           $u->setOption("rememberpassword", 1);
-                        }
+                        }*/
                         $u->setCookies(null, null, $CASAuth["RememberMe"]);
                         $user = $u;
 
@@ -266,7 +267,7 @@ function casPostAuth($ticket2logout) {
         // close the current session for now
         session_write_close();
         session_unset();
-        session_destroy();
+        //session_destroy();
 
         // create a new session where we'll store the old session data
         session_name("casauthssoutticket");
@@ -279,7 +280,7 @@ function casPostAuth($ticket2logout) {
         // close the ssout session again
         session_write_close();
         session_unset();
-        session_destroy();
+       //session_destroy();
 
         // and open the old session again
         session_name($old_session_name);

@@ -62,6 +62,11 @@ class ConflictsWithChecker implements ConstraintChecker {
 		];
 	}
 
+	/** @codeCoverageIgnore This method is purely declarative. */
+	public function getSupportedEntityTypes() {
+		return self::ALL_ENTITY_TYPES_SUPPORTED;
+	}
+
 	/**
 	 * Checks 'Conflicts with' constraint.
 	 *

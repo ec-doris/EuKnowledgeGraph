@@ -4,6 +4,8 @@
 			"Joetaras"
 		]
 	},
+	"nstab-data": "Date",
+	"tooltip-ca-nstab-data": "'Ndruche 'a pàgene de le date",
 	"jsonconfig-desc": "Permette 'a confugurazione JSON de essere reggistrate jndr'à 'na uicchi",
 	"jsonconfig-duplicate-field": "Acchiate cchiù de 'nu valore \"$1\"",
 	"jsonconfig-edit-action-apply": "Appleche",

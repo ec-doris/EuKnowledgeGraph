@@ -2,8 +2,8 @@
 
 namespace WikibaseQuality\ConstraintReport\Tests;
 
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Entity\Property;
-use Wikibase\DataModel\Entity\PropertyId;
 use Wikibase\DataModel\Snak\SnakList;
 use Wikibase\Lib\Changes\Change;
 use Wikibase\Lib\Changes\EntityChange;
@@ -62,7 +62,7 @@ class WikibaseQualityConstraintsHooksTest extends \PHPUnit\Framework\TestCase {
 		}
 
 		// (TestChanges doesn’t have pre-defined changes for the following)
-		$new = new Property( new PropertyId( 'P1' ), null, 'string' );
+		$new = new Property( new NumericPropertyId( 'P1' ), null, 'string' );
 		$old = $new->copy();
 
 		// changes on properties affecting non-constraint statements

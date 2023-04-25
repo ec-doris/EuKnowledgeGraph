@@ -2,7 +2,7 @@
 
 namespace WikibaseQuality\ConstraintReport\Tests;
 
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\Lib\Tests\Store\Sql\Terms\Util\FakeLoadBalancer;
 use WikibaseQuality\ConstraintReport\Constraint;
 use WikibaseQuality\ConstraintReport\ConstraintRepositoryLookup;
@@ -17,7 +17,7 @@ use WikibaseQuality\ConstraintReport\ConstraintRepositoryLookup;
  * @author BP2014N1
  * @license GPL-2.0-or-later
  */
-class ConstraintRepositoryLookupTest extends \MediaWikiTestCase {
+class ConstraintRepositoryLookupTest extends \MediaWikiIntegrationTestCase {
 
 	private function newConstraintRepositoryLookup() {
 		return new ConstraintRepositoryLookup(
@@ -30,10 +30,10 @@ class ConstraintRepositoryLookupTest extends \MediaWikiTestCase {
 		$this->insertTestData();
 
 		$repo = $this->newConstraintRepositoryLookup();
-		$constraints = $repo->queryConstraintsForProperty( new PropertyId( 'P1' ) );
+		$constraints = $repo->queryConstraintsForProperty( new NumericPropertyId( 'P1' ) );
 
 		$this->assertIsArray( $constraints );
-		$this->assertEquals( 2, count( $constraints ) );
+		$this->assertCount( 2, $constraints );
 		$this->assertInstanceOf( Constraint::class, $constraints[0] );
 	}
 
@@ -41,7 +41,7 @@ class ConstraintRepositoryLookupTest extends \MediaWikiTestCase {
 		$this->insertTestData();
 
 		$repo = $this->newConstraintRepositoryLookup();
-		$constraints = $repo->queryConstraintsForProperty( new PropertyId( 'P2' ) );
+		$constraints = $repo->queryConstraintsForProperty( new NumericPropertyId( 'P2' ) );
 
 		$this->assertIsArray( $constraints );
 		$this->assertEmpty( $constraints );
@@ -59,7 +59,7 @@ class ConstraintRepositoryLookupTest extends \MediaWikiTestCase {
 		] );
 
 		$repo = $this->newConstraintRepositoryLookup();
-		$constraints = $repo->queryConstraintsForProperty( new PropertyId( 'P3' ) );
+		$constraints = $repo->queryConstraintsForProperty( new NumericPropertyId( 'P3' ) );
 
 		$this->assertSame( [ '@error' => [] ], $constraints[0]->getConstraintParameters() );
 	}

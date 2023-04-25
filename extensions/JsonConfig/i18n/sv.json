@@ -1,12 +1,14 @@
 {
 	"@metadata": {
 		"authors": [
+			"Felba",
 			"Lokal Profil",
 			"WikiPhoenix",
-			"Yurik",
-			"Felba"
+			"Yurik"
 		]
 	},
+	"nstab-data": "Data",
+	"tooltip-ca-nstab-data": "Visa datasidan",
 	"jsonconfig-desc": "Tillåter JSON-konfigurationer att lagras i en wiki",
 	"jsonconfig-duplicate-field": "Fler än ett värde \"$1\" hittades",
 	"jsonconfig-edit-action-apply": "Verkställ",

@@ -33,7 +33,7 @@ class JCLuaLibrary extends Scribunto_LuaLibraryBase {
 	 * Returns data page as a data table
 	 * @param string $titleStr name of the page in the Data namespace
 	 * @param string $langCode language code. If '_' is given, returns all codes
-	 * @return false[]|object[]
+	 * @return false[]|mixed[]
 	 * @throws Scribunto_LuaError
 	 */
 	public function get( $titleStr, $langCode ) {
@@ -59,7 +59,8 @@ class JCLuaLibrary extends Scribunto_LuaLibraryBase {
 
 			$prop = 'jsonconfig_getdata';
 			$output = $this->getParser()->getOutput();
-			$output->setProperty( $prop, 1 + ( $output->getProperty( $prop ) ? : 0 ) );
+			$prevValue = $output->getPageProperty( $prop ) ?? 0;
+			$output->setPageProperty( $prop, 1 + $prevValue );
 		}
 
 		if ( !$content ) {
@@ -102,7 +103,7 @@ class JCLuaLibrary extends Scribunto_LuaLibraryBase {
 
 	/**
 	 * Reindex tabular data so it can be processed by Lua more easily
-	 * @param object $data
+	 * @param \stdClass $data
 	 */
 	public static function reindexTabularData( $data ) {
 		$columnCount = count( $data->schema->fields );
@@ -113,7 +114,7 @@ class JCLuaLibrary extends Scribunto_LuaLibraryBase {
 			if ( $rowCount > 0 ) {
 				$data->data =
 					array_combine( range( 1, $rowCount ),
-						array_map( function ( $row ) use ( $rowIndexes ) {
+						array_map( static function ( $row ) use ( $rowIndexes ) {
 							return array_combine( $rowIndexes, $row );
 						}, $data->data ) );
 			}

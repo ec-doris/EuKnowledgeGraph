@@ -143,6 +143,8 @@
 	"wbqc-violation-message-integer": "Hodnoty vlastnosti $1 by měly být celá čísla, ale $2 má desetinnou část.",
 	"wbqc-violation-message-integer-bounds": "Hodnoty vlastnosti $1 by měly být celá čísla, ale $2 má meze s desetinnou částí.",
 	"wbqc-violation-message-citationNeeded": "Tvrzení vlastnosti $1 by měla mít alespoň jednu referenci.",
+	"wbqc-violation-message-language": "Výroky pro $1 by měly být pouze na lexémech s {{PLURAL:$2|1=jazykem $4.|2=jazykem $4 nebo $5.|jedním z následujících jazyků: $3}}",
+	"wbqc-violation-message-label-lacking": "Entity s výrokem pro $1 by také měly mít štítek přinejmenším v {{PLURAL:$2|1=jazyce $4.|některém z následujících jazyků: $3}}",
 	"wbqc-violation-message-property-scope": "Vlastnost $1 by neměla být používána na tomto místě ($2). {{PLURAL:$3|Jediným platným místem|Jedinými platnými místy}} pro tuto vlastnost {{PLURAL:$3|je $5.|jsou: $4}}",
 	"wbqc-violation-message-exception": "Tato vlastnost je u tohoto omezení uvedena jako známá výjimka, takže tak byla označena."
 }

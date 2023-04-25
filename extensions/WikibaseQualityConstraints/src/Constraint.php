@@ -2,7 +2,7 @@
 
 namespace WikibaseQuality\ConstraintReport;
 
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 
 /**
  * Contains all data belonging to a certain constraint.
@@ -17,7 +17,7 @@ class Constraint {
 	private $constraintId;
 
 	/**
-	 * @var PropertyId
+	 * @var NumericPropertyId
 	 */
 	private $propertyId;
 
@@ -33,13 +33,13 @@ class Constraint {
 
 	/**
 	 * @param string $constraintId
-	 * @param PropertyId $propertyId
+	 * @param NumericPropertyId $propertyId
 	 * @param string $constraintTypeItemId
 	 * @param array $constraintParameters
 	 */
 	public function __construct(
 		$constraintId,
-		PropertyId $propertyId,
+		NumericPropertyId $propertyId,
 		$constraintTypeItemId,
 		array $constraintParameters
 	) {
@@ -66,7 +66,7 @@ class Constraint {
 	}
 
 	/**
-	 * @return PropertyId
+	 * @return NumericPropertyId
 	 */
 	public function getPropertyId() {
 		return $this->propertyId;

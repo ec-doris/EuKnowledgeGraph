@@ -5,8 +5,10 @@
 			"Demircimehmed",
 			"Hedda",
 			"Incelemeelemani",
+			"Joseph",
 			"Sadrettin",
-			"Sayginer"
+			"Sayginer",
+			"Sezgin İbiş"
 		]
 	},
 	"wbqc-constraintreport": "Kısıtlama raporu",
@@ -144,6 +146,7 @@
 	"wbqc-violation-message-integer": "$1 için değerler tamsayı olmalıdır, ancak $2 kesirli bir kısmı vardır.",
 	"wbqc-violation-message-integer-bounds": "$1 için değerler tamsayı olmalıdır, ancak $2 sınırları kesirli bir kısma sahiptir.",
 	"wbqc-violation-message-citationNeeded": "$1 ifadelerinin en az bir referansı olmalıdır.",
+	"wbqc-violation-message-language": "$1 için ifadeler yalnızca {{PLURAL:$2|1=$4|2=ya $4 ya da $5 dilleri|$3 dillerinden biri}} için ayarlanmış Sözcük Birimlerde olmalıdır.",
 	"wbqc-violation-message-property-scope": "$1 özelliği bu konumda kullanılmamalıdır ($2). Bu mülk için tek geçerli {{PLURAL:$3|bölge|bölge}} {{PLURAL:$3|$5.|$4}}",
 	"wbqc-violation-message-exception": "Bu varlık, bu kısıtlama için bilinen bir istisnadır ve böyle işaretlenmiştir."
 }

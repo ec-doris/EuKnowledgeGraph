@@ -6,7 +6,7 @@
 	},
 	"apihelp-jsonconfig-description": "Permite o acesso direto ao subsistema JsonConfig.",
 	"apihelp-jsonconfig-summary": "Permite o acesso direto ao subsistema JsonConfig.",
-	"apihelp-jsonconfig-param-command": "A subação a realizar no JsonConfig:\n;status:Mostra a configuração JsonConfig.\n;reset:Limpa as configurações da cache. Requer o parâmetro $1title e a permissão jsonconfig-reset.\n;reload:Recarrega e armazena na cache as configurações do armazenamento da configuração. Requer o parâmetro $1title e a permissão jsonconfig-reset.",
+	"apihelp-jsonconfig-param-command": "A subação a realizar no JsonConfig:\n;status:Mostra a configuração JsonConfig.\n;reset:Limpa as configurações da cache. Requer o parâmetro $1title e a permissão jsonconfig-flush.\n;reload:Recarrega e armazena na cache as configurações do armazenamento da configuração. Requer o parâmetro $1title e a permissão jsonconfig-reset.",
 	"apihelp-jsonconfig-param-namespace": "Número do espaço nominal do título a ser processado.",
 	"apihelp-jsonconfig-param-title": "Título a ser processado, sem o prefixo do espaço nominal.",
 	"apihelp-jsonconfig-param-content": "Para $1command=reload, usar este conteúdo em substituição.",

@@ -1,8 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Elisardojm",
-			"ArenaL5"
+			"ArenaL5",
+			"Elisardojm"
 		]
 	},
 	"apihelp-sanitize-mapdata-description": "Realiza a validación dos datos para a extensión Kartographer",

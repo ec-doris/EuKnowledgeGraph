@@ -1,0 +1,38 @@
+{
+	"@metadata": {
+		"authors": [
+			"Vlad5250"
+		]
+	},
+	"nstab-data": "Podaci",
+	"tooltip-ca-nstab-data": "Podatkovna stranica",
+	"jsonconfig-desc": "Dozvoljava skladištenje JSON konfiguracije na wikiju",
+	"jsonconfig-duplicate-field": "Pronađeno je više od jedne vrijednosti \"$1\"",
+	"jsonconfig-edit-action-apply": "Primijeni",
+	"jsonconfig-edit-action-cancel": "Otkaži",
+	"jsonconfig-edit-button-label": "Uredi kao tablicu",
+	"jsonconfig-edit-dialog-error": "Nije moguće uređivati kao tablicu: $1",
+	"jsonconfig-edit-dialog-error-data-inavlid": "Podaci ne odgovaraju shemi",
+	"jsonconfig-edit-dialog-error-data-missing": "JSON <code>data</code> svojstvo nedostaje ili nije niz",
+	"jsonconfig-edit-dialog-title": "Uredi JSON",
+	"jsonconfig-move-aborted-model": "JSON-ovi konfiguracijski model ove stranice \"$1\" ne bi odgovarao modelu novog naslova \"$2\"",
+	"jsonconfig-move-aborted-ns": "novi naslov stranice nije postavljen za držanje JSON konfiguracije",
+	"jsonconfig-optional-field": "(izborno)",
+	"jsonconfig-type-name-invalid": "nevažeće",
+	"jsonconfig-type-name-string": "niz",
+	"jsonconfig-type-name-localized": "lokaliziran",
+	"jsonconfig-type-name-number": "broj",
+	"jsonconfig-type-name-boolean": "boolean",
+	"jsonconfig-license": "Podaci dostupni ispod $1.",
+	"jsonconfig-license-not-set": "Kada uredite ovu stranicu pristajete objaviti svoj doprinos u skladu s licencom naznačenom u polju <code>licence</code>.",
+	"jsonconfig-license-name-CC0-1.0": "Creative Commons Zero",
+	"jsonconfig-license-name-dl-de-zero-2.0": "Data licence Germany - Zero - Verzija 2.0",
+	"jsonconfig-license-name-dl-de-by-1.0": "Data licence Germany – attribution – Verzija 1.0",
+	"jsonconfig-license-name-dl-de-by-2.0": "Data licence Germany – attribution – verzija 2.0",
+	"jsonconfig-license-copyrightwarning": "Sačuvanjem promjena, slažete se s [https://foundation.wikimedia.org/wiki/Terms_of_Use Uslovima korištenja], i neopozivo se slažete objaviti svoj doprinos pod [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}].",
+	"jsonconfig-license-copyrightwarning-license-unset": "Sačuvanjem promjena, slažete se s [https://foundation.wikimedia.org/wiki/Terms_of_Use Uslovima korištenja], i neopozivo se slažete objaviti svoj doprinos pod licencom naznačenom u polju <code>licence</code>.",
+	"jsonconfig-license-notice": "'''Napomena:''' Kada uredite ovu stranicu, pristajete objaviti svoj doprinos pod [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}].",
+	"jsonconfig-license-notice-license-unset": "'''Napomena:''' Kada uredite ovu stranicu, pristajete objaviti svoj doprinos pod licencom naznačenom u polju <code>licence</code>.",
+	"right-jsonconfig-flush": "Upravljanje JsonConfig-om putem извршник-ja",
+	"action-jsonconfig-flush": "upravljanje JsonConfig-om putem приложник-ja"
+}

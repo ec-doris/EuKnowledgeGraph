@@ -4,8 +4,12 @@ namespace WikibaseQuality\ConstraintReport\ConstraintCheck\Checker;
 
 use Config;
 use DataValues\MonolingualTextValue;
+use DataValues\MultilingualTextValue;
 use DataValues\StringValue;
+use MediaWiki\Shell\ShellboxClientFactory;
+use Shellbox\ShellboxError;
 use Wikibase\DataModel\Entity\ItemId;
+use Wikibase\DataModel\Entity\PropertyId;
 use Wikibase\DataModel\Snak\PropertyValueSnak;
 use WikibaseQuality\ConstraintReport\Constraint;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\ConstraintChecker;
@@ -40,40 +44,45 @@ class FormatChecker implements ConstraintChecker {
 	private $config;
 
 	/**
+	 * @var ShellboxClientFactory
+	 */
+	private $shellboxClientFactory;
+
+	/**
 	 * @param ConstraintParameterParser $constraintParameterParser
 	 * @param Config $config
 	 * @param SparqlHelper $sparqlHelper
+	 * @param ShellboxClientFactory $shellboxClientFactory
 	 */
 	public function __construct(
 		ConstraintParameterParser $constraintParameterParser,
 		Config $config,
-		SparqlHelper $sparqlHelper
+		SparqlHelper $sparqlHelper,
+		ShellboxClientFactory $shellboxClientFactory
 	) {
 		$this->constraintParameterParser = $constraintParameterParser;
 		$this->config = $config;
 		$this->sparqlHelper = $sparqlHelper;
+		$this->shellboxClientFactory = $shellboxClientFactory;
 	}
 
 	/**
 	 * @codeCoverageIgnore This method is purely declarative.
 	 */
 	public function getSupportedContextTypes() {
-		return [
-			Context::TYPE_STATEMENT => CheckResult::STATUS_COMPLIANCE,
-			Context::TYPE_QUALIFIER => CheckResult::STATUS_COMPLIANCE,
-			Context::TYPE_REFERENCE => CheckResult::STATUS_COMPLIANCE,
-		];
+		return self::ALL_CONTEXT_TYPES_SUPPORTED;
 	}
 
 	/**
 	 * @codeCoverageIgnore This method is purely declarative.
 	 */
 	public function getDefaultContextTypes() {
-		return [
-			Context::TYPE_STATEMENT,
-			Context::TYPE_QUALIFIER,
-			Context::TYPE_REFERENCE,
-		];
+		return Context::ALL_CONTEXT_TYPES;
+	}
+
+	/** @codeCoverageIgnore This method is purely declarative. */
+	public function getSupportedEntityTypes() {
+		return self::ALL_ENTITY_TYPES_SUPPORTED;
 	}
 
 	/**
@@ -129,28 +138,92 @@ class FormatChecker implements ConstraintChecker {
 					->withDataValueType( 'monolingualtext' );
 				return new CheckResult( $context, $constraint, $parameters, CheckResult::STATUS_VIOLATION, $message );
 		}
+		$status = $this->runRegexCheck( $text, $format );
+		$message = $this->formatMessage(
+			$status,
+			$text,
+			$format,
+			$context->getSnak()->getPropertyId(),
+			$syntaxClarifications,
+			$constraintTypeItemId
+		);
+		return new CheckResult( $context, $constraint, $parameters, $status, $message );
+	}
 
-		if (
-			!( $this->sparqlHelper instanceof DummySparqlHelper ) &&
-			$this->config->get( 'WBQualityConstraintsCheckFormatConstraint' )
-		) {
-			if ( $this->sparqlHelper->matchesRegularExpression( $text, $format ) ) {
-				$message = null;
-				$status = CheckResult::STATUS_COMPLIANCE;
-			} else {
-				$message = ( new ViolationMessage( 'wbqc-violation-message-format-clarification' ) )
-					->withEntityId( $context->getSnak()->getPropertyId(), Role::CONSTRAINT_PROPERTY )
-					->withDataValue( new StringValue( $text ), Role::OBJECT )
-					->withInlineCode( $format, Role::CONSTRAINT_PARAMETER_VALUE )
-					->withMultilingualText( $syntaxClarifications, Role::CONSTRAINT_PARAMETER_VALUE );
-				$status = CheckResult::STATUS_VIOLATION;
-			}
-		} else {
+	private function formatMessage(
+		string $status,
+		string $text,
+		string $format,
+		PropertyId $propertyId,
+		MultilingualTextValue $syntaxClarifications,
+		string $constraintTypeItemId
+	): ?ViolationMessage {
+		$message = null;
+		if ( $status === CheckResult::STATUS_VIOLATION ) {
+			$message = ( new ViolationMessage( 'wbqc-violation-message-format-clarification' ) )
+				->withEntityId( $propertyId, Role::CONSTRAINT_PROPERTY )
+				->withDataValue( new StringValue( $text ), Role::OBJECT )
+				->withInlineCode( $format, Role::CONSTRAINT_PARAMETER_VALUE )
+				->withMultilingualText( $syntaxClarifications, Role::CONSTRAINT_PARAMETER_VALUE );
+		} elseif ( $status === CheckResult::STATUS_TODO ) {
 			$message = ( new ViolationMessage( 'wbqc-violation-message-security-reason' ) )
 				->withEntityId( new ItemId( $constraintTypeItemId ), Role::CONSTRAINT_TYPE_ITEM );
-			$status = CheckResult::STATUS_TODO;
 		}
-		return new CheckResult( $context, $constraint, $parameters, $status, $message );
+
+		return $message;
+	}
+
+	private function runRegexCheck( string $text, string $format ): string {
+		if ( !$this->config->get( 'WBQualityConstraintsCheckFormatConstraint' ) ) {
+			return CheckResult::STATUS_TODO;
+		}
+		if (
+			$this->config->get( 'WBQualityConstraintsFormatCheckerShellboxRatio' ) > (float)wfRandom()
+		) {
+			return $this->runRegexCheckUsingShellbox( $text, $format );
+		}
+
+		return $this->runRegexCheckUsingSparql( $text, $format );
+	}
+
+	private function runRegexCheckUsingShellbox( string $text, string $format ): string {
+		if ( !$this->shellboxClientFactory->isEnabled( 'constraint-regex-checker' ) ) {
+			return CheckResult::STATUS_TODO;
+		}
+		try {
+			$pattern = '/^(?:' . str_replace( '/', '\/', $format ) . ')$/u';
+			$shellboxResponse = $this->shellboxClientFactory->getClient( [
+				'timeout' => $this->config->get( 'WBQualityConstraintsSparqlMaxMillis' ) / 1000,
+				'service' => 'constraint-regex-checker',
+			] )->call(
+				'constraint-regex-checker',
+				'preg_match',
+				[ $pattern, $text ]
+			);
+		} catch ( ShellboxError $exception ) {
+			throw new ConstraintParameterException(
+				( new ViolationMessage( 'wbqc-violation-message-parameter-regex' ) )
+					->withInlineCode( $pattern, Role::CONSTRAINT_PARAMETER_VALUE )
+			);
+		}
+
+		if ( $shellboxResponse ) {
+			return CheckResult::STATUS_COMPLIANCE;
+		} else {
+			return CheckResult::STATUS_VIOLATION;
+		}
+	}
+
+	private function runRegexCheckUsingSparql( string $text, string $format ): string {
+		if ( $this->sparqlHelper instanceof DummySparqlHelper ) {
+			return CheckResult::STATUS_TODO;
+		}
+
+		if ( $this->sparqlHelper->matchesRegularExpression( $text, $format ) ) {
+			return CheckResult::STATUS_COMPLIANCE;
+		} else {
+			return CheckResult::STATUS_VIOLATION;
+		}
 	}
 
 	public function checkConstraintParameters( Constraint $constraint ) {

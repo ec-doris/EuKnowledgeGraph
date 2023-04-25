@@ -2,12 +2,14 @@
 	"@metadata": {
 		"authors": [
 			"Amire80",
+			"Eli",
 			"Guycn2",
 			"Ronel1",
-			"Yurik",
-			"Eli"
+			"Yurik"
 		]
 	},
+	"nstab-data": "נתונים",
+	"tooltip-ca-nstab-data": "הצגת דף הנתונים",
 	"jsonconfig-desc": "מאפשר לאחסן בוויקי תצורה בתסדיר JSON",
 	"jsonconfig-duplicate-field": "נמצא יותר מערך \"$1\" אחד",
 	"jsonconfig-edit-action-apply": "החלה",
@@ -26,7 +28,7 @@
 	"jsonconfig-err-array-count": "ברשימה \"$1\" יש {{PLURAL:$2|ערך אחד|$2 ערכים}}, אבל {{PLURAL:$3|צריך להיות בה ערך אחד|צריכים להיות בה $3 ערכים}}, אותו מספר ערכים כמו ברשימה \"$4\"",
 	"jsonconfig-err-array-expected": "הערך של \"$1\" אמור להיות רשימה מוקפת בסוגריים מרובעיים [...]",
 	"jsonconfig-err-assoc-array": "הפרמטר \" $1 \" חייב להיות מערך אסוציאטיבי (מילון), למשל <kbd>{\"key\": \"value\", ...}</kbd>",
-	"jsonconfig-err-bad-header-string": "הכותרת \"$1\" צריכה להכיל רק אותיות, מספרים ותווי קו תחתו ולא יכולה להתחיל במספר",
+	"jsonconfig-err-bad-header-string": "הכותרת \"$1\" צריכה להכיל רק אותיות, מספרים ותווי קו תחתי ולא יכולה להתחיל במספר",
 	"jsonconfig-err-bad-geojson": "הפרמטר \"$1\" צריך להיות עצם נתוני GeoJSON או מערך של עצמי GeoJSON. אם השדה <code>properties</code> מכיל <code>title</code> או <code>description</code>, הם צריכים להיות מחרוזות בנות שורה אחת ללא טאבים או רווחים בסוף, או עצמים רב־לשוניים של מחרוזות כאלה, למשל <kbd>{ \"en\":\"String in English\", ... }</kbd>",
 	"jsonconfig-err-bad-type": "הפרמטר \"$1\" צריך להיות מסוג תקין כמו <code dir=\"ltr\">string</code>, <code dir=\"ltr\">number</code>, או <code dir=\"ltr\">boolean</code>",
 	"jsonconfig-err-bool": "פרמטר \"$1\" צריך להיות <code>true</code> או <code>false</code>",
@@ -51,15 +53,15 @@
 	"jsonconfig-type-name-number": "מחרוזת",
 	"jsonconfig-type-name-boolean": "בוליאני",
 	"jsonconfig-license": "הנתונים זמינים תחת $1.",
-	"jsonconfig-license-not-set": "עריכת דף זה מהווה את הסכמתך לשחרר את תרומתך בהתאם לרישיון המצוין בשדה <code>licence</code>.",
+	"jsonconfig-license-not-set": "עריכת הדף הזה מהווה את הסכמתך לשחרר את תרומתך בהתאם לרישיון המצוין בשדה <code>licence</code>.",
 	"jsonconfig-license-name-CC0-1.0": "קריאייטיב קומונז אפס",
 	"jsonconfig-license-name-dl-de-zero-2.0": "רישיון נתונים גרמניה – אפס – גרסה 2.0",
 	"jsonconfig-license-name-dl-de-by-1.0": "רישיון נתונים גרמניה – ייחוס – גרסה 1.0",
 	"jsonconfig-license-name-dl-de-by-2.0": "רישיון נתונים גרמניה – ייחוס – גרסה 2.0",
 	"jsonconfig-license-copyrightwarning": "שמירת השינויים מהווה את הסכמתך ל[https://foundation.wikimedia.org/wiki/Terms_of_Use תנאי השימוש] ואת הסכמתך הבלתי־חוזרת לשחרר את תרומתך בכפוף לרישיון [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}].",
 	"jsonconfig-license-copyrightwarning-license-unset": "שמירת השינויים מהווה את הסכמתך ל[https://foundation.wikimedia.org/wiki/Terms_of_Use תנאי השימוש] ואת הסכמתך הבלתי־חוזרת לשחרר את תרומתך בהתאם לרישיון המצוין בשדה <code>licence</code>.",
-	"jsonconfig-license-notice": "'''הערה:''' עריכת דף זה מהווה את הסכמתך לשחרור התרומה שלך בכפוף לרישיון [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}].",
-	"jsonconfig-license-notice-license-unset": "'''הערה:''' עריכת דף זה מהווה את הסכמתך לשחרר את תרומתך בהתאם לרישיון המצוין בשדה <code>licence</code>.",
+	"jsonconfig-license-notice": "'''הערה:''' עריכת הדף הזה מהווה את הסכמתך לשחרור התרומה שלך בכפוף לרישיון [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}].",
+	"jsonconfig-license-notice-license-unset": "'''הערה:''' עריכת הדף הזה מהווה את הסכמתך לשחרר את תרומתך בהתאם לרישיון המצוין בשדה <code>licence</code>.",
 	"right-jsonconfig-flush": "טיפול ב־JsonConfig באמצעות API",
 	"action-jsonconfig-flush": "לשלוט ב־JsonConfig דרך API"
 }

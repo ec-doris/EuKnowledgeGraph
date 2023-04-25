@@ -7,7 +7,7 @@ use DataValues\DataValue;
 use Wikibase\DataModel\Entity\EntityId;
 use Wikibase\DataModel\Entity\EntityIdValue;
 use Wikibase\DataModel\Entity\ItemId;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Services\Lookup\EntityLookup;
 use Wikibase\DataModel\Snak\PropertyValueSnak;
 use Wikibase\DataModel\Statement\Statement;
@@ -46,13 +46,13 @@ class ContemporaryChecker implements ConstraintChecker {
 	 * Name of the configuration variable for the array of IDs of the properties that
 	 * state the start time of the entities.
 	 */
-	const CONFIG_VARIABLE_START_PROPERTY_IDS = 'WBQualityConstraintsStartTimePropertyIds';
+	public const CONFIG_VARIABLE_START_PROPERTY_IDS = 'WBQualityConstraintsStartTimePropertyIds';
 
 	/**
 	 * Name of the configuration variable for the array of IDs of the properties that
 	 * state the end time of the entities.
 	 */
-	const CONFIG_VARIABLE_END_PROPERTY_IDS = 'WBQualityConstraintsEndTimePropertyIds';
+	public const CONFIG_VARIABLE_END_PROPERTY_IDS = 'WBQualityConstraintsEndTimePropertyIds';
 
 	public function __construct(
 		EntityLookup $entityLookup,
@@ -80,6 +80,11 @@ class ContemporaryChecker implements ConstraintChecker {
 	 */
 	public function getDefaultContextTypes() {
 		return [ Context::TYPE_STATEMENT ];
+	}
+
+	/** @codeCoverageIgnore This method is purely declarative. */
+	public function getSupportedEntityTypes() {
+		return self::ALL_ENTITY_TYPES_SUPPORTED;
 	}
 
 	/**
@@ -166,10 +171,12 @@ class ContemporaryChecker implements ConstraintChecker {
 				$maxStartValue = $objectStartValue;
 			}
 			$message = $this->getViolationMessage(
+				// @phan-suppress-next-line PhanTypeMismatchArgumentNullable
 				$earlierEntityId,
 				$subjectId,
 				$context->getSnak()->getPropertyId(),
 				$objectId,
+				// @phan-suppress-next-line PhanTypeMismatchArgumentNullable
 				$minEndValue,
 				$maxStartValue
 			);
@@ -194,8 +201,8 @@ class ContemporaryChecker implements ConstraintChecker {
 		}
 		$extremeValue = null;
 		foreach ( $extremePropertyIds as $extremePropertyId ) {
-			$statementList = new StatementList( $statements );
-			$extremeStatements = $statementList->getByPropertyId( new PropertyId( $extremePropertyId ) );
+			$statementList = new StatementList( ...$statements );
+			$extremeStatements = $statementList->getByPropertyId( new NumericPropertyId( $extremePropertyId ) );
 			/** @var Statement $extremeStatement */
 			foreach ( $extremeStatements as $extremeStatement ) {
 				if ( $extremeStatement->getRank() !== Statement::RANK_DEPRECATED ) {

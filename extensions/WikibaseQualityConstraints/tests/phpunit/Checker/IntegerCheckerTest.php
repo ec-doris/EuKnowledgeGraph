@@ -5,7 +5,7 @@ namespace WikibaseQuality\ConstraintReport\Tests\Checker;
 use DataValues\DecimalValue;
 use DataValues\QuantityValue;
 use DataValues\UnboundedQuantityValue;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Snak\PropertyValueSnak;
 use Wikibase\DataModel\Snak\Snak;
 use WikibaseQuality\ConstraintReport\Constraint;
@@ -44,7 +44,7 @@ class IntegerCheckerTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function provideSnaks() {
-		$p1 = new PropertyId( 'P1' );
+		$p1 = new NumericPropertyId( 'P1' );
 		$decimalValue = new DecimalValue( 725.1 );
 		$integerValue = new DecimalValue( 7251 );
 		$decimalIntegerValue = new DecimalValue( '7251.0' );
@@ -107,16 +107,11 @@ class IntegerCheckerTest extends \PHPUnit\Framework\TestCase {
 	 * @return Constraint
 	 */
 	private function getConstraintMock() {
-		$mock = $this
-			->getMockBuilder( Constraint::class )
-			->disableOriginalConstructor()
-			->getMock();
-		$mock->expects( $this->any() )
-			->method( 'getConstraintParameters' )
-			->will( $this->returnValue( [] ) );
-		$mock->expects( $this->any() )
-			->method( 'getConstraintTypeItemId' )
-			->will( $this->returnValue( 'Q52848401' ) );
+		$mock = $this->createMock( Constraint::class );
+		$mock->method( 'getConstraintParameters' )
+			->willReturn( [] );
+		$mock->method( 'getConstraintTypeItemId' )
+			->willReturn( 'Q52848401' );
 
 		return $mock;
 	}

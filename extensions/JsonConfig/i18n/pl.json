@@ -8,6 +8,8 @@
 			"SemanticPioneer"
 		]
 	},
+	"nstab-data": "Dane",
+	"tooltip-ca-nstab-data": "Zobacz stronę danych",
 	"jsonconfig-desc": "Umożliwia przechowywanie na wiki konfiguracji JSON",
 	"jsonconfig-duplicate-field": "Znaleziono więcej niż jedną wartość „$1”",
 	"jsonconfig-edit-action-apply": "Zastosuj",

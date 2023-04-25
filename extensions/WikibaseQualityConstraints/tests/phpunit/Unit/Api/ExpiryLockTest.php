@@ -17,7 +17,7 @@ use Wikimedia\Timestamp\ConvertibleTimestamp;
  */
 class ExpiryLockTest extends \MediaWikiUnitTestCase {
 
-	public function tearDown() : void {
+	public function tearDown(): void {
 		ConvertibleTimestamp::setFakeTime( false );
 		parent::tearDown();
 	}

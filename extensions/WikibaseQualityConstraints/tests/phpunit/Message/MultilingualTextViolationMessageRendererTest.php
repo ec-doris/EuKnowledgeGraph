@@ -28,7 +28,7 @@ use Wikimedia\TestingAccessWrapper;
  * @author Lucas Werkmeister
  * @license GPL-2.0-or-later
  */
-class MultilingualTextViolationMessageRendererTest extends \MediaWikiTestCase {
+class MultilingualTextViolationMessageRendererTest extends \MediaWikiIntegrationTestCase {
 
 	/**
 	 * Create a new MultilingualTextViolationMessageRenderer

@@ -3,11 +3,13 @@
 		"authors": [
 			"Araceletorres",
 			"Eduardo Addad de Oliveira",
+			"Eduardoaddad",
 			"Felipe L. Ewald",
-			"Yurik",
-			"Eduardoaddad"
+			"Yurik"
 		]
 	},
+	"nstab-data": "Dados",
+	"tooltip-ca-nstab-data": "Ver os dados da página",
 	"jsonconfig-desc": "Permite que a configuração JSON seja armazenada na wiki",
 	"jsonconfig-duplicate-field": "Mais de um valor \"$1\" encontrado",
 	"jsonconfig-edit-action-apply": "Aplicar",

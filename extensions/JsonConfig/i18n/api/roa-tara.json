@@ -6,7 +6,7 @@
 	},
 	"apihelp-jsonconfig-description": "Dèje l'accesse dirette a 'u sottesisteme JsonConfig.",
 	"apihelp-jsonconfig-summary": "Dèje l'accesse dirette a 'u sottesisteme JsonConfig.",
-	"apihelp-jsonconfig-param-command": "Ce sotteazione a eseguì sus a JsonConfig:\n;status:Face 'ndrucà 'a configurazione de JsonConfig.\n;reset:Sdevache le configuraziune da 'a cache. Vole 'u parametre $1title e 'u deritte jsonconfig-reset.\n;reload:Recareche e mette jndr'à cache le configuraziune da 'u reggìstre de configurazione. Vole 'u parametre $1title e 'u deritte jsonconfig-reset.",
+	"apihelp-jsonconfig-param-command": "Ce sotte azione a eseguì sus a JsonConfig:\n;status:Face 'ndrucà 'a configurazione de JsonConfig.\n;reset:Sdevache le configuraziune da 'a cache. Vole 'u parametre $1title e 'u deritte jsonconfig-flush.\n;reload:Recareche e mette jndr'à cache le configuraziune da 'u reggìstre de configurazione. Vole 'u parametre $1title e 'u deritte jsonconfig-reset.",
 	"apihelp-jsonconfig-param-namespace": "Numere d'u namespace d'u titole da elabborà.",
 	"apihelp-jsonconfig-param-title": "Titole da elabborà senze prefisse d'u namespace.",
 	"apihelp-jsonconfig-param-content": "Pe $1command=reload, invece ause stu condenute.",

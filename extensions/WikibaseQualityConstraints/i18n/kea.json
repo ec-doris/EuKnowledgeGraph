@@ -1,9 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
-			"Quintino Lopes Castro Tavares"
+			"Quintino Lopes Castro Tavares",
+			"Waldyrious"
 		]
 	},
 	"wbqc-constraintreport-result-table-header-property": "Propredadi",
-	"wbqc-constraintreport-result-table-header-message": "Mensagen"
+	"wbqc-constraintreport-result-table-header-message": "Mensajen"
 }

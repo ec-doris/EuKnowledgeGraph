@@ -5,6 +5,7 @@
 			"Agabi10",
 			"Ciencia Al Poder",
 			"Csbotero",
+			"Danniel07",
 			"DannyS712",
 			"Dgstranz",
 			"Fitoschido",
@@ -12,8 +13,7 @@
 			"Macofe",
 			"MarcoAurelio",
 			"Themasterriot",
-			"Tiberius1701",
-			"Danniel07"
+			"Tiberius1701"
 		]
 	},
 	"wbqc-constraintreport": "Informe de restricción",
@@ -139,5 +139,6 @@
 	"wbqc-violation-message-integer": "Los valores de $1 deberían ser enteros, pero $2 tiene una parte fraccional.",
 	"wbqc-violation-message-integer-bounds": "Los valores de $1 deberían ser enteros, pero los límites de $2 tienen una parte fraccional.",
 	"wbqc-violation-message-citationNeeded": "Las declaraciones de $1 deberían tener al menos una referencia.",
+	"wbqc-violation-message-label-lacking": "Entidades con declaraciones para $1 deben también tener una etiqueta por lo menos en {{PLURAL:$2|1=idioma $4.|cualquiera de los siguientes idiomas: $3}}",
 	"wbqc-violation-message-exception": "Esta entidad es una excepción conocida a esta restricción y ha sido marcada como tal."
 }

@@ -2,7 +2,7 @@
 
 namespace WikibaseQuality\ConstraintReport\Tests\Unit\Checker\ValueCountChecker;
 
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Snak\PropertyNoValueSnak;
 use Wikibase\DataModel\Snak\PropertySomeValueSnak;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\ValueCountCheckerHelper;
@@ -21,7 +21,7 @@ class ValueCountCheckerHelperTest extends \MediaWikiUnitTestCase {
 	 * @dataProvider getPropertyCountProvider
 	 */
 	public function testGetPropertyCount( $snaks, $propertyIdSerialization, $expectedCount ) {
-		$propertyId = new PropertyId( $propertyIdSerialization );
+		$propertyId = new NumericPropertyId( $propertyIdSerialization );
 		$helper = new ValueCountCheckerHelper();
 		$propertyCount = $helper->getPropertyCount( $snaks, $propertyId );
 
@@ -29,9 +29,9 @@ class ValueCountCheckerHelperTest extends \MediaWikiUnitTestCase {
 	}
 
 	public function getPropertyCountProvider() {
-		$p1_1 = new PropertyNoValueSnak( new PropertyId( 'P1' ) );
-		$p1_2 = new PropertySomeValueSnak( new PropertyId( 'P1' ) );
-		$p2 = new PropertyNoValueSnak( new PropertyId( 'P2' ) );
+		$p1_1 = new PropertyNoValueSnak( new NumericPropertyId( 'P1' ) );
+		$p1_2 = new PropertySomeValueSnak( new NumericPropertyId( 'P1' ) );
+		$p2 = new PropertyNoValueSnak( new NumericPropertyId( 'P2' ) );
 
 		return [
 			'empty' => [ [], 'P1', 0 ],

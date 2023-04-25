@@ -9,6 +9,7 @@
 	},
 	"apihelp-jsonconfig-description": "Zezwala na bezpośredni dostęp do podsystemu JsonConfig.",
 	"apihelp-jsonconfig-summary": "Zezwala na bezpośredni dostęp do podsystemu JsonConfig.",
+	"apihelp-jsonconfig-param-command": "Która akcja podrzędna ma zostać wykonana na JsonConfig:\n;status: Pokazuje konfigurację JsonConfig.\n;reset: Czyści konfiguracje z pamięci podręcznej. Wymaga parametru $1title i prawa jsonconfig-flush.\n;reload: Ponownie ładuje i buforuje konfiguracje z magazynu konfiguracji. Wymaga parametru $1title i prawa jsonconfig-reset.",
 	"apihelp-jsonconfig-param-namespace": "Numer przestrzeni nazw tytułu do przetworzenia.",
 	"apihelp-jsonconfig-param-title": "Tytuł do przetworzenia bez prefiksu przestrzeni nazw.",
 	"apihelp-jsonconfig-param-content": "Dla $1command=reload, użyj tej zawartości.",

@@ -1,16 +1,17 @@
 {
 	"root": true,
-	"extends": "wikimedia",
+	"extends": [
+		"wikimedia",
+		"wikimedia/mediawiki"
+	],
 	"env": {
 		"browser": true,
 		"jquery": true,
 		"commonjs": true
 	},
 	"globals": {
-		"module": false,
 		"mediaWiki": false,
-		"wikibase": false,
-		"OO": false
+		"wikibase": false
 	},
 	"rules": {
 		"compat/compat": "error",

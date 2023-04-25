@@ -2,6 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Amire80",
+			"Base",
+			"Kareyac",
 			"Liuxinyu970226",
 			"Lloffiwr",
 			"Purodha",
@@ -10,11 +12,11 @@
 			"Shirayuki",
 			"Siebrand",
 			"Umherirrender",
-			"Yuri Astrakhan",
-			"Base",
-			"Kareyac"
+			"Yuri Astrakhan"
 		]
 	},
+	"nstab-data": "The name for the tab of the Data namespace.\n{{identical|Data}}",
+	"tooltip-ca-nstab-data": "Tooltip shown when hovering over the {{msg-mw|Nstab-data}} tab.\n\nSee also:\n* {{msg-mw|Nstab-data}}\n* {{msg-mw|Tooltip-ca-nstab-data}}",
 	"jsonconfig-desc": "{{desc|name=JsonConfig|url=https://www.mediawiki.org/wiki/Extension:JsonConfig}}",
 	"jsonconfig-duplicate-field": "Field (<code>$1</code>) was present more than once but with different capitalization in the JSON, e.g. \"field\" and \"Field\".\n\nParameters:\n* $1 - field name",
 	"jsonconfig-edit-action-apply": "Label for the apply button in the edit dialog",
@@ -76,7 +78,7 @@
 	"jsonconfig-license-name-CC-BY-SA-2.5": "{{optional}}\nName of the CC-BY-SA-2.5 license",
 	"jsonconfig-license-name-CC-BY-SA-3.0": "{{optional}}\nName of the CC-BY-SA-3.0 license",
 	"jsonconfig-license-name-CC-BY-SA-4.0": "{{optional}}\nName of the CC-BY-SA-4.0 license",
-	"jsonconfig-license-name-CC-BY-SA-4.0+": "Name of the CC-BY-SA-4.0 or later license",
+	"jsonconfig-license-name-CC-BY-SA-4.0+": "{{optional}}\nName of the CC-BY-SA-4.0 or later license",
 	"jsonconfig-license-name-ODbL-1.0": "{{optional}}\nName of the ODbL-1.0 license",
 	"jsonconfig-license-name-dl-de-zero-2.0": "Name of the Data licence Germany - Zero - Version 2.0",
 	"jsonconfig-license-name-dl-de-by-1.0": "Name of the Data licence Germany – attribution – Version 1.0",

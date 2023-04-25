@@ -85,6 +85,10 @@
 		// (none)
 
 		// Initialization
+		// The following classes are used here:
+		// * wbqc-report-status-violation
+		// * wbqc-report-status-warning
+		// * wbqc-report-status-suggestion
 		this.$element
 			.addClass( 'wbqc-report' )
 			.addClass( 'wbqc-report-status-' + this.status );

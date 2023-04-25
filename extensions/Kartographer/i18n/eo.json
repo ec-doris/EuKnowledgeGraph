@@ -1,11 +1,11 @@
 {
 	"@metadata": {
 		"authors": [
-			"Mirin",
-			"Robin van der Vliet",
-			"Yekrats",
 			"KuboF",
-			"NMaia"
+			"Mirin",
+			"NMaia",
+			"Robin van der Vliet",
+			"Yekrats"
 		]
 	},
 	"kartographer-attribution": "[https://foundation.wikimedia.org/wiki/Maps_Terms_of_Use Vikimediaj mapoj] | Mapdatumoj © [https://www.openstreetmap.org/copyright Kontribuantoj de OpenStreetMap]",

@@ -14,6 +14,7 @@ use LogicException;
  *
  * @author Lucas Werkmeister
  * @license GPL-2.0-or-later
+ * @phan-file-suppress PhanPluginNeverReturnMethod
  */
 class EntityContextCursor extends ApiV2ContextCursor {
 

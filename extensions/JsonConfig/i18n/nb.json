@@ -5,6 +5,8 @@
 			"Kingu"
 		]
 	},
+	"nstab-data": "Data",
+	"tooltip-ca-nstab-data": "Vis datasiden",
 	"jsonconfig-desc": "Lar JSON-konfigurasjon lagres på en wiki",
 	"jsonconfig-duplicate-field": "Mer enn én verdi «$1» funnet",
 	"jsonconfig-edit-action-apply": "Bruk",

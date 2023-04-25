@@ -2,7 +2,7 @@
 
 namespace WikibaseQuality\ConstraintReport;
 
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikimedia\Rdbms\DBUnexpectedError;
 
 /**
@@ -21,10 +21,10 @@ interface ConstraintStore {
 	/**
 	 * Delete all constraints for the property ID.
 	 *
-	 * @param PropertyId $propertyId
+	 * @param NumericPropertyId $propertyId
 	 *
 	 * @throws DBUnexpectedError
 	 */
-	public function deleteForProperty( PropertyId $propertyId );
+	public function deleteForProperty( NumericPropertyId $propertyId );
 
 }

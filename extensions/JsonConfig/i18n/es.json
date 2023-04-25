@@ -1,25 +1,32 @@
 {
 	"@metadata": {
 		"authors": [
+			"ArenaL5",
 			"Csbotero",
 			"Dgstranz",
 			"Fitoschido",
 			"Igv",
+			"Jakeukalane",
 			"Lemondoge",
 			"Macofe",
 			"MarcoAurelio",
 			"Ncr",
 			"Ryo567",
 			"Yurik",
-			"ArenaL5",
-			"Jakeukalane"
+			"DiegoAmbrocio"
 		]
 	},
+	"nstab-data": "Datos",
+	"tooltip-ca-nstab-data": "Ver la página de datos",
 	"jsonconfig-desc": "Permite que la configuración JSON sea almacenada en una wiki",
 	"jsonconfig-duplicate-field": "Se encontró más de un valor \"$1\"",
+	"jsonconfig-edit-action-apply": "Aplicar",
 	"jsonconfig-edit-action-cancel": "Cancelar",
 	"jsonconfig-edit-button-label": "Edita la tabla de datos",
+	"jsonconfig-edit-dialog-error": "No se puede editar como una tabla: $1",
 	"jsonconfig-edit-dialog-error-data-inavlid": "Los datos no coinciden con el esquema",
+	"jsonconfig-edit-dialog-error-data-too-large": "El conjunto de datos es demasiado grande para editarlo como una tabla",
+	"jsonconfig-edit-dialog-error-field-name-missing": "Cada campo debe tener un nombre",
 	"jsonconfig-edit-dialog-title": "Editar como JSON",
 	"jsonconfig-err-array": "El parámetro «$1» debe ser una lista, p. ej., <kbd>[\"valor1\", \"valor2\", …]</kbd>",
 	"jsonconfig-err-array-count": "La lista \"$1\" tiene $2 {{PLURAL:$2|valor|valores}}, pero debe tener $3 {{PLURAL:$3|valor|valores}}, el mismo número de valores que \"$4\"",

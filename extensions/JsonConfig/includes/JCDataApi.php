@@ -17,13 +17,11 @@ class JCDataApi extends ApiBase {
 			$this->dieWithError( [ 'apierror-invalidtitle', wfEscapeWikiText( $params['title'] ) ] );
 		}
 
-		// @phan-suppress-next-line PhanTypeMismatchArgumentNullable T240141
 		$data = JCSingleton::getContent( $jct );
 		if ( !$data ) {
 			$this->dieWithError(
 				[
 					'apierror-invalidtitle',
-					// @phan-suppress-next-line PhanTypeMismatchArgumentNullable T240141
 					wfEscapeWikiText( Title::newFromTitleValue( $jct )->getPrefixedText() )
 				]
 			);

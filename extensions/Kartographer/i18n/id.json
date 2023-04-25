@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Daud I.F. Argana",
 			"Diki Ananta",
 			"Presidenvolksraad",
 			"Rachmat.Wahidi",
@@ -9,6 +10,7 @@
 			"William Surya Permana"
 		]
 	},
+	"apierror-kartographer-conflicting-revids": "Melakukan kueri data peta dari beberapa revisi halaman yang sama dalam satu permintaan belum bisa dilakukan.",
 	"kartographer-attribution": "[https://foundation.wikimedia.org/wiki/Maps_Terms_of_Use Peta Wikimedia] | Data peta © [https://www.openstreetmap.org/copyright Kontributor OpenStreetMap]",
 	"kartographer-broken-category": "Halaman dengan peta rusak",
 	"kartographer-broken-category-desc": "Halaman yang menyertakan penggunaan peta yang tidak sah",
@@ -17,7 +19,7 @@
 	"kartographer-error-json": "Tidak dapat memilah JSON: $1",
 	"kartographer-error-missing-attr": "Atribut \"$1\" hilang",
 	"kartographer-error-bad_attr": "Atribut \"$1\" memiliki nilai yang tak sah",
-	"kartographer-error-bad_data": "Isi JSON bukan merupakan GeoJSON+simplestyle yang sah",
+	"kartographer-error-bad_data": "Isi JSON bukan merupakan GeoJSON+simplestyle yang sah. Galat validasi pertama terletak di elemen \"$1\": \"$2\".",
 	"kartographer-error-latlon": "Kedua parameter baik \"latitude\" dan \"longitude\" harus disediakan, atau salah satu dari keduanya",
 	"kartographer-error-title": "Judul \"$1\" bukan merupakan halaman data peta yang sah",
 	"kartographer-tracking-category": "Halaman dengan peta",

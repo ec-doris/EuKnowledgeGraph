@@ -17,6 +17,27 @@ use WikibaseQuality\ConstraintReport\ConstraintCheck\Result\CheckResult;
 interface ConstraintChecker {
 
 	/**
+	 * Convenience constant, returned by most {@link getSupportedEntityTypes} implementations.
+	 */
+	public const ALL_ENTITY_TYPES_SUPPORTED = [
+		'item' => CheckResult::STATUS_COMPLIANCE,
+		'property' => CheckResult::STATUS_COMPLIANCE,
+		'lexeme' => CheckResult::STATUS_COMPLIANCE,
+		'form' => CheckResult::STATUS_COMPLIANCE,
+		'sense' => CheckResult::STATUS_COMPLIANCE,
+		'mediainfo' => CheckResult::STATUS_COMPLIANCE,
+	];
+
+	/**
+	 * Convenience constant, returned by many {@link getSupportedContextTypes} implementations.
+	 */
+	public const ALL_CONTEXT_TYPES_SUPPORTED = [
+		Context::TYPE_STATEMENT => CheckResult::STATUS_COMPLIANCE,
+		Context::TYPE_QUALIFIER => CheckResult::STATUS_COMPLIANCE,
+		Context::TYPE_REFERENCE => CheckResult::STATUS_COMPLIANCE,
+	];
+
+	/**
 	 * Determines which context types this constraint type supports.
 	 * checkConstraint() should only be called for contexts with one of the supported types.
 	 *
@@ -40,6 +61,8 @@ interface ConstraintChecker {
 	 * indicates that a constraint type makes sense on statements and qualifiers
 	 * (but not references), but has only been implemented on statements so far.
 	 *
+	 * Many implementations can just return {@link ALL_CONTEXT_TYPES_SUPPORTED}.
+	 *
 	 * @return string[]
 	 */
 	public function getSupportedContextTypes();
@@ -56,9 +79,25 @@ interface ConstraintChecker {
 	 * if the constraint explicitly specifies a different scope
 	 * (which might not even include the “statement” scope).
 	 *
+	 * Many implementations can just return {@link Context::ALL_CONTEXT_TYPES}.
+	 *
 	 * @return string[]
 	 */
 	public function getDefaultContextTypes();
+
+	/**
+	 * Determines which entity types this constraint type supports.
+	 * checkConstraint() should only be called for contexts with one of the supported entity types.
+	 *
+	 * Returns an array from entity types to result status (CheckResult::STATUS_* constants).
+	 * The meaning of STATUS_COMPLIANCE, STATUS_TODO and STATUS_NOT_IN_SCOPE
+	 * is the same as for {@link getSupportedContextTypes}.
+	 *
+	 * Most implementations can just return {@link ALL_ENTITY_TYPES_SUPPORTED}.
+	 *
+	 * @return string[]
+	 */
+	public function getSupportedEntityTypes();
 
 	/**
 	 * @param Context $context

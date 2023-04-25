@@ -6,7 +6,7 @@ use HashConfig;
 use IBufferingStatsdDataFactory;
 use Psr\Log\LoggerInterface;
 use Wikibase\DataModel\Entity\ItemId;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\Repo\Tests\NewItem;
 use Wikibase\Repo\Tests\NewStatement;
 use WikibaseQuality\ConstraintReport\Constraint;
@@ -42,7 +42,7 @@ class LoggingHelperTest extends \PHPUnit\Framework\TestCase {
 	 */
 	public function testLogConstraintCheck( $durationSeconds, $expectedLevel, $expectedLimit ) {
 		$statement = NewStatement::noValueFor( 'P1' )->build();
-		$constraint = new Constraint( 'test constraint id', new PropertyId( 'P1' ), 'Q100', [] );
+		$constraint = new Constraint( 'test constraint id', new NumericPropertyId( 'P1' ), 'Q100', [] );
 		$entity = NewItem::withId( 'Q1' )->build();
 		$context = new MainSnakContext( $entity, $statement );
 		$checkResult = new CheckResult(
@@ -112,7 +112,7 @@ class LoggingHelperTest extends \PHPUnit\Framework\TestCase {
 
 	public function testLogConstraintCheckDisabled() {
 		$statement = NewStatement::noValueFor( 'P1' )->build();
-		$constraint = new Constraint( 'test constraint id', new PropertyId( 'P1' ), 'Q100', [] );
+		$constraint = new Constraint( 'test constraint id', new NumericPropertyId( 'P1' ), 'Q100', [] );
 		$entity = NewItem::withId( 'Q1' )->build();
 		$context = new MainSnakContext( $entity, $statement );
 		$checkResult = new CheckResult(

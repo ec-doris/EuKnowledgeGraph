@@ -3,14 +3,17 @@
 		"authors": [
 			"Andriykopanytsia",
 			"Base",
+			"DDPAT",
 			"Dars",
+			"Ice bulldog",
 			"Piramidion",
 			"Vlad5250",
 			"Yurik",
-			"Ата",
-			"DDPAT"
+			"Ата"
 		]
 	},
+	"nstab-data": "Дані",
+	"tooltip-ca-nstab-data": "Переглянути сторінку даних",
 	"jsonconfig-desc": "Дозволяє зберігати налаштування JSON у вікі-проекті",
 	"jsonconfig-duplicate-field": "Більше, ніж одне значення \"$1\" знайдено",
 	"jsonconfig-edit-action-apply": "Застосувати",
@@ -72,6 +75,7 @@
 	"jsonconfig-license-name-CC-BY-SA-2.5": "Creative Commons Attribution-Share Alike 2.5",
 	"jsonconfig-license-name-CC-BY-SA-3.0": "Creative Commons Attribution-Share Alike 3.0",
 	"jsonconfig-license-name-CC-BY-SA-4.0": "Creative Commons Attribution-Share Alike 4.0",
+	"jsonconfig-license-name-CC-BY-SA-4.0+": "Creative Commons Attribution-Share Alike 4.0 або новішої версії",
 	"jsonconfig-license-name-ODbL-1.0": "Ліцензія ODC Open Database v1.0",
 	"jsonconfig-license-name-dl-de-zero-2.0": "Ліцензія даних Німеччина — Зеро — Версія 2.0",
 	"jsonconfig-license-name-dl-de-by-1.0": "Ліцензія даних Німеччина — атрибуція — Версія 1.0",

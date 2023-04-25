@@ -4,7 +4,7 @@ namespace Kartographer\Tests;
 
 use Kartographer\Tests\Mock\MockSimpleStyleParser;
 use MediaWiki\MediaWikiServices;
-use MediaWikiTestCase;
+use MediaWikiIntegrationTestCase;
 use Parser;
 use ParserOptions;
 use Title;
@@ -13,25 +13,18 @@ use Title;
  * @covers \Kartographer\SimpleStyleParser
  * @group Kartographer
  */
-class ValidationTest extends MediaWikiTestCase {
-	private $basePath;
-
-	public function __construct( $name = null, array $data = [], $dataName = '' ) {
-		parent::__construct( $name, $data, $dataName );
-		$this->basePath = __DIR__ . '/data';
-	}
+class ValidationTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @dataProvider provideTestCases
 	 */
-	public function testValidation( $fileName, $shouldFail ) {
+	public function testValidation( $file, $shouldFail ) {
 		$parser = MediaWikiServices::getInstance()->getParserFactory()->create();
 		$options = ParserOptions::newFromAnon();
 		$title = Title::newMainPage();
 		$parser->startExternalParse( $title, $options, Parser::OT_HTML );
 		$validator = new MockSimpleStyleParser( $parser );
 
-		$file = $this->basePath . '/' . $fileName;
 		$content = file_get_contents( $file );
 		if ( $content === false ) {
 			$this->fail( "Can't read file $file" );
@@ -47,17 +40,11 @@ class ValidationTest extends MediaWikiTestCase {
 	}
 
 	public function provideTestCases() {
-		$result = [];
-
-		foreach ( glob( "{$this->basePath}/good-schemas/*.json" ) as $file ) {
-			$file = substr( $file, strlen( $this->basePath ) + 1 );
-			$result[] = [ $file, false ];
+		foreach ( glob( __DIR__ . '/data/good-schemas/*.json' ) as $file ) {
+			yield basename( $file ) => [ $file, false ];
 		}
-		foreach ( glob( "{$this->basePath}/bad-schemas/*.json" ) as $file ) {
-			$file = substr( $file, strlen( $this->basePath ) + 1 );
-			$result[] = [ $file, true ];
+		foreach ( glob( __DIR__ . '/data/bad-schemas/*.json' ) as $file ) {
+			yield basename( $file ) => [ $file, true ];
 		}
-
-		return $result;
 	}
 }

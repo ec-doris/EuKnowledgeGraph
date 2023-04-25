@@ -2,7 +2,7 @@
 
 namespace WikibaseQuality\ConstraintReport;
 
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 
 /**
  * @author Lucas Werkmeister
@@ -13,12 +13,12 @@ class ConstraintDeserializer {
 	public function deserialize( array $serialization ) {
 		return new Constraint(
 			$serialization['id'],
-			new PropertyId( $serialization['pid'] ),
+			new NumericPropertyId( $serialization['pid'] ),
 			$serialization['qid'],
 			array_key_exists( 'params', $serialization ) ?
-				$serialization['params'] :
-				[]
-		);
+			$serialization['params'] :
+		[]
+			);
 	}
 
 }

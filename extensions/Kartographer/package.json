@@ -6,26 +6,27 @@
 	"scripts": {
 		"doc": "jsduck",
 		"test": "grunt test",
-		"build-lib": ". ./bin/build.sh"
+		"build-lib": "./bin/build.sh",
+		"minify-svg": "svgo --config=.svgo.config.js --quiet --recursive --folder styles/images/"
 	},
 	"devDependencies": {
 		"browserify": "16.2.2",
-		"eslint-config-wikimedia": "0.16.2",
+		"eslint-config-wikimedia": "0.20.0",
 		"grunt": "1.5.3",
 		"grunt-banana-checker": "0.9.0",
 		"grunt-contrib-watch": "1.1.0",
 		"grunt-eslint": "23.0.0",
-		"grunt-stylelint": "0.15.0",
-		"grunt-svgmin": "5.0.0",
+		"grunt-stylelint": "0.16.0",
 		"prunecluster": "^2.0.0-beta.3",
 		"rollup": "^0.36.1",
 		"rollup-plugin-commonjs": "^5.0.4",
-		"stylelint-config-wikimedia": "0.10.3"
+		"stylelint-config-wikimedia": "0.11.1",
+		"svgo": "2.8.0"
 	},
 	"dependencies": {
 		"@wikimedia/leaflet-sleep": "^0.5.1",
-		"@wikimedia/mapdata": "^0.5.0",
-		"mapbox.js": "3.1.1",
-		"wikimedia-ui-base": "0.15.0"
+		"@wikimedia/mapdata": "^0.6.0",
+		"mapbox.js": "3.3.1",
+		"wikimedia-ui-base": "0.18.1"
 	}
 }

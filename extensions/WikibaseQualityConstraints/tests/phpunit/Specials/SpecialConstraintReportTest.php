@@ -39,7 +39,7 @@ class SpecialConstraintReportTest extends SpecialPageTestBase {
 	/**
 	 * Id of a item that (hopefully) does not exist.
 	 */
-	const NOT_EXISTENT_ITEM_ID = 'Q2147483647';
+	private const NOT_EXISTENT_ITEM_ID = 'Q2147483647';
 
 	/**
 	 * @var EntityId[]
@@ -51,7 +51,7 @@ class SpecialConstraintReportTest extends SpecialPageTestBase {
 	 */
 	private static $hasSetup;
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 		MediaWikiServices::getInstance()->resetServiceForTesting( ConstraintsServices::CONSTRAINT_LOOKUP );
 		$this->tablesUsed[] = 'wbqc_constraints';
@@ -62,21 +62,20 @@ class SpecialConstraintReportTest extends SpecialPageTestBase {
 		$this->setService( 'MainConfig', $config );
 	}
 
-	protected function tearDown() : void {
+	protected function tearDown(): void {
 		MediaWikiServices::getInstance()->resetServiceForTesting( ConstraintsServices::CONSTRAINT_LOOKUP );
 		parent::tearDown();
 	}
 
 	protected function newSpecialPage() {
-		$wikibaseRepo = WikibaseRepo::getDefaultInstance();
 
 		return new SpecialConstraintReport(
-			$wikibaseRepo->getEntityLookup(),
-			$wikibaseRepo->getEntityTitleLookup(),
+			WikibaseRepo::getEntityLookup(),
+			WikibaseRepo::getEntityTitleLookup(),
 			new EntityIdLabelFormatterFactory(),
-			$wikibaseRepo->getEntityIdHtmlLinkFormatterFactory(),
-			$wikibaseRepo->getEntityIdParser(),
-			$wikibaseRepo->getValueFormatterFactory(),
+			WikibaseRepo::getEntityIdHtmlLinkFormatterFactory(),
+			WikibaseRepo::getEntityIdParser(),
+			WikibaseRepo::getValueFormatterFactory(),
 			ConstraintsServices::getDelegatingConstraintChecker(),
 			$this->getDefaultConfig(),
 			new NullStatsdDataFactory()
@@ -90,14 +89,16 @@ class SpecialConstraintReportTest extends SpecialPageTestBase {
 	 */
 	public function addDBData() {
 		if ( !self::$hasSetup ) {
-			$store = WikibaseRepo::getDefaultInstance()->getEntityStore();
+			$store = WikibaseRepo::getEntityStore();
+
+			$editor = $this->getTestUser()->getUser();
 
 			$propertyP1 = Property::newFromType( 'string' );
-			$store->saveEntity( $propertyP1, 'TestEntityP1', $GLOBALS[ 'wgUser' ], EDIT_NEW );
+			$store->saveEntity( $propertyP1, 'TestEntityP1', $editor, EDIT_NEW );
 			self::$idMap[ 'P1' ] = $propertyP1->getId();
 
 			$itemQ1 = new Item();
-			$store->saveEntity( $itemQ1, 'TestEntityQ1', $GLOBALS[ 'wgUser' ], EDIT_NEW );
+			$store->saveEntity( $itemQ1, 'TestEntityQ1', $editor, EDIT_NEW );
 			self::$idMap[ 'Q1' ] = $itemQ1->getId();
 
 			$statementGuidGenerator = new GuidGenerator();
@@ -109,7 +110,7 @@ class SpecialConstraintReportTest extends SpecialPageTestBase {
 			$statement->setGuid( $statementGuid );
 			$itemQ1->getStatements()->addStatement( $statement );
 
-			$store->saveEntity( $itemQ1, 'TestEntityQ1', $GLOBALS[ 'wgUser' ], EDIT_UPDATE );
+			$store->saveEntity( $itemQ1, 'TestEntityQ1', $editor, EDIT_UPDATE );
 
 			self::$hasSetup = true;
 		}

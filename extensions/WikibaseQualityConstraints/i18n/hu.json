@@ -137,6 +137,7 @@
 	"wbqc-violation-message-none-of": "A(z) „$1” tulajdonság értéke nem lehet {{PLURAL:$2|1=„$4”.|2=„$4” vagy „$5”.|az alábbiak egyike sem: $3}}",
 	"wbqc-violation-message-integer": "A(z) „$1” tulajdonság értékének egész számnak kell lennie, de a(z) „$2” nem az.",
 	"wbqc-violation-message-citationNeeded": "A(z) „$1” tulajdonság állításainak legalább egy forráshivatkozással kell rendelkezniük.",
+	"wbqc-violation-message-label-lacking": "A(z) $1 tulajdonsággal rendelkező entitásoknak {{PLURAL:$2|$4 nyelvű címkével is kell rendelkezniük.|rendelkezniük kell címkével a következő nyelveken: $3}}",
 	"wbqc-violation-message-property-scope": "A(z) „$1” tulajdonság nem használható ezen a helyen ($2). Az {{PLURAL:$3|egyetlen érvényes hely|egyedüli érvényes helyek}} ennek a tulajdonságnak {{PLURAL:$3|a következő: $5.|a következők: $4}}",
 	"wbqc-violation-message-exception": "Ez az entitás egy ismert kivétel ez alól a kikötés alól, és meg lett jelölve ekként."
 }

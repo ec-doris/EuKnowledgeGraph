@@ -45,15 +45,20 @@ class JCMapDataContent extends JCDataContent {
 		$data = parent::getSafeData( $data );
 
 		$ssp = new SimpleStyleParser( $parser );
-		$dummy = [ $data->data ];
-		$ssp->normalizeAndSanitize( $dummy );
-		$data->data = $dummy[0];
+		// FIXME: Replace with a straight normalizeAndSanitize() call when possible, see T281224
+		if ( is_array( $data->data ) ) {
+			$ssp->normalizeAndSanitize( $data->data );
+		} elseif ( is_object( $data->data ) ) {
+			$dummy = [ $data->data ];
+			$ssp->normalizeAndSanitize( $dummy );
+			$data->data = $dummy[0];
+		}
 
 		return $data;
 	}
 
 	private static function isValidData() {
-		return function ( JCValue $v, array $path ) {
+		return static function ( JCValue $v, array $path ) {
 			$value = $v->getValue();
 			if ( !is_object( $value ) && !is_array( $value ) ||
 				!JCMapDataContent::recursiveWalk( $value, false )
@@ -78,7 +83,7 @@ class JCMapDataContent extends JCDataContent {
 	 * Recursively walk the geojson to replace localized "title" and "description" values
 	 * with the single string corresponding to the $lang language, or if $lang is not set,
 	 * validates those values and returns true/false if valid
-	 * @param object|array &$json
+	 * @param \stdClass|array &$json
 	 * @param bool|Language $lang
 	 * @return bool
 	 */

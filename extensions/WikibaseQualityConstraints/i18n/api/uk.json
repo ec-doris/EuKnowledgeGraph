@@ -1,6 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
+			"DDPAT",
+			"Ice bulldog",
 			"Piramidion",
 			"Vlad5250"
 		]
@@ -10,7 +12,7 @@
 	"apihelp-wbcheckconstraints-param-id": "Список ідентифікаторів сутностей, з яких слід отримати дані. Відокремлюйте значення за допомогою '|' чи чогось подібного.",
 	"apihelp-wbcheckconstraints-param-claimid": "Список GUID, який визначає запис, щодо якого слід виконати перевірку й отримати звіт щодо обмежень. Відокремлюйте значення за допомогою '|'.",
 	"apihelp-wbcheckconstraints-param-constraintid": "Необов'язковий фільтр для повернення лише тих обмежень, які мають вказаний ідентифікатор обмеження.",
-	"apihelp-wbcheckconstraints-param-status": "Необов'язковий фільтр для повернення лише тих результатів перевірки, які мають вибрані статуси.\n\nЗверніть увагу, що кешуються лише результати зі статусами 'violation', 'warning' і 'bad-parameters', тож запити, в яких вибрано якісь інші статуси окрім трьох наведених, не матимуть користі від кешування.",
+	"apihelp-wbcheckconstraints-param-status": "Необов'язковий фільтр для повернення лише тих результатів перевірки, які мають вибрані статуси.\n\nЗверніть увагу, що кешуються лише результати зі статусами 'violation', 'warning', 'suggestion' і 'bad-parameters', тож запити, в яких вибрано якісь інші статуси окрім чотирьох наведених, не матимуть користі від кешування.",
 	"apihelp-wbcheckconstraints-paramvalue-status-compliance": "Твердження задовольняє обмеження.",
 	"apihelp-wbcheckconstraints-paramvalue-status-violation": "Твердження порушує обмеження.",
 	"apihelp-wbcheckconstraints-paramvalue-status-exception": "Суб'єктна сутність твердження є відомим винятком до обмеження.",

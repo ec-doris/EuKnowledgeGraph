@@ -30,6 +30,9 @@ ini_set('memory_limit', '1536M');
 
 # Disallow anonymous editing
 $wgGroupPermissions['*']['edit'] = false;
+$wgGroupPermissions['user']['edit'] = false;
+$wgGroupPermissions['editor']['edit'] = true;
+$wgGroupPermissions['sysop']['edit'] = true;
 
 # Disallow anonymous viewing as well!
 #${DOLLAR}wgGroupPermissions['*']['read'] = false;
@@ -68,7 +71,9 @@ wfLoadExtension( 'JsonConfig' );
 wfLoadExtension( 'Kartographer' );
 $wgKartographerMapServer = 'https://a.tile.openstreetmap.org';
 $wgKartographerDfltStyle = '';
+$wgKartographerSrcsetScales = [1];
 $wgKartographerStyles = [];
+$wgKartographerUseMarkerStyle = true;
 $wgWBRepoSettings['useKartographerGlobeCoordinateFormatter'] = true;
 
 # Allow longer strings
@@ -123,10 +128,11 @@ $wgExternalLinkTarget = '_blank';
 # Activate batch ingestion plugin
 wfLoadExtension( 'BatchIngestion' );
 # plugins needed to render some templates related to SPARQL examples
-wfLoadExtension( 'TemplateData' );
-wfLoadExtension( 'TemplateStyles' );
-wfLoadExtension( 'SyntaxHighlight_GeSHi' );
-wfLoadExtension( 'ParserFunctions' );
+#wfLoadExtension( 'TemplateData' );
+#wfLoadExtension( 'TemplateStyles' );
+#wfLoadExtension( 'SyntaxHighlight_GeSHi' );
+#wfLoadExtension( 'ParserFunctions' );
 
 # Enable wikimedia commons images
 $wgUseInstantCommons = true;
+$wgShowExceptionDetails = true;

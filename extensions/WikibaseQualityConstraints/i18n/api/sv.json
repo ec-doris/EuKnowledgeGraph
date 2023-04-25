@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Sabelöga",
 			"WikiPhoenix"
 		]
 	},
@@ -8,7 +9,7 @@
 	"apihelp-wbcheckconstraints-summary": "Utför begränsningskontroller på alla entiteter du vill och returnerar resultatet.",
 	"apihelp-wbcheckconstraints-param-id": "ID-lista över entiteterna att hämta data från. Separera värden med \"|\" eller alternativa.",
 	"apihelp-wbcheckconstraints-param-constraintid": "Valfritt filter för att endast returnera begränsningarna som har det angivna begränsnings-ID:et.",
-	"apihelp-wbcheckconstraints-param-status": "Valfritt filter för att endast returnera kontrollresultat med valda statusar.\n\nObservera att endast resultat för statusarna \"violation\", \"warning\" och \"bad-parameters\" cachelagras, så förfrågor som väljer statusar förutom dessa tre drar inte nytta från cachelagringen.",
+	"apihelp-wbcheckconstraints-param-status": "Valfritt filter för att endast returnera kontrollresultat med valda statusar.\n\nObservera att endast resultat för statusarna \"violation\", \"warning\", \"suggestion\" och \"bad-parameters\" cachelagras, så förfrågor som väljer statusar förutom dessa fyra drar inte nytta från cachelagringen.",
 	"apihelp-wbcheckconstraints-paramvalue-status-compliance": "Uttalet uppfyller begränsningen.",
 	"apihelp-wbcheckconstraints-paramvalue-status-violation": "Uttalet bryter mot begränsningen.",
 	"apihelp-wbcheckconstraints-paramvalue-status-todo": "Begränsningen är inte implementerad.",

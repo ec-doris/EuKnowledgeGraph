@@ -18,21 +18,26 @@ trait SparqlHelperMock {
 	/**
 	 * @param Statement $expectedStatement
 	 * @param (EntityId|null)[] $result
+	 * @param (PropertyId|null)[] $separators
 	 *
 	 * @return SparqlHelper
 	 */
 	private function getSparqlHelperMockFindEntities(
 		Statement $expectedStatement,
-		$result ) {
+		$result,
+		$separators = null
+	) {
+		$mock = $this->createMock( SparqlHelper::class );
 
-		$mock = $this->getMockBuilder( SparqlHelper::class )
-			  ->disableOriginalConstructor()
-			  ->getMock();
+		$args = [ $expectedStatement ];
+		if ( $separators ) {
+			$args[] = $separators;
+		}
 
 		$mock->expects( $this->exactly( 1 ) )
 			->method( 'findEntitiesWithSameStatement' )
-			->willReturn( new CachedEntityIds( $result, Metadata::blank() ) )
-			->withConsecutive( [ $this->equalTo( $expectedStatement ), $this->equalTo( true ) ] );
+			->with( ...$args )
+			->willReturn( new CachedEntityIds( $result, Metadata::blank() ) );
 
 		return $mock;
 	}
@@ -43,9 +48,7 @@ trait SparqlHelperMock {
 		$expectedType,
 		$result
 	) {
-		$mock = $this->getMockBuilder( SparqlHelper::class )
-			->disableOriginalConstructor()
-			->getMock();
+		$mock = $this->createMock( SparqlHelper::class );
 
 		$mock->expects( $this->exactly( 1 ) )
 			->method( 'findEntitiesWithSameQualifierOrReference' )

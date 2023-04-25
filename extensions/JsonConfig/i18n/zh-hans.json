@@ -5,13 +5,15 @@
 			"Hudafu",
 			"Liuxinyu970226",
 			"NigelSoft",
+			"Shizhao",
 			"SomeyaMako",
 			"Yurik",
 			"列维劳德",
-			"御坂美琴",
-			"Shizhao"
+			"御坂美琴"
 		]
 	},
+	"nstab-data": "数据",
+	"tooltip-ca-nstab-data": "查看数据页面",
 	"jsonconfig-desc": "允许JSON配置存储在wiki中",
 	"jsonconfig-duplicate-field": "已发现多于1个值“$1”",
 	"jsonconfig-edit-action-apply": "提交",

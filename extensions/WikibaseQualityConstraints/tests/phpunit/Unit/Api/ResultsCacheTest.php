@@ -5,7 +5,7 @@ namespace WikibaseQuality\ConstraintReport\Tests\Unit\Api;
 use HashBagOStuff;
 use WANObjectCache;
 use Wikibase\DataModel\Entity\ItemId;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use WikibaseQuality\ConstraintReport\Api\ResultsCache;
 
 /**
@@ -27,7 +27,7 @@ class ResultsCacheTest extends \MediaWikiUnitTestCase {
 		);
 		$this->assertSame(
 			'local:WikibaseQualityConstraints:checkConstraints:v2:P31',
-			$resultsCache->makeKey( new PropertyId( 'P31' ) )
+			$resultsCache->makeKey( new NumericPropertyId( 'P31' ) )
 		);
 	}
 

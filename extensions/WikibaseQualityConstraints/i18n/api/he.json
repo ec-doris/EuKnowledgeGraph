@@ -10,7 +10,7 @@
 	"apihelp-wbcheckconstraints-param-id": "רשימת מזהי ישויות שמהן צריך לקבל נתונים. יש להפריד את הערכים בתו '|' או חלופות.",
 	"apihelp-wbcheckconstraints-param-claimid": "רשימת GUID־ים שמזהים טענה שצריך לבדוק אל מול דו\"ח אילוצים. יש להפריד ערכים בתו '|'.",
 	"apihelp-wbcheckconstraints-param-constraintid": "מסנן אופציונלי שיחזיר רק את האילוצים שיש להם מזה אילוץ שצוין.",
-	"apihelp-wbcheckconstraints-param-status": "מסנן אופציונלי להחזרת תוצאות בדיקה עם מצבים מסוימים בלבד.\n\nנא לזכור שרק תוצאות עם המצבים 'violation',&rlm; 'warning' ו־'bad-parameters' נשמרות במטמון, כך שבקשות הבודקות מצבים אחרים לא תישמרנה במטמון.",
+	"apihelp-wbcheckconstraints-param-status": "מסנן אופציונלי להחזרת תוצאות בדיקה עם מצבים מסוימים בלבד.\n\nנא לשים לב לכך שרק תוצאות עם המצבים \"violation\"‏, \"warning\"‏, \"suggestion\" ו־\"bad-parameters\" נשמרות במטמון, כך שבקשות שבוחרות כל מצב אחרת מלבד ארבעת אלה אינן מקבלות שום תועלת מהמטמון.",
 	"apihelp-wbcheckconstraints-paramvalue-status-compliance": "הקביעה תואמת לאילוץ.",
 	"apihelp-wbcheckconstraints-paramvalue-status-violation": "הקביעה מפרה את האילוץ.",
 	"apihelp-wbcheckconstraints-paramvalue-status-exception": "ישות הנושא של הקביעה היא חריגה ידועה של האילוץ.",

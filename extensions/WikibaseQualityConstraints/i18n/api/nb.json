@@ -9,7 +9,7 @@
 	"apihelp-wbcheckconstraints-param-id": "ID-liste over entiteter du ønsker å hente data fra. Atskill verdier med «|» eller alternativer.",
 	"apihelp-wbcheckconstraints-param-claimid": "GUID-liste som identifiserer en påstand for å sjekke en begrensningsrapport. Atskill verdier med «|».",
 	"apihelp-wbcheckconstraints-param-constraintid": "Valgfritt filter for å returnere bare begrensningene som har den gitte begrensnings-ID-en.",
-	"apihelp-wbcheckconstraints-param-status": "Valgfritt filter for kun å sjekke resultater med de valgte statusene.\n\nMerk at kun resultater for statusene «violation», «warning» og «bad-parameters» mellomlagres, så forespørsler som velger andre statuser drar ikke nytte av mellomlagringen.",
+	"apihelp-wbcheckconstraints-param-status": "Valgfritt filter for kun å sjekke resultater med de valgte statusene.\n\nMerk at kun resultater for statusene «violation», «warning», «suggestion» og «bad-parameters» mellomlagres, så forespørsler som velger andre statuser drar ikke nytte av mellomlagringen.",
 	"apihelp-wbcheckconstraints-paramvalue-status-compliance": "Påstanden oppfyller begrensningen.",
 	"apihelp-wbcheckconstraints-paramvalue-status-violation": "Påstanden bryter med begrensningen.",
 	"apihelp-wbcheckconstraints-paramvalue-status-exception": "Subjektentiteten til påstanden er et kjent unntak fra begrensningen.",

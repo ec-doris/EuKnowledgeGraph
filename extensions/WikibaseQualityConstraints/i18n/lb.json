@@ -39,7 +39,7 @@
 	"wbqc-constrainttypehelp-long": "Hëllefssäit fir dësen Typ vu Limitatioun",
 	"wbqc-constraintdiscuss-short": "Diskutéieren",
 	"wbqc-constraintdiscuss-long": "Diskussiounssäit iwwer dës Limitatioun",
-	"wbqc-cached-generic": "Dëst Resultat kënnt aus dem Tëschespäicher a kënnt vereelzt sinn.",
+	"wbqc-cached-generic": "Dëst Resultat kënnt aus dem Tëschespäicher a kéint vereelzt sinn.",
 	"wbqc-cached-minutes": "Dëst Resultat kënnt aus dem Tëschespäicher a ka bis zu  {{PLURAL:$1|1=enger MInutt|$1&nbsp;MInutten}} al sinn.",
 	"wbqc-cached-hours": "Dëst Resultat kënnt aus dem Tëschespäicher a ka bis zu  {{PLURAL:$1|1=enger Stonn|$1&nbsp;Stonnen}} al sinn.",
 	"wbqc-cached-days": "Dëst Resultat kënnt aus dem Tëschespäicher a ka bis zu  {{PLURAL:$1|1=engem Dag|$1&nbsp;Deeg}} al sinn.",

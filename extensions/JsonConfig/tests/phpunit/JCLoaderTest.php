@@ -2,20 +2,17 @@
 namespace JsonConfig\Tests;
 
 use JsonConfig\JCSingleton;
-use MediaWikiTestCase;
-use stdClass;
+use MediaWikiIntegrationTestCase;
 
 /**
  * @package JsonConfigTests
  * @group JsonConfig
  * @covers \JsonConfig\JCSingleton
  */
-class JCLoaderTest extends MediaWikiTestCase {
+class JCLoaderTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @dataProvider provideConfigs
-	 * @param $config
-	 * @param bool|stdClass $expected
 	 */
 	public function testConfigLoad( $config, $expected = false ) {
 		$actual =

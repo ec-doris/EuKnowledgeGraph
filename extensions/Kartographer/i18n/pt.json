@@ -4,6 +4,7 @@
 			"Athena in Wonderland",
 			"CaiusSPQR",
 			"Diniscoelho",
+			"Emma Franzen",
 			"Fúlvio",
 			"Hamilton Abreu",
 			"Mansil",
@@ -13,6 +14,7 @@
 			"Önni"
 		]
 	},
+	"apierror-kartographer-conflicting-revids": "A consulta de dados cartográficos de várias revisões da mesma página num único pedido ainda não é suportada.",
 	"kartographer-attribution": "[https://foundation.wikimedia.org/wiki/Maps_Terms_of_Use Cartas geográficas da Wikimedia] | Dados cartográficos © [https://www.openstreetmap.org/copyright Contribuidores do OpenStreetMap]",
 	"kartographer-broken-category": "Páginas com mapas inválidos",
 	"kartographer-broken-category-desc": "A página inclui uma utilização inválida de mapas",
@@ -21,7 +23,7 @@
 	"kartographer-error-json": "Não foi possível analisar o JSON: $1",
 	"kartographer-error-missing-attr": "Falta o atributo \"$1\"",
 	"kartographer-error-bad_attr": "O atributo \"$1\" tem um valor inválido",
-	"kartographer-error-bad_data": "O conteúdo JSON não é um GeoJSON+simplestyle válido",
+	"kartographer-error-bad_data": "O conteúdo JSON não é GeoJSON+simplestyle válido. O primeiro erro de validação está no elemento \"$1\": \"$2\".",
 	"kartographer-error-latlon": "Os parâmetros \"latitude\" e \"longitude\" devem ser ambos fornecidos ou ambos omitidos",
 	"kartographer-error-title": "O título \"$1\" não é uma página de dados cartográficos válida",
 	"kartographer-tracking-category": "Páginas com mapas",

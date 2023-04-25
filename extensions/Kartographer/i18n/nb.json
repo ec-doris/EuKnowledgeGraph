@@ -1,11 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
+			"Abuluntu",
 			"Danmichaelo",
 			"Jeblad",
 			"Jon Harald Søby"
 		]
 	},
+	"apierror-kartographer-conflicting-revids": "Spørringer om kartdata fra flere revisjoner av samme side i én forespørsel støttes ikke ennå.",
 	"kartographer-attribution": "[https://foundation.wikimedia.org/wiki/Maps_Terms_of_Use Wikimedia-kart] | Kartdata © [https://www.openstreetmap.org/copyright OpenStreetMaps bidragsytere]",
 	"kartographer-broken-category": "Sider med ødelagte kart",
 	"kartographer-broken-category-desc": "Siden inkluderer ugyldig kartbruk",
@@ -14,7 +16,7 @@
 	"kartographer-error-json": "Kunne ikke parse JSON: $1",
 	"kartographer-error-missing-attr": "Attributtet «$1» mangler",
 	"kartographer-error-bad_attr": "Attributtet «$1» har en ugyldig verdi",
-	"kartographer-error-bad_data": "JSON-innholdet er ikke gyldig GeoJSON+simplestyle",
+	"kartographer-error-bad_data": "JSON-innholdet er ikke gyldig GeoJSON+simplestyle. Den første feilen under validering er ved element «$1»: «$2».",
 	"kartographer-error-latlon": "Enten må både «latitude» og «longitude»-parameterne oppgis, eller ingen av dem",
 	"kartographer-error-title": "Tittelen «$1» er ikke en gyldig kartdataside",
 	"kartographer-tracking-category": "Sider med kart",

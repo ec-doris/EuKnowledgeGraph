@@ -4,9 +4,9 @@ namespace JsonConfig;
 use ExtensionRegistry;
 use FormatJson;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Page\PageReference;
 use ParserOptions;
 use ParserOutput;
-use Title;
 
 /**
  * @package JsonConfig
@@ -20,7 +20,7 @@ class JCMapDataContentView extends JCContentView {
 	 *
 	 * Render JCContent object as HTML - replaces valueToHtml()
 	 * @param JCContent|JCDataContent $content
-	 * @param Title $title Context title for parsing
+	 * @param PageReference $page Context title for parsing
 	 * @param int|null $revId Revision ID (for {{REVISIONID}})
 	 * @param ParserOptions $options Parser options
 	 * @param bool $generateHtml Whether or not to generate HTML
@@ -28,7 +28,7 @@ class JCMapDataContentView extends JCContentView {
 	 * @return string
 	 */
 	public function valueToHtml(
-		JCContent $content, Title $title, $revId, ParserOptions $options,
+		JCContent $content, PageReference $page, $revId, ParserOptions $options,
 		$generateHtml, ParserOutput &$output
 	) {
 		$mainParser = MediaWikiServices::getInstance()->getParser();
@@ -38,8 +38,8 @@ class JCMapDataContentView extends JCContentView {
 		if ( $localizedData ) {
 			$extReg = ExtensionRegistry::getInstance();
 
-			// Test both because for some reason mTagHooks is not set during preview
-			if ( isset( $mainParser->mTagHooks['mapframe'] ) ||
+			// Test both because for some reason getTags() is empty during preview
+			if ( in_array( 'mapframe', $mainParser->getTags(), true ) ||
 				$extReg->isLoaded( 'Kartographer' )
 			) {
 				$zoom = $content->getField( 'zoom' );
@@ -64,7 +64,7 @@ $jsonText
 EOT;
 			} else {
 				$jsonText = FormatJson::encode( $localizedData->data, true, FormatJson::UTF8_OK );
-				if ( isset( $mainParser->mTagHooks['syntaxhighlight'] ) ||
+				if ( in_array( 'syntaxhighlight', $mainParser->getTags(), true ) ||
 					$extReg->isLoaded( 'SyntaxHighlight' )
 				) {
 					$text = "<syntaxhighlight lang=json>\n$jsonText\n</syntaxhighlight>";
@@ -72,12 +72,12 @@ EOT;
 					$text = "<pre>\n$jsonText\n</pre>";
 				}
 			}
-			$output = $parser->parse( $text, $title, $options, true, true, $revId );
+			$output = $parser->parse( $text, $page, $options, true, true, $revId );
 		}
 
 		return $content->renderDescription( $options->getUserLangObj() ) . '<br>' .
 			$output->getRawText() . '<br clear=all>' .
-			$content->renderSources( $parser, $title, $revId, $options ) .
+			$content->renderSources( $parser, $page, $revId, $options ) .
 			$content->renderLicense();
 	}
 

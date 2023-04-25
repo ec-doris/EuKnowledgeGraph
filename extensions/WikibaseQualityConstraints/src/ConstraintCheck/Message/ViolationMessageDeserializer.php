@@ -80,6 +80,7 @@ class ViolationMessageDeserializer implements Deserializer {
 			ViolationMessage::TYPE_PROPERTY_SCOPE => 'deserializeContextType',
 			ViolationMessage::TYPE_PROPERTY_SCOPE_LIST => 'deserializeContextTypeList',
 			ViolationMessage::TYPE_LANGUAGE => 'deserializeStringByIdentity',
+			ViolationMessage::TYPE_LANGUAGE_LIST => 'deserializeStringByIdentity',
 			ViolationMessage::TYPE_MULTILINGUAL_TEXT => 'deserializeMultilingualText',
 		];
 

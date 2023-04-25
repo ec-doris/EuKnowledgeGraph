@@ -5,3 +5,5 @@ connect.sh
 stop.sh
 start.sh
 copy.sh
+.devspace
+.idea

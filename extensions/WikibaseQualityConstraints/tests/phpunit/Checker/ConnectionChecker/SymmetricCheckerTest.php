@@ -3,8 +3,8 @@
 namespace WikibaseQuality\ConstraintReport\Tests\Checker\ConnectionChecker;
 
 use Wikibase\DataModel\Entity\ItemId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Entity\Property;
-use Wikibase\DataModel\Entity\PropertyId;
 use Wikibase\DataModel\Services\Lookup\InMemoryEntityLookup;
 use Wikibase\Repo\Tests\NewItem;
 use Wikibase\Repo\Tests\NewStatement;
@@ -23,9 +23,10 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  * @author BP2014N1
  * @license GPL-2.0-or-later
  */
-class SymmetricCheckerTest extends \MediaWikiTestCase {
+class SymmetricCheckerTest extends \MediaWikiIntegrationTestCase {
 
-	use ConstraintParameters, ResultAssertions;
+	use ConstraintParameters;
+	use ResultAssertions;
 
 	/**
 	 * @var InMemoryEntityLookup
@@ -42,7 +43,7 @@ class SymmetricCheckerTest extends \MediaWikiTestCase {
 	 */
 	private $checker;
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 		$this->lookup = new InMemoryEntityLookup();
 		$this->connectionCheckerHelper = new ConnectionCheckerHelper();
@@ -77,8 +78,8 @@ class SymmetricCheckerTest extends \MediaWikiTestCase {
 	}
 
 	public function testSymmetricConstraintOnProperty() {
-		$entityId = new PropertyId( 'P1' );
-		$otherEntityId = new PropertyId( 'P2' );
+		$entityId = new NumericPropertyId( 'P1' );
+		$otherEntityId = new NumericPropertyId( 'P2' );
 		$otherEntity = new Property( $otherEntityId, null, 'wikibase-property' );
 		$otherEntity->getStatements()->addStatement(
 			NewStatement::forProperty( 'P3' )
@@ -230,16 +231,11 @@ class SymmetricCheckerTest extends \MediaWikiTestCase {
 	 * @return Constraint
 	 */
 	private function getConstraintMock() {
-		$mock = $this
-			->getMockBuilder( Constraint::class )
-			->disableOriginalConstructor()
-			->getMock();
-		$mock->expects( $this->any() )
-			 ->method( 'getConstraintParameters' )
-			 ->will( $this->returnValue( [] ) );
-		$mock->expects( $this->any() )
-			 ->method( 'getConstraintTypeItemId' )
-			 ->will( $this->returnValue( 'Q21510862' ) );
+		$mock = $this->createMock( Constraint::class );
+		$mock->method( 'getConstraintParameters' )
+			 ->willReturn( [] );
+		$mock->method( 'getConstraintTypeItemId' )
+			 ->willReturn( 'Q21510862' );
 
 		return $mock;
 	}

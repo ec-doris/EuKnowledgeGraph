@@ -9,12 +9,11 @@ use Language;
 use MediaWiki\Logger\LoggerFactory;
 use MockMessageLocalizer;
 use NullStatsdDataFactory;
-use RequestContext;
 use ValueFormatters\FormatterOptions;
 use Wikibase\DataModel\Entity\Item;
 use Wikibase\DataModel\Entity\ItemId;
 use Wikibase\DataModel\Entity\ItemIdParser;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Services\Lookup\InMemoryEntityLookup;
 use Wikibase\DataModel\Services\Statement\StatementGuidValidator;
 use Wikibase\DataModel\Snak\PropertyValueSnak;
@@ -29,13 +28,13 @@ use Wikibase\Repo\Tests\NewStatement;
 use Wikibase\Repo\WikibaseRepo;
 use WikibaseQuality\ConstraintReport\Api\CheckConstraints;
 use WikibaseQuality\ConstraintReport\Api\CheckingResultsSource;
-use WikibaseQuality\ConstraintReport\Api\CheckResultsRenderer;
+use WikibaseQuality\ConstraintReport\Api\CheckResultsRendererFactory;
 use WikibaseQuality\ConstraintReport\Constraint;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\ConstraintChecker;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\DelegatingConstraintChecker;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\ConstraintParameterParser;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\LoggingHelper;
-use WikibaseQuality\ConstraintReport\ConstraintCheck\Message\ViolationMessageRenderer;
+use WikibaseQuality\ConstraintReport\ConstraintCheck\Message\ViolationMessageRendererFactory;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Result\CheckResult;
 use WikibaseQuality\ConstraintReport\Tests\Fake\FakeChecker;
 use WikibaseQuality\ConstraintReport\Tests\Fake\InMemoryConstraintLookup;
@@ -54,9 +53,9 @@ use Wikimedia\Assert\Assert;
  */
 class CheckConstraintsTest extends ApiTestCase {
 
-	const EMPTY_ITEM = 'Q98';
-	const NONEXISTENT_ITEM = 'Q99';
-	const NONEXISTENT_CLAIM = 'Q99$dfb32791-ffd5-4420-a1d9-2bc2a0775968';
+	private const EMPTY_ITEM = 'Q98';
+	private const NONEXISTENT_ITEM = 'Q99';
+	private const NONEXISTENT_CLAIM = 'Q99$dfb32791-ffd5-4420-a1d9-2bc2a0775968';
 
 	private static $oldModuleDeclaration;
 
@@ -75,7 +74,7 @@ class CheckConstraintsTest extends ApiTestCase {
 	 */
 	private static $checkerMap = [];
 
-	public static function setUpBeforeClass() : void {
+	public static function setUpBeforeClass(): void {
 		parent::setUpBeforeClass();
 		global $wgAPIModules;
 
@@ -85,12 +84,10 @@ class CheckConstraintsTest extends ApiTestCase {
 		self::$entityLookup->addEntity( new Item( new ItemId( self::EMPTY_ITEM ) ) );
 
 		$wgAPIModules['wbcheckconstraints']['factory'] = function ( $main, $name ) {
-			$repo = WikibaseRepo::getDefaultInstance();
 			$factory = new EntityIdLabelFormatterFactory();
 			$languageFallbackChainFactory = new LanguageFallbackChainFactory();
 
 			$language = Language::factory( 'en' );
-			$entityIdFormatter = $factory->getEntityIdFormatter( $language );
 
 			$formatterOptions = new FormatterOptions();
 			$factoryFunctions = [];
@@ -109,9 +106,16 @@ class CheckConstraintsTest extends ApiTestCase {
 				'WBQualityConstraintsExceptionToConstraintId' => 'P2',
 				'WBQualityConstraintsConstraintStatusId' => 'P3',
 				'WBQualityConstraintsConstraintScopeId' => 'P4',
+				'WBQualityConstraintsConstraintEntityTypesId' => 'P4',
 				'WBQualityConstraintsConstraintCheckedOnMainValueId' => 'Q1',
 				'WBQualityConstraintsConstraintCheckedOnQualifiersId' => 'Q2',
 				'WBQualityConstraintsConstraintCheckedOnReferencesId' => 'Q3',
+				'WBQualityConstraintsWikibaseItemId' => 'Q4',
+				'WBQualityConstraintsWikibasePropertyId' => 'Q5',
+				'WBQualityConstraintsWikibaseLexemeId' => 'Q6',
+				'WBQualityConstraintsWikibaseFormId' => 'Q7',
+				'WBQualityConstraintsWikibaseSenseId' => 'Q8',
+				'WBQualityConstraintsWikibaseMediaInfoId' => 'Q9',
 				'WBQualityConstraintsCheckDurationInfoSeconds' => 1.0,
 				'WBQualityConstraintsCheckDurationWarningSeconds' => 10.0,
 				'WBQualityConstraintsCheckOnEntityDurationInfoSeconds' => 5.0,
@@ -121,8 +125,10 @@ class CheckConstraintsTest extends ApiTestCase {
 			$entityIdParser = new ItemIdParser();
 			$constraintParameterParser = new ConstraintParameterParser(
 				$config,
-				$repo->getBaseDataModelDeserializerFactory(),
-				$repo->getEntitySourceDefinitions()->getSourceForEntityType( 'item' )->getConceptBaseUri()
+				WikibaseRepo::getBaseDataModelDeserializerFactory(),
+				WikibaseRepo::getEntitySourceDefinitions()
+					->getDatabaseSourceForEntityType( 'item' )
+					->getConceptBaseUri()
 			);
 			$dataFactory = new NullStatsdDataFactory();
 			$constraintChecker = new DelegatingConstraintChecker(
@@ -130,7 +136,7 @@ class CheckConstraintsTest extends ApiTestCase {
 				self::$checkerMap,
 				new InMemoryConstraintLookup( self::$constraintLookupContents ),
 				$constraintParameterParser,
-				$repo->getStatementGuidParser(),
+				WikibaseRepo::getStatementGuidParser(),
 				new LoggingHelper(
 					$dataFactory,
 					LoggerFactory::getInstance( 'WikibaseQualityConstraints' ),
@@ -146,18 +152,18 @@ class CheckConstraintsTest extends ApiTestCase {
 				$name,
 				$entityIdParser,
 				new StatementGuidValidator( $entityIdParser ),
-				$repo->getApiHelperFactory( RequestContext::getMain() ),
+				WikibaseRepo::getApiHelperFactory(),
 				new CheckingResultsSource(
 					$constraintChecker
 				),
-				new CheckResultsRenderer(
-					$repo->getEntityTitleLookup(),
-					$entityIdFormatter,
-					new ViolationMessageRenderer(
-						$entityIdFormatter,
-						$valueFormatter,
+				new CheckResultsRendererFactory(
+					WikibaseRepo::getEntityTitleLookup(),
+					$factory,
+					new ViolationMessageRendererFactory(
+						$config,
 						new MockMessageLocalizer(),
-						$config
+						$factory,
+						$valueFormatterFactory
 					)
 				),
 				$dataFactory
@@ -165,13 +171,13 @@ class CheckConstraintsTest extends ApiTestCase {
 		};
 	}
 
-	protected function tearDown() : void {
+	protected function tearDown(): void {
 		self::$constraintLookupContents = [];
 		self::$checkerMap = [];
 		parent::tearDown();
 	}
 
-	public static function tearDownAfterClass() : void {
+	public static function tearDownAfterClass(): void {
 		global $wgAPIModules;
 		$wgAPIModules['wbcheckconstraints'] = self::$oldModuleDeclaration;
 
@@ -211,10 +217,10 @@ class CheckConstraintsTest extends ApiTestCase {
 	public function testItemExistsAndHasViolation_WillGetOnlyThisViolationInTheResult() {
 		$this->givenItemWithPropertyExists(
 			new ItemId( 'Q1' ),
-			new PropertyId( 'P1' ),
+			new NumericPropertyId( 'P1' ),
 			'46fc8ec9-4903-4592-9a0e-afdd1fa03183'
 		);
-		$this->givenPropertyHasStatus( new PropertyId( 'P1' ), CheckResult::STATUS_VIOLATION );
+		$this->givenPropertyHasStatus( new NumericPropertyId( 'P1' ), CheckResult::STATUS_VIOLATION );
 
 		$result = $this->doRequest( [ CheckConstraints::PARAM_ID => 'Q1' ] );
 
@@ -223,17 +229,17 @@ class CheckConstraintsTest extends ApiTestCase {
 		$this->assertSame( 'Q1$46fc8ec9-4903-4592-9a0e-afdd1fa03183', $resultStatement['id'] );
 		$resultsForItem = $resultStatement['mainsnak']['results'];
 		$this->assertCount( 1, $resultsForItem );
-		$this->assertEquals( CheckResult::STATUS_WARNING, $resultsForItem[0]['status'] );
-		$this->assertEquals( 'P1', $resultsForItem[0]['property'] );
+		$this->assertSame( CheckResult::STATUS_WARNING, $resultsForItem[0]['status'] );
+		$this->assertSame( 'P1', $resultsForItem[0]['property'] );
 	}
 
 	public function testItemWithClaimExistsAndHasViolation_WillGetOnlyThisViolationInTheResult() {
 		$this->givenItemWithPropertyExists(
 			new ItemId( 'Q1' ),
-			new PropertyId( 'P1' ),
+			new NumericPropertyId( 'P1' ),
 			'46fc8ec9-4903-4592-9a0e-afdd1fa03183'
 		);
-		$this->givenPropertyHasStatus( new PropertyId( 'P1' ), CheckResult::STATUS_VIOLATION );
+		$this->givenPropertyHasStatus( new NumericPropertyId( 'P1' ), CheckResult::STATUS_VIOLATION );
 
 		$result = $this->doRequest( [ CheckConstraints::PARAM_CLAIM_ID => 'Q1$46fc8ec9-4903-4592-9a0e-afdd1fa03183' ] );
 
@@ -242,8 +248,8 @@ class CheckConstraintsTest extends ApiTestCase {
 		$this->assertSame( 'Q1$46fc8ec9-4903-4592-9a0e-afdd1fa03183', $resultStatement['id'] );
 		$resultsForItem = $resultStatement['mainsnak']['results'];
 		$this->assertCount( 1, $resultsForItem );
-		$this->assertEquals( CheckResult::STATUS_WARNING, $resultsForItem[0]['status'] );
-		$this->assertEquals( 'P1', $resultsForItem[0]['property'] );
+		$this->assertSame( CheckResult::STATUS_WARNING, $resultsForItem[0]['status'] );
+		$this->assertSame( 'P1', $resultsForItem[0]['property'] );
 	}
 
 	public function testItemWithAlternativeCaseClaimExistsAndHasViolation_WillGetOnlyThisViolationInTheResult() {
@@ -251,11 +257,11 @@ class CheckConstraintsTest extends ApiTestCase {
 		$propertyId = 'P1';
 		$guid = 'q1$46FC8EC9-4903-4592-9A0E-AFDD1FA03183';
 		$item = new Item( new ItemId( $itemId ) );
-		$statement = new Statement( new PropertyValueSnak( new PropertyId( $propertyId ), new UnknownValue( null ) ) );
+		$statement = new Statement( new PropertyValueSnak( new NumericPropertyId( $propertyId ), new UnknownValue( null ) ) );
 		$statement->setGuid( $guid );
 		$item->getStatements()->addStatement( $statement );
 		self::$entityLookup->addEntity( $item );
-		$this->givenPropertyHasStatus( new PropertyId( $propertyId ), CheckResult::STATUS_VIOLATION );
+		$this->givenPropertyHasStatus( new NumericPropertyId( $propertyId ), CheckResult::STATUS_VIOLATION );
 
 		$result = $this->doRequest( [ CheckConstraints::PARAM_CLAIM_ID => $guid ] );
 
@@ -264,8 +270,8 @@ class CheckConstraintsTest extends ApiTestCase {
 		$this->assertSame( $guid, $resultStatement['id'] );
 		$resultsForItem = $resultStatement['mainsnak']['results'];
 		$this->assertCount( 1, $resultsForItem );
-		$this->assertEquals( CheckResult::STATUS_WARNING, $resultsForItem[0]['status'] );
-		$this->assertEquals( $propertyId, $resultsForItem[0]['property'] );
+		$this->assertSame( CheckResult::STATUS_WARNING, $resultsForItem[0]['status'] );
+		$this->assertSame( $propertyId, $resultsForItem[0]['property'] );
 	}
 
 	public function testStatusParameterFiltersResults() {
@@ -274,8 +280,8 @@ class CheckConstraintsTest extends ApiTestCase {
 			->andStatement( NewStatement::noValueFor( 'P2' ) )
 			->build();
 		self::$entityLookup->addEntity( $item );
-		$this->givenPropertyHasStatus( new PropertyId( 'P1' ), CheckResult::STATUS_VIOLATION );
-		$this->givenPropertyHasStatus( new PropertyId( 'P2' ), CheckResult::STATUS_COMPLIANCE );
+		$this->givenPropertyHasStatus( new NumericPropertyId( 'P1' ), CheckResult::STATUS_VIOLATION );
+		$this->givenPropertyHasStatus( new NumericPropertyId( 'P2' ), CheckResult::STATUS_COMPLIANCE );
 
 		$result = $this->doRequest( [
 			CheckConstraints::PARAM_ID => 'Q1',
@@ -288,8 +294,8 @@ class CheckConstraintsTest extends ApiTestCase {
 		$violatingStatement = $result['wbcheckconstraints']['Q1']['claims']['P1'][0];
 		$violatingStatementResults = $violatingStatement['mainsnak']['results'];
 		$this->assertCount( 1, $violatingStatementResults );
-		$this->assertEquals( CheckResult::STATUS_WARNING, $violatingStatementResults[0]['status'] );
-		$this->assertEquals( 'P1', $violatingStatementResults[0]['property'] );
+		$this->assertSame( CheckResult::STATUS_WARNING, $violatingStatementResults[0]['status'] );
+		$this->assertSame( 'P1', $violatingStatementResults[0]['property'] );
 
 		$compliantStatement = $result['wbcheckconstraints']['Q1']['claims']['P2'][0];
 		$compliantStatementResults = $compliantStatement['mainsnak']['results'];
@@ -305,7 +311,7 @@ class CheckConstraintsTest extends ApiTestCase {
 		return $this->doApiRequest( $params, [], false, null )[0];
 	}
 
-	private function givenPropertyHasStatus( PropertyId $propertyId, $status ) {
+	private function givenPropertyHasStatus( NumericPropertyId $propertyId, $status ) {
 		static $itemIdNumber = 1234;
 		$itemId = 'Q' . $itemIdNumber++;
 		self::$checkerMap[$itemId] = new FakeChecker( $status );
@@ -319,7 +325,7 @@ class CheckConstraintsTest extends ApiTestCase {
 
 	private function givenItemWithPropertyExists(
 		ItemId $itemId,
-		PropertyId $propertyId,
+		NumericPropertyId $propertyId,
 		$statementId = 'some-id'
 	) {
 		$item = new Item(

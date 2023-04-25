@@ -4,12 +4,13 @@
 			"0x010C",
 			"Gomoko",
 			"Thibaut120094",
+			"Verdy p",
 			"Wladek92"
 		]
 	},
 	"apihelp-jsonconfig-description": "Permet l’accès direct au sous-système JsonConfig.",
 	"apihelp-jsonconfig-summary": "Permet l’accès direct au sous-système JsonConfig.",
-	"apihelp-jsonconfig-param-command": "Quelle sous-action effectuer sur JsonConfig :\n;status : affiche la configuration de JsonConfig.\n;reset : efface les configurations du cache. Nécessite  le paramètre de titre $1 et les droits de réinitialiser Jsonconfig.\n;reload : recharge et met en cache des configurations du dépôt config. Nécessite le paramètre de titre $1 et les droits de réinitialiser Jsonconfig.",
+	"apihelp-jsonconfig-param-command": "Quelle sous-action effectuer sur JsonConfig :\n; status\n: affiche la configuration de JsonConfig.\n; reset\n: efface les configurations du cache. Nécessite  le paramètre de $1titre et le droit de réinitialiser JsonConfig.\n; reload\n: recharge et met en cache les configurations du dépôt de configurations. Nécessite le paramètre $1titre et le droit de réinitialiser JsonConfig.",
 	"apihelp-jsonconfig-param-namespace": "Numéro de l’espace de noms du titre à utiliser.",
 	"apihelp-jsonconfig-param-title": "Titre à traiter sans le préfixe de l’espace de noms.",
 	"apihelp-jsonconfig-param-content": "Pour la commande $1=recharger, utiliser ce contenu à la place.",

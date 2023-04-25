@@ -1,12 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
-			"ديفيد"
+			"ديفيد",
+			"Meno25"
 		]
 	},
 	"apihelp-jsonconfig-description": "يسمح بالوصول المباشر إلى النظام الفرعي لـJsonConfig.",
 	"apihelp-jsonconfig-summary": "يسمح بالوصول المباشر إلى النظام الفرعي لـJsonConfig.",
-	"apihelp-jsonconfig-param-command": "أي إجراء فرعي يتم تنفيذه على JsonConfig:\n;الحالة:يعرض تكوين JsonConfig.\n;إعادة تعيين:يمسح التكوينات من ذاكرة التخزين المؤقت، يتطلب الوسيط $1title وصلاحية jsonconfig-reset.\n;إعادة التحميل:يعيد تحميل ويخبئ التكوينات مخزن التكوين، يتطلب الوسيط $1title parameter وصلاحية jsonconfig-reset.",
+	"apihelp-jsonconfig-param-command": "ما الإجراء الفرعي المطلوب تنفيذه على JsonConfig:! N! ؛ الحالة: إظهار تكوين JsonConfig.! N! ؛ إعادة التعيين: مسح التكوينات من ذاكرة التخزين المؤقت. يتطلب معلمة عنوان $1 و jsonconfig-flush بشكل صحيح.! N! ؛ إعادة التحميل: عمليات إعادة التحميل وتخزين التكوينات من متجر التكوين. يتطلب معلمة العنوان $1 وإعادة تعيين jsonconfig بشكل صحيح.",
 	"apihelp-jsonconfig-param-namespace": "عدد نطاق العنوان لمعالجته.",
 	"apihelp-jsonconfig-param-title": "عنوان للمعالجة بدون بادئة النطاق.",
 	"apihelp-jsonconfig-param-content": "بالنسلة لـ$1command=reload، استخدم هذا المحتوى بدلا من ذلك.",

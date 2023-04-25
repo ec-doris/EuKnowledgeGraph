@@ -4,9 +4,9 @@ namespace JsonConfig;
 
 use FormatJson;
 use Html;
+use MediaWiki\Page\PageReference;
 use ParserOptions;
 use ParserOutput;
-use Title;
 
 /**
  * This class is used in case when there is no custom view defined for JCContent object
@@ -20,7 +20,7 @@ class JCDefaultObjContentView extends JCDefaultContentView {
 	 *
 	 * Render JCContent object as HTML - replaces valueToHtml()
 	 * @param JCContent|JCObjContent $content
-	 * @param Title $title Context title for parsing
+	 * @param PageReference $page Context title for parsing
 	 * @param int|null $revId Revision ID (for {{REVISIONID}})
 	 * @param ParserOptions $options Parser options
 	 * @param bool $generateHtml Whether or not to generate HTML
@@ -28,7 +28,7 @@ class JCDefaultObjContentView extends JCDefaultContentView {
 	 * @return string
 	 */
 	public function valueToHtml(
-		JCContent $content, Title $title, $revId, ParserOptions $options, $generateHtml,
+		JCContent $content, PageReference $page, $revId, ParserOptions $options, $generateHtml,
 		ParserOutput &$output
 	) {
 		return $this->renderValue( $content, $content->getValidationData(), [] );
@@ -42,7 +42,7 @@ class JCDefaultObjContentView extends JCDefaultContentView {
 	 * @return string HTML.
 	 */
 	public function renderValue( JCContent $content, $data, array $path ) {
-		if ( is_a( $data, JCValue::class ) ) {
+		if ( $data instanceof JCValue ) {
 			$value = $data->getValue();
 			if ( !is_array( $value ) && !is_object( $value ) ) {
 				$attribs = $this->getValueAttributes( $data );
@@ -65,7 +65,7 @@ class JCDefaultObjContentView extends JCDefaultContentView {
 	 * @return string
 	 */
 	public function renderTableRow( JCContent $content, $data, array $path ) {
-		$attribs = is_a( $data, JCValue::class ) ? $this->getValueAttributes( $data ) : null;
+		$attribs = $data instanceof JCValue ? $this->getValueAttributes( $data ) : null;
 		$content = $this->renderRowContent( $content, $data, $path );
 		return Html::rawElement( 'tr', $attribs, $content );
 	}
@@ -96,7 +96,7 @@ class JCDefaultObjContentView extends JCDefaultContentView {
 	 * Determine if data is a special container that needs to be rendered as a comma-separated list.
 	 * By default,
 	 * @param JCContent $content
-	 * @param array|object $data
+	 * @param array|\stdClass $data
 	 * @param array $path
 	 * @return bool
 	 */
@@ -109,7 +109,7 @@ class JCDefaultObjContentView extends JCDefaultContentView {
 		}
 		/** @var JCValue|mixed $v */
 		foreach ( $data as $k => $v ) {
-			$vv = is_a( $v, JCValue::class ) ? $v->getValue() : $v;
+			$vv = $v instanceof JCValue ? $v->getValue() : $v;
 			if ( !is_int( $k ) || !( is_string( $vv ) || is_numeric( $vv ) ) ) {
 				return false;
 			}

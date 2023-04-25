@@ -10,6 +10,7 @@
 	"apihelp-wbcheckconstraints-param-id": "Kennung der Objektliste, von der die Daten abgerufen werden sollen. Mehrere Werte mit „|“ oder Ähnlichem trennen.",
 	"apihelp-wbcheckconstraints-param-claimid": "GUID-Liste, die eine Behauptung erkennt, um einen Beschränkungsbericht zu prüfen. Mehrere Werte mit „|“ trennen.",
 	"apihelp-wbcheckconstraints-param-constraintid": "Optionaler Filter, um nur die Beschränkungen zurückzugeben, die die angegebenen Beschränkungskennungen haben.",
+	"apihelp-wbcheckconstraints-param-status": "Optionaler Filter, der nur Prüfergebnisse mit den ausgewählten Status zurückgibt.\n\nBeachte, dass nur Ergebnisse für die Status „violation“, „warning“, „suggestion“ und „bad-parameters“ zwischengespeichert werden.",
 	"apihelp-wbcheckconstraints-paramvalue-status-compliance": "Die Aussage hält die Beschränkung ein.",
 	"apihelp-wbcheckconstraints-paramvalue-status-violation": "Die Aussage verletzt die Beschränkung.",
 	"apihelp-wbcheckconstraints-paramvalue-status-exception": "Das Themenobjekt der Aussage ist eine bekannte Ausnahme der Beschränkung.",

@@ -2,7 +2,7 @@
 
 namespace WikibaseQuality\ConstraintReport\Tests\Context;
 
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Snak\PropertyNoValueSnak;
 use Wikibase\DataModel\Snak\PropertySomeValueSnak;
 use Wikibase\DataModel\Snak\SnakList;
@@ -27,7 +27,7 @@ class QualifierContextTest extends \PHPUnit\Framework\TestCase {
 	public function testGetSnak() {
 		$entity = NewItem::withId( 'Q1' )->build();
 		$statement = NewStatement::noValueFor( 'P1' )->build();
-		$snak = new PropertySomeValueSnak( new PropertyId( 'P2' ) );
+		$snak = new PropertySomeValueSnak( new NumericPropertyId( 'P2' ) );
 		$context = new QualifierContext( $entity, $statement, $snak );
 
 		$this->assertSame( $snak, $context->getSnak() );
@@ -36,7 +36,7 @@ class QualifierContextTest extends \PHPUnit\Framework\TestCase {
 	public function testGetEntity() {
 		$entity = NewItem::withId( 'Q1' )->build();
 		$statement = NewStatement::noValueFor( 'P1' )->build();
-		$snak = new PropertySomeValueSnak( new PropertyId( 'P2' ) );
+		$snak = new PropertySomeValueSnak( new NumericPropertyId( 'P2' ) );
 		$context = new QualifierContext( $entity, $statement, $snak );
 
 		$this->assertSame( $entity, $context->getEntity() );
@@ -45,7 +45,7 @@ class QualifierContextTest extends \PHPUnit\Framework\TestCase {
 	public function testGetType() {
 		$entity = NewItem::withId( 'Q1' )->build();
 		$statement = NewStatement::noValueFor( 'P1' )->build();
-		$snak = new PropertySomeValueSnak( new PropertyId( 'P2' ) );
+		$snak = new PropertySomeValueSnak( new NumericPropertyId( 'P2' ) );
 		$context = new QualifierContext( $entity, $statement, $snak );
 
 		$this->assertSame( Context::TYPE_QUALIFIER, $context->getType() );
@@ -57,7 +57,7 @@ class QualifierContextTest extends \PHPUnit\Framework\TestCase {
 		$statement = NewStatement::noValueFor( 'P1' )
 			->withRank( $rank )
 			->build();
-		$snak = new PropertySomeValueSnak( new PropertyId( 'P2' ) );
+		$snak = new PropertySomeValueSnak( new NumericPropertyId( 'P2' ) );
 		$context = new QualifierContext( $entity, $statement, $snak );
 
 		$this->assertNull( $context->getSnakRank() );
@@ -66,7 +66,7 @@ class QualifierContextTest extends \PHPUnit\Framework\TestCase {
 	public function testGetSnakStatement() {
 		$entity = NewItem::withId( 'Q1' )->build();
 		$statement = NewStatement::noValueFor( 'P1' )->build();
-		$snak = new PropertySomeValueSnak( new PropertyId( 'P2' ) );
+		$snak = new PropertySomeValueSnak( new NumericPropertyId( 'P2' ) );
 		$context = new QualifierContext( $entity, $statement, $snak );
 
 		$this->assertNull( $context->getSnakStatement() );
@@ -76,10 +76,10 @@ class QualifierContextTest extends \PHPUnit\Framework\TestCase {
 	 * @dataProvider provideGroupingModes
 	 */
 	public function testGetSnakGroup( $groupingMode ) {
-		$qualifier1 = new PropertyNoValueSnak( new PropertyId( 'P10' ) );
-		$qualifier2 = new PropertySomeValueSnak( new PropertyId( 'P20' ) );
+		$qualifier1 = new PropertyNoValueSnak( new NumericPropertyId( 'P10' ) );
+		$qualifier2 = new PropertySomeValueSnak( new NumericPropertyId( 'P20' ) );
 		$statement = new Statement(
-			new PropertyNoValueSnak( new PropertyId( 'P1' ) ),
+			new PropertyNoValueSnak( new NumericPropertyId( 'P1' ) ),
 			new SnakList( [ $qualifier1, $qualifier2 ] )
 		);
 		$entity = NewItem::withId( 'Q1' )
@@ -103,7 +103,7 @@ class QualifierContextTest extends \PHPUnit\Framework\TestCase {
 	public function testGetCursor() {
 		$entity = NewItem::withId( 'Q1' )->build();
 		$statement = NewStatement::noValueFor( 'P1' )->build();
-		$snak = new PropertySomeValueSnak( new PropertyId( 'P2' ) );
+		$snak = new PropertySomeValueSnak( new NumericPropertyId( 'P2' ) );
 		$context = new QualifierContext( $entity, $statement, $snak );
 
 		$cursor = $context->getCursor();

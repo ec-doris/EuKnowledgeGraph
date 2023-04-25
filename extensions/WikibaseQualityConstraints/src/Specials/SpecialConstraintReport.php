@@ -3,7 +3,6 @@
 namespace WikibaseQuality\ConstraintReport\Specials;
 
 use Config;
-use DataValues\DataValue;
 use Html;
 use HTMLForm;
 use IBufferingStatsdDataFactory;
@@ -13,20 +12,17 @@ use OOUI\LabelWidget;
 use SpecialPage;
 use UnexpectedValueException;
 use ValueFormatters\FormatterOptions;
-use ValueFormatters\ValueFormatter;
 use Wikibase\DataModel\Entity\EntityId;
 use Wikibase\DataModel\Entity\EntityIdParser;
 use Wikibase\DataModel\Entity\EntityIdParsingException;
-use Wikibase\DataModel\Entity\EntityIdValue;
 use Wikibase\DataModel\Entity\ItemId;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Services\EntityId\EntityIdFormatter;
 use Wikibase\DataModel\Services\Lookup\EntityLookup;
 use Wikibase\Lib\Formatters\OutputFormatValueFormatterFactory;
 use Wikibase\Lib\Formatters\SnakFormatter;
 use Wikibase\Lib\Store\EntityTitleLookup;
 use Wikibase\Repo\EntityIdLabelFormatterFactory;
-use Wikibase\Repo\WikibaseRepo;
 use Wikibase\View\EntityIdFormatterFactory;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\DelegatingConstraintChecker;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Message\MultilingualTextViolationMessageRenderer;
@@ -60,11 +56,6 @@ class SpecialConstraintReport extends SpecialPage {
 	 * @var EntityTitleLookup
 	 */
 	private $entityTitleLookup;
-
-	/**
-	 * @var ValueFormatter
-	 */
-	private $dataValueFormatter;
 
 	/**
 	 * @var EntityIdFormatter
@@ -101,21 +92,23 @@ class SpecialConstraintReport extends SpecialPage {
 	 */
 	private $dataFactory;
 
-	public static function newFromGlobalState(
+	public static function factory(
 		Config $config,
 		IBufferingStatsdDataFactory $dataFactory,
+		EntityIdFormatterFactory $entityIdFormatterFactory,
+		EntityIdParser $entityIdParser,
+		EntityTitleLookup $entityTitleLookup,
+		OutputFormatValueFormatterFactory $valueFormatterFactory,
 		EntityLookup $entityLookup,
 		DelegatingConstraintChecker $delegatingConstraintChecker
 	): self {
-		$wikibaseRepo = WikibaseRepo::getDefaultInstance();
-
 		return new self(
 			$entityLookup,
-			$wikibaseRepo->getEntityTitleLookup(),
+			$entityTitleLookup,
 			new EntityIdLabelFormatterFactory(),
-			$wikibaseRepo->getEntityIdHtmlLinkFormatterFactory(),
-			$wikibaseRepo->getEntityIdParser(),
-			$wikibaseRepo->getValueFormatterFactory(),
+			$entityIdFormatterFactory,
+			$entityIdParser,
+			$valueFormatterFactory,
 			$delegatingConstraintChecker,
 			$config,
 			$dataFactory
@@ -143,7 +136,7 @@ class SpecialConstraintReport extends SpecialPage {
 
 		$formatterOptions = new FormatterOptions();
 		$formatterOptions->setOption( SnakFormatter::OPT_LANG, $language->getCode() );
-		$this->dataValueFormatter = $valueFormatterFactory->getValueFormatter(
+		$dataValueFormatter = $valueFormatterFactory->getValueFormatter(
 			SnakFormatter::FORMAT_HTML,
 			$formatterOptions
 		);
@@ -160,13 +153,13 @@ class SpecialConstraintReport extends SpecialPage {
 
 		$this->constraintParameterRenderer = new ConstraintParameterRenderer(
 			$this->entityIdLabelFormatter,
-			$this->dataValueFormatter,
+			$dataValueFormatter,
 			$this->getContext(),
 			$config
 		);
 		$this->violationMessageRenderer = new MultilingualTextViolationMessageRenderer(
 			$this->entityIdLinkFormatter,
-			$this->dataValueFormatter,
+			$dataValueFormatter,
 			$this->getContext(),
 			$config
 		);
@@ -290,7 +283,7 @@ class SpecialConstraintReport extends SpecialPage {
 		];
 		$htmlForm = HTMLForm::factory( 'ooui', $formDescriptor, $this->getContext(), 'wbqc-constraintreport-form' );
 		$htmlForm->setSubmitText( $this->msg( 'wbqc-constraintreport-form-submit-label' )->escaped() );
-		$htmlForm->setSubmitCallback( function() {
+		$htmlForm->setSubmitCallback( static function () {
 			return false;
 		} );
 		$htmlForm->setMethod( 'post' );
@@ -397,7 +390,7 @@ class SpecialConstraintReport extends SpecialPage {
 		$statusColumn = $this->formatStatus( $result->getStatus() );
 
 		// Property column
-		$propertyId = new PropertyId( $result->getContextCursor()->getSnakPropertyId() );
+		$propertyId = new NumericPropertyId( $result->getContextCursor()->getSnakPropertyId() );
 		$propertyColumn = $this->getClaimLink(
 			$entityId,
 			$propertyId,
@@ -416,7 +409,7 @@ class SpecialConstraintReport extends SpecialPage {
 		}
 		$constraintLink = $this->getClaimLink(
 			$propertyId,
-			new PropertyId( $this->config->get( 'WBQualityConstraintsPropertyConstraintId' ) ),
+			new NumericPropertyId( $this->config->get( 'WBQualityConstraintsPropertyConstraintId' ) ),
 			$constraintTypeLabel
 		);
 		$constraintColumn = $this->buildExpandableElement(
@@ -595,47 +588,15 @@ class SpecialConstraintReport extends SpecialPage {
 	}
 
 	/**
-	 * Parses data values to human-readable string
-	 *
-	 * @param DataValue|array $dataValues
-	 * @param string $separator
-	 *
-	 * @throws InvalidArgumentException
-	 *
-	 * @return string HTML
-	 */
-	protected function formatDataValues( $dataValues, $separator = ', ' ) {
-		if ( $dataValues instanceof DataValue ) {
-			$dataValues = [ $dataValues ];
-		} elseif ( !is_array( $dataValues ) ) {
-			throw new InvalidArgumentException( '$dataValues has to be instance of DataValue or an array of DataValues.' );
-		}
-
-		$formattedDataValues = [];
-		foreach ( $dataValues as $dataValue ) {
-			if ( !( $dataValue instanceof DataValue ) ) {
-				throw new InvalidArgumentException( '$dataValues has to be instance of DataValue or an array of DataValues.' );
-			}
-			if ( $dataValue instanceof EntityIdValue ) {
-				$formattedDataValues[ ] = $this->entityIdLabelFormatter->formatEntityId( $dataValue->getEntityId() );
-			} else {
-				$formattedDataValues[ ] = $this->dataValueFormatter->format( $dataValue );
-			}
-		}
-
-		return implode( $separator, $formattedDataValues );
-	}
-
-	/**
 	 * Returns html link to given entity with anchor to specified property.
 	 *
 	 * @param EntityId $entityId
-	 * @param PropertyId $propertyId
+	 * @param NumericPropertyId $propertyId
 	 * @param string $text HTML
 	 *
 	 * @return string HTML
 	 */
-	private function getClaimLink( EntityId $entityId, PropertyId $propertyId, $text ) {
+	private function getClaimLink( EntityId $entityId, NumericPropertyId $propertyId, $text ) {
 		return Html::rawElement(
 			'a',
 			[
@@ -650,11 +611,11 @@ class SpecialConstraintReport extends SpecialPage {
 	 * Returns url of given entity with anchor to specified property.
 	 *
 	 * @param EntityId $entityId
-	 * @param PropertyId $propertyId
+	 * @param NumericPropertyId $propertyId
 	 *
 	 * @return string
 	 */
-	private function getClaimUrl( EntityId $entityId, PropertyId $propertyId ) {
+	private function getClaimUrl( EntityId $entityId, NumericPropertyId $propertyId ) {
 		$title = $this->entityTitleLookup->getTitleForId( $entityId );
 		$entityUrl = sprintf( '%s#%s', $title->getLocalURL(), $propertyId->getSerialization() );
 

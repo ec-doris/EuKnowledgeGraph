@@ -2,7 +2,7 @@
 
 namespace WikibaseQuality\ConstraintReport;
 
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 
 /**
  * @license GPL-2.0-or-later
@@ -10,10 +10,10 @@ use Wikibase\DataModel\Entity\PropertyId;
 interface ConstraintLookup {
 
 	/**
-	 * @param PropertyId $propertyId
+	 * @param NumericPropertyId $propertyId
 	 *
 	 * @return Constraint[]
 	 */
-	public function queryConstraintsForProperty( PropertyId $propertyId );
+	public function queryConstraintsForProperty( NumericPropertyId $propertyId );
 
 }

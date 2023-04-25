@@ -142,7 +142,9 @@
 	"wbqc-violation-message-none-of": "O valor para $1 não deve ser {{PLURAL:$2|1=$4.|2=nem $4 nem $5.|nenhum dos seguintes: $3}}",
 	"wbqc-violation-message-integer": "Os valores de $1 devem ser inteiros, mas $2 tem uma parte fracionária.",
 	"wbqc-violation-message-integer-bounds": "Os valores de $1 devem ser inteiros, mas os limites de $2 têm uma parte fracionária.",
-	"wbqc-violation-message-citationNeeded": "Declarações para $1 devem ter pelo menos uma referência.",
+	"wbqc-violation-message-citationNeeded": "As declarações de $1 devem ter pelo menos uma referência.",
+	"wbqc-violation-message-language": "As declarações da propriedade $1 só devem estar em lexemas com a língua definida como {{PLURAL:$2|1=$4.|2=$4 ou $5.|uma das seguintes: $3}}",
+	"wbqc-violation-message-label-lacking": "As entidades com declarações da propriedade $1 também devem ter uma etiqueta pelo menos {{PLURAL:$2|1=na língua $4.|em qualquer uma das seguintes línguas: $3}}",
 	"wbqc-violation-message-property-scope": "A propriedade $1 não deve ser usada neste local ($2). {{PLURAL:$3|O único local válido|Os únicos locais válidos}} para esta propriedade {{PLURAL:$3|é $5.|são: $4}}",
 	"wbqc-violation-message-exception": "Esta entidade é uma exceção conhecida para esta restrição e foi marcada como tal."
 }

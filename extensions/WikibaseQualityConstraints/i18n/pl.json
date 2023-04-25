@@ -3,13 +3,17 @@
 		"authors": [
 			"Chrumps",
 			"CiaPan",
-			"InternerowyGołąb"
+			"InternerowyGołąb",
+			"Woytecr"
 		]
 	},
 	"wbqc-constraintreport-form-submit-label": "Sprawdź",
-	"wbqc-constraintreport-form-entityid-placeholder": "Qxx/Pxx",
+	"wbqc-constraintreport-form-entityid-placeholder": "Qxx lub Pxx",
 	"wbqc-constraintreport-result-headline": "Wynik dla",
+	"wbqc-constraintreport-invalid-entity-id": "Nieprawidłowy identyfikator elementu",
+	"wbqc-constraintreport-not-existent-entity": "Element nie istnieje.",
 	"wbqc-constraintreport-status-violation": "Naruszenie",
+	"wbqc-constraintreport-status-compliance": "Zgodność",
 	"wbqc-constraintreport-status-exception": "Wyjątek",
 	"wbqc-constraintreport-status-todo": "Do zrobienia",
 	"wbqc-constraintreport-status-bad-parameters": "Złe parametry",

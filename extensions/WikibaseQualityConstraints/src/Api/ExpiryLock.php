@@ -66,8 +66,8 @@ class ExpiryLock {
 		if ( !$this->isLockedInternal( $cacheId ) ) {
 			return $this->cache->set(
 				$cacheId,
-				$expiryTimestamp->getTimestamp(),
-				$expiryTimestamp->getTimestamp()
+				$expiryTimestamp->getTimestamp( TS_UNIX ),
+				(int)$expiryTimestamp->getTimestamp( TS_UNIX )
 			);
 		} else {
 			return false;

@@ -20,9 +20,10 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  * @author Amir Sarabadani
  * @license GPL-2.0-or-later
  */
-class EntityTypeCheckerTest extends \MediaWikiTestCase {
+class EntityTypeCheckerTest extends \MediaWikiIntegrationTestCase {
 
-	use ConstraintParameters, ResultAssertions;
+	use ConstraintParameters;
+	use ResultAssertions;
 
 	/**
 	 * @var EntityTypeChecker
@@ -33,7 +34,7 @@ class EntityTypeCheckerTest extends \MediaWikiTestCase {
 
 	private $propertyEntityType;
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 		$this->entityTypeChecker = new EntityTypeChecker(
 			$this->getConstraintParameterParser()
@@ -98,16 +99,11 @@ class EntityTypeCheckerTest extends \MediaWikiTestCase {
 	 * @return Constraint
 	 */
 	private function getConstraintMock( array $parameters ) {
-		$mock = $this
-			->getMockBuilder( Constraint::class )
-			->disableOriginalConstructor()
-			->getMock();
-		$mock->expects( $this->any() )
-			->method( 'getConstraintParameters' )
-			->will( $this->returnValue( $parameters ) );
-		$mock->expects( $this->any() )
-			->method( 'getConstraintTypeItemId' )
-			->will( $this->returnValue( 'Q52004125' ) );
+		$mock = $this->createMock( Constraint::class );
+		$mock->method( 'getConstraintParameters' )
+			->willReturn( $parameters );
+		$mock->method( 'getConstraintTypeItemId' )
+			->willReturn( 'Q52004125' );
 
 		return $mock;
 	}

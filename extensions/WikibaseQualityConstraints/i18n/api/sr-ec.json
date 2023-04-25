@@ -1,10 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
+			"BadDog",
 			"Obsuser",
 			"Zoranzoki21",
-			"Милан Јелисавчић",
-			"BadDog"
+			"Милан Јелисавчић"
 		]
 	},
 	"apihelp-wbcheckconstraints-description": "Извођење провера забране на ентитету који одаберете и враћање резултата.",

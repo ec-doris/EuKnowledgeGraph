@@ -2,7 +2,7 @@
 
 namespace WikibaseQuality\ConstraintReport\Tests\Checker\ValueCountChecker;
 
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Reference;
 use Wikibase\DataModel\Snak\PropertyNoValueSnak;
 use Wikibase\DataModel\Snak\PropertySomeValueSnak;
@@ -26,14 +26,15 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  */
 class SingleValueCheckerTest extends \PHPUnit\Framework\TestCase {
 
-	use ConstraintParameters, ResultAssertions;
+	use ConstraintParameters;
+	use ResultAssertions;
 
 	/**
 	 * @var SingleValueChecker
 	 */
 	private $checker;
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 
 		$this->checker = new SingleValueChecker( $this->getConstraintParameterParser() );
@@ -127,8 +128,8 @@ class SingleValueCheckerTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testSingleValueConstraint_One_Qualifier() {
-		$qualifier1 = new PropertyNoValueSnak( new PropertyId( 'P1' ) );
-		$qualifier2 = new PropertyNoValueSnak( new PropertyId( 'P2' ) );
+		$qualifier1 = new PropertyNoValueSnak( new NumericPropertyId( 'P1' ) );
+		$qualifier2 = new PropertyNoValueSnak( new NumericPropertyId( 'P2' ) );
 		$statement = NewStatement::someValueFor( 'P10' )->build();
 		$statement->getQualifiers()->addSnak( $qualifier1 );
 		$statement->getQualifiers()->addSnak( $qualifier2 );
@@ -144,8 +145,8 @@ class SingleValueCheckerTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testSingleValueConstraint_Two_Reference() {
-		$referenceSnak1 = new PropertyNoValueSnak( new PropertyId( 'P1' ) );
-		$referenceSnak2 = new PropertySomeValueSnak( new PropertyId( 'P1' ) );
+		$referenceSnak1 = new PropertyNoValueSnak( new NumericPropertyId( 'P1' ) );
+		$referenceSnak2 = new PropertySomeValueSnak( new NumericPropertyId( 'P1' ) );
 		$reference = new Reference( [ $referenceSnak1, $referenceSnak2 ] );
 		$statement = NewStatement::someValueFor( 'P10' )->build();
 		$statement->getReferences()->addReference( $reference );
@@ -188,16 +189,11 @@ class SingleValueCheckerTest extends \PHPUnit\Framework\TestCase {
 	 * @return Constraint
 	 */
 	private function getConstraintMock( array $parameters = [] ) {
-		$mock = $this
-			->getMockBuilder( Constraint::class )
-			->disableOriginalConstructor()
-			->getMock();
-		$mock->expects( $this->any() )
-			->method( 'getConstraintParameters' )
-			->will( $this->returnValue( $parameters ) );
-		$mock->expects( $this->any() )
-			->method( 'getConstraintTypeItemId' )
-			->will( $this->returnValue( 'Q19474404' ) );
+		$mock = $this->createMock( Constraint::class );
+		$mock->method( 'getConstraintParameters' )
+			->willReturn( $parameters );
+		$mock->method( 'getConstraintTypeItemId' )
+			->willReturn( 'Q19474404' );
 
 		return $mock;
 	}

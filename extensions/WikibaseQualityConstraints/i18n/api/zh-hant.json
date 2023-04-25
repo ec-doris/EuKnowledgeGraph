@@ -9,7 +9,7 @@
 	"apihelp-wbcheckconstraints-param-id": "要取得資料的實體 ID 清單。以 '|' 或其它替代符號來分隔。",
 	"apihelp-wbcheckconstraints-param-claimid": "識別聲稱來檢查限制報告的 GUID 清單。請以 '|' 符號分隔。",
 	"apihelp-wbcheckconstraints-param-constraintid": "選用的篩選條件，只回傳含有指定限制 ID 的限制。",
-	"apihelp-wbcheckconstraints-param-status": "回傳的選用篩選，僅會檢查帶有已選狀態的結果。\n\n請注意僅有「violation」、「warning」、「bad-parameters」狀態會被快取下來，因此選擇不在這三種狀態的請求並不會從快取裡獲得效益。",
+	"apihelp-wbcheckconstraints-param-status": "回傳的選用篩選，僅會檢查帶有已選狀態的結果。\n\n請注意僅有「violation」、「warning」、「suggestion」、「bad-parameters」狀態會被快取下來，因此選擇不在這四種狀態的請求並不會從快取裡獲得效益。",
 	"apihelp-wbcheckconstraints-paramvalue-status-compliance": "聲明符合限制。",
 	"apihelp-wbcheckconstraints-paramvalue-status-violation": "聲明違反限制。",
 	"apihelp-wbcheckconstraints-paramvalue-status-exception": "聲明的主題實體是對於限制的已知例外。",

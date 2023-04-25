@@ -6,6 +6,8 @@
 			"আফতাবুজ্জামান"
 		]
 	},
+	"nstab-data": "উপাত্ত",
+	"tooltip-ca-nstab-data": "উপাত্ত পাতাটি দেখুন",
 	"jsonconfig-duplicate-field": "একের অধিক \"$1\" মান পাওয়া গেছে",
 	"jsonconfig-edit-action-apply": "প্রয়োগ করুন",
 	"jsonconfig-edit-action-cancel": "বাতিল",

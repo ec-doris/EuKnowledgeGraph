@@ -8,6 +8,8 @@
 			"그냥기여자"
 		]
 	},
+	"nstab-data": "데이터",
+	"tooltip-ca-nstab-data": "데이터 페이지 보기",
 	"jsonconfig-duplicate-field": "하나보다 많은 \"$1\" 항목이 있습니다",
 	"jsonconfig-edit-action-apply": "적용",
 	"jsonconfig-edit-action-cancel": "취소",
@@ -21,9 +23,9 @@
 	"jsonconfig-edit-dialog-error-fields-missing": "JSON <code>schema.fields</code> 속성이 없거나 배열이 아닙니다",
 	"jsonconfig-edit-dialog-error-schema-missing": "JSON <code>schema</code> 속성이 없거나 객체가 아닙니다",
 	"jsonconfig-edit-dialog-title": "JSON 편집",
-	"jsonconfig-err-array": "\"$1\" 변수는 리스트여야 합니다. (예: [\"값1\", \"값2\", ...])",
-	"jsonconfig-err-assoc-array": "\"$1\" 변수는 연관 배열(사전)이어야 합니다. (예:{\"키\": \"값\", ...})",
-	"jsonconfig-err-bool": "변수 \"$1\" true나 false여야 합니다",
+	"jsonconfig-err-array": "\"$1\" 변수는 리스트여야 합니다. (예: <kbd>[\"값1\", \"값2\", ...]</kbd>)",
+	"jsonconfig-err-assoc-array": "\"$1\" 변수는 연관 배열(사전)이어야 합니다. (예:<kbd>{\"키\": \"값\", ...}</kbd>)",
+	"jsonconfig-err-bool": "변수 \"$1\" <code>true</code>나 <code>false</code>여야 합니다",
 	"jsonconfig-err-integer": "\"$1\" 변수는 정수여야 합니다",
 	"jsonconfig-err-license": "\"$1\" 변수는 유효한 라이선스 코드 중 하나여야 합니다 (예: $2)",
 	"jsonconfig-err-number": "\"$1\" 변수는 숫자여야 합니다",

@@ -5,13 +5,13 @@ namespace JsonConfig\Tests;
 use Exception;
 use JsonConfig\JCMapDataContent;
 use Language;
-use MediaWikiTestCase;
+use MediaWikiIntegrationTestCase;
 
 /**
  * @group JsonConfig
  * @covers \JsonConfig\JCMapDataContent
  */
-class JCMapDataContentTest extends MediaWikiTestCase {
+class JCMapDataContentTest extends MediaWikiIntegrationTestCase {
 	private const CONTENT_STUB = '{
 			"description": {
 				"en": "[[Do not parse]]"
@@ -21,6 +21,10 @@ class JCMapDataContentTest extends MediaWikiTestCase {
 			"latitude": 0,
 			"longitude": 0
 		}';
+
+	protected function setUp(): void {
+		$this->setMwGlobals( 'wgKartographerMapServer', 'https://maps.wikimedia.org' );
+	}
 
 	/**
 	 * @dataProvider provideGetSafeData

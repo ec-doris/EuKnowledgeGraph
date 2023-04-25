@@ -1,11 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
+			"Hannarosendeloitte",
 			"Jopparn",
 			"Josve05a",
 			"Larske",
 			"Rockyfelle",
-			"WikiPhoenix"
+			"WikiPhoenix",
+			"Sabelöga"
 		]
 	},
 	"kartographer-attribution": "[https://foundation.wikimedia.org/wiki/Maps_Terms_of_Use Wikimedia maps] | Kartdata © [https://www.openstreetmap.org/copyright OpenStreetMaps bidragsgivare]",
@@ -16,7 +18,7 @@
 	"kartographer-error-json": "Kunde inte tolka JSON: $1",
 	"kartographer-error-missing-attr": "Attributen \"$1\" saknas",
 	"kartographer-error-bad_attr": "Attributen \"$1\" har ett ogiltigt värde",
-	"kartographer-error-bad_data": "JSON-innehållet är inte giltig GeoJSON+simplestyle",
+	"kartographer-error-bad_data": "JSON-innehållet är inte giltig GeoJSON+simplestyle. Det första valideringsfelet är på elementet \"$1\": \"$2\".",
 	"kartographer-error-latlon": "Antingen måste båda parametrarna \"latitude\" och \"longitude\" anges eller ingendera",
 	"kartographer-error-title": "Titeln \"$1\" är inte en giltig sida för kartdata",
 	"kartographer-tracking-category": "Sidor med kartor skapade med Kartographer",
@@ -81,7 +83,7 @@
 	"mapbox-control-zoomout-title": "Zooma ut",
 	"kartographer-fullscreen-close": "Stäng",
 	"kartographer-fullscreen-collapse": "Dölj kartdetaljer",
-	"kartographer-fullscreen-text": "Visa i fullskärm",
+	"kartographer-fullscreen-text": "Visa i helskärm",
 	"visualeditor-mwmapsdialog-area": "Kartområde",
 	"visualeditor-mwmapsdialog-content": "Kartans innehåll",
 	"visualeditor-mwmapsdialog-options": "Alternativ",

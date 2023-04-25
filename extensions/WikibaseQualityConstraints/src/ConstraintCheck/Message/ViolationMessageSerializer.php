@@ -61,6 +61,7 @@ class ViolationMessageSerializer implements Serializer {
 			ViolationMessage::TYPE_PROPERTY_SCOPE => 'serializeContextType',
 			ViolationMessage::TYPE_PROPERTY_SCOPE_LIST => 'serializeContextTypeList',
 			ViolationMessage::TYPE_LANGUAGE => 'serializeStringByIdentity',
+			ViolationMessage::TYPE_LANGUAGE_LIST => 'serializeStringListByIdentity',
 			ViolationMessage::TYPE_MULTILINGUAL_TEXT => 'serializeMultilingualText',
 		];
 
@@ -93,6 +94,15 @@ class ViolationMessageSerializer implements Serializer {
 	private function serializeStringByIdentity( $string ) {
 		Assert::parameterType( 'string', $string, '$string' );
 		return $string;
+	}
+
+	/**
+	 * @param string[] $strings
+	 * @return string[]
+	 */
+	private function serializeStringListByIdentity( $strings ) {
+		Assert::parameterElementType( 'string', $strings, '$strings' );
+		return $strings;
 	}
 
 	/**

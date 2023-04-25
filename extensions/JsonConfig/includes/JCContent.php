@@ -3,11 +3,8 @@
 namespace JsonConfig;
 
 use FormatJson;
-use ParserOptions;
-use ParserOutput;
 use Status;
 use stdClass;
-use Title;
 
 /**
  * Represents the content of a JSON Json Config article.
@@ -155,60 +152,19 @@ class JCContent extends \TextContent {
 	}
 
 	/**
-	 * Beautifies JSON prior to save.
-	 * @param Title $title Title
-	 * @param \User $user User
-	 * @param \ParserOptions $popts
-	 * @return JCContent
-	 */
-	public function preSaveTransform( Title $title, \User $user, \ParserOptions $popts ) {
-		if ( !$this->isValidJson() ) {
-			return $this; // Invalid JSON - can't do anything with it
-		}
-		$formatted = FormatJson::encode( $this->getData(), false, FormatJson::ALL_OK );
-		if ( $this->getNativeData() !== $formatted ) {
-			return new static( $formatted, $this->getModel(), $this->thorough() );
-		}
-		return $this;
-	}
-
-	protected function fillParserOutput( Title $title, $revId, ParserOptions $options,
-										 $generateHtml, ParserOutput &$output ) {
-		if ( !$generateHtml ) {
-			return;
-		}
-
-		$status = $this->getStatus();
-		if ( !$status->isGood() ) {
-			// Use user's language, and split parser cache.  This should not have a big
-			// impact because data namespace is rarely viewed, but viewing it localized
-			// will be valuable
-			$lang = $options->getUserLangObj();
-			$html = $status->getHTML( false, false, $lang );
-		} else {
-			$html = '';
-		}
-
-		if ( $status->isOK() ) {
-			$html .= $this
-				->getView( $this->getModel() )
-				->valueToHtml( $this, $title, $revId, $options, $generateHtml, $output );
-		}
-
-		$output->setText( $html );
-	}
-
-	/**
 	 * Get a view object for this content object
+	 * @internal Only public for JCContentHandler
+	 *
 	 * @param string $modelId is required here because parent ctor might not have ran yet
 	 * @return JCContentView
 	 */
-	protected function getView( $modelId ) {
+	public function getView( $modelId ) {
 		global $wgJsonConfigModels;
 		$view = $this->view;
 		if ( $view === null ) {
 			$configModels = \ExtensionRegistry::getInstance()->getAttribute( 'JsonConfigModels' )
 				+ $wgJsonConfigModels;
+			// @phan-suppress-previous-line PhanPossiblyUndeclaredVariable
 			if ( array_key_exists( $modelId, $configModels ) ) {
 				$value = $configModels[$modelId];
 				if ( is_array( $value ) && array_key_exists( 'view', $value ) ) {

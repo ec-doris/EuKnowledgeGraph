@@ -11,7 +11,7 @@
 	"license-name": "MIT",
 	"type": "parserhook",
 	"requires": {
-		"MediaWiki": ">= 1.35.0",
+		"MediaWiki": ">= 1.38.0",
 		"extensions": {
 			"JsonConfig": "*"
 		}
@@ -37,10 +37,20 @@
 		"Kartographer\\Tests\\Mock\\": "tests/phpunit/Mock/"
 	},
 	"APIModules": {
-		"sanitize-mapdata": "Kartographer\\ApiSanitizeMapData"
+		"sanitize-mapdata": {
+			"class": "Kartographer\\ApiSanitizeMapData",
+			"services": [
+				"Parser"
+			]
+		}
 	},
 	"APIPropModules": {
-		"mapdata": "Kartographer\\ApiQueryMapData"
+		"mapdata": {
+			"class": "Kartographer\\ApiQueryMapData",
+			"services": [
+				"WikiPageFactory"
+			]
+		}
 	},
 	"ResourceModules": {
 		"ext.kartographer": {
@@ -83,8 +93,7 @@
 				"lib/external/mapbox/mapbox.i18n.js"
 			],
 			"styles": [
-				"lib/external/mapbox/style.css",
-				"lib/external/mapbox/icons.css",
+				"lib/external/mapbox/mapbox.css",
 				"lib/mapbox-style-fixes.css"
 			],
 			"messages": [
@@ -183,8 +192,8 @@
 			],
 			"packageFiles": [
 				"index.js",
-				{ "name": "leaflet.sleep.js", "file": "../../lib/external/leaflet.sleep.js"},
-				{ "name": "mapbox-settings.js", "file": "../settings/settings.js"},
+				{ "name": "leaflet.sleep.js", "file": "../../lib/external/leaflet.sleep.js" },
+				{ "name": "mapbox-settings.js", "file": "../settings/settings.js" },
 				"openfullscreen_control.js",
 				"scale_control.js",
 				"dataLayerOpts.js",
@@ -396,7 +405,6 @@
 				"visualeditor-mwmapsdialog-title"
 			],
 			"dependencies": [
-				"jquery.throttle-debounce",
 				"oojs-ui.styles.icons-content",
 				"oojs-ui.styles.icons-location",
 				"ext.visualEditor.mwcore",
@@ -487,8 +495,17 @@
 		"remoteExtPath": "Kartographer"
 	},
 	"Hooks": {
-		"ParserFirstCallInit": "Kartographer\\Hooks::onParserFirstCallInit",
-		"ParserAfterParse": "Kartographer\\Hooks::onParserAfterParse"
+		"ParserTestGlobals": "KartographerHooks",
+		"ParserFirstCallInit": "KartographerHooks",
+		"ParserAfterParse": "KartographerHooks"
+	},
+	"HookHandlers": {
+		"KartographerHooks": {
+			"class": "Kartographer\\Hooks",
+			"services": [
+				"MainConfig"
+			]
+		}
 	},
 	"attributes": {
 		"VisualEditor": {
@@ -500,39 +517,61 @@
 	},
 	"config": {
 		"KartographerStaticMapframe": {
-			"description": "Defines if the map will be a static image",
+			"description": "Disables the module that turns <mapframe> tags into interactive mini-maps that can be panned and zoomed without leaving the page. Static maps are recommended on high-traffic wikis where your KartographerMapServer couldn't keep up. Clicking <maplink> and <mapframe> tags to open a fullscreen interactive map is always possible.",
 			"value": false
 		},
-		"KartographerWikivoyageMode":  {
-			"description": "Enables Wikivoyage mode",
+		"KartographerWikivoyageMode": {
+			"description": "Enables the group feature where different <maplink> and <mapframe> tags can access each others data via group=\"…\" and show=\"…\" attributes. See [[mw:Help:Extension:Kartographer#Groups]]. Disabled by default. Meant to be enabled on Wikivoyage.",
 			"value": false
 		},
 		"KartographerDfltStyle": {
-			"description": "Default map style to be used",
+			"description": "Default map style to be used. Must be one of the values from KartographerStyles.",
 			"value": "osm-intl"
 		},
 		"KartographerStyles": {
-			"description": "Available map styles on KartographerMapServer",
-			"value": ["osm-intl", "osm"]
+			"description": "Available map styles users can request from your KartographerMapServer via mapstyle=\"…\".",
+			"value": [ "osm-intl", "osm" ],
+			"merge_strategy": "provide_default"
 		},
 		"KartographerSrcsetScales": {
-			"description": "Set of allowed hidpi pixelratios supported by the map tile server",
-			"value": [1.3, 1.5, 2, 2.6, 3]
+			"description": "Set of allowed high-DPI pixelratios supported by your KartographerMapServer, to be used in <img srcset=\"…\"> and KartographerMapServer URLs. Must be in incremental order. Doesn't need to start with 1, this happens automatically.",
+			"value": [ 1.3, 1.5, 2, 2.6, 3 ],
+			"merge_strategy": "provide_default"
 		},
 		"KartographerMapServer": {
-			"description": "Server providing the map tiles",
-			"value": "https://maps.wikimedia.org"
+			"description": "Server providing the map tiles. This is the only setting that doesn't have a default. You must provide a value. Note that the Wikimedia tile server \"https://maps.wikimedia.org\" can't be used outside of the Wikimedia cluster.",
+			"value": null
 		},
-		"KartographerUseMarkerStyle":  {
-			"description": "Allows Kartographer to extract CSS style to be used by the link from the GeoJSON",
+		"KartographerVersionedLiveMaps": {
+			"description": "Temporary feature flag to allow Kartographer to render versioned live mapframes.",
 			"value": false
 		},
-		"KartographerEnableMapFrame":  {
-			"description": "Enables the tag <mapframe> to be used and create static or interactive maps.",
+		"KartographerVersionedMapdata": {
+			"description": "Temporary feature flag to disable serving versioned mapdata from the API.",
+			"value": false
+		},
+		"KartographerVersionedStaticMaps": {
+			"description": "Do not enable in production until varnish rules are merged. Temporary feature flag to allow Kartographer to render versioned mapframe images.",
+			"value": false
+		},
+		"KartographerUseMarkerStyle": {
+			"description": "Allows Kartographer to extract marker styles from the GeoJSON to style a <maplink> accordingly. Currently only the \"marker-color\" is considered.",
+			"value": false
+		},
+		"KartographerEnableMapFrame": {
+			"description": "Enables the <mapframe> tag to embed mini-maps directly into pages. The <maplink> tag is always enabled.",
 			"value": true
 		},
-		"KartographerUsePageLanguage":  {
-			"description": "Use the language of the page instead of that of the interface",
+		"KartographerUsePageLanguage": {
+			"description": "Use the language of the page to render the map labels, instead of the language of the territory of the map (lang=local).",
+			"value": true
+		},
+		"KartographerFallbackZoom": {
+			"description": "Fallback zoom value when no zoom=\"…\" is given. Must be an integer between 0 (map shows the entire earth) and 19 (as close as possible). Currently only works with dynamic maps.",
+			"value": 13
+		},
+		"KartographerSimpleStyleMarkers": {
+			"description": "Use an api to generate markers using the simplestyle-spec for features.",
 			"value": true
 		}
 	},

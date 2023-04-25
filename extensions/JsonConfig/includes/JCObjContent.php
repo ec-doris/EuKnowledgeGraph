@@ -220,7 +220,7 @@ abstract class JCObjContent extends JCContent {
 				}
 				foreach ( array_keys( $container ) as $k ) {
 					$path[$lastIdx] = $k;
-					$isOk &= $this->testInt( $path, $vld );
+					$isOk = $this->testInt( $path, $vld ) && $isOk;
 				}
 			}
 		}
@@ -261,7 +261,7 @@ abstract class JCObjContent extends JCContent {
 			return $this->testValue( $fldPath, $jcv, $validators );
 		}
 		$fld = array_shift( $path );
-		if ( is_array( $jcv->getValue() ) && ctype_digit( $fld ) ) {
+		if ( is_array( $jcv->getValue() ) && ctype_digit( (string)$fld ) ) {
 			$fld = (int)$fld;
 		}
 		if ( !is_int( $fld ) && !is_string( $fld ) ) {
@@ -307,7 +307,7 @@ abstract class JCObjContent extends JCContent {
 			} elseif ( $subJcv === false ) {
 				// field does not exist
 				// @phan-suppress-next-line PhanTypePossiblyInvalidDimOffset
-				$initValue = !$path ? null : ( is_string( $path[0] ) ? new stdClass() : [] );
+				$initValue = !$path ? null : ( is_string( $path[0] ) ? (object)[] : [] );
 				$subJcv = new JCValue( JCValue::MISSING, $initValue );
 			}
 		}
@@ -389,7 +389,7 @@ abstract class JCObjContent extends JCContent {
 		while ( true ) {
 			foreach ( $val as $key => $subVal ) {
 				/** @var JCValue|mixed $subVal */
-				$isJcv = is_a( $subVal, JCValue::class );
+				$isJcv = $subVal instanceof JCValue;
 				if ( $firstPass && $isJcv ) {
 					// On the first pass, recursively process subelements if they were visited
 					self::markUnchecked( $subVal );
@@ -403,7 +403,7 @@ abstract class JCObjContent extends JCContent {
 						$subVal = new JCValue( JCValue::UNCHECKED, $subVal );
 					}
 					if ( $result === null ) {
-						$result = $isObject ? new stdClass() : [];
+						$result = $isObject ? (object)[] : [];
 					}
 					if ( $isObject ) {
 						$result->$key = $subVal;
@@ -456,7 +456,7 @@ abstract class JCObjContent extends JCContent {
 			if ( !is_int( $fld ) && !is_string( $fld ) ) {
 				throw new Exception( 'Field must be either int or string' );
 			}
-			if ( is_a( $data, JCValue::class ) ) {
+			if ( $data instanceof JCValue ) {
 				$data = $data->getValue();
 			}
 			$isObject = is_object( $data );
@@ -474,7 +474,7 @@ abstract class JCObjContent extends JCContent {
 				$data = $data[$fld];
 			}
 		}
-		if ( is_a( $data, JCValue::class ) ) {
+		if ( $data instanceof JCValue ) {
 			return $data;
 		} else {
 			return new JCValue( JCValue::UNCHECKED, $data );
@@ -494,7 +494,7 @@ abstract class JCObjContent extends JCContent {
 		$foundFld = false;
 		$isError = false;
 		foreach ( $valueRef as $k => $v ) {
-			if ( 0 === strcasecmp( $k, $fld ) ) {
+			if ( strcasecmp( $k, $fld ) === 0 ) {
 				if ( $foundFld !== false ) {
 					$isError = true;
 					break;
@@ -508,8 +508,8 @@ abstract class JCObjContent extends JCContent {
 			if ( $this->thorough() ) {
 				// Mark all duplicate fields as errors
 				foreach ( $valueRef as $k => $v ) {
-					if ( 0 === strcasecmp( $k, $fld ) ) {
-						if ( !is_a( $v, JCValue::class ) ) {
+					if ( strcasecmp( $k, $fld ) === 0 ) {
+						if ( !( $v instanceof JCValue ) ) {
 							$v = new JCValue( JCValue::UNCHECKED, $v );
 							$jcv->setField( $k, $v );
 						}

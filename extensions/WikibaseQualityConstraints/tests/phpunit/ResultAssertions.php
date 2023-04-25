@@ -54,7 +54,7 @@ trait ResultAssertions {
 	 * @param CheckResult $result
 	 */
 	public function assertCompliance( CheckResult $result ) {
-		$this->assertEquals(
+		$this->assertSame(
 			CheckResult::STATUS_COMPLIANCE,
 			$result->getStatus(),
 			'Check should comply; message: ' . $this->renderMessage( $result )
@@ -69,7 +69,7 @@ trait ResultAssertions {
 	 *                            matches the message given by this key.
 	 */
 	public function assertViolation( CheckResult $result, $messageKey = null ) {
-		$this->assertEquals(
+		$this->assertSame(
 			CheckResult::STATUS_VIOLATION,
 			$result->getStatus(),
 			'Check should not comply'
@@ -95,7 +95,7 @@ trait ResultAssertions {
 	 * @param CheckResult $result
 	 */
 	public function assertTodo( CheckResult $result ) {
-		$this->assertEquals(
+		$this->assertSame(
 			CheckResult::STATUS_TODO,
 			$result->getStatus(),
 			'Check is not implemented.'
@@ -133,7 +133,7 @@ trait ResultAssertions {
 	 * @param CheckResult $result
 	 */
 	public function assertDeprecation( CheckResult $result ) {
-		$this->assertEquals(
+		$this->assertSame(
 			CheckResult::STATUS_DEPRECATED,
 			$result->getStatus(),
 			'Check should indicate deprecation; message: ' . $this->renderMessage( $result )
@@ -149,6 +149,19 @@ trait ResultAssertions {
 	public function assertNotInScope( CheckResult $result ) {
 		$this->assertSame(
 			CheckResult::STATUS_NOT_IN_SCOPE,
+			$result->getStatus(),
+			'Check should indicate that snak is out of scope of constraint; message: ' .
+				$this->renderMessage( $result )
+		);
+	}
+
+	/**
+	 * Assert that $result indicates a skipped constraint check
+	 * due to invalid constraint parameters.
+	 */
+	public function assertBadParameters( CheckResult $result ): void {
+		$this->assertSame(
+			CheckResult::STATUS_BAD_PARAMETERS,
 			$result->getStatus(),
 			'Check should indicate that snak is out of scope of constraint; message: ' .
 				$this->renderMessage( $result )

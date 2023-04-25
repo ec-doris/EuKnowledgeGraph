@@ -61,7 +61,7 @@
 	"wbqc-violation-message-value-needed-of-type": "Properties with constraint \"$1\" need to have values of type \"$2\".",
 	"wbqc-violation-message-value-needed-of-types-2": "Properties with constraint \"$1\" need to have values of type \"$2\" or \"$3\".",
 	"wbqc-violation-message-parameter-needed": "Properties with constraint \"$1\" need a parameter \"$2\".",
-	"wbqc-violation-message-parameters-needed-3": "Properties with constraint \"$1\" need parameters \"$2\",  \"$3\", and  \"$4\".",
+	"wbqc-violation-message-parameters-needed-3": "Properties with constraint \"$1\" need parameters \"$2\", \"$3\", and \"$4\".",
 	"wbqc-violation-message-target-entity-must-exist": "The target entity must exist.",
 	"wbqc-violation-message-value-entity-must-exist": "The value entity must exist.",
 	"wbqc-violation-message-parameter-value": "The parameter \"$1\" must have a custom value, not \"no value\" or \"unknown value\".",
@@ -140,6 +140,8 @@
 	"wbqc-violation-message-integer": "Values for $1 should be integer, but $2 has a fractional part.",
 	"wbqc-violation-message-integer-bounds": "Values for $1 should be integer, but the bounds of $2 have a fractional part.",
 	"wbqc-violation-message-citationNeeded": "Statements for $1 should have at least one reference.",
+	"wbqc-violation-message-language": "Statements for $1 should be only on Lexemes with language set to {{PLURAL:$2|1=$4.|2=either $4 or $5.|one of the following: $3}}",
+	"wbqc-violation-message-label-lacking": "Entities with statements for $1 should also have a label at least in {{PLURAL:$2|1=$4 language.|any of the following languages: $3}}",
 	"wbqc-violation-message-property-scope": "The property $1 should not be used in this location ($2). The only valid {{PLURAL:$3|location|locations}} for this property {{PLURAL:$3|is $5.|are: $4}}",
 	"wbqc-violation-message-exception": "This entity is a known exception for this constraint and has been marked as such."
 }

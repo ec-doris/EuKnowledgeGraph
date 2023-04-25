@@ -21,9 +21,10 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  * @author BP2014N1
  * @license GPL-2.0-or-later
  */
-class TargetRequiredClaimCheckerTest extends \MediaWikiTestCase {
+class TargetRequiredClaimCheckerTest extends \MediaWikiIntegrationTestCase {
 
-	use ConstraintParameters, ResultAssertions;
+	use ConstraintParameters;
+	use ResultAssertions;
 
 	/**
 	 * @var InMemoryEntityLookup
@@ -40,7 +41,7 @@ class TargetRequiredClaimCheckerTest extends \MediaWikiTestCase {
 	 */
 	private $checker;
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 		$this->lookup = new InMemoryEntityLookup();
 		$this->connectionCheckerHelper = new ConnectionCheckerHelper();
@@ -271,16 +272,11 @@ class TargetRequiredClaimCheckerTest extends \MediaWikiTestCase {
 	 * @return Constraint
 	 */
 	private function getConstraintMock( array $parameters ) {
-		$mock = $this
-			->getMockBuilder( Constraint::class )
-			->disableOriginalConstructor()
-			->getMock();
-		$mock->expects( $this->any() )
-			 ->method( 'getConstraintParameters' )
-			 ->will( $this->returnValue( $parameters ) );
-		$mock->expects( $this->any() )
-			 ->method( 'getConstraintTypeItemId' )
-			 ->will( $this->returnValue( 'Q21503247' ) );
+		$mock = $this->createMock( Constraint::class );
+		$mock->method( 'getConstraintParameters' )
+			 ->willReturn( $parameters );
+		$mock->method( 'getConstraintTypeItemId' )
+			 ->willReturn( 'Q21503247' );
 
 		return $mock;
 	}

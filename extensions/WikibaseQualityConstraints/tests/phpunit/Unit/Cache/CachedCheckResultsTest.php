@@ -3,7 +3,7 @@
 namespace WikibaseQuality\ConstraintReport\Tests\Unit\Cache;
 
 use Wikibase\DataModel\Entity\ItemId;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use WikibaseQuality\ConstraintReport\Constraint;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Cache\CachedCheckResults;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Cache\DependencyMetadata;
@@ -23,7 +23,7 @@ use WikibaseQuality\ConstraintReport\Tests\Fake\AppendingContextCursor;
 class CachedCheckResultsTest extends \MediaWikiUnitTestCase {
 
 	public function testFiltered() {
-		$p1 = new PropertyId( 'P1' );
+		$p1 = new NumericPropertyId( 'P1' );
 		$q1 = new ItemId( 'Q1' );
 		$constraint = new Constraint( 'constraint ID', $p1, 'constraint type', [] );
 		$result1 = ( new CheckResult(

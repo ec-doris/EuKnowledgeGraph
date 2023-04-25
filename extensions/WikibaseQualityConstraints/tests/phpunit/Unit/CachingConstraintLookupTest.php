@@ -2,7 +2,7 @@
 
 namespace WikibaseQuality\ConstraintReport\Tests\Unit;
 
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use WikibaseQuality\ConstraintReport\CachingConstraintLookup;
 use WikibaseQuality\ConstraintReport\ConstraintLookup;
 
@@ -17,13 +17,13 @@ use WikibaseQuality\ConstraintReport\ConstraintLookup;
 class CachingConstraintLookupTest extends \MediaWikiUnitTestCase {
 
 	public function testQuery_CalledOnce() {
-		$p2 = new PropertyId( 'P2' );
-		$p3 = new PropertyId( 'P3' );
+		$p2 = new NumericPropertyId( 'P2' );
+		$p3 = new NumericPropertyId( 'P3' );
 
-		$mock = $this->getMockBuilder( ConstraintLookup::class )->getMock();
+		$mock = $this->createMock( ConstraintLookup::class );
 		$mock->expects( $this->exactly( 2 ) )
 			->method( 'queryConstraintsForProperty' )
-			->will( $this->returnValue( [] ) )
+			->willReturn( [] )
 			->withConsecutive(
 				[ $this->equalTo( $p2 ) ],
 				[ $this->equalTo( $p3 ) ]

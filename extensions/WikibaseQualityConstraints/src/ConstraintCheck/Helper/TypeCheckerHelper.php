@@ -8,6 +8,7 @@ use OverflowException;
 use Wikibase\DataModel\Entity\EntityId;
 use Wikibase\DataModel\Entity\EntityIdValue;
 use Wikibase\DataModel\Entity\ItemId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Entity\PropertyId;
 use Wikibase\DataModel\Services\Lookup\EntityLookup;
 use Wikibase\DataModel\Snak\PropertyValueSnak;
@@ -92,11 +93,14 @@ class TypeCheckerHelper {
 		}
 
 		$subclassId = $this->config->get( 'WBQualityConstraintsSubclassOfId' );
+		$statements = $item->getStatements()
+			->getByPropertyId( new NumericPropertyId( $subclassId ) )
+			->getBestStatements();
 		/** @var Statement $statement */
-		foreach ( $item->getStatements()->getByPropertyId( new PropertyId( $subclassId ) ) as $statement ) {
+		foreach ( $statements as $statement ) {
 			$mainSnak = $statement->getMainSnak();
 
-			if ( !( $this->hasCorrectType( $mainSnak ) ) ) {
+			if ( !$this->hasCorrectType( $mainSnak ) ) {
 				continue;
 			}
 			/** @var PropertyValueSnak $mainSnak */
@@ -193,7 +197,7 @@ class TypeCheckerHelper {
 	public function hasClassInRelation( StatementList $statements, array $relationIds, array $classesToCheck ) {
 		$metadatas = [];
 
-		foreach ( $this->getStatementsByPropertyIds( $statements, $relationIds ) as $statement ) {
+		foreach ( $this->getBestStatementsByPropertyIds( $statements, $relationIds ) as $statement ) {
 			$mainSnak = $statement->getMainSnak();
 
 			if ( !$this->hasCorrectType( $mainSnak ) ) {
@@ -243,15 +247,18 @@ class TypeCheckerHelper {
 	 *
 	 * @return Statement[]
 	 */
-	private function getStatementsByPropertyIds(
+	private function getBestStatementsByPropertyIds(
 		StatementList $statements,
 		array $propertyIdSerializations
 	) {
 		$statementArrays = [];
 
 		foreach ( $propertyIdSerializations as $propertyIdSerialization ) {
-			$propertyId = new PropertyId( $propertyIdSerialization );
-			$statementArrays[] = $statements->getByPropertyId( $propertyId )->toArray();
+			$propertyId = new NumericPropertyId( $propertyIdSerialization );
+			$statementArrays[] = $statements
+				->getByPropertyId( $propertyId )
+				->getBestStatements()
+				->toArray();
 		}
 
 		return call_user_func_array( 'array_merge', $statementArrays );
@@ -266,9 +273,15 @@ class TypeCheckerHelper {
 	 *
 	 * @return ViolationMessage
 	 */
-	public function getViolationMessage( PropertyId $propertyId, EntityId $entityId, array $classes, $checker, $relation ) {
+	public function getViolationMessage(
+		PropertyId $propertyId,
+		EntityId $entityId,
+		array $classes,
+		$checker,
+		$relation
+	) {
 		$classes = array_map(
-			function( $itemIdSerialization ) {
+			static function ( $itemIdSerialization ) {
 				return new ItemId( $itemIdSerialization );
 			},
 			$classes

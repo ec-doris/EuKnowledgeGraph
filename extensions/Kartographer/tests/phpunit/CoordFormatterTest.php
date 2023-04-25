@@ -4,19 +4,16 @@ namespace Kartographer\Tests;
 
 use Kartographer\CoordFormatter;
 use Language;
-use MediaWikiTestCase;
+use MediaWikiIntegrationTestCase;
 
 /**
  * @covers \Kartographer\CoordFormatter
  * @group Kartographer
  */
-class CoordFormatterTest extends MediaWikiTestCase {
+class CoordFormatterTest extends MediaWikiIntegrationTestCase {
+
 	/**
 	 * @dataProvider provideFormatter
-	 *
-	 * @param $expected
-	 * @param $lat
-	 * @param $lon
 	 */
 	public function testFormatter( $expected, $lat, $lon ) {
 		$lang = Language::factory( 'en' );

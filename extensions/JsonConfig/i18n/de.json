@@ -2,10 +2,13 @@
 	"@metadata": {
 		"authors": [
 			"Metalhead64",
+			"Umherirrender",
 			"Yurik",
-			"Umherirrender"
+			"Brettchenweber"
 		]
 	},
+	"nstab-data": "Daten",
+	"tooltip-ca-nstab-data": "Datenseite anzeigen",
 	"jsonconfig-desc": "Ermöglicht die Konfiguration von JSON zur Speicherung in einem Wiki",
 	"jsonconfig-duplicate-field": "Es wurde mehr als ein Wert „$1“ gefunden",
 	"jsonconfig-edit-action-apply": "Anwenden",
@@ -21,7 +24,7 @@
 	"jsonconfig-edit-dialog-error-schema-missing": "JSON-<code>schema</code>-Eigenschaft fehlt oder ist kein Objekt",
 	"jsonconfig-edit-dialog-title": "JSON bearbeiten",
 	"jsonconfig-err-array": "Parameter „$1“ muss eine Liste sein, z.&nbsp;B. <kbd>[\"value1\", \"value2\", …]</kbd>",
-	"jsonconfig-err-array-count": "Die Liste „$1“ hat {{PLURAL:$2|einen Wert|$2 Werte}}, muss aber {{PLURAL:$3|einen Wert|$3 Werte}} haben, die gleiche Anzahl von Werten als „$4“.",
+	"jsonconfig-err-array-count": "Die Liste „$1“ hat {{PLURAL:$2|einen Wert|$2 Werte}}, muss aber {{PLURAL:$3|einen Wert|$3 Werte}} haben, die gleiche Anzahl von Werten wie „$4“.",
 	"jsonconfig-err-array-expected": "Es wird erwartet, dass der Wert bei „$1“ eine Liste umgeben von eckigen Klammern ([…]) ist",
 	"jsonconfig-err-assoc-array": "Parameter „$1“ muss ein assoziatives Array (Wörterbuch) sein, z.&nbsp;B. <kbd>{\"key\": \"value\", …}</kbd>",
 	"jsonconfig-err-bad-header-string": "Der Header „$1“ darf nur aus Buchstaben, Zahlen und Unterstrichen bestehen und nicht mit einer Zahl beginnen.",

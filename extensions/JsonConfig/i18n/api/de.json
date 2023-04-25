@@ -6,6 +6,7 @@
 	},
 	"apihelp-jsonconfig-description": "Ermöglicht direkten Zugriff auf das JsonConfig-Subsystem.",
 	"apihelp-jsonconfig-summary": "Erlaubt direkten Zugriff auf das JsonConfig-Untersystem.",
+	"apihelp-jsonconfig-param-command": "Welche Teilaktion auf JsonConfig ausgeführt werden soll:\n;status:Zeigt die JsonConfig-Konfiguration.\n;reset:Löscht die Konfigurationen aus dem Cache. Erfordert den Parameter $1title und das Recht jsonconfig-flush.\n;reload:Lädt Konfigurationen aus dem Konfigurationsspeicher neu und speichert sie zwischen. Erfordert den Parameter $1title und das Recht jsonconfig-reset.",
 	"apihelp-jsonconfig-param-namespace": "Namensraum-Nummer des zu verarbeitenden Titels.",
 	"apihelp-jsonconfig-param-title": "Zu verarbeitender Titel ohne Namensraum-Präfix.",
 	"apihelp-jsonconfig-param-content": "Für $1command=reload, stattdessen diesen Inhalt verwenden.",

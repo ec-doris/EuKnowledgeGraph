@@ -7,7 +7,7 @@
 	},
 	"apihelp-jsonconfig-description": "Обеспечивает прямой доступ к подсистеме JsonConfig.",
 	"apihelp-jsonconfig-summary": "Обеспечивает прямой доступ к подсистеме JsonConfig.",
-	"apihelp-jsonconfig-param-command": "Какое поддействие нужно выполнить на JsonConfig:\n;status: Показывает конфигурацию JsonConfig.\n;reset: Очищает настройки из кэша. Требуется параметр $1title и право «jsonconfig-reset».\n;reload: Обновляет и кэширует конфигурации из хранилища настроек. Требуется параметр $1title и право «jsonconfig-reset».",
+	"apihelp-jsonconfig-param-command": "Какое поддействие нужно выполнить на JsonConfig:\n;status: Показывает конфигурацию JsonConfig.\n;reset: Очищает настройки из кэша. Требуется параметр $1title и право «jsonconfig-flush».\n;reload: Обновляет и кэширует конфигурации из хранилища настроек. Требуется параметр $1title и право «jsonconfig-reset».",
 	"apihelp-jsonconfig-param-title": "Заголовок для обработки без префикса пространства имён.",
 	"apihelp-jsonconfig-param-content": "Для $1command=reload используйте данное содержимое.",
 	"apihelp-jsonconfig-example-1": "Показать настройки",

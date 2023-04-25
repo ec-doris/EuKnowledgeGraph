@@ -1,9 +1,12 @@
 {
 	"@metadata": {
 		"authors": [
-			"Yuri Astrakhan"
+			"Yuri Astrakhan",
+			"Base"
 		]
 	},
+	"nstab-data": "Data",
+	"tooltip-ca-nstab-data": "View the data page",
 	"jsonconfig-desc": "Allows JSON configuration to be stored in a wiki",
 	"jsonconfig-duplicate-field": "More than one value \"$1\" found",
 	"jsonconfig-edit-action-apply": "Apply",
@@ -65,7 +68,7 @@
 	"jsonconfig-license-name-CC-BY-SA-2.5": "Creative Commons Attribution-Share Alike 2.5",
 	"jsonconfig-license-name-CC-BY-SA-3.0": "Creative Commons Attribution-Share Alike 3.0",
 	"jsonconfig-license-name-CC-BY-SA-4.0": "Creative Commons Attribution-Share Alike 4.0",
-	"jsonconfig-license-name-CC-BY-SA-4.0+": "Creative Commons Attribution-Share Alike 4.0  or later version",
+	"jsonconfig-license-name-CC-BY-SA-4.0+": "Creative Commons Attribution-Share Alike 4.0 or later version",
 	"jsonconfig-license-name-ODbL-1.0": "ODC Open Database License v1.0",
 	"jsonconfig-license-name-dl-de-zero-2.0": "Data licence Germany - Zero - Version 2.0",
 	"jsonconfig-license-name-dl-de-by-1.0": "Data licence Germany – attribution – Version 1.0",

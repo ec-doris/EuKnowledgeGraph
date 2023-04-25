@@ -36,7 +36,7 @@ class JCValidators {
 	 * @return callable
 	 */
 	public static function isBool( $nullable = false ) {
-		return function ( JCValue $v, array $path ) use ( $nullable ) {
+		return static function ( JCValue $v, array $path ) use ( $nullable ) {
 			$value = $v->getValue();
 			if ( is_bool( $value ) || ( $nullable && $value === null ) ) {
 				return true;
@@ -50,7 +50,7 @@ class JCValidators {
 	 * @return callable
 	 */
 	public static function isString() {
-		return function ( JCValue $v, array $path ) {
+		return static function ( JCValue $v, array $path ) {
 			if ( !is_string( $v->getValue() ) ) {
 				$v->error( 'jsonconfig-err-string', $path );
 				return false;
@@ -65,7 +65,7 @@ class JCValidators {
 	 * @return callable
 	 */
 	public static function isStringLine( $nullable = false, $maxlength = 400 ) {
-		return function ( JCValue $v, array $path ) use ( $nullable, $maxlength ) {
+		return static function ( JCValue $v, array $path ) use ( $nullable, $maxlength ) {
 			$value = $v->getValue();
 			if ( JCUtils::isValidLineString( $value, $maxlength ) ||
 				 ( $nullable && $value === null )
@@ -81,7 +81,7 @@ class JCValidators {
 	 * @return callable
 	 */
 	public static function isInt() {
-		return function ( JCValue $v, array $path ) {
+		return static function ( JCValue $v, array $path ) {
 			if ( !is_int( $v->getValue() ) ) {
 				$v->error( 'jsonconfig-err-integer', $path );
 				return false;
@@ -95,7 +95,7 @@ class JCValidators {
 	 * @return callable
 	 */
 	public static function isNumber( $nullable = false ) {
-		return function ( JCValue $v, array $path ) use ( $nullable ) {
+		return static function ( JCValue $v, array $path ) use ( $nullable ) {
 			$value = $v->getValue();
 			if ( is_float( $value ) || is_int( $value ) || ( $nullable && $value === null ) ) {
 				return true;
@@ -109,7 +109,7 @@ class JCValidators {
 	 * @return callable
 	 */
 	public static function isList() {
-		return function ( JCValue $v, array $path ) {
+		return static function ( JCValue $v, array $path ) {
 			if ( !JCUtils::isList( $v->getValue() ) ) {
 				$v->error( 'jsonconfig-err-array', $path );
 				return false;
@@ -122,7 +122,7 @@ class JCValidators {
 	 * @return callable
 	 */
 	public static function isDictionary() {
-		return function ( JCValue $v, array $path ) {
+		return static function ( JCValue $v, array $path ) {
 			if ( !is_object( $v->getValue() ) ) {
 				$v->error( 'jsonconfig-err-assoc-array', $path );
 				return false;
@@ -135,8 +135,8 @@ class JCValidators {
 	 * @return callable
 	 */
 	public static function isUrl() {
-		return function ( JCValue $v, array $path ) {
-			if ( false === filter_var( $v->getValue(), FILTER_VALIDATE_URL ) ) {
+		return static function ( JCValue $v, array $path ) {
+			if ( filter_var( $v->getValue(), FILTER_VALIDATE_URL ) === false ) {
 				$v->error( 'jsonconfig-err-url', $path );
 				return false;
 			}
@@ -151,7 +151,7 @@ class JCValidators {
 	 * @return callable
 	 */
 	public static function useDefault( $default, $validateDefault = true ) {
-		return function ( JCValue $v ) use ( $default, $validateDefault ) {
+		return static function ( JCValue $v ) use ( $default, $validateDefault ) {
 			if ( $v->isMissing() ) {
 				if ( is_object( $default ) && ( $default instanceof Closure ) ) {
 					$default = $default();
@@ -167,7 +167,7 @@ class JCValidators {
 	 * @return callable
 	 */
 	public static function deleteField() {
-		return function ( JCValue $v ) {
+		return static function ( JCValue $v ) {
 			$v->status( JCValue::MISSING );
 			// continue executing validators - there could be a custom one that changes it further
 			return true;
@@ -178,7 +178,7 @@ class JCValidators {
 	 * @return callable
 	 */
 	public static function stringToList() {
-		return function ( JCValue $v ) {
+		return static function ( JCValue $v ) {
 			if ( is_string( $v->getValue() ) ) {
 				$v->setValue( [ $v->getValue() ] );
 			}
@@ -190,7 +190,7 @@ class JCValidators {
 	 * @return callable
 	 */
 	public static function uniqueSortStrList() {
-		return function ( JCValue $v ) {
+		return static function ( JCValue $v ) {
 			if ( !$v->isMissing() ) {
 				$arr = array_unique( $v->getValue() );
 				sort( $arr );
@@ -207,7 +207,7 @@ class JCValidators {
 	 * @return Closure
 	 */
 	public static function isLocalizedString( $nullable = false, $maxlength = 400 ) {
-		return function ( JCValue $jcv, array $path ) use ( $nullable, $maxlength ) {
+		return static function ( JCValue $jcv, array $path ) use ( $nullable, $maxlength ) {
 			if ( !$jcv->isMissing() ) {
 				$v = $jcv->getValue();
 				if ( $nullable && $v === null ) {
@@ -234,7 +234,7 @@ class JCValidators {
 	 * @return callable
 	 */
 	public static function isHeaderString( &$allHeaders ) {
-		return function ( JCValue $v, array $path ) use ( &$allHeaders ) {
+		return static function ( JCValue $v, array $path ) use ( &$allHeaders ) {
 			$value = $v->getValue();
 			// must be a string, begins with a letter or '_', and only has letters/digits/'_'
 			if ( !is_string( $value ) || !preg_match( '/^[\pL_][\pL\pN_]*$/ui', $value ) ) {
@@ -254,11 +254,11 @@ class JCValidators {
 	 * @return callable
 	 */
 	public static function noExtraValues() {
-		return function ( JCValue $v, array $path ) {
+		return static function ( JCValue $v, array $path ) {
 			$value = $v->getValue();
 			if ( is_object( $value ) ) {
 				foreach ( $value as $key => $subVal ) {
-					if ( !is_a( $subVal, JCValue::class ) ) {
+					if ( !( $subVal instanceof JCValue ) ) {
 						$v->error( 'jsonconfig-err-unexpected-key', $path, $key );
 						return false;
 					}
@@ -274,7 +274,7 @@ class JCValidators {
 	 * @return callable
 	 */
 	public static function checkListSize( $count, $field ) {
-		return function ( JCValue $v, array $path ) use ( $count, $field ) {
+		return static function ( JCValue $v, array $path ) use ( $count, $field ) {
 			$list = $v->getValue();
 			if ( is_array( $list ) && count( $list ) !== $count ) {
 				$v->error( 'jsonconfig-err-array-count', $path, count( $list ), $count, $field );
@@ -290,7 +290,7 @@ class JCValidators {
 	 * @return Closure
 	 */
 	public static function validateDataType( &$validators ) {
-		return function ( JCValue $v, array $path ) use ( &$validators ) {
+		return static function ( JCValue $v, array $path ) use ( &$validators ) {
 			$value = $v->getValue();
 			$validator = false;
 			if ( is_string( $value ) ) {

@@ -21,9 +21,10 @@ use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
  * @author BP2014N1
  * @license GPL-2.0-or-later
  */
-class QualifiersCheckerTest extends \MediaWikiTestCase {
+class QualifiersCheckerTest extends \MediaWikiIntegrationTestCase {
 
-	use ConstraintParameters, ResultAssertions;
+	use ConstraintParameters;
+	use ResultAssertions;
 
 	/**
 	 * @var string[]
@@ -35,7 +36,7 @@ class QualifiersCheckerTest extends \MediaWikiTestCase {
 	 */
 	private $checker;
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 		$this->qualifiersList = [ 'P580', 'P582', 'P1365', 'P1366', 'P642', 'P805' ];
 		$this->checker = new QualifiersChecker( $this->getConstraintParameterParser() );
@@ -130,16 +131,11 @@ class QualifiersCheckerTest extends \MediaWikiTestCase {
 	 * @return Constraint
 	 */
 	private function getConstraintMock( array $parameters ) {
-		$mock = $this
-			->getMockBuilder( Constraint::class )
-			->disableOriginalConstructor()
-			->getMock();
-		$mock->expects( $this->any() )
-			 ->method( 'getConstraintParameters' )
-			 ->will( $this->returnValue( $parameters ) );
-		$mock->expects( $this->any() )
-			 ->method( 'getConstraintTypeItemId' )
-			 ->will( $this->returnValue( 'Q21510851' ) );
+		$mock = $this->createMock( Constraint::class );
+		$mock->method( 'getConstraintParameters' )
+			 ->willReturn( $parameters );
+		$mock->method( 'getConstraintTypeItemId' )
+			 ->willReturn( 'Q21510851' );
 
 		return $mock;
 	}

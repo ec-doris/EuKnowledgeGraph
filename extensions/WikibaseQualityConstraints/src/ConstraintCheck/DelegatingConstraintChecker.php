@@ -5,6 +5,7 @@ namespace WikibaseQuality\ConstraintReport\ConstraintCheck;
 use InvalidArgumentException;
 use LogicException;
 use Wikibase\DataModel\Entity\EntityId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Entity\PropertyId;
 use Wikibase\DataModel\Entity\StatementListProvidingEntity;
 use Wikibase\DataModel\Reference;
@@ -212,7 +213,7 @@ class DelegatingConstraintChecker {
 		return [];
 	}
 
-	private function getAllowedContextTypes( Constraint $constraint ) {
+	private function getValidContextTypes( Constraint $constraint ) {
 		if ( !array_key_exists( $constraint->getConstraintTypeItemId(), $this->checkerMap ) ) {
 			return [
 				Context::TYPE_STATEMENT,
@@ -223,7 +224,20 @@ class DelegatingConstraintChecker {
 
 		return array_keys( array_filter(
 			$this->checkerMap[$constraint->getConstraintTypeItemId()]->getSupportedContextTypes(),
-			function ( $resultStatus ) {
+			static function ( $resultStatus ) {
+				return $resultStatus !== CheckResult::STATUS_NOT_IN_SCOPE;
+			}
+		) );
+	}
+
+	private function getValidEntityTypes( Constraint $constraint ) {
+		if ( !array_key_exists( $constraint->getConstraintTypeItemId(), $this->checkerMap ) ) {
+			return array_keys( ConstraintChecker::ALL_ENTITY_TYPES_SUPPORTED );
+		}
+
+		return array_keys( array_filter(
+			$this->checkerMap[$constraint->getConstraintTypeItemId()]->getSupportedEntityTypes(),
+			static function ( $resultStatus ) {
 				return $resultStatus !== CheckResult::STATUS_NOT_IN_SCOPE;
 			}
 		) );
@@ -257,10 +271,11 @@ class DelegatingConstraintChecker {
 			$problems[] = $e;
 		}
 		try {
-			$this->constraintParameterParser->parseConstraintScopeParameter(
+			$this->constraintParameterParser->parseConstraintScopeParameters(
 				$constraintParameters,
 				$constraint->getConstraintTypeItemId(),
-				$this->getAllowedContextTypes( $constraint )
+				$this->getValidContextTypes( $constraint ),
+				$this->getValidEntityTypes( $constraint )
 			);
 		} catch ( ConstraintParameterException $e ) {
 			$problems[] = $e;
@@ -271,11 +286,11 @@ class DelegatingConstraintChecker {
 	/**
 	 * Check the constraint parameters of all constraints for the given property ID.
 	 *
-	 * @param PropertyId $propertyId
+	 * @param NumericPropertyId $propertyId
 	 * @return ConstraintParameterException[][] first level indexed by constraint ID,
 	 * second level like checkConstraintParametersOnConstraintId (but without possibility of null)
 	 */
-	public function checkConstraintParametersOnPropertyId( PropertyId $propertyId ) {
+	public function checkConstraintParametersOnPropertyId( NumericPropertyId $propertyId ) {
 		$constraints = $this->constraintLookup->queryConstraintsForProperty( $propertyId );
 		$result = [];
 
@@ -303,7 +318,7 @@ class DelegatingConstraintChecker {
 	 */
 	public function checkConstraintParametersOnConstraintId( $constraintId ) {
 		$propertyId = $this->statementGuidParser->parse( $constraintId )->getEntityId();
-		'@phan-var PropertyId $propertyId';
+		'@phan-var NumericPropertyId $propertyId';
 		$constraints = $this->constraintLookup->queryConstraintsForProperty( $propertyId );
 
 		foreach ( $constraints as $constraint ) {
@@ -407,6 +422,11 @@ class DelegatingConstraintChecker {
 	 * @return Constraint[]
 	 */
 	private function getConstraintsToUse( PropertyId $propertyId, array $constraintIds = null ) {
+		if ( !( $propertyId instanceof NumericPropertyId ) ) {
+			throw new InvalidArgumentException(
+				'Non-numeric property ID not supported:' . $propertyId->getSerialization()
+			);
+		}
 		$constraints = $this->constraintLookup->queryConstraintsForProperty( $propertyId );
 		if ( $constraintIds !== null ) {
 			$constraintsToUse = [];
@@ -447,7 +467,12 @@ class DelegatingConstraintChecker {
 			try {
 				$exceptions = $this->constraintParameterParser->parseExceptionParameter( $parameters );
 			} catch ( ConstraintParameterException $e ) {
-				$result[] = new CheckResult( $context, $constraint, [], CheckResult::STATUS_BAD_PARAMETERS, $e->getViolationMessage() );
+				$result[] = new CheckResult(
+					$context,
+					$constraint,
+					[],
+					CheckResult::STATUS_BAD_PARAMETERS, $e->getViolationMessage()
+				);
 				continue;
 			}
 
@@ -565,7 +590,13 @@ class DelegatingConstraintChecker {
 			try {
 				$result = $checker->checkConstraint( $context, $constraint );
 			} catch ( ConstraintParameterException $e ) {
-				$result = new CheckResult( $context, $constraint, [], CheckResult::STATUS_BAD_PARAMETERS, $e->getViolationMessage() );
+				$result = new CheckResult(
+					$context,
+					$constraint,
+					[],
+					CheckResult::STATUS_BAD_PARAMETERS,
+					$e->getViolationMessage()
+				);
 			} catch ( SparqlHelperException $e ) {
 				$message = new ViolationMessage( 'wbqc-violation-message-sparql-error' );
 				$result = new CheckResult( $context, $constraint, [], CheckResult::STATUS_TODO, $message );
@@ -595,24 +626,42 @@ class DelegatingConstraintChecker {
 		ConstraintChecker $checker,
 		Context $context,
 		Constraint $constraint
-	) {
+	): ?CheckResult {
+		$validContextTypes = $this->getValidContextTypes( $constraint );
+		$validEntityTypes = $this->getValidEntityTypes( $constraint );
 		try {
-			$checkedContextTypes = $this->constraintParameterParser->parseConstraintScopeParameter(
+			[ $checkedContextTypes, $checkedEntityTypes ] = $this->constraintParameterParser->parseConstraintScopeParameters(
 				$constraint->getConstraintParameters(),
-				$constraint->getConstraintTypeItemId()
+				$constraint->getConstraintTypeItemId(),
+				$validContextTypes,
+				$validEntityTypes
 			);
 		} catch ( ConstraintParameterException $e ) {
 			return new CheckResult( $context, $constraint, [], CheckResult::STATUS_BAD_PARAMETERS, $e->getViolationMessage() );
 		}
+
 		if ( $checkedContextTypes === null ) {
 			$checkedContextTypes = $checker->getDefaultContextTypes();
 		}
-		if ( !in_array( $context->getType(), $checkedContextTypes ) ) {
+		$contextType = $context->getType();
+		if ( !in_array( $contextType, $checkedContextTypes ) ) {
 			return new CheckResult( $context, $constraint, [], CheckResult::STATUS_NOT_IN_SCOPE, null );
 		}
-		if ( $checker->getSupportedContextTypes()[$context->getType()] === CheckResult::STATUS_TODO ) {
+		if ( $checker->getSupportedContextTypes()[$contextType] === CheckResult::STATUS_TODO ) {
 			return new CheckResult( $context, $constraint, [], CheckResult::STATUS_TODO, null );
 		}
+
+		if ( $checkedEntityTypes === null ) {
+			$checkedEntityTypes = $validEntityTypes;
+		}
+		$entityType = $context->getEntity()->getType();
+		if ( !in_array( $entityType, $checkedEntityTypes ) ) {
+			return new CheckResult( $context, $constraint, [], CheckResult::STATUS_NOT_IN_SCOPE, null );
+		}
+		if ( $checker->getSupportedEntityTypes()[$entityType] === CheckResult::STATUS_TODO ) {
+			return new CheckResult( $context, $constraint, [], CheckResult::STATUS_TODO, null );
+		}
+
 		return null;
 	}
 
@@ -669,7 +718,7 @@ class DelegatingConstraintChecker {
 			return $result;
 		}
 
-		$sortFunction = function ( CheckResult $a, CheckResult $b ) {
+		$sortFunction = static function ( CheckResult $a, CheckResult $b ) {
 			$orderNum = 0;
 			$order = [
 				CheckResult::STATUS_BAD_PARAMETERS => $orderNum++,

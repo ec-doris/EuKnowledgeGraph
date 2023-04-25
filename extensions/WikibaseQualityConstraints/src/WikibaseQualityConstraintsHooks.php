@@ -4,12 +4,11 @@ namespace WikibaseQuality\ConstraintReport;
 
 use Config;
 use DatabaseUpdater;
-use JobQueueGroup;
 use JobSpecification;
 use MediaWiki\MediaWikiServices;
 use OutputPage;
 use Skin;
-use Wikibase\DataModel\Entity\PropertyId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\Lib\Changes\Change;
 use Wikibase\Lib\Changes\EntityChange;
 use Wikibase\Lib\Changes\EntityDiffChangedAspects;
@@ -29,19 +28,21 @@ final class WikibaseQualityConstraintsHooks {
 	 * @param DatabaseUpdater $updater
 	 */
 	public static function onCreateSchema( DatabaseUpdater $updater ) {
+		$dir = dirname( __DIR__ ) . '/sql/';
+
 		$updater->addExtensionTable(
 			'wbqc_constraints',
-			__DIR__ . '/../sql/create_wbqc_constraints.sql'
+			$dir . "/{$updater->getDB()->getType()}/tables-generated.sql"
 		);
 		$updater->addExtensionField(
 			'wbqc_constraints',
 			'constraint_id',
-			__DIR__ . '/../sql/patch-wbqc_constraints-constraint_id.sql'
+			$dir . '/patch-wbqc_constraints-constraint_id.sql'
 		);
 		$updater->addExtensionIndex(
 			'wbqc_constraints',
 			'wbqc_constraints_guid_uniq',
-			__DIR__ . '/../sql/patch-wbqc_constraints-wbqc_constraints_guid_uniq.sql'
+			$dir . '/patch-wbqc_constraints-wbqc_constraints_guid_uniq.sql'
 		);
 	}
 
@@ -49,9 +50,11 @@ final class WikibaseQualityConstraintsHooks {
 		if ( !( $change instanceof EntityChange ) ) {
 			return;
 		}
-
 		/** @var EntityChange $change */
-		$config = MediaWikiServices::getInstance()->getMainConfig();
+
+		$services = MediaWikiServices::getInstance();
+		$config = $services->getMainConfig();
+		$jobQueueGroup = $services->getJobQueueGroup();
 
 		// If jobs are enabled and the results would be stored in some way run a job.
 		if (
@@ -60,7 +63,7 @@ final class WikibaseQualityConstraintsHooks {
 			self::isSelectedForJobRunBasedOnPercentage()
 		) {
 			$params = [ 'entityId' => $change->getEntityId()->getSerialization() ];
-			JobQueueGroup::singleton()->push(
+			$jobQueueGroup->lazyPush(
 				new JobSpecification( CheckConstraintsJob::COMMAND, $params )
 			);
 		}
@@ -73,7 +76,7 @@ final class WikibaseQualityConstraintsHooks {
 			if ( array_key_exists( 'rev_id', $metadata ) ) {
 				$params['revisionId'] = $metadata['rev_id'];
 			}
-			JobQueueGroup::singleton()->push(
+			$jobQueueGroup->push(
 				new JobSpecification( 'constraintsTableUpdate', $params )
 			);
 		}
@@ -89,7 +92,7 @@ final class WikibaseQualityConstraintsHooks {
 	public static function isConstraintStatementsChange( Config $config, Change $change ) {
 		if ( !( $change instanceof EntityChange ) ||
 			 $change->getAction() !== EntityChange::UPDATE ||
-			 !( $change->getEntityId() instanceof PropertyId )
+			 !( $change->getEntityId() instanceof NumericPropertyId )
 		) {
 			return false;
 		}
@@ -110,11 +113,9 @@ final class WikibaseQualityConstraintsHooks {
 	}
 
 	public static function onArticlePurge( WikiPage $wikiPage ) {
-		$repo = WikibaseRepo::getDefaultInstance();
-
-		$entityContentFactory = $repo->getEntityContentFactory();
+		$entityContentFactory = WikibaseRepo::getEntityContentFactory();
 		if ( $entityContentFactory->isEntityContentModel( $wikiPage->getContentModel() ) ) {
-			$entityIdLookup = $repo->getEntityIdLookup();
+			$entityIdLookup = WikibaseRepo::getEntityIdLookup();
 			$entityId = $entityIdLookup->getEntityIdForTitle( $wikiPage->getTitle() );
 			if ( $entityId !== null ) {
 				$resultsCache = ResultsCache::getDefaultInstance();
@@ -124,9 +125,7 @@ final class WikibaseQualityConstraintsHooks {
 	}
 
 	public static function onBeforePageDisplay( OutputPage $out, Skin $skin ) {
-		$repo = WikibaseRepo::getDefaultInstance();
-
-		$lookup = $repo->getEntityNamespaceLookup();
+		$lookup = WikibaseRepo::getEntityNamespaceLookup();
 		$title = $out->getTitle();
 		if ( $title === null ) {
 			return;
@@ -141,7 +140,7 @@ final class WikibaseQualityConstraintsHooks {
 
 		$out->addModules( 'wikibase.quality.constraints.suggestions' );
 
-		if ( !$out->getUser()->isLoggedIn() ) {
+		if ( !$out->getUser()->isRegistered() ) {
 			return;
 		}
 

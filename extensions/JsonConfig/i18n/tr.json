@@ -7,6 +7,8 @@
 			"SaldırganSincap"
 		]
 	},
+	"nstab-data": "Veri",
+	"tooltip-ca-nstab-data": "Medya sayfasını gör",
 	"jsonconfig-desc": "JSON yapılandırmasının bir vikide depolanmasına izin verir",
 	"jsonconfig-duplicate-field": "Birden fazla \"$1\" değeri bulundu",
 	"jsonconfig-edit-action-apply": "Uygula",

@@ -1,10 +1,12 @@
 <?php
 
+declare( strict_types = 1 );
+
 namespace WikibaseQuality\ConstraintReport\ConstraintCheck\Checker;
 
-use MalformedTitleException;
 use MediaWiki\Site\MediaWikiPageNameNormalizer;
 use Wikibase\DataModel\Entity\ItemId;
+use Wikibase\DataModel\Services\Lookup\PropertyDataTypeLookup;
 use Wikibase\DataModel\Snak\PropertyValueSnak;
 use WikibaseQuality\ConstraintReport\Constraint;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\ConstraintChecker;
@@ -31,46 +33,48 @@ class CommonsLinkChecker implements ConstraintChecker {
 	 */
 	private $pageNameNormalizer;
 
+	/**
+	 * @var PropertyDataTypeLookup
+	 */
+	private $propertyDatatypeLookup;
+
 	public function __construct(
 		ConstraintParameterParser $constraintParameterParser,
-		MediaWikiPageNameNormalizer $pageNameNormalizer
+		MediaWikiPageNameNormalizer $pageNameNormalizer,
+		PropertyDataTypeLookup $propertyDatatypeLookup
 	) {
 		$this->constraintParameterParser = $constraintParameterParser;
 		$this->pageNameNormalizer = $pageNameNormalizer;
+		$this->propertyDatatypeLookup = $propertyDatatypeLookup;
 	}
 
 	/**
 	 * @codeCoverageIgnore This method is purely declarative.
 	 */
-	public function getSupportedContextTypes() {
-		return [
-			Context::TYPE_STATEMENT => CheckResult::STATUS_COMPLIANCE,
-			Context::TYPE_QUALIFIER => CheckResult::STATUS_COMPLIANCE,
-			Context::TYPE_REFERENCE => CheckResult::STATUS_COMPLIANCE,
-		];
+	public function getSupportedContextTypes(): array {
+		return self::ALL_CONTEXT_TYPES_SUPPORTED;
 	}
 
 	/**
 	 * @codeCoverageIgnore This method is purely declarative.
 	 */
-	public function getDefaultContextTypes() {
-		return [
-			Context::TYPE_STATEMENT,
-			Context::TYPE_QUALIFIER,
-			Context::TYPE_REFERENCE,
-		];
+	public function getDefaultContextTypes(): array {
+		return Context::ALL_CONTEXT_TYPES;
+	}
+
+	/** @codeCoverageIgnore This method is purely declarative. */
+	public function getSupportedEntityTypes() {
+		return self::ALL_ENTITY_TYPES_SUPPORTED;
 	}
 
 	/**
 	 * Get the number of a namespace on Wikimedia Commons (commonswiki).
 	 * All namespaces not known to this function will be looked up by the TitleParser.
 	 *
-	 * @param string $namespace
-	 *
 	 * @return array first element is the namespace number (default namespace for TitleParser),
 	 * second element is a string to prepend to the title before giving it to the TitleParser
 	 */
-	private function getCommonsNamespace( $namespace ) {
+	private function getCommonsNamespace( string $namespace ): array {
 		switch ( $namespace ) {
 			case '':
 				return [ NS_MAIN, '' ];
@@ -96,13 +100,9 @@ class CommonsLinkChecker implements ConstraintChecker {
 	/**
 	 * Checks 'Commons link' constraint.
 	 *
-	 * @param Context $context
-	 * @param Constraint $constraint
-	 *
 	 * @throws ConstraintParameterException
-	 * @return CheckResult
 	 */
-	public function checkConstraint( Context $context, Constraint $constraint ) {
+	public function checkConstraint( Context $context, Constraint $constraint ): CheckResult {
 		$parameters = [];
 		$constraintParameters = $constraint->getConstraintParameters();
 		$constraintTypeItemId = $constraint->getConstraintTypeItemId();
@@ -135,38 +135,44 @@ class CommonsLinkChecker implements ConstraintChecker {
 		}
 
 		$commonsLink = $dataValue->getValue();
-
-		try {
-			if ( !$this->commonsLinkIsWellFormed( $commonsLink ) ) {
-				throw new MalformedTitleException( 'caught below', $commonsLink );
-			}
-
-			$prefix = $this->getCommonsNamespace( $namespace )[1];
-			$normalizedTitle = $this->pageNameNormalizer->normalizePageName(
-				$prefix . $commonsLink,
-				'https://commons.wikimedia.org/w/api.php'
-			);
-
-			if ( $normalizedTitle === false ) {
-				if ( $this->valueIncludesNamespace( $commonsLink, $namespace ) ) {
-					throw new MalformedTitleException( 'caught below', $commonsLink );
-				} else {
-					$message = new ViolationMessage( 'wbqc-violation-message-commons-link-no-existent' );
-					$status = CheckResult::STATUS_VIOLATION;
-				}
-			} else {
-				$message = null;
-				$status = CheckResult::STATUS_COMPLIANCE;
-			}
-		} catch ( MalformedTitleException $e ) {
-			$message = new ViolationMessage( 'wbqc-violation-message-commons-link-not-well-formed' );
-			$status = CheckResult::STATUS_VIOLATION;
+		if ( !$this->commonsLinkIsWellFormed( $commonsLink ) ) {
+			return new CheckResult( $context, $constraint, $parameters, CheckResult::STATUS_VIOLATION,
+				new ViolationMessage( 'wbqc-violation-message-commons-link-not-well-formed' ) );
 		}
 
-		return new CheckResult( $context, $constraint, $parameters, $status, $message );
+		$dataType = $this->propertyDatatypeLookup->getDataTypeIdForProperty( $snak->getPropertyId() );
+		switch ( $dataType ) {
+			case 'geo-shape':
+			case 'tabular-data':
+				if ( strpos( $commonsLink, $namespace . ':' ) !== 0 ) {
+					return new CheckResult( $context, $constraint, $parameters, CheckResult::STATUS_VIOLATION,
+						new ViolationMessage( 'wbqc-violation-message-commons-link-not-well-formed' ) );
+				}
+				$pageName = $commonsLink;
+				break;
+			default:
+				$pageName = $namespace ? $namespace . ':' . $commonsLink : $commonsLink;
+				break;
+		}
+
+		$prefix = $this->getCommonsNamespace( $namespace )[1];
+		$normalizedTitle = $this->pageNameNormalizer->normalizePageName(
+			$pageName,
+			'https://commons.wikimedia.org/w/api.php'
+		);
+		if ( $normalizedTitle === false ) {
+			if ( $this->valueIncludesNamespace( $commonsLink, $namespace ) ) {
+				return new CheckResult( $context, $constraint, $parameters, CheckResult::STATUS_VIOLATION,
+					new ViolationMessage( 'wbqc-violation-message-commons-link-not-well-formed' ) );
+			}
+			return new CheckResult( $context, $constraint, $parameters, CheckResult::STATUS_VIOLATION,
+				new ViolationMessage( 'wbqc-violation-message-commons-link-no-existent' ) );
+		}
+
+		return new CheckResult( $context, $constraint, $parameters, CheckResult::STATUS_COMPLIANCE, null );
 	}
 
-	public function checkConstraintParameters( Constraint $constraint ) {
+	public function checkConstraintParameters( Constraint $constraint ): array {
 		$constraintParameters = $constraint->getConstraintParameters();
 		$constraintTypeItemId = $constraint->getConstraintTypeItemId();
 		$exceptions = [];
@@ -181,12 +187,7 @@ class CommonsLinkChecker implements ConstraintChecker {
 		return $exceptions;
 	}
 
-	/**
-	 * @param string $commonsLink
-	 *
-	 * @return bool
-	 */
-	private function commonsLinkIsWellFormed( $commonsLink ) {
+	private function commonsLinkIsWellFormed( string $commonsLink ): bool {
 		$toReplace = [ "_", "%20" ];
 		$compareString = trim( str_replace( $toReplace, '', $commonsLink ) );
 
@@ -196,13 +197,8 @@ class CommonsLinkChecker implements ConstraintChecker {
 	/**
 	 * Checks whether the value of the statement already includes the namespace.
 	 * This special case should be reported as “malformed title” instead of “title does not exist”.
-	 *
-	 * @param string $value
-	 * @param string $namespace
-	 *
-	 * @return bool
 	 */
-	private function valueIncludesNamespace( $value, $namespace ) {
+	private function valueIncludesNamespace( string $value, string $namespace ): bool {
 		return $namespace !== '' &&
 			strncasecmp( $value, $namespace . ':', strlen( $namespace ) + 1 ) === 0;
 	}

@@ -2,10 +2,11 @@
 	"@metadata": {
 		"authors": [
 			"Bfpage",
-			"Tisave"
+			"Tisave",
+			"Amire80"
 		]
 	},
 	"wbqc-constraintreport-form-submit-label": "Tcheke",
-	"wbqc-constraintreport-result-headline": "Rezilta $1",
+	"wbqc-constraintreport-result-headline": "Rezilta pou",
 	"wbqc-constraintreport-no-parameter": "okenn"
 }
