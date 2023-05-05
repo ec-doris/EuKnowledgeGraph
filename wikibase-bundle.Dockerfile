@@ -1,4 +1,4 @@
-FROM wikibase/wikibase-bundle:1.38.5-wmde.10
+FROM wikibase/wikibase-bundle:1.39.1-wmde.11
 COPY LocalSettings.php /var/www/html/LocalSettings.d/LocalSettings.override.php
 COPY extensions/JsonConfig /var/www/html/extensions/JsonConfig/
 COPY extensions/Kartographer /var/www/html/extensions/Kartographer/
