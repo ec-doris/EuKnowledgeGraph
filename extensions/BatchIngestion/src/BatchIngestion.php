@@ -407,18 +407,9 @@ class BatchIngestion {
     }
     /**
      * @throws Exception
-     */
-    public function checkAllowed() {
-        $providedKey = $this->body["key"];
-        if ($providedKey !== $GLOBALS['wgBatchIngestionAPIKey'])
-            throw new Exception("Invalid API key");
-    }
-    /**
-     * @throws Exception
      * @return array
      */
     public function run() {
-        $this->checkAllowed();
         if (!$this->db)
             throw new Exception('No database connection');
         $items = $this->getItems();
