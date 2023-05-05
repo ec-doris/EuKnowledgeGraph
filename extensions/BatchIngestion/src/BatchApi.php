@@ -36,7 +36,24 @@ class BatchApi extends Handler {
      * @return Response
      */
     public function execute() {
-        $user = User::newSystemUser( 'Batch Ingestion User', [ 'steal' => true ] );
+        $authority = $this->getAuthority();
+        $user = $this->userFactory->newFromAuthority( $authority );
+        $isConnected = $user->isRegistered();
+        if (!$isConnected) {
+            return $this
+                ->getResponseFactory()
+                ->createHttpError(400, [
+                    'error' => 'You must be connected to use this API',
+                ]);
+        }
+        $isAdmin = $user->isAllowed( 'delete' );
+        if (!$isAdmin) {
+            return $this
+                ->getResponseFactory()
+                ->createHttpError(400, [
+                    'error' => 'You have no permission to use this API',
+                ]);
+        }
         $body = $this->getValidatedBody();
         $ingester = new BatchIngestion($user, $body);
         try {
