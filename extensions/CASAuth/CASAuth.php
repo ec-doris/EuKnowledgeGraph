@@ -77,7 +77,18 @@ $wgHooks["GetPreferences"][] = "casPrefs";
 		'id'    => 'n-eulogin',
 	];
 };*/
-$wgHooks['PersonalUrls'][] = function( array &$personal_urls, Title $title ) {
+$wgHooks['SkinTemplateNavigation::Universal'][] = function ( $template, &$links ) {
+    $user = RequestContext::getMain()->getUser();
+    if ( $user->isRegistered() ) {
+        return true;
+    }
+    $links['user-menu']['eulogin_login'] = [
+        'class' => '',
+        'href' => 'w/index.php?title=Special:UserLogin&returnto=Main+Page&eulogin=true',
+        'text' => 'EU Login'
+    ];
+};
+/*$wgHooks['PersonalUrls'][] = function( array &$personal_urls, Title $title ) {
         $user = RequestContext::getMain()->getUser();
         if ( $user->isRegistered() ) {
             return true;
@@ -87,7 +98,7 @@ $wgHooks['PersonalUrls'][] = function( array &$personal_urls, Title $title ) {
                 'active' => false,
                 'href' => 'w/index.php?title=Special:UserLogin&returnto=Main+Page&eulogin=true'
         );
-};
+};*/
 
 global $wgExtensionFunctions;
 $wgExtensionFunctions[] = 'casLogoutCheck';
