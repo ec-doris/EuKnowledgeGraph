@@ -18,13 +18,12 @@ docker-compose -f docker-compose.yml -f docker-compose.extra.yml up
 
 Build image (on Apple Silicon)(dev)
 ```
-docker buildx build --platform linux/amd64 . -t 294118183257.dkr.ecr.eu-west-1.amazonaws.com/linkedopendata-wikibase-bundle:1.35.5-wmde.3 -f wikibase-bundle.Dockerfile
-550062732140.dkr.ecr.eu-central-1.amazonaws.com/linkedopendata-wikibase-bundle:latest
+docker buildx build --platform linux/amd64 . -t 294118183257.dkr.ecr.eu-west-1.amazonaws.com/linkedopendata-wikibase-bundle:1.39.1-wmde.11 -f wikibase-bundle.Dockerfile
 ```
 
 Build image (on Apple Silicon)(prod)
 ```
-docker buildx build --platform linux/amd64 . -t 550062732140.dkr.ecr.eu-central-1.amazonaws.com/linkedopendata-wikibase-bundle:1.35.5-wmde.3 -f wikibase-bundle.Dockerfile
+docker buildx build --platform linux/amd64 . -t 550062732140.dkr.ecr.eu-central-1.amazonaws.com/linkedopendata-wikibase-bundle:1.39.1-wmde.11 -f wikibase-bundle.Dockerfile
 
 ```
 
@@ -40,12 +39,12 @@ aws ecr get-login-password --region eu-central-1 | docker login --username AWS -
 
 Push to repository(dev)
 ```
-docker push 294118183257.dkr.ecr.eu-west-1.amazonaws.com/linkedopendata-wikibase-bundle:1.35.5-wmde.3
+docker push 294118183257.dkr.ecr.eu-west-1.amazonaws.com/linkedopendata-wikibase-bundle:1.39.1-wmde.11
 ```
 
 Push to repository(prod)
 ```
-docker push 550062732140.dkr.ecr.eu-central-1.amazonaws.com/linkedopendata-wikibase-bundle:1.35.5-wmde.3
+docker push 550062732140.dkr.ecr.eu-central-1.amazonaws.com/linkedopendata-wikibase-bundle:1.39.1-wmde.11
 ```
 
 If you change the image tag you need to update the manifest on the gitops repository, 
