@@ -1,0 +1,290 @@
+<?php
+/**
+ * Copyright (C) 2021 Kunal Mehta <legoktm@debian.org>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * http://www.gnu.org/copyleft/gpl.html
+ */
+
+namespace MediaWiki\SyntaxHighlight;
+
+use MediaWiki\MediaWikiServices;
+use Shellbox\Command\BoxedCommand;
+
+/**
+ * Wrapper around the `pygmentize` command
+ */
+class Pygmentize {
+
+	/**
+	 * If no pygmentize is configured, use bundled
+	 *
+	 * @return bool
+	 */
+	public static function useBundled(): bool {
+		global $wgPygmentizePath;
+		return $wgPygmentizePath === false;
+	}
+
+	/**
+	 * Get a real path to pygmentize
+	 *
+	 * @return string
+	 */
+	private static function getPath(): string {
+		global $wgPygmentizePath;
+
+		// If $wgPygmentizePath is unset, use the bundled copy.
+		return $wgPygmentizePath ?: __DIR__ . '/../pygments/pygmentize';
+	}
+
+	/**
+	 * Get the version of pygments (cached)
+	 *
+	 * @return string
+	 */
+	public static function getVersion(): string {
+		static $version;
+		if ( $version !== null ) {
+			return $version;
+		}
+		if ( self::useBundled() ) {
+			$version = self::getBundledVersion();
+			return $version;
+		}
+
+		// This is called a lot, during both page views, edits, and load.php startup request.
+		// It also gets called multiple times during the same request. As such, prefer
+		// low latency via php-apcu.
+		//
+		// This value also controls cache invalidation and propagation through embedding
+		// in other keys from this class, and thus has a low expiry. Avoid latency from
+		// frequent cache misses by by sharing the values with other servers via Memcached
+		// as well.
+
+		$srvCache = MediaWikiServices::getInstance()->getLocalServerObjectCache();
+		return $srvCache->getWithSetCallback(
+			$srvCache->makeGlobalKey( 'pygmentize-version' ),
+			// Spread between 55 min and 1 hour
+			mt_rand( 55 * $srvCache::TTL_MINUTE, 60 * $srvCache::TTL_MINUTE ),
+			static function () {
+				$wanCache = MediaWikiServices::getInstance()->getMainWANObjectCache();
+				return $wanCache->getWithSetCallback(
+					$wanCache->makeGlobalKey( 'pygmentize-version' ),
+					// Must be under 55 min to avoid renewing stale data in upper layer
+					30 * $wanCache::TTL_MINUTE,
+					[ __CLASS__, 'fetchVersion' ]
+				);
+			}
+		);
+	}
+
+	/**
+	 * Get the version of bundled pygments
+	 *
+	 * @return string
+	 */
+	private static function getBundledVersion(): string {
+		return trim( file_get_contents( __DIR__ . '/../pygments/VERSION' ) );
+	}
+
+	/**
+	 * Shell out to get installed pygments version
+	 *
+	 * @internal For use by WANObjectCache/BagOStuff only
+	 * @return string
+	 */
+	public static function fetchVersion(): string {
+		$result = self::boxedCommand()
+			->params( self::getPath(), '-V' )
+			->includeStderr()
+			->execute();
+		self::recordShellout( 'version' );
+
+		$output = $result->getStdout();
+		if ( $result->getExitCode() != 0 ||
+			!preg_match( '/^Pygments version (\S+),/', $output, $matches )
+		) {
+			throw new PygmentsException( $output );
+		}
+
+		return $matches[1];
+	}
+
+	/**
+	 * Get the pygments generated CSS (cached)
+	 *
+	 * Note: if using bundled, the CSS is already available
+	 * in modules/pygments.generated.css.
+	 *
+	 * @return string
+	 */
+	public static function getGeneratedCSS(): string {
+		// This is rarely called as the result gets HTTP-cached via long-expiry load.php.
+		// When it gets called once, after a deployment, during that brief spike of
+		// dedicated requests from each wiki. Leverage Memcached to share this.
+		// Its likely not needed again on the same server for a while after that.
+		$cache = MediaWikiServices::getInstance()->getMainWANObjectCache();
+		return $cache->getWithSetCallback(
+			$cache->makeGlobalKey( 'pygmentize-css', self::getVersion() ),
+			$cache::TTL_WEEK,
+			[ __CLASS__, 'fetchGeneratedCSS' ]
+		);
+	}
+
+	/**
+	 * Shell out to get generated CSS from pygments
+	 *
+	 * @internal Only public for updateCSS.php
+	 * @return string
+	 */
+	public static function fetchGeneratedCSS(): string {
+		$result = self::boxedCommand()
+			->params(
+				self::getPath(), '-f', 'html',
+				'-S', 'default', '-a', '.mw-highlight' )
+			->includeStderr()
+			->execute();
+		self::recordShellout( 'generated_css' );
+		$output = $result->getStdout();
+		if ( $result->getExitCode() != 0 ) {
+			throw new PygmentsException( $output );
+		}
+		return $output;
+	}
+
+	/**
+	 * Get the list of supported lexers by pygments (cached)
+	 *
+	 * @return array
+	 */
+	public static function getLexers(): array {
+		if ( self::useBundled() ) {
+			return require __DIR__ . '/../SyntaxHighlight.lexers.php';
+		}
+
+		// This is called during page views and edits, and may be called
+		// repeatedly. Trade low latency for higher shell rate by caching
+		// on each server separately. This is made up for with a high TTL,
+		// which is fine because we vary by version, thus ensuring quick
+		// propagation separate from the TTL.
+		$cache = MediaWikiServices::getInstance()->getLocalServerObjectCache();
+		return $cache->getWithSetCallback(
+			$cache->makeGlobalKey( 'pygmentize-lexers', self::getVersion() ),
+			$cache::TTL_WEEK,
+			[ __CLASS__, 'fetchLexers' ]
+		);
+	}
+
+	/**
+	 * Shell out to get supported lexers by pygments
+	 *
+	 * @internal Only public for updateLexerList.php
+	 * @return array
+	 */
+	public static function fetchLexers(): array {
+		$result = self::boxedCommand()
+			->params( self::getPath(), '-L', 'lexer' )
+			->includeStderr()
+			->execute();
+		self::recordShellout( 'fetch_lexers' );
+		$output = $result->getStdout();
+		if ( $result->getExitCode() != 0 ) {
+			throw new PygmentsException( $output );
+		}
+
+		// Post-process the output, ideally pygments would output this in a
+		// machine-readable format (https://github.com/pygments/pygments/issues/1437)
+		$output = $result->getStdout();
+		$lexers = [];
+		foreach ( explode( "\n", $output ) as $line ) {
+			if ( substr( $line, 0, 1 ) === '*' ) {
+				$newLexers = explode( ', ', trim( $line, "* :\r\n" ) );
+
+				// Skip internal, unnamed lexers
+				if ( $newLexers[0] !== '' ) {
+					$lexers = array_merge( $lexers, $newLexers );
+				}
+			}
+		}
+		$lexers = array_unique( $lexers );
+		sort( $lexers );
+		$data = [];
+		foreach ( $lexers as $lexer ) {
+			$data[$lexer] = true;
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Actually highlight some text
+	 *
+	 * @param string $lexer Lexer name
+	 * @param string $code Code to highlight
+	 * @param array $options Options to pass to pygments
+	 * @return string
+	 */
+	public static function highlight( $lexer, $code, array $options ): string {
+		$optionPairs = [];
+		foreach ( $options as $k => $v ) {
+			$optionPairs[] = "{$k}={$v}";
+		}
+		$result = self::boxedCommand()
+			->params(
+				self::getPath(),
+				'-l', $lexer,
+				'-f', 'html',
+				'-O', implode( ',', $optionPairs ),
+				'file'
+			)
+			->inputFileFromString( 'file', $code )
+			->execute();
+		self::recordShellout( 'highlight' );
+
+		$output = $result->getStdout();
+		if ( $result->getExitCode() != 0 ) {
+			throw new PygmentsException( $output );
+		}
+		return $output;
+	}
+
+	private static function boxedCommand(): BoxedCommand {
+		$command = MediaWikiServices::getInstance()->getShellCommandFactory()
+			->createBoxed( 'syntaxhighlight' )
+			->disableNetwork()
+			->firejailDefaultSeccomp()
+			->routeName( 'syntaxhighlight-pygments' );
+
+		if ( wfIsWindows() ) {
+			// Python requires the SystemRoot environment variable to initialize (T300223)
+			$command->environment( [
+				'SystemRoot' => getenv( 'SystemRoot' ),
+			] );
+		}
+
+		return $command;
+	}
+
+	/**
+	 * Track how often we do each type of shellout in statsd
+	 *
+	 * @param string $type Type of shellout
+	 */
+	private static function recordShellout( $type ) {
+		$statsd = MediaWikiServices::getInstance()->getStatsdDataFactory();
+		$statsd->increment( "syntaxhighlight_shell.$type" );
+	}
+}

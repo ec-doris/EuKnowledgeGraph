@@ -16,33 +16,30 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-class ResourceLoaderSyntaxHighlightVisualEditorModule extends ResourceLoaderFileModule {
+namespace MediaWiki\SyntaxHighlight;
+
+use MediaWiki\ResourceLoader as RL;
+
+class ResourceLoaderSyntaxHighlightVisualEditorModule extends RL\FileModule {
 
 	protected $targets = [ 'desktop', 'mobile' ];
 
 	/**
-	 * @param ResourceLoaderContext $context
+	 * @param RL\Context $context
 	 * @return string JavaScript code
 	 */
-	public function getScript( ResourceLoaderContext $context ) {
+	public function getScript( RL\Context $context ) {
 		$scripts = parent::getScript( $context );
-
-		return $scripts . Xml::encodeJsCall(
-			've.dm.MWSyntaxHighlightNode.static.addPygmentsLanguages', [
-				$this->getPygmentsLanguages()
-			],
-			ResourceLoader::inDebugMode()
-		) . Xml::encodeJsCall(
-			've.dm.MWSyntaxHighlightNode.static.addGeshiToPygmentsMap', [
-				SyntaxHighlightGeSHiCompat::getGeSHiToPygmentsMap()
-			],
-			ResourceLoader::inDebugMode()
-		) . Xml::encodeJsCall(
-			've.dm.MWSyntaxHighlightNode.static.addPygmentsToAceMap', [
-				SyntaxHighlightAce::getPygmentsToAceMap()
-			],
-			ResourceLoader::inDebugMode()
-		);
+		return $scripts
+			. 've.dm.MWSyntaxHighlightNode.static.addPygmentsLanguages('
+			. $context->encodeJson( $this->getPygmentsLanguages() )
+			. ');'
+			. 've.dm.MWSyntaxHighlightNode.static.addGeshiToPygmentsMap('
+			. $context->encodeJson( SyntaxHighlightGeSHiCompat::getGeSHiToPygmentsMap() )
+			. ');'
+			. 've.dm.MWSyntaxHighlightNode.static.addPygmentsToAceMap('
+			. $context->encodeJson( SyntaxHighlightAce::getPygmentsToAceMap() )
+			. ');';
 	}
 
 	/**

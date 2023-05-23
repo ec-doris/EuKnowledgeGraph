@@ -14,7 +14,7 @@
 	"license-name": "GPL-2.0-or-later",
 	"type": "parserhook",
 	"requires": {
-		"MediaWiki": ">= 1.34",
+		"MediaWiki": ">= 1.39.0",
 		"platform": {
 			"ability-shell": true
 		}
@@ -24,11 +24,12 @@
 			"i18n"
 		]
 	},
+	"AutoloadNamespaces": {
+		"MediaWiki\\SyntaxHighlight\\": "includes/"
+	},
 	"AutoloadClasses": {
 		"SyntaxHighlight": "includes/SyntaxHighlight.php",
-		"SyntaxHighlightAce": "includes/SyntaxHighlightAce.php",
-		"SyntaxHighlightGeSHiCompat": "includes/SyntaxHighlightGeSHiCompat.php",
-		"ResourceLoaderSyntaxHighlightVisualEditorModule": "includes/ResourceLoaderSyntaxHighlightVisualEditorModule.php"
+		"MediaWiki\\SyntaxHighlight\\SyntaxHighlight": "includes/SyntaxHighlight.php"
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "modules",
@@ -36,13 +37,62 @@
 	},
 	"ResourceModules": {
 		"ext.pygments": {
+			"class": "MediaWiki\\SyntaxHighlight\\ResourceLoaderPygmentsModule",
 			"targets": [
 				"desktop",
 				"mobile"
 			],
 			"styles": [
-				"pygments.generated.css",
-				"pygments.wrapper.css"
+				"pygments.wrapper.less"
+			]
+		},
+		"ext.pygments.linenumbers": {
+			"targets": [
+				"desktop",
+				"mobile"
+			],
+			"scripts": [
+				"pygments.linenumbers.js"
+			],
+			"dependencies": [
+				"mediawiki.util"
+			]
+		},
+		"ext.geshi.visualEditor": {
+			"class": "MediaWiki\\SyntaxHighlight\\ResourceLoaderSyntaxHighlightVisualEditorModule",
+			"scripts": [
+				"ve-syntaxhighlight/ve.dm.MWSyntaxHighlightNode.js",
+				"ve-syntaxhighlight/ve.dm.MWBlockSyntaxHighlightNode.js",
+				"ve-syntaxhighlight/ve.dm.MWInlineSyntaxHighlightNode.js",
+				"ve-syntaxhighlight/ve.ce.MWSyntaxHighlightNode.js",
+				"ve-syntaxhighlight/ve.ce.MWBlockSyntaxHighlightNode.js",
+				"ve-syntaxhighlight/ve.ce.MWInlineSyntaxHighlightNode.js",
+				"ve-syntaxhighlight/ve.ui.MWSyntaxHighlightWindow.js",
+				"ve-syntaxhighlight/ve.ui.MWSyntaxHighlightDialog.js",
+				"ve-syntaxhighlight/ve.ui.MWSyntaxHighlightDialogTool.js",
+				"ve-syntaxhighlight/ve.ui.MWSyntaxHighlightInspector.js",
+				"ve-syntaxhighlight/ve.ui.MWSyntaxHighlightInspectorTool.js"
+			],
+			"styles": [
+				"ve-syntaxhighlight/ve.ce.MWSyntaxHighlightNode.css",
+				"ve-syntaxhighlight/ve.ui.MWSyntaxHighlightDialog.css",
+				"ve-syntaxhighlight/ve.ui.MWSyntaxHighlightInspector.css"
+			],
+			"dependencies": [
+				"ext.visualEditor.mwcore",
+				"oojs-ui.styles.icons-editing-advanced"
+			],
+			"messages": [
+				"syntaxhighlight-visualeditor-mwsyntaxhighlightinspector-code",
+				"syntaxhighlight-visualeditor-mwsyntaxhighlightinspector-language",
+				"syntaxhighlight-visualeditor-mwsyntaxhighlightinspector-none",
+				"syntaxhighlight-visualeditor-mwsyntaxhighlightinspector-showlines",
+				"syntaxhighlight-visualeditor-mwsyntaxhighlightinspector-startingline",
+				"syntaxhighlight-visualeditor-mwsyntaxhighlightinspector-title"
+			],
+			"targets": [
+				"desktop",
+				"mobile"
 			]
 		}
 	},
@@ -56,16 +106,14 @@
 		"ApiFormatHighlight": [
 			"SyntaxHighlight::onApiFormatHighlight"
 		],
-		"ResourceLoaderRegisterModules": [
-			"SyntaxHighlight::onResourceLoaderRegisterModules"
-		]
+		"SoftwareInfo": "SyntaxHighlight::onSoftwareInfo"
 	},
+	"ParsoidModules": [
+		"MediaWiki\\SyntaxHighlight\\ParsoidExt"
+	],
 	"attributes": {
 		"SyntaxHighlight": {
-			"Models" : {
-				"css": "css",
-				"javascript": "javascript"
-			}
+			"Models": {}
 		},
 		"VisualEditor": {
 			"PluginModules": [
