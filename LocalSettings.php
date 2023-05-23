@@ -128,10 +128,10 @@ $wgExternalLinkTarget = '_blank';
 # Activate batch ingestion plugin
 wfLoadExtension( 'BatchIngestion' );
 # plugins needed to render some templates related to SPARQL examples
-#wfLoadExtension( 'TemplateData' );
-#wfLoadExtension( 'TemplateStyles' );
-#wfLoadExtension( 'SyntaxHighlight_GeSHi' );
-#wfLoadExtension( 'ParserFunctions' );
+wfLoadExtension( 'TemplateData' );
+wfLoadExtension( 'TemplateStyles' );
+wfLoadExtension( 'SyntaxHighlight_GeSHi' );
+wfLoadExtension( 'ParserFunctions' );
 
 # Enable wikimedia commons images
 $wgUseInstantCommons = true;

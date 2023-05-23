@@ -1,14 +1,14 @@
 {
 	"@metadata": {
 		"authors": [
+			"Balint36",
 			"Bencemac",
 			"Bináris",
 			"Csega",
 			"Máté",
 			"Tacsipacsi",
 			"Tgr",
-			"Urbalazs",
-			"Balint36"
+			"Urbalazs"
 		]
 	},
 	"templatedata-desc": "A sablonok paraméterezését leíró adatokat tárol (JSON formátumban)",
@@ -28,6 +28,7 @@
 	"templatedata-doc-param-status-optional": "opcionális",
 	"templatedata-doc-param-status-required": "kötelező",
 	"templatedata-doc-param-status-suggested": "ajánlott",
+	"templatedata-doc-param-suggestedvalues": "Javasolt értékek",
 	"templatedata-doc-param-type": "Típus",
 	"templatedata-doc-param-type-boolean": "Logikai",
 	"templatedata-doc-param-type-content": "Tartalom",
@@ -39,7 +40,7 @@
 	"templatedata-doc-param-type-unknown": "Ismeretlen",
 	"templatedata-doc-param-type-url": "URL",
 	"templatedata-doc-param-type-wiki-file-name": "Fájl",
-	"templatedata-doc-param-type-wiki-page-name": "Lap",
+	"templatedata-doc-param-type-wiki-page-name": "Lapcím",
 	"templatedata-doc-param-type-wiki-template-name": "Sablon",
 	"templatedata-doc-param-type-wiki-user-name": "Felhasználó",
 	"templatedata-doc-params": "Sablonparaméterek",
@@ -51,7 +52,7 @@
 	"templatedata-invalid-duplicate-value": "A(z) „$1” tulajdonság („$3”) a(z) „$2” tulajdonság duplikátuma.",
 	"templatedata-invalid-empty-array": "A(z) „$1” tulajdonság nem lehet üres",
 	"templatedata-invalid-format": "A(z) „$1” tulajdonság várt értéke „inline”, „block” vagy egy érvényes formátumszöveg.",
-	"templatedata-invalid-length": "Nem lehet elmenteni, túl nagy ({{formatnum:$1}} {{PLURAL:$1|bájt}}, {{PLURAL:$2|a határ}} {{formatnum:$2}} bájt)",
+	"templatedata-invalid-length": "Nem lehet elmenteni, túl nagy ($1 {{PLURAL:$1|bájt}}, {{PLURAL:$2|a határ}} $2 bájt)",
 	"templatedata-invalid-missing": "A(z) „$1” kötelező paraméter nincs megadva.",
 	"templatedata-invalid-param": "Érvénytelen „$1” paraméter a(z) „$2” tulajdonsághoz.",
 	"templatedata-invalid-parse": "Szintaktikai hiba a JSON-ban.",
@@ -84,7 +85,7 @@
 	"templatedata-modal-placeholder-paramkey": "Paraméter neve",
 	"templatedata-modal-search-input-placeholder": "Keresés nyelv neve vagy kódja alapján",
 	"templatedata-modal-table-param-actions": "Műveletek",
-	"templatedata-modal-table-param-aliases": "Alternatív paraméterek (vesszővel elválasztva)",
+	"templatedata-modal-table-param-aliases": "Alternatív paraméternevek",
 	"templatedata-modal-table-param-autovalue": "Automatikus érték",
 	"templatedata-modal-table-param-default": "Alapértelmezett ($1)",
 	"templatedata-modal-table-param-deprecated": "Elavult",
@@ -97,6 +98,8 @@
 	"templatedata-modal-table-param-name": "Név",
 	"templatedata-modal-table-param-required": "Kötelező",
 	"templatedata-modal-table-param-suggested": "Ajánlott",
+	"templatedata-modal-table-param-suggestedvalues": "Javasolt értékek",
+	"templatedata-modal-table-param-suggestedvalues-placeholder": "Érték hozzáadása…",
 	"templatedata-modal-table-param-type": "Típus",
 	"templatedata-modal-table-param-uneditablefield": "Nem szerkeszthető",
 	"templatedata-modal-title": "Sablondokumentáció-szerkesztő",

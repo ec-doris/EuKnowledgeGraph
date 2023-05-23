@@ -5,7 +5,8 @@
 			"Kkairri",
 			"Marine-Blue",
 			"Omotecho",
-			"Otokoume"
+			"Otokoume",
+			"Shirayuki"
 		]
 	},
 	"templatestyles-desc": "テンプレートごとにスタイルシートを適用します",
@@ -24,9 +25,9 @@
 	"templatestyles-page-error-category-desc": "ページで<code><nowiki><templatestyles/></nowiki></code>タグを処理中にエラーが発生しました。",
 	"templatestyles-error-at-rule-block-not-allowed": "<code>@$3</code>の$1行目$2文字目のブロックは許可されません。",
 	"templatestyles-error-at-rule-block-required": "<code>@$3</code>の$1行目$2文字目でブロックが必要です。",
-	"templatestyles-error-bad-character-in-url": "$1行目$2文字目のURLに不正な文字が含まれています。",
-	"templatestyles-error-bad-escape": "$1行目$2文字目のエスケープに不正な文字が含まれています。",
-	"templatestyles-error-bad-value-for-property": "$1行目$2文字目のプロパティ<code>$3</code>に、不正またはサポートされていない値が指定されています。",
+	"templatestyles-error-bad-character-in-url": "$1行目$2文字目のURLに無効な文字が含まれています。",
+	"templatestyles-error-bad-escape": "$1行目$2文字目のエスケープに無効な文字が含まれています。",
+	"templatestyles-error-bad-value-for-property": "$1行目$2文字目のプロパティ<code>$3</code>に、無効またはサポートされていない値が指定されています。",
 	"templatestyles-error-expected-at-rule": "$1行目$2文字目に<code>@$3</code>が必要です。",
 	"templatestyles-error-expected-colon": "$1行目$2文字目にコロンが必要です。",
 	"templatestyles-error-expected-declaration": "$1行目$2文字目に宣言が必要です。",

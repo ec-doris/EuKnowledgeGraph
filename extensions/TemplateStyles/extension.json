@@ -13,22 +13,18 @@
 	"manifest_version": 2,
 	"load_composer_autoloader": true,
 	"requires": {
-		"MediaWiki": ">= 1.35.0"
+		"MediaWiki": ">= 1.39.0"
 	},
 	"MessagesDirs": {
 		"TemplateStyles": [
 			"i18n"
 		]
 	},
-	"AutoloadClasses": {
-		"TemplateStylesContentHandler": "includes/TemplateStylesContentHandler.php",
-		"TemplateStylesContent": "includes/TemplateStylesContent.php",
-		"TemplateStylesFontFaceAtRuleSanitizer": "includes/TemplateStylesFontFaceAtRuleSanitizer.php",
-		"TemplateStylesHooks": "includes/TemplateStylesHooks.php",
-		"TemplateStylesMatcherFactory": "includes/TemplateStylesMatcherFactory.php"
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\TemplateStyles\\": "includes/"
 	},
 	"ContentHandlers": {
-		"sanitized-css": "TemplateStylesContentHandler"
+		"sanitized-css": "MediaWiki\\Extension\\TemplateStyles\\TemplateStylesContentHandler"
 	},
 	"TrackingCategories": [
 		"templatestyles-stylesheet-error-category",
@@ -42,21 +38,26 @@
 		},
 		"TemplateStyles": {
 			"Namespaces": []
+		},
+		"TemplateSandbox": {
+			"EditContentModels": [
+				"sanitized-css"
+			]
 		}
 	},
-	"callback": "TemplateStylesHooks::onRegistration",
+	"callback": "MediaWiki\\Extension\\TemplateStyles\\Hooks::onRegistration",
 	"Hooks": {
 		"ParserFirstCallInit": [
-			"TemplateStylesHooks::onParserFirstCallInit"
+			"MediaWiki\\Extension\\TemplateStyles\\Hooks::onParserFirstCallInit"
 		],
 		"ParserClearState": [
-			"TemplateStylesHooks::onParserClearState"
+			"MediaWiki\\Extension\\TemplateStyles\\Hooks::onParserClearState"
 		],
 		"ContentHandlerDefaultModelFor": [
-			"TemplateStylesHooks::onContentHandlerDefaultModelFor"
+			"MediaWiki\\Extension\\TemplateStyles\\Hooks::onContentHandlerDefaultModelFor"
 		],
 		"CodeEditorGetPageLanguage": [
-			"TemplateStylesHooks::onCodeEditorGetPageLanguage"
+			"MediaWiki\\Extension\\TemplateStyles\\Hooks::onCodeEditorGetPageLanguage"
 		]
 	},
 	"config": {
@@ -90,12 +91,12 @@
 			},
 			"merge_strategy": "array_plus"
 		},
-		"TemplateStylesPropertyBlacklist": {
-			"description": "Blacklist style properties that would otherwise be allowed. See also the TemplateStylesPropertySanitizer hook, which allows for finer-grained control.",
+		"TemplateStylesDisallowedProperties": {
+			"description": "Disallowed style properties that would otherwise be allowed. See also the TemplateStylesPropertySanitizer hook, which allows for finer-grained control.",
 			"value": []
 		},
-		"TemplateStylesAtRuleBlacklist": {
-			"description": "Blacklist at-rules that would otherwise be allowed. Include the '@' in the name. See also the TemplateStylesStylesheetSanitizer hook, which allows for finer-grained control.",
+		"TemplateStylesDisallowedAtRules": {
+			"description": "Disallowed at-rules that would otherwise be allowed. Include the '@' in the name. See also the TemplateStylesStylesheetSanitizer hook, which allows for finer-grained control.",
 			"value": []
 		},
 		"TemplateStylesUseCodeEditor": {
@@ -109,6 +110,10 @@
 		"TemplateStylesMaxStylesheetSize": {
 			"description": "The maximum size of a stylesheet, in bytes. Set null if you don't want to impose a limit.",
 			"value": 102400
+		},
+		"TemplateStylesDefaultNamespace": {
+			"description": "The default namespace for the src attribute of the <templatestyles> tag. The value 10 corresponds to NS_TEMPLATE.",
+			"value": 10
 		}
 	},
 	"ConfigRegistry": {

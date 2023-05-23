@@ -6,7 +6,6 @@
 			"פוילישער"
 		]
 	},
-	"templatestyles": "סגנונות תבנית",
 	"templatestyles-desc": "מימוש גיליונות סגנון עבור כל תבנית ותבנית",
 	"templatestyles-missing-src": "המאפיין <code dir=\"ltr\">src</code> של סגנונות תבנית אינו יכול להיות ריק.",
 	"templatestyles-invalid-src": "כותרת בלתי־תקינה במאפיין <code dir=\"ltr\">src</code> של סגנונות תבנית.",

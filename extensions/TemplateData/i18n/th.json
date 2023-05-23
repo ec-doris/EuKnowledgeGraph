@@ -60,6 +60,7 @@
 	"templatedata-modal-button-changelang": "เปลี่ยนภาษา",
 	"templatedata-modal-button-delparam": "ลบสารสนเทศตัวแปรเสริม",
 	"templatedata-modal-button-done": "เสร็จสิ้น",
+	"templatedata-modal-button-map": "แก้ไขผัง",
 	"templatedata-modal-button-importParams": "นำเข้าพารามิเตอร์",
 	"templatedata-modal-button-restoreparam": "เรียกคืนพารามิเตอร์",
 	"templatedata-modal-button-saveparam": "บันทึก",

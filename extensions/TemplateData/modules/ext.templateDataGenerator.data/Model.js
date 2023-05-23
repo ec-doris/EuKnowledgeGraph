@@ -2,29 +2,35 @@
  * TemplateData Model
  *
  * @class
- * @mixins OO.EventEmitter
+ * @mixes OO.EventEmitter
  *
  * @constructor
  */
-mw.TemplateData.Model = function mwTemplateDataModel() {
+function Model() {
 	// Mixin constructors
 	OO.EventEmitter.call( this );
 
 	// Properties
-	this.params = {};
 	this.description = {};
-	this.maps = {};
-	this.paramOrder = [];
+
+	this.maps = undefined;
+	this.mapsChanged = false;
+	this.originalMaps = undefined;
+
 	this.format = null;
-	this.paramOrderChanged = false;
-	this.paramIdentifierCounter = 0;
-	this.originalTemplateDataObject = null;
+
+	this.params = {};
+	this.paramIdentifierCounter = 2;
 	this.sourceCodeParameters = [];
-};
+	this.paramOrder = [];
+	this.paramOrderChanged = false;
+
+	this.originalTemplateDataObject = null;
+}
 
 /* Inheritance */
 
-OO.mixinClass( mw.TemplateData.Model, OO.EventEmitter );
+OO.mixinClass( Model, OO.EventEmitter );
 
 /* Events */
 
@@ -49,7 +55,8 @@ OO.mixinClass( mw.TemplateData.Model, OO.EventEmitter );
  * @event change-property
  * @param {string} paramKey Parameter key
  * @param {string} prop Property name
- * @param {...Mixed} value Property value
+ * @param {Mixed} value
+ * @param {string} language
  */
 
 /**
@@ -67,7 +74,7 @@ OO.mixinClass( mw.TemplateData.Model, OO.EventEmitter );
  *  partial object (or a subset) of the first.
  * @return {boolean} Objects have equal values
  */
-mw.TemplateData.Model.static.compare = function ( obj1, obj2, allowSubset ) {
+Model.static.compare = function ( obj1, obj2, allowSubset ) {
 	if ( allowSubset && obj2 === undefined ) {
 		return true;
 	}
@@ -92,7 +99,7 @@ mw.TemplateData.Model.static.compare = function ( obj1, obj2, allowSubset ) {
  * @param {string} paramType Given type
  * @return {string} Normalized non-obsolete type
  */
-mw.TemplateData.Model.static.translateObsoleteParamTypes = function ( paramType ) {
+Model.static.translateObsoleteParamTypes = function ( paramType ) {
 	switch ( paramType ) {
 		case 'string/wiki-page-name':
 			return 'wiki-page-name';
@@ -114,7 +121,7 @@ mw.TemplateData.Model.static.translateObsoleteParamTypes = function ( paramType 
  * @return {Object|string[]} Legal property names with or without their
  *  definition data
  */
-mw.TemplateData.Model.static.getAllProperties = function ( getFullData ) {
+Model.static.getAllProperties = function ( getFullData ) {
 	var properties = {
 		name: {
 			type: 'string',
@@ -122,8 +129,7 @@ mw.TemplateData.Model.static.getAllProperties = function ( getFullData ) {
 			restrict: /[|=]|}}/
 		},
 		aliases: {
-			type: 'array',
-			delimiter: mw.msg( 'comma-separator' )
+			type: 'array'
 		},
 		label: {
 			type: 'string',
@@ -140,6 +146,7 @@ mw.TemplateData.Model.static.getAllProperties = function ( getFullData ) {
 		type: {
 			type: 'select',
 			children: [
+				'unknown',
 				'boolean',
 				'content',
 				'wiki-file-name',
@@ -150,11 +157,13 @@ mw.TemplateData.Model.static.getAllProperties = function ( getFullData ) {
 				'string',
 				'wiki-template-name',
 				'unbalanced-wikitext',
-				'unknown',
 				'url',
 				'wiki-user-name'
 			],
 			default: 'unknown'
+		},
+		suggestedvalues: {
+			type: 'array'
 		},
 		default: {
 			type: 'string',
@@ -171,8 +180,7 @@ mw.TemplateData.Model.static.getAllProperties = function ( getFullData ) {
 			textValue: 'deprecatedValue'
 		},
 		deprecatedValue: {
-			type: 'string',
-			changesBooleanValue: 'deprecated'
+			type: 'string'
 		},
 		required: {
 			type: 'boolean'
@@ -194,12 +202,11 @@ mw.TemplateData.Model.static.getAllProperties = function ( getFullData ) {
  *
  * @return {string[]} Property names
  */
-mw.TemplateData.Model.static.getPropertiesWithLanguage = function () {
-	var prop,
-		result = [],
+Model.static.getPropertiesWithLanguage = function () {
+	var result = [],
 		propDefinitions = this.getAllProperties( true );
 
-	for ( prop in propDefinitions ) {
+	for ( var prop in propDefinitions ) {
 		if ( propDefinitions[ prop ].allowLanguages ) {
 			result.push( prop );
 		}
@@ -214,10 +221,10 @@ mw.TemplateData.Model.static.getPropertiesWithLanguage = function () {
  * @param {string} [delim] Delimeter
  * @return {string[]} Clean array
  */
-mw.TemplateData.Model.static.splitAndTrimArray = function ( str, delim ) {
-	var arr = [];
+Model.static.splitAndTrimArray = function ( str, delim ) {
 	delim = delim || mw.msg( 'comma-separator' );
 
+	var arr = [];
 	str.split( delim ).forEach( function ( part ) {
 		var trimmed = part.trim();
 		if ( trimmed ) {
@@ -235,7 +242,7 @@ mw.TemplateData.Model.static.splitAndTrimArray = function ( str, delim ) {
  * @param {...Array} arrays Arrays to union
  * @return {Array} Union of the arrays
  */
-mw.TemplateData.Model.static.arrayUnionWithoutEmpty = function () {
+Model.static.arrayUnionWithoutEmpty = function () {
 	var result = OO.simpleArrayUnion.apply( this, arguments );
 
 	// Trim and filter empty strings
@@ -247,31 +254,34 @@ mw.TemplateData.Model.static.arrayUnionWithoutEmpty = function () {
 /**
  * Create a new mwTemplateData.Model from templatedata object.
  *
- * @param {Object} tdObject TemplateData parsed object
+ * @param {Object|null} tdObject TemplateData parsed object, or null if we are creating a new object.
  * @param {string[]} paramsInSource Parameter names found in template source
- * @return {mw.TemplateData.Model} New model
+ * @return {Model} New model
  */
-mw.TemplateData.Model.static.newFromObject = function ( tdObject, paramsInSource ) {
-	var param,
-		model = new mw.TemplateData.Model();
+Model.static.newFromObject = function ( tdObject, paramsInSource ) {
+	var model = new Model();
 
 	model.setSourceCodeParameters( paramsInSource || [] );
 
 	// Store the original templatedata object for comparison later
 	model.setOriginalTemplateDataObject( tdObject );
 
+	tdObject = tdObject || { params: {} };
+
 	// Initialize the model
 	model.params = {};
 
 	// Add params
 	if ( tdObject.params ) {
-		for ( param in tdObject.params ) {
+		for ( var param in tdObject.params ) {
 			model.addParam( param, tdObject.params[ param ] );
 		}
 	}
 
 	// maps
-	model.setMapInfo( JSON.stringify( tdObject.maps, null, 4 ) );
+	if ( tdObject.maps ) {
+		model.setMapInfo( tdObject.maps );
+	}
 
 	model.setTemplateDescription( tdObject.description );
 
@@ -297,18 +307,13 @@ mw.TemplateData.Model.static.newFromObject = function ( tdObject, paramsInSource
  * @return {string[]} Parameters that are not yet included in
  *  the model
  */
-mw.TemplateData.Model.prototype.getMissingParams = function () {
-	var i,
-		result = [],
-		allParamNames = this.getAllParamNames();
+Model.prototype.getMissingParams = function () {
+	var allParamNames = this.getAllParamNames(),
+		sourceCodeParameters = this.sourceCodeParameters;
 
-	// Check source code params
-	for ( i = 0; i < this.sourceCodeParameters.length; i++ ) {
-		if ( allParamNames.indexOf( this.sourceCodeParameters[ i ] ) === -1 ) {
-			result.push( this.sourceCodeParameters[ i ] );
-		}
-	}
-	return result;
+	return sourceCodeParameters.filter( function ( sourceCodeParameter ) {
+		return allParamNames.indexOf( sourceCodeParameter ) === -1;
+	} );
 };
 
 /**
@@ -316,32 +321,31 @@ mw.TemplateData.Model.prototype.getMissingParams = function () {
  *
  * @return {Object} Parameters added. -1 for failure.
  */
-mw.TemplateData.Model.prototype.importSourceCodeParameters = function () {
-	var i, paramKey,
+Model.prototype.importSourceCodeParameters = function () {
+	var model = this,
 		allParamNames = this.getAllParamNames(),
 		existingArray = [],
 		importedArray = [],
 		skippedArray = [];
 
 	// Check existing params
-	for ( i = 0; i < allParamNames.length; i++ ) {
-		paramKey = allParamNames[ i ];
-		if ( this.sourceCodeParameters.indexOf( paramKey ) !== -1 ) {
+	allParamNames.forEach( function ( paramKey ) {
+		if ( model.sourceCodeParameters.indexOf( paramKey ) !== -1 ) {
 			existingArray.push( paramKey );
 		}
-	}
+	} );
 
 	// Add sourceCodeParameters to the model
-	for ( i = 0; i < this.sourceCodeParameters.length; i++ ) {
+	this.sourceCodeParameters.forEach( function ( sourceCodeParameter ) {
 		if (
-			existingArray.indexOf( this.sourceCodeParameters[ i ] ) === -1 &&
-			this.addParam( this.sourceCodeParameters[ i ] )
+			existingArray.indexOf( sourceCodeParameter ) === -1 &&
+			model.addParam( sourceCodeParameter )
 		) {
-			importedArray.push( this.sourceCodeParameters[ i ] );
+			importedArray.push( sourceCodeParameter );
 		} else {
-			skippedArray.push( this.sourceCodeParameters[ i ] );
+			skippedArray.push( sourceCodeParameter );
 		}
-	}
+	} );
 
 	return {
 		imported: importedArray,
@@ -355,20 +359,19 @@ mw.TemplateData.Model.prototype.importSourceCodeParameters = function () {
  *
  * @return {string[]} Language codes in use
  */
-mw.TemplateData.Model.prototype.getExistingLanguageCodes = function () {
-	var param, prop,
-		result = [],
-		languageProps = this.constructor.static.getPropertiesWithLanguage();
+Model.prototype.getExistingLanguageCodes = function () {
+	var result = [];
 
 	// Take languages from the template description
 	if ( $.isPlainObject( this.description ) ) {
 		result = Object.keys( this.description );
 	}
 
+	var languageProps = this.constructor.static.getPropertiesWithLanguage();
 	// Go over the parameters
-	for ( param in this.params ) {
+	for ( var param in this.params ) {
 		// Go over the properties
-		for ( prop in this.params[ param ] ) {
+		for ( var prop in this.params[ param ] ) {
 			if ( languageProps.indexOf( prop ) !== -1 ) {
 				result = this.constructor.static.arrayUnionWithoutEmpty( result, Object.keys( this.params[ param ][ prop ] ) );
 			}
@@ -387,15 +390,11 @@ mw.TemplateData.Model.prototype.getExistingLanguageCodes = function () {
  * @fires add-param
  * @fires change
  */
-mw.TemplateData.Model.prototype.addParam = function ( key, paramData ) {
-	var prop, name, lang, propToSet,
-		existingNames = this.getAllParamNames(),
-		data = $.extend( true, {}, paramData ),
-		language = this.getDefaultLanguage(),
-		propertiesWithLanguage = this.constructor.static.getPropertiesWithLanguage(),
-		allProps = this.constructor.static.getAllProperties( true );
+Model.prototype.addParam = function ( key, paramData ) {
+	var existingNames = this.getAllParamNames(),
+		data = $.extend( true, {}, paramData );
 
-	name = key;
+	var name = key;
 	// Check that the parameter is not already in the model
 	if ( this.params[ key ] || existingNames.indexOf( key ) !== -1 ) {
 		// Change parameter key
@@ -426,8 +425,11 @@ mw.TemplateData.Model.prototype.addParam = function ( key, paramData ) {
 
 	// Go over the rest of the data
 	if ( data ) {
-		for ( prop in data ) {
-			propToSet = prop;
+		var language = this.getDefaultLanguage();
+		var propertiesWithLanguage = this.constructor.static.getPropertiesWithLanguage();
+		var allProps = this.constructor.static.getAllProperties( true );
+		for ( var prop in data ) {
+			var propToSet = prop;
 			if (
 				// This is to make sure that forwards compatibility is achieved
 				// and the code doesn't die on properties that aren't valid
@@ -453,7 +455,7 @@ mw.TemplateData.Model.prototype.addParam = function ( key, paramData ) {
 				$.isPlainObject( data[ prop ] )
 			) {
 				// Add all language properties
-				for ( lang in data[ prop ] ) {
+				for ( var lang in data[ prop ] ) {
 					this.setParamProperty( key, propToSet, data[ prop ], lang );
 				}
 			} else {
@@ -477,11 +479,10 @@ mw.TemplateData.Model.prototype.addParam = function ( key, paramData ) {
  *
  * @return {string[]} Used parameter names
  */
-mw.TemplateData.Model.prototype.getAllParamNames = function () {
-	var key, param,
-		result = [];
-	for ( key in this.params ) {
-		param = this.params[ key ];
+Model.prototype.getAllParamNames = function () {
+	var result = [];
+	for ( var key in this.params ) {
+		var param = this.params[ key ];
 		result.push( param.name );
 		if ( param.aliases ) {
 			result = result.concat( param.aliases );
@@ -495,12 +496,12 @@ mw.TemplateData.Model.prototype.getAllParamNames = function () {
  * Set the template description
  *
  * @param {string|Object} desc New template description
- * @param {Object} [language] Description language, if supplied. If not given,
+ * @param {string} [language] Description language, if supplied. If not given,
  *  will default to the wiki language.
  * @fires change-description
  * @fires change
  */
-mw.TemplateData.Model.prototype.setTemplateDescription = function ( desc, language ) {
+Model.prototype.setTemplateDescription = function ( desc, language ) {
 	language = language || this.getDefaultLanguage();
 
 	if ( !this.constructor.static.compare( this.description[ language ], desc ) ) {
@@ -523,7 +524,7 @@ mw.TemplateData.Model.prototype.setTemplateDescription = function ( desc, langua
  *  as multilanguage object and no language is set, the whole object
  *  will be returned.
  */
-mw.TemplateData.Model.prototype.getTemplateDescription = function ( language ) {
+Model.prototype.getTemplateDescription = function ( language ) {
 	language = language || this.getDefaultLanguage();
 	return this.description[ language ];
 };
@@ -531,30 +532,40 @@ mw.TemplateData.Model.prototype.getTemplateDescription = function ( language ) {
 /**
  * Set the template description
  *
- * @param {string|Object} map New template map info
+ * @param {string|Object|undefined} map New template map info
  * @fires change-map
  * @fires change
  */
-mw.TemplateData.Model.prototype.setMapInfo = function ( map ) {
-	if ( !this.constructor.static.compare( this.maps, map ) ) {
-		if ( typeof map === 'object' ) {
-			$.extend( this.maps, map );
-			this.emit( 'change-map', map );
-		} else {
+Model.prototype.setMapInfo = function ( map ) {
+	if ( map !== undefined ) {
+		if ( !this.constructor.static.compare( this.maps, map ) ) {
+			if ( this.mapsChanged === false ) {
+				this.originalMaps = OO.copy( map );
+				this.mapsChanged = true;
+			}
 			this.maps = map;
 			this.emit( 'change-map', map );
+			this.emit( 'change' );
 		}
-		this.emit( 'change' );
 	}
 };
 
 /**
  * Get the template info.
  *
- * @return {string|Object} The template map info.
+ * @return {string|Object|undefined} The template map info.
  */
-mw.TemplateData.Model.prototype.getMapInfo = function () {
+Model.prototype.getMapInfo = function () {
 	return this.maps;
+};
+
+/**
+ * Get the template info.
+ *
+ * @return {Object|undefined} The Original template map info.
+ */
+Model.prototype.getOriginalMapsInfo = function () {
+	return this.originalMaps;
 };
 
 /**
@@ -565,7 +576,7 @@ mw.TemplateData.Model.prototype.getMapInfo = function () {
  * @param {string} [language] Optional language key
  * @return {string} Parameter property in specified language
  */
-mw.TemplateData.Model.prototype.getParamValue = function ( paramKey, property, language ) {
+Model.prototype.getParamValue = function ( paramKey, property, language ) {
 	language = language || this.getDefaultLanguage();
 	return OO.getProp( this.params, paramKey, property, language ) || '';
 };
@@ -575,18 +586,18 @@ mw.TemplateData.Model.prototype.getParamValue = function ( paramKey, property, l
  *
  * @return {string} Wiki language
  */
-mw.TemplateData.Model.prototype.getDefaultLanguage = function () {
+Model.prototype.getDefaultLanguage = function () {
 	return mw.config.get( 'wgContentLanguage' ) || 'en';
 };
 
 /**
  * Set template param order array.
  *
- * @param {string[]} orderArray Parameter key array in order
+ * @param {string[]} [orderArray] Parameter key array in order
  * @fires change-paramOrder
  * @fires change
  */
-mw.TemplateData.Model.prototype.setTemplateParamOrder = function ( orderArray ) {
+Model.prototype.setTemplateParamOrder = function ( orderArray ) {
 	orderArray = orderArray || [];
 	// TODO: Make the compare method verify order of array?
 	// Copy the array
@@ -602,7 +613,7 @@ mw.TemplateData.Model.prototype.setTemplateParamOrder = function ( orderArray ) 
  * @fires change-format
  * @fires change
  */
-mw.TemplateData.Model.prototype.setTemplateFormat = function ( format ) {
+Model.prototype.setTemplateFormat = function ( format ) {
 	format = format !== undefined ? format : null;
 	if ( this.format !== format ) {
 		this.format = format;
@@ -618,7 +629,7 @@ mw.TemplateData.Model.prototype.setTemplateFormat = function ( format ) {
  * @fires add-paramOrder
  * @fires change
  */
-mw.TemplateData.Model.prototype.addKeyTemplateParamOrder = function ( key ) {
+Model.prototype.addKeyTemplateParamOrder = function ( key ) {
 	if ( this.paramOrder.indexOf( key ) === -1 ) {
 		this.paramOrder.push( key );
 		this.emit( 'add-paramOrder', key );
@@ -634,7 +645,7 @@ mw.TemplateData.Model.prototype.addKeyTemplateParamOrder = function ( key ) {
  * @fires change-paramOrder
  * @fires change
  */
-mw.TemplateData.Model.prototype.reorderParamOrderKey = function ( key, newIndex ) {
+Model.prototype.reorderParamOrderKey = function ( key, newIndex ) {
 	var keyIndex = this.paramOrder.indexOf( key );
 	// Move the parameter, account for left shift if moving forwards
 	this.paramOrder.splice(
@@ -657,7 +668,7 @@ mw.TemplateData.Model.prototype.reorderParamOrderKey = function ( key, newIndex 
  * @fires change-paramOrder
  * @fires change
  */
-mw.TemplateData.Model.prototype.removeKeyTemplateParamOrder = function ( key ) {
+Model.prototype.removeKeyTemplateParamOrder = function ( key ) {
 	var keyPos = this.paramOrder.indexOf( key );
 	if ( keyPos > -1 ) {
 		this.paramOrder.splice( keyPos, 1 );
@@ -671,7 +682,7 @@ mw.TemplateData.Model.prototype.removeKeyTemplateParamOrder = function ( key ) {
  *
  * @return {string[]} orderArray Parameter keys in order
  */
-mw.TemplateData.Model.prototype.getTemplateParamOrder = function () {
+Model.prototype.getTemplateParamOrder = function () {
 	return this.paramOrder;
 };
 
@@ -680,7 +691,7 @@ mw.TemplateData.Model.prototype.getTemplateParamOrder = function () {
  *
  * @return {string|null} Preferred format
  */
-mw.TemplateData.Model.prototype.getTemplateFormat = function () {
+Model.prototype.getTemplateFormat = function () {
 	return this.format;
 };
 
@@ -689,17 +700,15 @@ mw.TemplateData.Model.prototype.getTemplateFormat = function () {
  *
  * @param {string} paramKey Parameter key
  * @param {string} prop Property name
- * @param {...Mixed} value Property value
+ * @param {Mixed} value
  * @param {string} [language] Value language
  * @return {boolean} Operation was successful
  * @fires change-property
  * @fires change
  */
-mw.TemplateData.Model.prototype.setParamProperty = function ( paramKey, prop, value, language ) {
-	var propertiesWithLanguage = this.constructor.static.getPropertiesWithLanguage(),
-		allProps = this.constructor.static.getAllProperties( true ),
-		status = false,
-		oldValue;
+Model.prototype.setParamProperty = function ( paramKey, prop, value, language ) {
+	var allProps = this.constructor.static.getAllProperties( true ),
+		status = false;
 
 	language = language || this.getDefaultLanguage();
 	if ( !allProps[ prop ] ) {
@@ -707,11 +716,7 @@ mw.TemplateData.Model.prototype.setParamProperty = function ( paramKey, prop, va
 		return status;
 	}
 
-	if ( allProps[ prop ].type === 'array' && typeof value === 'string' ) {
-		// When we split the string, we want to use a trimmed delimiter
-		value = this.constructor.static.splitAndTrimArray( value, allProps[ prop ].delimiter.trim() );
-	}
-
+	var propertiesWithLanguage = this.constructor.static.getPropertiesWithLanguage();
 	// Check if the property is split by language code
 	if ( propertiesWithLanguage.indexOf( prop ) !== -1 ) {
 		// Initialize property if necessary
@@ -729,29 +734,28 @@ mw.TemplateData.Model.prototype.setParamProperty = function ( paramKey, prop, va
 	} else {
 		// Compare without language
 		if ( !this.constructor.static.compare( this.params[ paramKey ][ prop ], value ) ) {
-			oldValue = this.params[ paramKey ][ prop ];
+			var oldValue = this.params[ paramKey ][ prop ];
+			this.params[ paramKey ][ prop ] = value;
 
+			var newKey;
 			if ( prop === 'name' && oldValue !== value ) {
+				newKey = value;
 				// See if the parameters already has something with this new key
-				if ( this.params[ value ] && !this.params[ value ].deleted ) {
+				if ( this.params[ newKey ] && !this.params[ newKey ].deleted ) {
 					// Change the key to be something else
-					value = this.getNewValidParameterKey( value );
+					newKey = this.getNewValidParameterKey( newKey );
 				}
 				// Copy param details to new name
-				this.params[ value ] = this.params[ oldValue ];
+				this.params[ newKey ] = this.params[ paramKey ];
 				// Delete the old param
-				this.params[ oldValue ] = { deleted: true };
-
-				this.params[ value ][ prop ] = value;
-			} else {
-				this.params[ paramKey ][ prop ] = value;
+				this.params[ paramKey ] = { deleted: true };
 			}
 
 			this.emit( 'change-property', paramKey, prop, value, language );
 			this.emit( 'change' );
 
 			if ( prop === 'name' ) {
-				this.paramOrder[ this.paramOrder.indexOf( oldValue ) ] = value;
+				this.paramOrder[ this.paramOrder.indexOf( paramKey ) ] = newKey || value;
 				this.paramOrderChanged = true;
 				this.emit( 'change-paramOrder', this.paramOrder );
 				this.emit( 'change' );
@@ -778,7 +782,7 @@ mw.TemplateData.Model.prototype.setParamProperty = function ( paramKey, prop, va
  * @fires delete-param
  * @fires change
  */
-mw.TemplateData.Model.prototype.deleteParam = function ( paramKey ) {
+Model.prototype.deleteParam = function ( paramKey ) {
 	this.params[ paramKey ].deleted = true;
 	// Remove from paramOrder
 	this.removeKeyTemplateParamOrder( paramKey );
@@ -793,7 +797,7 @@ mw.TemplateData.Model.prototype.deleteParam = function ( paramKey ) {
  * @fires add-param
  * @fires change
  */
-mw.TemplateData.Model.prototype.restoreParam = function ( paramKey ) {
+Model.prototype.restoreParam = function ( paramKey ) {
 	if ( this.params[ paramKey ] ) {
 		this.params[ paramKey ].deleted = false;
 		// Add back to paramOrder
@@ -808,7 +812,7 @@ mw.TemplateData.Model.prototype.restoreParam = function ( paramKey ) {
  *
  * @param {string} paramKey Parameter key
  */
-mw.TemplateData.Model.prototype.emptyParamData = function ( paramKey ) {
+Model.prototype.emptyParamData = function ( paramKey ) {
 	if ( this.params[ paramKey ] ) {
 		// Delete all data and readd the parameter
 		delete this.params[ paramKey ];
@@ -823,10 +827,10 @@ mw.TemplateData.Model.prototype.emptyParamData = function ( paramKey ) {
  *
  * @param {string} paramKey Parameter key
  * @param {string} prop Parameter property
- * @return {...Mixed|null} Property value if it exists. Returns null if the
+ * @return {Mixed|null} Property value if it exists. Returns null if the
  * parameter key itself doesn't exist.
  */
-mw.TemplateData.Model.prototype.getParamProperty = function ( paramKey, prop ) {
+Model.prototype.getParamProperty = function ( paramKey, prop ) {
 	if ( this.params[ paramKey ] ) {
 		return this.params[ paramKey ][ prop ];
 	}
@@ -837,9 +841,9 @@ mw.TemplateData.Model.prototype.getParamProperty = function ( paramKey, prop ) {
  * Retrieve a specific parameter data
  *
  * @param {string} key Parameter key
- * @return {Object} Parameter data
+ * @return {Object|undefined} Parameter data
  */
-mw.TemplateData.Model.prototype.getParamData = function ( key ) {
+Model.prototype.getParamData = function ( key ) {
 	return this.params[ key ];
 };
 
@@ -848,25 +852,25 @@ mw.TemplateData.Model.prototype.getParamData = function ( key ) {
  *
  * @return {Object} All parameters and their data
  */
-mw.TemplateData.Model.prototype.getParams = function () {
+Model.prototype.getParams = function () {
 	return this.params;
 };
 
-mw.TemplateData.Model.prototype.isParamDeleted = function ( key ) {
+Model.prototype.isParamDeleted = function ( key ) {
 	return this.params[ key ] && this.params[ key ].deleted === true;
 };
 
-mw.TemplateData.Model.prototype.isParamExists = function ( key ) {
+Model.prototype.isParamExists = function ( key ) {
 	return Object.prototype.hasOwnProperty.call( this.params, key );
 };
 
 /**
  * Set the original templatedata object
  *
- * @param {Object} templatedataObj TemplateData object
+ * @param {Object|null} templatedataObj TemplateData object
  */
-mw.TemplateData.Model.prototype.setOriginalTemplateDataObject = function ( templatedataObj ) {
-	this.originalTemplateDataObject = $.extend( true, {}, templatedataObj );
+Model.prototype.setOriginalTemplateDataObject = function ( templatedataObj ) {
+	this.originalTemplateDataObject = templatedataObj ? $.extend( true, {}, templatedataObj ) : null;
 };
 
 /**
@@ -874,7 +878,7 @@ mw.TemplateData.Model.prototype.setOriginalTemplateDataObject = function ( templ
  *
  * @param {string} pageName Page name
  */
-mw.TemplateData.Model.prototype.setFullPageName = function ( pageName ) {
+Model.prototype.setFullPageName = function ( pageName ) {
 	this.fullPageName = pageName;
 };
 
@@ -883,7 +887,7 @@ mw.TemplateData.Model.prototype.setFullPageName = function ( pageName ) {
  *
  * @param {string} parent Parent page
  */
-mw.TemplateData.Model.prototype.setParentPage = function ( parent ) {
+Model.prototype.setParentPage = function ( parent ) {
 	this.parentPage = parent;
 };
 
@@ -892,7 +896,7 @@ mw.TemplateData.Model.prototype.setParentPage = function ( parent ) {
  *
  * @return {string} Page full name
  */
-mw.TemplateData.Model.prototype.getFullPageName = function () {
+Model.prototype.getFullPageName = function () {
 	return this.fullPageName;
 };
 
@@ -901,16 +905,24 @@ mw.TemplateData.Model.prototype.getFullPageName = function () {
  *
  * @return {string} Parent page
  */
-mw.TemplateData.Model.prototype.getParentPage = function () {
+Model.prototype.getParentPage = function () {
 	return this.parentPage;
+};
+
+/**
+ * Get original Parameters/Info from the model and discard any changes
+ */
+Model.prototype.restoreOriginalMaps = function () {
+	this.setMapInfo( this.getOriginalMapsInfo() );
 };
 
 /**
  * Get original templatedata object
  *
- * @return {Object} Templatedata object
+ * @return {Object|null} Templatedata object at the beginning of this editing session, or null
+ * if we're creating a new object.
  */
-mw.TemplateData.Model.prototype.getOriginalTemplateDataObject = function () {
+Model.prototype.getOriginalTemplateDataObject = function () {
 	return this.originalTemplateDataObject;
 };
 
@@ -919,13 +931,14 @@ mw.TemplateData.Model.prototype.getOriginalTemplateDataObject = function () {
  *
  * @return {Object} Templatedata object
  */
-mw.TemplateData.Model.prototype.outputTemplateData = function () {
-	var paramKey, key, prop, oldKey, name, compareOrig, normalizedValue,
-		allProps = this.constructor.static.getAllProperties( true ),
-		original = this.getOriginalTemplateDataObject(),
-		result = $.extend( true, {}, this.getOriginalTemplateDataObject() ),
+Model.prototype.outputTemplateData = function () {
+	var allProps = this.constructor.static.getAllProperties( true ),
+		original = this.getOriginalTemplateDataObject() || {};
+	original.params = original.params || {};
+	var result = $.extend( true, {}, original ),
 		defaultLang = this.getDefaultLanguage();
 
+	var normalizedValue;
 	// Template description
 	if ( this.description[ defaultLang ] !== undefined ) {
 		normalizedValue = this.propRemoveUnusedLanguages( this.description );
@@ -938,6 +951,13 @@ mw.TemplateData.Model.prototype.outputTemplateData = function () {
 	} else {
 		// Delete description
 		delete result.description;
+	}
+
+	// Template maps
+	if ( this.maps === undefined || Object.keys( this.maps ).length === 0 ) {
+		delete result.maps;
+	} else {
+		result.maps = this.maps;
 	}
 
 	// Param order
@@ -961,8 +981,8 @@ mw.TemplateData.Model.prototype.outputTemplateData = function () {
 	}
 
 	// Go over parameters in data
-	for ( paramKey in this.params ) {
-		key = paramKey;
+	for ( var paramKey in this.params ) {
+		var key = paramKey;
 		if ( this.params[ key ].deleted ) {
 			delete result.params[ key ];
 			continue;
@@ -975,8 +995,8 @@ mw.TemplateData.Model.prototype.outputTemplateData = function () {
 		}
 
 		// Check if name was changed and change the key accordingly
-		name = this.params[ key ].name;
-		oldKey = key;
+		var name = this.params[ key ].name;
+		var oldKey = key;
 
 		// Notice for clarity:
 		// Whether the parameter name was changed or not the following
@@ -992,7 +1012,7 @@ mw.TemplateData.Model.prototype.outputTemplateData = function () {
 		}
 
 		// Go over all properties
-		for ( prop in allProps ) {
+		for ( var prop in allProps ) {
 			switch ( prop ) {
 				case 'deprecatedValue':
 				case 'name':
@@ -1032,33 +1052,37 @@ mw.TemplateData.Model.prototype.outputTemplateData = function () {
 						}
 					}
 					break;
+				case 'suggestedvalues':
 				case 'aliases':
-					// Only update the aliases in if the new templatedata has an
-					// aliases array that isn't empty
+					// Only update these if the new templatedata has an
+					// array that isn't empty
 					if (
 						Array.isArray( this.params[ key ][ prop ] ) &&
 						this.params[ key ][ prop ].length > 0
 					) {
 						result.params[ name ][ prop ] = this.params[ key ][ prop ];
 					} else {
-						// If the new aliases array is empty, delete it from the original
+						// If the new array is empty, delete it from the original
 						delete result.params[ name ][ prop ];
 					}
 					break;
 				default:
 					// Check if there's a value in the model
 					if ( this.params[ key ][ prop ] !== undefined ) {
+						var compareOrig = original.params[ oldKey ] && original.params[ oldKey ][ prop ];
 						if ( allProps[ prop ].allowLanguages ) {
 							normalizedValue = this.propRemoveUnusedLanguages( this.params[ key ][ prop ] );
 							// Check if this should be displayed with language object or directly as string
-							compareOrig = original.params[ oldKey ] ? original.params[ oldKey ][ prop ] : {};
-							if ( this.isOutputInLanguageObject( compareOrig, normalizedValue ) ) {
+							if ( this.isOutputInLanguageObject( compareOrig || {}, normalizedValue ) ) {
 								result.params[ name ][ prop ] = normalizedValue;
 							} else {
 								// Store only one language as a string
 								result.params[ name ][ prop ] = normalizedValue[ defaultLang ];
 							}
-						} else {
+						} else if ( this.params[ key ][ prop ] ||
+							// Add empty strings only if the property existed before (empty or not)
+							compareOrig !== undefined
+						) {
 							// Set up the result
 							result.params[ name ][ prop ] = this.params[ key ][ prop ];
 						}
@@ -1077,10 +1101,13 @@ mw.TemplateData.Model.prototype.outputTemplateData = function () {
  * @param {string} key New parameter key
  * @return {string} Valid new parameter key
  */
-mw.TemplateData.Model.prototype.getNewValidParameterKey = function ( key ) {
+Model.prototype.getNewValidParameterKey = function ( key ) {
 	var allParamNames = this.getAllParamNames();
 	if ( this.params[ key ] || allParamNames.indexOf( key ) !== -1 ) {
 		// Change the key to be something else
+		if ( /\d$/.test( key ) ) {
+			key += '-';
+		}
 		key += this.paramIdentifierCounter;
 		this.paramIdentifierCounter++;
 		return this.getNewValidParameterKey( key );
@@ -1094,11 +1121,10 @@ mw.TemplateData.Model.prototype.getNewValidParameterKey = function ( key ) {
  * @param {Object} propData Property data
  * @return {Object} Property data with only used language keys
  */
-mw.TemplateData.Model.prototype.propRemoveUnusedLanguages = function ( propData ) {
-	var key,
-		result = {};
+Model.prototype.propRemoveUnusedLanguages = function ( propData ) {
+	var result = {};
 	if ( $.isPlainObject( propData ) ) {
-		for ( key in propData ) {
+		for ( var key in propData ) {
 			if ( propData[ key ] ) {
 				result[ key ] = propData[ key ];
 			}
@@ -1115,7 +1141,7 @@ mw.TemplateData.Model.prototype.propRemoveUnusedLanguages = function ( propData 
  * @param {string|Object} newPropValue New property value
  * @return {boolean} Output should be a full language object
  */
-mw.TemplateData.Model.prototype.isOutputInLanguageObject = function ( originalPropValue, newPropValue ) {
+Model.prototype.isOutputInLanguageObject = function ( originalPropValue, newPropValue ) {
 	if (
 		(
 			// The original was already split to languages
@@ -1146,7 +1172,7 @@ mw.TemplateData.Model.prototype.isOutputInLanguageObject = function ( originalPr
  *
  * @param {string[]} sourceParams Parameters available in template source
  */
-mw.TemplateData.Model.prototype.setSourceCodeParameters = function ( sourceParams ) {
+Model.prototype.setSourceCodeParameters = function ( sourceParams ) {
 	this.sourceCodeParameters = sourceParams;
 };
 
@@ -1155,6 +1181,8 @@ mw.TemplateData.Model.prototype.setSourceCodeParameters = function ( sourceParam
  *
  * @return {string[]} Parameters available in template source
  */
-mw.TemplateData.Model.prototype.getSourceCodeParameters = function () {
+Model.prototype.getSourceCodeParameters = function () {
 	return this.sourceCodeParameters;
 };
+
+module.exports = Model;

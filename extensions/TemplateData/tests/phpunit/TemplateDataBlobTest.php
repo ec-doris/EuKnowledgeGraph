@@ -1,49 +1,52 @@
 <?php
 
+use MediaWiki\Extension\TemplateData\Api\ApiTemplateData;
+use MediaWiki\Extension\TemplateData\TemplateDataBlob;
+use MediaWiki\Extension\TemplateData\TemplateDataHtmlFormatter;
+use MediaWiki\Extension\TemplateData\TemplateDataValidator;
+use Wikimedia\TestingAccessWrapper;
+
 /**
  * @group TemplateData
  * @group Database
- * @covers TemplateDataBlob
+ * @covers \MediaWiki\Extension\TemplateData\TemplateDataBlob
+ * @covers \MediaWiki\Extension\TemplateData\TemplateDataCompressedBlob
+ * @covers \MediaWiki\Extension\TemplateData\TemplateDataValidator
  */
-class TemplateDataBlobTest extends MediaWikiTestCase {
+class TemplateDataBlobTest extends MediaWikiIntegrationTestCase {
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
-
-		$this->setContentLang( 'en' );
+		$this->setMwGlobals( 'wgLanguageCode', 'qqx' );
 	}
 
 	/**
 	 * Helper method to generate a string that gzip can't compress.
 	 *
 	 * Output is consistent when given the same seed.
+	 * @param int $minLength
+	 * @param string $seed
+	 * @return string
 	 */
-	private static function generatePseudorandomString( $length, $seed ) {
-		// Compatibility with PHP7.1+; see T206287
-		if ( defined( 'MT_RAND_PHP' ) ) {
-			mt_srand( $seed, MT_RAND_PHP );
-		} else {
-			mt_srand( $seed );
-		}
-
-		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-		$characters_max = strlen( $characters ) - 1;
-
+	private function generatePseudorandomString( $minLength, $seed ): string {
+		srand( $seed );
 		$string = '';
-
-		for ( $i = 0; $i < $length; $i++ ) {
-			$string .= $characters[mt_rand( 0, $characters_max )];
+		while ( strlen( $string ) < $minLength ) {
+			$string .= str_shuffle( '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' );
 		}
-
 		return $string;
 	}
 
-	public static function provideParse() {
+	public function provideParse() {
 		$cases = [
+			[
+				'input' => '{',
+				'status' => '(templatedata-invalid-parse)'
+			],
 			[
 				'input' => '[]
 				',
-				'status' => 'Property "templatedata" is expected to be of type "object".'
+				'status' => '(templatedata-invalid-type: templatedata, object)'
 			],
 			[
 				'input' => '{
@@ -67,21 +70,85 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 					"foo": "bar"
 				}
 				',
-				'status' => 'Unexpected property "foo".',
+				'status' => '(templatedata-invalid-unknown: foo)',
 				'msg' => 'Unknown properties'
 			],
 			[
+				'input' => '{ "description": [], "params": {} }',
+				'status' => '(templatedata-invalid-type: description, string|object)',
+			],
+			[
 				'input' => '{}',
-				'status' => 'Required property "params" not found.',
+				'status' => '(templatedata-invalid-missing: params, object)',
 				'msg' => 'Empty object'
 			],
 			[
-				'input' => '{
-					"foo": "bar"
-				}
-				',
-				'status' => 'Unexpected property "foo".',
-				'msg' => 'Unknown properties invalidate the blob'
+				'input' => '{ "params": [] }',
+				'status' => '(templatedata-invalid-type: params, object)',
+			],
+			[
+				'input' => '{ "params": { "a": [] } }',
+				'status' => '(templatedata-invalid-type: params.a, object)',
+			],
+			[
+				'input' => '{ "params": { "a": { "foo": "" } } }',
+				'status' => '(templatedata-invalid-unknown: params.a.foo)',
+			],
+			[
+				'input' => '{ "params": { "a": { "label": [] } } }',
+				'status' => '(templatedata-invalid-type: params.a.label, string|object)',
+			],
+			[
+				'input' => '{ "params": { "a": { "required": "" } } }',
+				'status' => '(templatedata-invalid-type: params.a.required, boolean)',
+			],
+			[
+				'input' => '{ "params": { "a": { "suggested": "" } } }',
+				'status' => '(templatedata-invalid-type: params.a.suggested, boolean)',
+			],
+			[
+				'input' => '{ "params": { "a": { "description": [] } } }',
+				'status' => '(templatedata-invalid-type: params.a.description, string|object)',
+			],
+			[
+				'input' => '{ "params": { "a": { "example": [] } } }',
+				'status' => '(templatedata-invalid-type: params.a.example, string|object)',
+			],
+			[
+				'input' => '{ "params": { "a": { "deprecated": [] } } }',
+				'status' => '(templatedata-invalid-type: params.a.deprecated, boolean|string)',
+			],
+			[
+				'input' => '{ "params": { "a": { "aliases": "" } } }',
+				'status' => '(templatedata-invalid-type: params.a.aliases, array)',
+			],
+			[
+				'input' => '{ "params": { "a": { "aliases": [ "1", 2, {} ] } } }',
+				'status' => '(templatedata-invalid-type: params.a.aliases[2], int|string)',
+			],
+			[
+				'input' => '{ "params": { "a": { "autovalue": [] } } }',
+				'status' => '(templatedata-invalid-type: params.a.autovalue, string)',
+			],
+			[
+				'input' => '{ "params": { "a": { "default": [] } } }',
+				'status' => '(templatedata-invalid-type: params.a.default, string|object)',
+			],
+			[
+				'input' => '{ "params": { "a": { "type": [] } } }',
+				'status' => '(templatedata-invalid-type: params.a.type, string)',
+			],
+			[
+				'input' => '{ "params": { "a": { "type": "" } } }',
+				'status' => '(templatedata-invalid-value: params.a.type)',
+			],
+			[
+				'input' => '{ "params": { "a": { "suggestedvalues": "" } } }',
+				'status' => '(templatedata-invalid-type: params.a.suggestedvalues, array)',
+			],
+			[
+				'input' => '{ "params": { "a": { "suggestedvalues": [ {} ] } } }',
+				'status' => '(templatedata-invalid-type: params.a.suggestedvalues[0], string)',
 			],
 			[
 				'input' => '{
@@ -100,6 +167,7 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 							"example": null,
 							"required": false,
 							"suggested": false,
+							"suggestedvalues": [],
 							"deprecated": false,
 							"aliases": [],
 							"type": "unknown",
@@ -133,6 +201,7 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 							"autovalue": null,
 							"required": false,
 							"suggested": false,
+							"suggestedvalues": [],
 							"deprecated": false,
 							"aliases": [],
 							"type": "line"
@@ -156,29 +225,28 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 							"example": null,
 							"required": false,
 							"suggested": true,
-							"aliases": [
-								"1"
-							]
+							"aliases": [ 1 ]
 						}
 					}
 				}
 				',
 				'output' => '{
 					"description": {
-						"en": "User badge MediaWiki developers."
+						"qqx": "User badge MediaWiki developers."
 					},
 					"params": {
 						"nickname": {
 							"label": null,
 							"description": {
-								"en": "User name of user who owns the badge"
+								"qqx": "User name of user who owns the badge"
 							},
 							"default": {
-								"en": "Base page name of the host page"
+								"qqx": "Base page name of the host page"
 							},
 							"example": null,
 							"required": false,
 							"suggested": true,
+							"suggestedvalues": [],
 							"deprecated": false,
 							"aliases": [
 								"1"
@@ -193,6 +261,10 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 				}
 				',
 				'msg' => 'InterfaceText is expanded to langcode-keyed object, assuming content language'
+			],
+			[
+				'input' => '{ "params": { "b": { "inherits": "a" } } }',
+				'status' => '(templatedata-invalid-missing: params.a)',
 			],
 			[
 				'input' => '{
@@ -212,19 +284,20 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 				',
 				'output' => '{
 					"description": {
-						"en": "Document the documenter."
+						"qqx": "Document the documenter."
 					},
 					"params": {
 						"1d": {
 							"label": null,
 							"description": {
-								"en": "Description of the template parameter"
+								"qqx": "Description of the template parameter"
 							},
 							"example": null,
 							"required": true,
 							"suggested": false,
+							"suggestedvalues": [],
 							"default": {
-								"en": "example"
+								"qqx": "example"
 							},
 							"deprecated": false,
 							"aliases": [],
@@ -234,13 +307,14 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 						"2d": {
 							"label": null,
 							"description": {
-								"en": "Description of the template parameter"
+								"qqx": "Description of the template parameter"
 							},
 							"example": null,
 							"required": true,
 							"suggested": false,
+							"suggestedvalues": [],
 							"default": {
-								"en": "overridden"
+								"qqx": "overridden"
 							},
 							"deprecated": false,
 							"aliases": [],
@@ -257,6 +331,14 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 					. '(preserving overides)'
 			],
 			[
+				'input' => '{ "params": {}, "sets": {} }',
+				'status' => '(templatedata-invalid-type: sets, array)'
+			],
+			[
+				'input' => '{ "params": {}, "sets": [ [] ] }',
+				'status' => '(templatedata-invalid-value: sets.0)'
+			],
+			[
 				'input' => '{
 					"params": {},
 					"sets": [
@@ -265,7 +347,15 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 						}
 					]
 				}',
-				'status' => 'Required property "sets.0.params" not found.'
+				'status' => '(templatedata-invalid-missing: sets.0.params, array)'
+			],
+			[
+				'input' => '{ "params": {}, "sets": [ { "label": "", "params": {} } ] }',
+				'status' => '(templatedata-invalid-type: sets.0.params, array)'
+			],
+			[
+				'input' => '{ "params": {}, "sets": [ { "label": "", "params": [] } ] }',
+				'status' => '(templatedata-invalid-empty-array: sets.0.params)'
 			],
 			[
 				'input' => '{
@@ -279,7 +369,11 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 						}
 					]
 				}',
-				'status' => 'Required property "sets.0.label" not found.'
+				'status' => '(templatedata-invalid-missing: sets.0.label, string|object)'
+			],
+			[
+				'input' => '{ "params": {}, "sets": [ { "label": [] } ] }',
+				'status' => '(templatedata-invalid-type: sets.0.label, string|object)'
 			],
 			[
 				'input' => '{
@@ -296,7 +390,7 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 						}
 					]
 				}',
-				'status' => 'Invalid value for property "sets.0.params[1]".'
+				'status' => '(templatedata-invalid-value: sets.0.params[1])'
 			],
 			[
 				'input' => '{
@@ -327,6 +421,7 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 							"required": false,
 							"example": null,
 							"suggested": false,
+							"suggestedvalues": [],
 							"description": null,
 							"deprecated": false,
 							"aliases": [],
@@ -338,6 +433,7 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 							"label": null,
 							"required": false,
 							"suggested": false,
+							"suggestedvalues": [],
 							"description": null,
 							"example": null,
 							"deprecated": false,
@@ -350,6 +446,7 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 							"label": null,
 							"required": false,
 							"suggested": false,
+							"suggestedvalues": [],
 							"description": null,
 							"example": null,
 							"deprecated": false,
@@ -362,13 +459,13 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 					"sets": [
 						{
 							"label": {
-								"en": "Foo with Quux"
+								"qqx": "Foo with Quux"
 							},
 							"params": ["foo", "quux"]
 						},
 						{
 							"label": {
-								"en": "Bar with Quux"
+								"qqx": "Bar with Quux"
 							},
 							"params": ["bar", "quux"]
 						}
@@ -390,6 +487,7 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 							"autovalue": "{{SomeTemplate}}",
 							"required": true,
 							"suggested": false,
+							"suggestedvalues": [ "baz", "boo" ],
 							"deprecated": false,
 							"aliases": [ "foo", "baz" ],
 							"type": "line"
@@ -399,25 +497,26 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 				',
 				'output' => '{
 					"description": {
-						"en": "Testing some template description."
+						"qqx": "Testing some template description."
 					},
 					"params": {
 						"bar": {
 							"label": {
-								"en": "Bar label"
+								"qqx": "Bar label"
 							},
 							"description": {
-								"en": "Bar description"
+								"qqx": "Bar description"
 							},
 							"default": {
-								"en": "Baz"
+								"qqx": "Baz"
 							},
 							"example": {
-								"en": "Foo bar baz"
+								"qqx": "Foo bar baz"
 							},
 							"autovalue": "{{SomeTemplate}}",
 							"required": true,
 							"suggested": false,
+							"suggestedvalues": [ "baz", "boo" ],
 							"deprecated": false,
 							"aliases": [ "foo", "baz" ],
 							"type": "line"
@@ -429,6 +528,26 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 				}
 				',
 				'msg' => 'Parameter attributes preserve information.'
+			],
+			[
+				'input' => '{ "params": {}, "maps": [] }',
+				'status' => '(templatedata-invalid-type: maps, object)'
+			],
+			[
+				'input' => '{ "params": {}, "maps": { "a": [] } }',
+				'status' => '(templatedata-invalid-type: maps.a, object)'
+			],
+			[
+				'input' => '{ "params": {}, "maps": { "a": { "b": "c" } } }',
+				'status' => '(templatedata-invalid-param: c, maps.a.b)'
+			],
+			[
+				'input' => '{ "params": {}, "maps": { "a": { "b": [ {} ] } } }',
+				'status' => '(templatedata-invalid-type: maps.a.b[0], string|array)'
+			],
+			[
+				'input' => '{ "params": {}, "maps": { "a": { "b": [ "c" ] } } }',
+				'status' => '(templatedata-invalid-param: c, maps.a.b[0])'
 			],
 			[
 				'input' => '{
@@ -448,7 +567,7 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 						}
 					}
 				}',
-				'status' => 'Invalid parameter "quux" for property "maps.application.things".'
+				'status' => '(templatedata-invalid-param: quux, maps.application.things[1][1])'
 			],
 			[
 				'input' => '{
@@ -468,7 +587,7 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 						}
 					}
 				}',
-				'status' => 'Property "maps.application.things" is expected to be of type "string|array".'
+				'status' => '(templatedata-invalid-type: maps.application.things, string|array)'
 			],
 			[
 				'input' => '{
@@ -487,7 +606,7 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 						}
 					}
 				}',
-				'status' => 'Property "maps.application.things[0][0]" is expected to be of type "string".'
+				'status' => '(templatedata-invalid-type: maps.application.things[0][0], string)'
 			],
 			[
 				'input' => '{
@@ -496,7 +615,7 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 					},
 					"format": "meshuggah format"
 				}',
-				'status' => 'Property "format" is expected to be "inline", "block", or a valid format string.'
+				'status' => '(templatedata-invalid-format: format)'
 			],
 			[
 				'input' => '{
@@ -571,7 +690,7 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 		return $calls;
 	}
 
-	protected static function getStatusText( Status $status ) {
+	private function getStatusText( Status $status ): string {
 		$str = Parser::stripOuterParagraph( $status->getHtml() );
 		// Unescape char references for things like "[, "]" and "|" for
 		// cleaner test assertions and output
@@ -579,11 +698,11 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 		return $str;
 	}
 
-	private static function ksort( array &$input ) {
+	private function ksort( array &$input ) {
 		ksort( $input );
-		foreach ( $input as $key => &$value ) {
+		foreach ( $input as &$value ) {
 			if ( is_array( $value ) ) {
-				self::ksort( $value );
+				$this->ksort( $value );
 			}
 		}
 	}
@@ -599,23 +718,24 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 	 *
 	 * @param mixed $expected
 	 * @param mixed $actual
+	 * @param string|null $message
 	 */
-	protected function assertStrictJsonEquals( $expected, $actual, $message = null ) {
+	private function assertStrictJsonEquals( $expected, $actual, $message = null ) {
 		// Lazy recursive strict comparison: Serialise to JSON and compare that
 		// Sort first to ensure key-order
 		$expected = json_decode( $expected, /* assoc = */ true );
 		$actual = json_decode( $actual, /* assoc = */ true );
-		self::ksort( $expected );
-		self::ksort( $actual );
+		$this->ksort( $expected );
+		$this->ksort( $actual );
 
-		$this->assertEquals(
+		$this->assertSame(
 			FormatJson::encode( $expected, true ),
 			FormatJson::encode( $actual, true ),
 			$message
 		);
 	}
 
-	protected function assertTemplateData( array $case ) {
+	private function assertTemplateData( array $case ) {
 		// Expand defaults
 		if ( !isset( $case['status'] ) ) {
 			$case['status'] = true;
@@ -623,61 +743,42 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 		if ( !isset( $case['msg'] ) ) {
 			$case['msg'] = is_string( $case['status'] ) ? $case['status'] : 'TemplateData assertion';
 		}
-		if ( !isset( $case['output'] ) ) {
-			if ( is_string( $case['status'] ) ) {
-				$case['output'] = '{
-					"description": null,
-					"params": {},
-					"sets": [],
-					"maps": {},
-					"format": null
-				}';
-			} else {
-				$case['output'] = $case['input'];
-			}
-		}
 
 		$t = TemplateDataBlob::newFromJSON( $this->db, $case['input'] );
+		/** @var TemplateDataBlob $t */
+		$t = TestingAccessWrapper::newFromObject( $t );
 		$actual = $t->getJSON();
 		$status = $t->getStatus();
-		if ( !$status->isGood() ) {
-			$this->assertEquals(
-				$case['status'],
-				self::getStatusText( $status ),
-				'Status: ' . $case['msg']
-			);
+
+		$this->assertSame(
+			$case['status'],
+			is_string( $case['status'] ) ? $this->getStatusText( $status ) : $status->isGood(),
+			$case['msg'] . ' (status "' . $this->getStatusText( $status ) . '")'
+		);
+
+		if ( !isset( $case['output'] ) ) {
+			$expected = is_string( $case['status'] )
+				? '{ "description": null, "params": {}, "sets": [], "maps": {}, "format": null }'
+				: $case['input'];
+			$this->assertStrictJsonEquals( $expected, $actual, $case['msg'] );
 		} else {
-			$this->assertEquals(
-				$case['status'],
-				$status->isGood(),
-				'Status: ' . $case['msg']
+			$this->assertStrictJsonEquals( $case['output'], $actual, $case['msg'] );
+
+			// Assert this case roundtrips properly by running through the output as input.
+			$t = TemplateDataBlob::newFromJSON( $this->db, $case['output'] );
+			/** @var TemplateDataBlob $t */
+			$t = TestingAccessWrapper::newFromObject( $t );
+			$status = $t->getStatus();
+
+			if ( !$status->isGood() ) {
+				$this->assertSame( $case['status'], $this->getStatusText( $status ),
+					'Roundtrip status: ' . $case['msg']
+				);
+			}
+			$this->assertStrictJsonEquals( $case['output'], $t->getJSON(),
+				'Roundtrip: ' . $case['msg']
 			);
 		}
-
-		$this->assertStrictJsonEquals(
-			$case['output'],
-			$actual,
-			$case['msg']
-		);
-
-		// Assert this case roundtrips properly by running through the output as input.
-
-		$t = TemplateDataBlob::newFromJSON( $this->db, $case['output'] );
-
-		$status = $t->getStatus();
-		if ( !$status->isGood() ) {
-			$this->assertEquals(
-				$case['status'],
-				self::getStatusText( $status ),
-				'Roundtrip status: ' . $case['msg']
-			);
-		}
-
-		$this->assertStrictJsonEquals(
-			$case['output'],
-			$t->getJSON(),
-			'Roundtrip: ' . $case['msg']
-		);
 	}
 
 	/**
@@ -691,20 +792,55 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 	 * MySQL breaks if the input is too large even after compression
 	 */
 	public function testParseLongString() {
-		if ( $this->db->getType() === 'mysql' ) {
-			$this->assertTemplateData(
-				[
-					// Should be long enough to trigger this condition after gzipping.
-					'input' => '{
-						"description": "' . self::generatePseudorandomString( 100000, 42 ) . '",
-						"params": {}
-					}',
-					'status' => 'Data too large to save (75,217 bytes, limit is 65,535)'
-				]
-			);
-		} else {
+		if ( $this->db->getType() !== 'mysql' ) {
 			$this->markTestSkipped( 'long compressed strings break on MySQL only' );
 		}
+
+		// Should be long enough to trigger this condition after gzipping.
+		$json = '{
+			"description": "' . $this->generatePseudorandomString( 100000, 42 ) . '",
+			"params": {}
+		}';
+		$templateData = TemplateDataBlob::newFromJSON( $this->db, $json );
+
+		$this->assertStringStartsWith(
+			'(templatedata-invalid-length: ',
+			$this->getStatusText( $templateData->getStatus() )
+		);
+	}
+
+	/**
+	 * @dataProvider provideInterfaceTexts
+	 */
+	public function testIsValidInterfaceText( $text, bool $expected ) {
+		/** @var TemplateDataValidator $validator */
+		$validator = TestingAccessWrapper::newFromObject(
+			new TemplateDataValidator()
+		);
+		$this->assertSame( $expected, $validator->isValidInterfaceText( $text ) );
+	}
+
+	public function provideInterfaceTexts() {
+		return [
+			// Invalid stuff
+			[ null, false ],
+			[ [], false ],
+			[ [ 'en' => 'example' ], false ],
+			[ (object)[], false ],
+			[ (object)[ null ], false ],
+			[ (object)[ 'en' => null ], false ],
+
+			[ 'example', true ],
+			[ (object)[ 'de' => 'Beispiel', 'en' => 'example' ], true ],
+
+			// Empty strings are allowed
+			[ '', true ],
+			[ (object)[ 'en' => '' ], true ],
+
+			// Language code can not be empty
+			[ (object)[ '' => 'example' ], false ],
+			[ (object)[ ' ' => 'example' ], false ],
+		];
 	}
 
 	/**
@@ -726,10 +862,10 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 		// up calling gzdecode().
 		$gzJson = gzencode( '{}' );
 		$templateData = TemplateDataBlob::newFromDatabase( $this->db, $gzJson );
-		$this->assertInstanceOf( 'TemplateDataBlob', $templateData );
+		$this->assertInstanceOf( TemplateDataBlob::class, $templateData );
 	}
 
-	public static function provideGetDataInLanguage() {
+	public function provideGetDataInLanguage() {
 		$cases = [
 			[
 				'input' => '{
@@ -852,6 +988,7 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 							"required": false,
 							"example": null,
 							"suggested": false,
+							"suggestedvalues": [],
 							"description": null,
 							"deprecated": false,
 							"aliases": [],
@@ -887,6 +1024,7 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 							"default": "French",
 							"required": false,
 							"suggested": false,
+							"suggestedvalues": [],
 							"description": null,
 							"deprecated": false,
 							"aliases": [],
@@ -923,6 +1061,7 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 							"label": null,
 							"required": false,
 							"suggested": false,
+							"suggestedvalues": [],
 							"description": null,
 							"example": null,
 							"deprecated": false,
@@ -963,6 +1102,7 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 							"label": null,
 							"required": false,
 							"suggested": false,
+							"suggestedvalues": [],
 							"description": null,
 							"example": null,
 							"deprecated": false,
@@ -1009,7 +1149,7 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 		$status = $t->getStatus();
 
 		$this->assertTrue(
-			$status->isGood() ?: self::getStatusText( $status ),
+			$status->isGood() ?: $this->getStatusText( $status ),
 			'Status is good: ' . $case['msg']
 		);
 
@@ -1021,7 +1161,7 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 		);
 	}
 
-	public static function provideParamOrder() {
+	public function provideParamOrder() {
 		$cases = [
 			[
 				'input' => '{
@@ -1039,6 +1179,7 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 							"label": null,
 							"required": false,
 							"suggested": false,
+							"suggestedvalues": [],
 							"description": null,
 							"example": null,
 							"deprecated": false,
@@ -1051,6 +1192,7 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 							"label": null,
 							"required": false,
 							"suggested": false,
+							"suggestedvalues": [],
 							"description": null,
 							"example": null,
 							"deprecated": false,
@@ -1063,6 +1205,7 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 							"label": null,
 							"required": false,
 							"suggested": false,
+							"suggestedvalues": [],
 							"description": null,
 							"example": null,
 							"deprecated": false,
@@ -1096,6 +1239,7 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 							"label": null,
 							"required": false,
 							"suggested": false,
+							"suggestedvalues": [],
 							"description": null,
 							"example": null,
 							"deprecated": false,
@@ -1108,6 +1252,7 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 							"label": null,
 							"required": false,
 							"suggested": false,
+							"suggestedvalues": [],
 							"description": null,
 							"example": null,
 							"deprecated": false,
@@ -1120,6 +1265,7 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 							"label": null,
 							"required": false,
 							"suggested": false,
+							"suggestedvalues": [],
 							"description": null,
 							"example": null,
 							"deprecated": false,
@@ -1138,6 +1284,10 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 				'msg' => 'Custom paramOrder'
 			],
 			[
+				'input' => '{ "params": {}, "paramOrder": {} }',
+				'status' => '(templatedata-invalid-type: paramOrder, array)',
+			],
+			[
 				'input' => '{
 					"params": {
 						"foo": {},
@@ -1147,7 +1297,7 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 					"paramOrder": ["foo", "bar"]
 				}
 				',
-				'status' => 'Required property "paramOrder[2]" not found.',
+				'status' => '(templatedata-invalid-missing: paramOrder[2])',
 				'msg' => 'Incomplete paramOrder'
 			],
 			[
@@ -1175,7 +1325,7 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 					"paramOrder": ["foo", "bar", "baz", "quux"]
 				}
 				',
-				'status' => 'Invalid value for property "paramOrder[3]".',
+				'status' => '(templatedata-invalid-value: paramOrder[3])',
 				'msg' => 'Unknown params in paramOrder'
 			],
 			[
@@ -1188,8 +1338,7 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 					"paramOrder": ["foo", "bar", "baz", "bar"]
 				}
 				',
-				'status' => 'Property "paramOrder[3]" ("bar") is a duplicate of ' .
-					'"paramOrder[1]".',
+				'status' => '(templatedata-invalid-duplicate-value: paramOrder[3], paramOrder[1], bar)',
 				'msg' => 'Duplicate params in paramOrder'
 			],
 		];
@@ -1208,10 +1357,13 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 	}
 
 	/**
+	 * @covers \MediaWiki\Extension\TemplateData\Api\ApiTemplateData
 	 * @dataProvider provideGetRawParams
 	 */
-	public function testGetRawParams( $inputWikitext, $expectedParams ) {
-		$params = TemplateDataBlob::getRawParams( $inputWikitext );
+	public function testGetRawParams( string $inputWikitext, array $expectedParams ) {
+		/** @var ApiTemplateData $api */
+		$api = TestingAccessWrapper::newFromObject( $this->createMock( ApiTemplateData::class ) );
+		$params = $api->getRawParams( $inputWikitext );
 		$this->assertArrayEquals( $expectedParams, $params, true, true );
 	}
 
@@ -1253,16 +1405,41 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 				'{{{!}} class=""',
 				[]
 			],
+			'Params within comments and nowiki tags' => [
+				'Lorem <!-- {{{name}}} --> ipsum <nowiki  > {{{middlename}}}' .
+					'</nowiki> <pre>{{{pre}}}</pre> {{{surname}}}',
+				[ 'surname' => [] ]
+			],
+			'Param within comments and param name outside with comment' => [
+				'Lorem {{{name<!--comment-->}}} ipsum <!--{{{surname}}}-->',
+				[ 'name' => [] ]
+			],
+			'safesubst: hack with an unnamed parameter' => [
+				'{{ {{{|safesubst:}}}#invoke:…|{{{1}}}|{{{ 1 }}}}}',
+				[ '1' => [] ]
+			],
+			'Characters impossible in parameter names' => [
+				'{{test|a|b=c|d=e=f}} {{{a|b}}} {{{d=e}}}',
+				[ 'a' => [] ]
+			],
+			'Characters that are, while technically possible, almost certainly a mistake' => [
+				"{{{a{a}}} {{{b}b}}} {{{c\nc}}}",
+				[]
+			],
+			'Table syntax escaped with {{!}}' => [
+				'{{{!}}\n! This is table syntax\n{{!}}}',
+				[]
+			],
 		];
 	}
 
-	public static function provideGetHtml() {
+	public function provideGetHtml() {
 		// phpcs:disable Generic.Files.LineLength.TooLong
 		yield 'No params' => [
 			[ 'params' => [ (object)[] ] ],
 			<<<HTML
-<div class="mw-templatedata-doc-wrap">
-<p class="mw-templatedata-doc-desc mw-templatedata-doc-muted">(templatedata-doc-desc-empty)</p>
+<section class="mw-templatedata-doc-wrap">
+<header><p class="mw-templatedata-doc-desc mw-templatedata-doc-muted">(templatedata-doc-desc-empty)</p></header>
 <table class="wikitable mw-templatedata-doc-params">
 	<caption><p>(templatedata-doc-params)</p></caption>
 	<thead><tr><th colspan="2">(templatedata-doc-param-name)</th><th>(templatedata-doc-param-desc)</th><th>(templatedata-doc-param-type)</th><th>(templatedata-doc-param-status)</th></tr></thead>
@@ -1272,49 +1449,104 @@ class TemplateDataBlobTest extends MediaWikiTestCase {
 		</tr>
 	</tbody>
 </table>
-</div>
+</section>
 HTML
 		];
 		yield 'Basic params' => [
 			[ 'params' => [ 'foo' => (object)[], 'bar' => [ 'required' => true ] ] ],
 			<<<HTML
-<div class="mw-templatedata-doc-wrap">
-<p class="mw-templatedata-doc-desc mw-templatedata-doc-muted">(templatedata-doc-desc-empty)</p>
+<section class="mw-templatedata-doc-wrap">
+<header><p class="mw-templatedata-doc-desc mw-templatedata-doc-muted">(templatedata-doc-desc-empty)</p></header>
 <table class="wikitable mw-templatedata-doc-params sortable">
 	<caption><p>(templatedata-doc-params)</p></caption>
 	<thead><tr><th colspan="2">(templatedata-doc-param-name)</th><th>(templatedata-doc-param-desc)</th><th>(templatedata-doc-param-type)</th><th>(templatedata-doc-param-status)</th></tr></thead>
 	<tbody>
 		<tr>
-			<th>Foo</th>
+			<th>foo</th>
 			<td class="mw-templatedata-doc-param-name"><code>foo</code></td>
-			<td class="mw-templatedata-doc-muted"><p>(templatedata-doc-param-desc-empty)</p><dl></dl></td>
+			<td><p class="mw-templatedata-doc-muted">(templatedata-doc-param-desc-empty)</p><dl></dl></td>
 			<td class="mw-templatedata-doc-param-type mw-templatedata-doc-muted">(templatedata-doc-param-type-unknown)</td>
-			<td>(templatedata-doc-param-status-optional)</td>
+			<td class="mw-templatedata-doc-param-status-optional" data-sort-value="0">(templatedata-doc-param-status-optional)</td>
 		</tr>
 		<tr>
-			<th>Bar</th>
+			<th>bar</th>
 			<td class="mw-templatedata-doc-param-name"><code>bar</code></td>
-			<td class="mw-templatedata-doc-muted"><p>(templatedata-doc-param-desc-empty)</p><dl></dl></td>
+			<td><p class="mw-templatedata-doc-muted">(templatedata-doc-param-desc-empty)</p><dl></dl></td>
 			<td class="mw-templatedata-doc-param-type mw-templatedata-doc-muted">(templatedata-doc-param-type-unknown)</td>
-			<td class="mw-templatedata-doc-param-status-required">(templatedata-doc-param-status-required)</td>
+			<td class="mw-templatedata-doc-param-status-required" data-sort-value="2">(templatedata-doc-param-status-required)</td>
 		</tr>
 	</tbody>
 </table>
-</div>
+</section>
+HTML
+		];
+		yield [
+			[ 'description' => 'Template docs', 'params' => [
+				'suggestedParam' => [
+					'label' => 'Label',
+					'description' => 'Param docs',
+					'aliases' => [ 'Alias1', 'Alias2' ],
+					'suggestedvalues' => [ 'Suggested1', 'Suggested2' ],
+					'suggested' => true,
+					'default' => 'Default docs',
+					'example' => 'Example docs',
+					'autovalue' => 'Auto value',
+				],
+				'deprecatedParam' => [ 'type' => 'date', 'deprecated' => true ],
+			] ],
+			<<<HTML
+<section class="mw-templatedata-doc-wrap">
+<header><p class="mw-templatedata-doc-desc">Template docs</p></header>
+<table class="wikitable mw-templatedata-doc-params sortable">
+	<caption><p>(templatedata-doc-params)</p></caption>
+	<thead><tr><th colspan="2">(templatedata-doc-param-name)</th><th>(templatedata-doc-param-desc)</th><th>(templatedata-doc-param-type)</th><th>(templatedata-doc-param-status)</th></tr></thead>
+	<tbody>
+		<tr>
+			<th>Label</th>
+			<td class="mw-templatedata-doc-param-name"><code>suggestedParam</code>(word-separator)<code class="mw-templatedata-doc-param-alias">Alias1</code>(word-separator)<code class="mw-templatedata-doc-param-alias">Alias2</code></td>
+			<td>
+				<p>Param docs</p>
+				<dl>
+					<dt>(templatedata-doc-param-suggestedvalues)</dt><dd><code>Suggested1</code>(word-separator)<code>Suggested2</code></dd>
+					<dt>(templatedata-doc-param-default)</dt><dd>Default docs</dd>
+					<dt>(templatedata-doc-param-example)</dt><dd>Example docs</dd>
+					<dt>(templatedata-doc-param-autovalue)</dt><dd><code>Auto value</code></dd>
+				</dl>
+			</td>
+			<td class="mw-templatedata-doc-param-type mw-templatedata-doc-muted">(templatedata-doc-param-type-unknown)</td>
+			<td class="mw-templatedata-doc-param-status-suggested" data-sort-value="1">(templatedata-doc-param-status-suggested)</td>
+		</tr>
+		<tr>
+			<th>deprecatedParam</th>
+			<td class="mw-templatedata-doc-param-name"><code>deprecatedParam</code></td>
+			<td><p class="mw-templatedata-doc-muted">(templatedata-doc-param-desc-empty)</p><dl></dl></td>
+			<td class="mw-templatedata-doc-param-type">(templatedata-doc-param-type-date)</td>
+			<td class="mw-templatedata-doc-param-status-deprecated" data-sort-value="-1">(templatedata-doc-param-status-deprecated)</td>
+		</tr>
+	</tbody>
+</table>
+</section>
 HTML
 		];
 	}
 
 	/**
+	 * @covers \MediaWiki\Extension\TemplateData\TemplateDataHtmlFormatter
 	 * @dataProvider provideGetHtml
 	 */
 	public function testGetHtml( array $data, $expected ) {
 		$t = TemplateDataBlob::newFromJSON( $this->db, json_encode( $data ) );
-		$actual = $t->getHtml( Language::factory( 'qqx' ) );
+		$localizer = new class implements MessageLocalizer {
+			public function msg( $key, ...$params ) {
+				return new RawMessage( "($key)" );
+			}
+		};
+		$formatter = new TemplateDataHtmlFormatter( $localizer );
+		$actual = $formatter->getHtml( $t );
 		$linedActual = preg_replace( '/>\s*</', ">\n<", $actual );
 
 		$linedExpected = preg_replace( '/>\s*</', ">\n<", trim( $expected ) );
 
-		$this->assertEquals( $linedExpected, $linedActual, 'html' );
+		$this->assertSame( $linedExpected, $linedActual );
 	}
 }

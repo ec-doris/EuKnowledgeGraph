@@ -15,6 +15,7 @@
 	"templatedata-doc-param-status-optional": "ვა რე უციო",
 	"templatedata-doc-param-status-required": "უციო",
 	"templatedata-doc-param-status-suggested": "მერზიებული",
+	"templatedata-doc-param-suggestedvalues": "მერზიებული შანულობეფი",
 	"templatedata-doc-param-type": "ტიპი",
 	"templatedata-doc-param-type-content": "დინორე",
 	"templatedata-doc-param-type-date": "თარიღი",
@@ -25,10 +26,12 @@
 	"templatedata-doc-param-type-unknown": "უჩინებუ",
 	"templatedata-doc-param-type-url": "URL",
 	"templatedata-doc-param-type-wiki-file-name": "ფაილი",
+	"templatedata-doc-param-type-wiki-page-name": "ხასჷლაშ ჯოხო",
 	"templatedata-doc-param-type-wiki-template-name": "თანგი",
 	"templatedata-doc-param-type-wiki-user-name": "მახვარებუ",
 	"templatedata-doc-params": "თანგიშ პარამეტრეფი",
 	"templatedata-editbutton": "TemplateData-შ მართუა",
 	"templatedata-exists-on-related-page": "გური ქუჩით: უკვე რე TemplateData-შ ბლოკი მერსხილი ხასჷლაშა „[[$1]]“.",
-	"templatedata-helplink": "ინფორმაცია TemplateData-შ გეშა"
+	"templatedata-helplink": "ინფორმაცია TemplateData-შ გეშა",
+	"templatedata-modal-button-map": "რუკაშ ძირაფა"
 }

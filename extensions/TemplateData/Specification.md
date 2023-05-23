@@ -2,12 +2,11 @@
 
 ## Living Standard
 
-<dl>
-  <dt>This version</dt>
-  <dd><a href="https://phabricator.wikimedia.org/diffusion/ETDA/browse/master/Specification.md">https://phabricator.wikimedia.org/diffusion/ETDA/browse/master/Specification.md</a></dd>
-  <dt>Editors</dt>
-  <dd>Timo Tijhof, Trevor Parscal, James D. Forrester, Marielle Volz, Moriel Schottlender, C.Scott Ananian, eranroz</dd>
-</dl>
+**This version**  
+https://phabricator.wikimedia.org/diffusion/ETDA/browse/master/Specification.md
+
+**Editors**  
+Timo Tijhof, Trevor Parscal, James D. Forrester, Marielle Volz, Moriel Schottlender, C.Scott Ananian, eranroz, Adam Wight
 
 ***
 
@@ -58,14 +57,14 @@ Requirements for non-Required ("optional") properties only apply if the property
 
 #### 3.1.2 `params`
 * Required
-* Value: `Object`
+* Value: `Object` containing `Param` objects, see 3.2
 
 Describes each of the template's parameters to a User.
 
 Authors MUST ensure that the `params` object maps parameter names to `Param` objects.
 
 #### 3.1.3 `paramOrder`
-* Value: `Array`
+* Value: `Array` of `string`
 
 The logical order of the parameters.
 
@@ -75,7 +74,7 @@ Consumers SHOULD display the parameters in this order.
 
 #### 3.1.4 `sets`
 * Required
-* Value: `Array`
+* Value: `Array` of `Set` objects, see 3.3
 
 List of groups of parameters that can be used together.
 
@@ -85,7 +84,7 @@ A Consumer MAY encourage users to interact with parameters in a `Set` together (
 
 #### 3.1.5 `maps`
 * Required
-* Value: `Object`
+* Value: `Object` containing `Map` objects, see 3.6
 
 An object describing which parameter(s) specific Consumers SHOULD use for some purpose.
 
@@ -98,7 +97,7 @@ Consumers that look for a `Map` SHOULD publicly document their identifier key.
 Authors MUST ensure that the `maps` object contains only `Map` objects. Authors MAY include a parameter in multiple `Map` objects. Authors are NOT REQUIRED to reference each parameter in at least one `Map` object.
 
 #### 3.1.6 `format`
-* Value: `null` or `FormatString` or `string` of either `'inline'` or `'block'`
+* Value: `null` or `FormatString` (see 3.7) or `string` of either `'inline'` or `'block'`
 * Default: `null`
 
 How the template's wikitext representation SHOULD be laid out. Authors MAY choose to use this parameter to express that a template will be better understood by other human readers of the wikitext representation if a template is in one form or the other.
@@ -164,7 +163,8 @@ Whether this parameter is discouraged from usage. Seting to `false` indicates th
 Authors are RECOMMENDED to, when marking a parameter as deprecated, provide a `string` of explanatory text describing why the parameter is deprecated (and what parameter or parameters the user should use instead). Alternatively, Authors MAY use the value `true` in absence of explanatory text.
 
 #### 3.2.6 `aliases`
-* Value: `Array`
+* Value: `Array` of `integer` or `string`
+* Default: `[]`
 
 An array of alternative names for the parameter.
 
@@ -173,7 +173,7 @@ Authors MUST NOT provide a `Param` object in `Root.params` for any alias. To des
 Consumers SHOULD display aliases where entered as secondary to the primary name.
 
 #### 3.2.7 `type`
-* Value: `Type`
+* Value: `Type`, see 3.4
 
 The kind of value the template expects to be associated with this parameter.
 
@@ -187,7 +187,7 @@ The key of another parameter from which this parameter will inherit properties. 
 Authors MUST ensure that the value matches the key of a `Param` object in `Root.params`.
 
 #### 3.2.9 `autovalue`
-* Value: `string`
+* Value: `null` or `string`
 
 A dynamically-generated default value in wikitext, such as today's date or the editing user's name; this will often involve wikitext substitution, such as `{{subst:CURRENTYEAR}}`.
 
@@ -200,7 +200,17 @@ The default value in wikitext (or description thereof) of a parameter as assumed
 
 Consumers SHOULD indicate this default value to the user when inserting or editing a template.
 
-#### 3.2.11 `example`
+#### 3.2.11 `suggestedvalues`
+* Value: `Array` of `string`
+* Default: `[]`
+
+A list of commonly used, suggested values.
+
+Consumers SHOULD provide this list to the user when filling out the field, but MAY implement suggested values only for some field types.
+
+Consumers MUST allow the user to enter free-form values not on this list.
+
+#### 3.2.12 `example`
 * Value: `null` or `InterfaceText`
 
 An example text for the parameter, to help users fill in the proper value.
@@ -218,13 +228,13 @@ Authors are RECOMMENDED to ensure these are unique and distinguishable from othe
 
 #### 3.3.2 params
 * Required
-* Value: `Array`
+* Value: `Array` of `string`
 
 A list of one or more `Root.params` keys.
 
 ### 3.4 Type
 * Value: `string`
-* Default: `"unknown"`
+* Default: `'unknown'`
 
 One of the following:
 
@@ -296,9 +306,9 @@ To format a template invocation according to the format string, first split it i
 
 Begin with `StartFormat`, and replace the `Hole` with the name of the template to create the "output string".  If `StartFormat` begins with a newline and template is already at the start of a line (the character preceding this template invocation is a newline or the template is at the start of the output), delete the initial newline from the output string.
 
-For each parameter, if `ParameterFormat` begins with a newline and the last character in the output string is a newline, then delete the last character in the output string.  Then append `ParameterFormat` to the output string after replacing the first `Hole` with the name of the parameter and the second `Hole` with the value of the parameter.
+For each parameter, if `ParameterFormat` begins with a newline and the last line in the output string is nothing but whitespace and comments, then delete the newline from the beginning of the `ParameterFormat`.  Then append `ParameterFormat` to the output string after replacing the first `Hole` with the name of the parameter and the second `Hole` with the value of the parameter.
 
-Finally, if `EndFormat` begins with a newline and the last character in the output string is a newline, then delete the last character in the output string.  Append the `EndFormat` to the output string.
+Finally, if `EndFormat` begins with a newline and the last line in the output string is nothing but whitespace and comments, then delete the newline from the beginning of the `EndFormat`.  Or, if there were no parameters, also delete the newline from the beginning of the `EndFormat`.  Append the `EndFormat` to the output string.
 
 Some example format strings:
 
@@ -312,8 +322,7 @@ Block formatting: `{{_\n| _ = _\n}}`
 {{Foo
 | bar = baz
 | qux = quux
-}}{{Bar
-}}
+}}{{Bar}}
 ```
 
 No space before the parameter name, each template on its own line: `\n{{_\n|_ = _\n}}\n`
@@ -322,8 +331,7 @@ No space before the parameter name, each template on its own line: `\n{{_\n|_ = 
 |bar = baz
 |qux = quux
 }}
-{{Bar
-}}
+{{Bar}}
 ```
 
 Indent each parameter: `{{_\n |_ = _\n}}`
@@ -331,8 +339,7 @@ Indent each parameter: `{{_\n |_ = _\n}}`
 {{Foo
  |bar = baz
  |qux = quux
-}}{{Bar
-}}
+}}{{Bar}}
 ```
 
 Align all parameter names to a given length: `{{_\n|_______________ = _\n}}\n`
@@ -342,8 +349,7 @@ Align all parameter names to a given length: `{{_\n|_______________ = _\n}}\n`
 |qux             = quux
 |veryverylongparameter = bat
 }}
-{{Bar
-}}
+{{Bar}}
 ```
 
 Pipe characters at the end of the previous line: `{{_|\n  _______________ = _}}`
@@ -363,7 +369,7 @@ Inline style with more spaces, must be at start of line: `\n{{_ | _ = _}}`
 
 ### 4.1 The "Unsigned" template
 
-<pre lang="json">
+```json
 {
 	"description": "Label unsigned comments in a conversation.",
 	"params": {
@@ -418,11 +424,11 @@ Inline style with more spaces, must be at start of line: `\n{{_ | _ = _}}`
 		}
 	}
 }
-</pre>
+```
 
 Example transclusions
-<pre>
+```
 {{unsigned|JohnDoe|2012-10-18}}
 
 {{unsigned|user=JohnDoe|year=2012|month=10|day=18|comment=blabla}}
-</pre>
+```

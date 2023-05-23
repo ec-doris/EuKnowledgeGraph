@@ -1,18 +1,31 @@
 <?php
 
+namespace MediaWiki\Extension\TemplateStyles;
+
 /**
  * @file
  * @license GPL-2.0-or-later
  */
 
+use Config;
+use ContentHandler;
+use ExtensionRegistry;
+use Hooks as MWHooks;
+use Html;
+use InvalidArgumentException;
+use MapCacheLRU;
+use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\SlotRecord;
+use Parser;
+use PPFrame;
+use Title;
 use Wikimedia\CSS\Grammar\CheckedMatcher;
 use Wikimedia\CSS\Grammar\GrammarMatch;
 use Wikimedia\CSS\Grammar\MatcherFactory;
+use Wikimedia\CSS\Objects\ComponentValue;
 use Wikimedia\CSS\Objects\ComponentValueList;
 use Wikimedia\CSS\Objects\Token;
 use Wikimedia\CSS\Parser\Parser as CSSParser;
-use Wikimedia\CSS\Sanitizer\FontFeatureValuesAtRuleSanitizer;
 use Wikimedia\CSS\Sanitizer\KeyframesAtRuleSanitizer;
 use Wikimedia\CSS\Sanitizer\MediaAtRuleSanitizer;
 use Wikimedia\CSS\Sanitizer\NamespaceAtRuleSanitizer;
@@ -26,10 +39,7 @@ use Wikimedia\CSS\Sanitizer\SupportsAtRuleSanitizer;
 /**
  * TemplateStyles extension hooks
  */
-class TemplateStylesHooks {
-
-	/** @var Config|null */
-	private static $config = null;
+class Hooks {
 
 	/** @var MatcherFactory|null */
 	private static $matcherFactory = null;
@@ -41,29 +51,22 @@ class TemplateStylesHooks {
 	private static $wrappers = [];
 
 	/**
-	 * Get our Config
 	 * @return Config
 	 * @codeCoverageIgnore
 	 */
 	public static function getConfig() {
-		if ( !self::$config ) {
-			self::$config = \MediaWiki\MediaWikiServices::getInstance()
-				->getConfigFactory()
-				->makeConfig( 'templatestyles' );
-		}
-		return self::$config;
+		return MediaWikiServices::getInstance()->getConfigFactory()
+			->makeConfig( 'templatestyles' );
 	}
 
 	/**
-	 * Get our MatcherFactory
 	 * @return MatcherFactory
 	 * @codeCoverageIgnore
 	 */
 	private static function getMatcherFactory() {
 		if ( !self::$matcherFactory ) {
-			$config = self::getConfig();
 			self::$matcherFactory = new TemplateStylesMatcherFactory(
-				$config->get( 'TemplateStylesAllowedUrls' )
+				self::getConfig()->get( 'TemplateStylesAllowedUrls' )
 			);
 		}
 		return self::$matcherFactory;
@@ -72,7 +75,7 @@ class TemplateStylesHooks {
 	/**
 	 * Validate an extra wrapper-selector
 	 * @param string $wrapper
-	 * @return Token[]|false Token representation of the selector, or false on failure
+	 * @return ComponentValue[]|false Representation of the selector, or false on failure
 	 */
 	private static function validateExtraWrapper( $wrapper ) {
 		if ( !isset( self::$wrappers[$wrapper] ) ) {
@@ -84,13 +87,12 @@ class TemplateStylesHooks {
 				$match = self::getMatcherFactory()->cssSimpleSelectorSeq()
 					->matchAgainst( $components, [ 'mark-significance' => true ] );
 			}
-			self::$wrappers[$wrapper] = $match ? $components->toTokenArray() : false;
+			self::$wrappers[$wrapper] = $match ? $components->toComponentValueArray() : false;
 		}
 		return self::$wrappers[$wrapper];
 	}
 
 	/**
-	 * Get our Sanitizer
 	 * @param string $class Class to limit selectors to
 	 * @param string|null $extraWrapper Extra selector to limit selectors to
 	 * @return Sanitizer
@@ -104,13 +106,13 @@ class TemplateStylesHooks {
 			$propertySanitizer = new StylePropertySanitizer( $matcherFactory );
 			$propertySanitizer->setKnownProperties( array_diff_key(
 				$propertySanitizer->getKnownProperties(),
-				array_flip( $config->get( 'TemplateStylesPropertyBlacklist' ) )
+				array_flip( $config->get( 'TemplateStylesDisallowedProperties' ) )
 			) );
-			Hooks::run( 'TemplateStylesPropertySanitizer', [ &$propertySanitizer, $matcherFactory ] );
+			MWHooks::run( 'TemplateStylesPropertySanitizer', [ &$propertySanitizer, $matcherFactory ] );
 
 			$htmlOrBodySimpleSelectorSeqMatcher = new CheckedMatcher(
 				$matcherFactory->cssSimpleSelectorSeq(),
-				function ( ComponentValueList $values, GrammarMatch $match, array $options ) {
+				static function ( ComponentValueList $values, GrammarMatch $match, array $options ) {
 					foreach ( $match->getCapturedMatches() as $m ) {
 						if ( $m->getName() !== 'element' ) {
 							continue;
@@ -127,18 +129,19 @@ class TemplateStylesHooks {
 				new Token( Token::T_IDENT, $class ),
 			];
 			if ( $extraWrapper !== null ) {
-				$extraTokens = self::validateExtraWrapper( $extraWrapper );
-				if ( !$extraTokens ) {
+				$extraComponentValues = self::validateExtraWrapper( $extraWrapper );
+				if ( !$extraComponentValues ) {
 					throw new InvalidArgumentException( "Invalid value for \$extraWrapper: $extraWrapper" );
 				}
 				$prependSelectors = array_merge(
 					$prependSelectors,
 					[ new Token( Token::T_WHITESPACE, [ 'significant' => true ] ) ],
-					$extraTokens
+					$extraComponentValues
 				);
 			}
 
-			$atRuleBlacklist = array_flip( $config->get( 'TemplateStylesAtRuleBlacklist' ) );
+			$disallowedAtRules = $config->get( 'TemplateStylesDisallowedAtRules' );
+
 			$ruleSanitizers = [
 				'styles' => new StyleRuleSanitizer(
 					$matcherFactory->cssSelectorList(),
@@ -149,7 +152,6 @@ class TemplateStylesHooks {
 					]
 				),
 				'@font-face' => new TemplateStylesFontFaceAtRuleSanitizer( $matcherFactory ),
-				'@font-feature-values' => new FontFeatureValuesAtRuleSanitizer( $matcherFactory ),
 				'@keyframes' => new KeyframesAtRuleSanitizer( $matcherFactory, $propertySanitizer ),
 				'@page' => new PageAtRuleSanitizer( $matcherFactory, $propertySanitizer ),
 				'@media' => new MediaAtRuleSanitizer( $matcherFactory->cssMediaQueryList() ),
@@ -157,11 +159,13 @@ class TemplateStylesHooks {
 					'declarationSanitizer' => $propertySanitizer,
 				] ),
 			];
-			$ruleSanitizers = array_diff_key( $ruleSanitizers, $atRuleBlacklist );
-			if ( isset( $ruleSanitizers['@media'] ) ) { // In case @media was blacklisted
+			$ruleSanitizers = array_diff_key( $ruleSanitizers, array_flip( $disallowedAtRules ) );
+			if ( isset( $ruleSanitizers['@media'] ) ) {
+				// In case @media was disallowed
 				$ruleSanitizers['@media']->setRuleSanitizers( $ruleSanitizers );
 			}
-			if ( isset( $ruleSanitizers['@supports'] ) ) { // In case @supports was blacklisted
+			if ( isset( $ruleSanitizers['@supports'] ) ) {
+				// In case @supports was disallowed
 				$ruleSanitizers['@supports']->setRuleSanitizers( $ruleSanitizers );
 			}
 
@@ -169,9 +173,9 @@ class TemplateStylesHooks {
 				// Omit @import, it's not secure. Maybe someday we'll make an "@-mw-import" or something.
 				'@namespace' => new NamespaceAtRuleSanitizer( $matcherFactory ),
 			];
-			$allRuleSanitizers = array_diff_key( $allRuleSanitizers, $atRuleBlacklist );
+			$allRuleSanitizers = array_diff_key( $allRuleSanitizers, $disallowedAtRules );
 			$sanitizer = new StylesheetSanitizer( $allRuleSanitizers );
-			Hooks::run( 'TemplateStylesStylesheetSanitizer',
+			MWHooks::run( 'TemplateStylesStylesheetSanitizer',
 				[ &$sanitizer, $propertySanitizer, $matcherFactory ]
 			);
 			self::$sanitizers[$key] = $sanitizer;
@@ -197,13 +201,10 @@ class TemplateStylesHooks {
 	/**
 	 * Add `<templatestyles>` to the parser.
 	 * @param Parser $parser Parser object being cleared
-	 * @return bool
 	 */
 	public static function onParserFirstCallInit( Parser $parser ) {
-		$parser->setHook( 'templatestyles', 'TemplateStylesHooks::handleTag' );
-		/** @phan-suppress-next-line PhanUndeclaredProperty */
+		$parser->setHook( 'templatestyles', [ __CLASS__, 'handleTag' ] );
 		$parser->extTemplateStylesCache = new MapCacheLRU( 100 ); // 100 is arbitrary
-		return true;
 	}
 
 	/**
@@ -252,21 +253,21 @@ class TemplateStylesHooks {
 	 * @param Parser $parser
 	 */
 	public static function onParserClearState( Parser $parser ) {
-		/** @phan-suppress-next-line PhanUndeclaredProperty */
 		$parser->extTemplateStylesCache->clear();
 	}
 
 	/**
 	 * Parser hook for `<templatestyles>`
 	 * @param string $text Contents of the tag (ignored).
-	 * @param array $params Tag attributes
+	 * @param string[] $params Tag attributes
 	 * @param Parser $parser
 	 * @param PPFrame $frame
 	 * @return string HTML
 	 * @suppress SecurityCheck-XSS
 	 */
 	public static function handleTag( $text, $params, $parser, $frame ) {
-		if ( self::getConfig()->get( 'TemplateStylesDisable' ) ) {
+		$config = self::getConfig();
+		if ( $config->get( 'TemplateStylesDisable' ) ) {
 			return '';
 		}
 
@@ -286,7 +287,7 @@ class TemplateStylesHooks {
 		// situation. We can't allow for subpage syntax like src="/styles.css"
 		// or the like, though, because stuff like substing and Parsoid would
 		// wind up wanting to make that relative to the wrong page.
-		$title = Title::newFromText( $params['src'], NS_TEMPLATE );
+		$title = Title::newFromText( $params['src'], $config->get( 'TemplateStylesDefaultNamespace' ) );
 		if ( !$title ) {
 			return self::formatTagError( $parser, [ 'templatestyles-invalid-src' ] );
 		}
@@ -341,20 +342,25 @@ class TemplateStylesHooks {
 		}
 
 		// Already cached?
-		/** @phan-suppress-next-line PhanUndeclaredProperty */
 		if ( $parser->extTemplateStylesCache->has( $cacheKey ) ) {
-			/** @phan-suppress-next-line PhanUndeclaredProperty */
 			return $parser->extTemplateStylesCache->get( $cacheKey );
 		}
 
 		$targetDir = $parser->getTargetLanguage()->getDir();
 		$contentDir = $parser->getContentLanguage()->getDir();
-		$status = $content->sanitize( [
-			'flip' => $targetDir !== $contentDir,
-			'minify' => !ResourceLoader::inDebugMode(),
-			'class' => $wrapClass,
-			'extraWrapper' => $extraWrapper,
-		] );
+
+		$contentHandlerFactory = MediaWikiServices::getInstance()->getContentHandlerFactory();
+		$contentHandler = $contentHandlerFactory->getContentHandler( $content->getModel() );
+		'@phan-var TemplateStylesContentHandler $contentHandler';
+		$status = $contentHandler->sanitize(
+			$content,
+			[
+				'flip' => $targetDir !== $contentDir,
+				'minify' => true,
+				'class' => $wrapClass,
+				'extraWrapper' => $extraWrapper,
+			]
+		);
 		$style = $status->isOk() ? $status->getValue() : '/* Fatal error, no CSS will be output */';
 
 		// Prepend errors. This should normally never happen, but might if an
@@ -378,14 +384,13 @@ class TemplateStylesHooks {
 		// Hide the CSS from Parser::doBlockLevels
 		$marker = Parser::MARKER_PREFIX . '-templatestyles-' .
 			sprintf( '%08X', $parser->mMarkerIndex++ ) . Parser::MARKER_SUFFIX;
-		$parser->mStripState->addNoWiki( $marker, $style );
+		$parser->getStripState()->addNoWiki( $marker, $style );
 
 		// Return the inline <style>, which the Parser will wrap in a 'general'
 		// strip marker.
 		$ret = Html::inlineStyle( $marker, 'all', [
 			'data-mw-deduplicate' => "TemplateStyles:$cacheKey",
 		] );
-		/** @phan-suppress-next-line PhanUndeclaredProperty */
 		$parser->extTemplateStylesCache->set( $cacheKey, $ret );
 		return $ret;
 	}
@@ -399,7 +404,7 @@ class TemplateStylesHooks {
 	private static function formatTagError( Parser $parser, array $msg ) {
 		$parser->addTrackingCategory( 'templatestyles-page-error-category' );
 		return '<strong class="error">' .
-			call_user_func_array( 'wfMessage', $msg )->inContentLanguage()->parse() .
+			wfMessage( ...$msg )->inContentLanguage()->parse() .
 			'</strong>';
 	}
 

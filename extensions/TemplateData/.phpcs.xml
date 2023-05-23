@@ -1,15 +1,10 @@
 <?xml version="1.0"?>
 <ruleset>
 	<rule ref="./vendor/mediawiki/mediawiki-codesniffer/MediaWiki">
-		<exclude name="MediaWiki.Commenting.FunctionComment.MissingDocumentationPrivate" />
-		<exclude name="MediaWiki.Commenting.FunctionComment.MissingDocumentationPublic" />
-		<exclude name="MediaWiki.Commenting.FunctionComment.MissingParamTag" />
-		<exclude name="MediaWiki.Commenting.FunctionComment.MissingReturn" />
-		<exclude name="MediaWiki.Commenting.FunctionComment.ObjectTypeHintReturn" />
 		<exclude name="MediaWiki.WhiteSpace.SpaceBeforeSingleLineComment.NewLineComment" />
-		<exclude name="PSR12.Functions.ReturnTypeDeclaration.SpaceBeforeColon" />
 	</rule>
 	<file>.</file>
 	<arg name="extensions" value="php" />
 	<arg name="encoding" value="UTF-8" />
+	<exclude-pattern>.phan/stubs</exclude-pattern>
 </ruleset>

@@ -1,3 +1,5 @@
+var LanguageResultWidget = require( './LanguageResultWidget.js' );
+
 /**
  * Creates a TemplateDataLanguageSearchWidget object.
  * This is a copy of ve.ui.LanguageSearchWidget.
@@ -8,53 +10,45 @@
  * @constructor
  * @param {Object} [config] Configuration options
  */
-mw.TemplateData.LanguageSearchWidget = function mwTemplateDataLanguageSearchWidget( config ) {
-	var i, l, languageCode, languageCodes;
-
+function LanguageSearchWidget( config ) {
 	// Configuration initialization
 	config = $.extend( {
 		placeholder: mw.msg( 'templatedata-modal-search-input-placeholder' )
 	}, config );
 
 	// Parent constructor
-	mw.TemplateData.LanguageSearchWidget.parent.call( this, config );
+	LanguageSearchWidget.parent.call( this, config );
 
 	// Properties
-	this.languageResultWidgets = [];
 	this.filteredLanguageResultWidgets = [];
-
-	languageCodes = Object.keys( $.uls.data.getAutonyms() ).sort();
-
-	for ( i = 0, l = languageCodes.length; i < l; i++ ) {
-		languageCode = languageCodes[ i ];
-		this.languageResultWidgets.push(
-			new mw.TemplateData.LanguageResultWidget( {
-				data: {
-					code: languageCode,
-					name: $.uls.data.getAutonym( languageCode ),
-					autonym: $.uls.data.getAutonym( languageCode )
-				}
-			} )
-		);
-	}
+	var languageCodes = Object.keys( $.uls.data.getAutonyms() ).sort();
+	this.languageResultWidgets = languageCodes.map( function ( languageCode ) {
+		return new LanguageResultWidget( {
+			data: {
+				code: languageCode,
+				name: $.uls.data.getAutonym( languageCode ),
+				autonym: $.uls.data.getAutonym( languageCode )
+			}
+		} );
+	} );
 	this.setAvailableLanguages();
 
 	// Initialization
 	this.$element.addClass( 'tdg-languageSearchWidget' );
-};
+}
 
 /* Inheritance */
 
-OO.inheritClass( mw.TemplateData.LanguageSearchWidget, OO.ui.SearchWidget );
+OO.inheritClass( LanguageSearchWidget, OO.ui.SearchWidget );
 
 /* Methods */
 
 /**
  * FIXME: this should be inheritdoc
  */
-mw.TemplateData.LanguageSearchWidget.prototype.onQueryChange = function () {
+LanguageSearchWidget.prototype.onQueryChange = function () {
 	// Parent method
-	mw.TemplateData.LanguageSearchWidget.parent.prototype.onQueryChange.apply( this, arguments );
+	LanguageSearchWidget.parent.prototype.onQueryChange.apply( this, arguments );
 
 	// Populate
 	this.addResults();
@@ -63,33 +57,30 @@ mw.TemplateData.LanguageSearchWidget.prototype.onQueryChange = function () {
 /**
  * Set available languages to show
  *
- * @param {string[]} availableLanguages Available language codes to show, all if undefined
+ * @param {string[]} [availableLanguages] Available language codes to show, all if undefined
  */
-mw.TemplateData.LanguageSearchWidget.prototype.setAvailableLanguages = function ( availableLanguages ) {
-	var i, iLen, languageResult, data;
-
+LanguageSearchWidget.prototype.setAvailableLanguages = function ( availableLanguages ) {
 	if ( !availableLanguages ) {
 		this.filteredLanguageResultWidgets = this.languageResultWidgets.slice();
 		return;
 	}
 
-	this.filteredLanguageResultWidgets = [];
-
-	for ( i = 0, iLen = this.languageResultWidgets.length; i < iLen; i++ ) {
-		languageResult = this.languageResultWidgets[ i ];
-		data = languageResult.getData();
+	this.filteredLanguageResultWidgets = this.languageResultWidgets.map( function ( languageResult ) {
+		var data = languageResult.getData();
 		if ( availableLanguages.indexOf( data.code ) !== -1 ) {
-			this.filteredLanguageResultWidgets.push( languageResult );
+			return languageResult;
 		}
-	}
+		return null;
+	} ).filter( function ( languageResult ) {
+		return languageResult;
+	} );
 };
 
 /**
  * Update search results from current query
  */
-mw.TemplateData.LanguageSearchWidget.prototype.addResults = function () {
-	var i, iLen, j, jLen, languageResult, data, matchedProperty,
-		matchProperties = [ 'name', 'autonym', 'code' ],
+LanguageSearchWidget.prototype.addResults = function () {
+	var matchProperties = [ 'name', 'autonym', 'code' ],
 		query = this.query.getValue().trim(),
 		compare = window.Intl && Intl.Collator ?
 			new Intl.Collator( this.lang, { sensitivity: 'base' } ).compare :
@@ -99,17 +90,17 @@ mw.TemplateData.LanguageSearchWidget.prototype.addResults = function () {
 
 	this.results.clearItems();
 
-	for ( i = 0, iLen = this.filteredLanguageResultWidgets.length; i < iLen; i++ ) {
-		languageResult = this.filteredLanguageResultWidgets[ i ];
-		data = languageResult.getData();
-		matchedProperty = null;
+	this.filteredLanguageResultWidgets.forEach( function ( languageResult ) {
+		var data = languageResult.getData();
+		var matchedProperty = null;
 
-		for ( j = 0, jLen = matchProperties.length; j < jLen; j++ ) {
-			if ( data[ matchProperties[ j ] ] && compare( data[ matchProperties[ j ] ].slice( 0, query.length ), query ) === 0 ) {
-				matchedProperty = matchProperties[ j ];
-				break;
+		matchProperties.some( function ( prop ) {
+			if ( data[ prop ] && compare( data[ prop ].slice( 0, query.length ), query ) === 0 ) {
+				matchedProperty = prop;
+				return true;
 			}
-		}
+			return false;
+		} );
 
 		if ( query === '' || matchedProperty ) {
 			items.push(
@@ -119,10 +110,12 @@ mw.TemplateData.LanguageSearchWidget.prototype.addResults = function () {
 					.setHighlighted( false )
 			);
 		}
-	}
+	} );
 
 	this.results.addItems( items );
 	if ( hasQuery ) {
 		this.results.highlightItem( this.results.findFirstSelectableItem() );
 	}
 };
+
+module.exports = LanguageSearchWidget;

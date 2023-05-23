@@ -1,0 +1,16 @@
+{
+	"root": true,
+	"env": {
+		"commonjs": true
+	},
+	"extends": [
+		"wikimedia/client-es5",
+		"wikimedia/jquery",
+		"wikimedia/mediawiki"
+	],
+	"rules": {
+		"max-len": "off",
+		"no-shadow": "warn",
+		"compat/compat": "warn"
+	}
+}

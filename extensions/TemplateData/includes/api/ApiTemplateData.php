@@ -6,7 +6,19 @@
  * @file
  */
 
-use MediaWiki\Revision\RevisionRecord;
+namespace MediaWiki\Extension\TemplateData\Api;
+
+use ApiBase;
+use ApiContinuationManager;
+use ApiFormatBase;
+use ApiPageSet;
+use ApiResult;
+use ExtensionRegistry;
+use MediaWiki\Extension\EventLogging\EventLogging;
+use MediaWiki\Extension\TemplateData\TemplateDataBlob;
+use MediaWiki\MediaWikiServices;
+use TextContent;
+use Wikimedia\ParamValidator\ParamValidator;
 
 /**
  * @ingroup API
@@ -38,14 +50,18 @@ class ApiTemplateData extends ApiBase {
 	/**
 	 * @return ApiPageSet
 	 */
-	private function getPageSet() {
+	private function getPageSet(): ApiPageSet {
 		if ( $this->mPageSet === null ) {
 			$this->mPageSet = new ApiPageSet( $this );
 		}
 		return $this->mPageSet;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public function execute() {
+		$services = MediaWikiServices::getInstance();
 		$params = $this->extractRequestParams();
 		$result = $this->getResult();
 
@@ -54,9 +70,8 @@ class ApiTemplateData extends ApiBase {
 
 		if ( $params['lang'] === null ) {
 			$langCode = false;
-		} elseif ( !Language::isValidCode( $params['lang'] ) ) {
+		} elseif ( !$services->getLanguageNameUtils()->isValidCode( $params['lang'] ) ) {
 			$this->dieWithError( [ 'apierror-invalidlang', 'lang' ] );
-			throw new LogicException();
 		} else {
 			$langCode = $params['lang'];
 		}
@@ -74,7 +89,7 @@ class ApiTemplateData extends ApiBase {
 
 		if ( !$titles && ( !$includeMissingTitles || !$missingTitles ) ) {
 			$result->addValue( null, 'pages', (object)[] );
-			$this->setContinuationManager( null );
+			$this->setContinuationManager();
 			$continuationManager->setContinuationIntoResult( $this->getResult() );
 			return;
 		}
@@ -93,14 +108,16 @@ class ApiTemplateData extends ApiBase {
 
 		if ( $titles ) {
 			$db = $this->getDB();
-			$res = $db->select( 'page_props',
-				[ 'pp_page', 'pp_value' ], [
+			$res = $db->newSelectQueryBuilder()
+				->from( 'page_props' )
+				->fields( [ 'pp_page', 'pp_value' ] )
+				->where( [
 					'pp_page' => array_keys( $titles ),
 					'pp_propname' => 'templatedata'
-				],
-				__METHOD__,
-				[ 'ORDER BY' => 'pp_page' ]
-			);
+				] )
+				->orderBy( 'pp_page' )
+				->caller( __METHOD__ )
+				->fetchResultSet();
 
 			foreach ( $res as $row ) {
 				$rawData = $row->pp_value;
@@ -121,10 +138,9 @@ class ApiTemplateData extends ApiBase {
 
 				// HACK: don't let ApiResult's formatversion=1 compatibility layer mangle our booleans
 				// to empty strings / absent properties
-				foreach ( $data->params as &$param ) {
+				foreach ( $data->params as $param ) {
 					$param->{ApiResult::META_BC_BOOLS} = [ 'required', 'suggested', 'deprecated' ];
 				}
-				unset( $param );
 
 				$data->params->{ApiResult::META_TYPE} = 'kvp';
 				$data->params->{ApiResult::META_KVP_KEY_NAME} = 'key';
@@ -142,6 +158,8 @@ class ApiTemplateData extends ApiBase {
 			}
 		}
 
+		$wikiPageFactory = $services->getWikiPageFactory();
+
 		// Now go through all the titles again, and attempt to extract parameter names from the
 		// wikitext for templates with no templatedata.
 		if ( $includeMissingTitles ) {
@@ -150,13 +168,32 @@ class ApiTemplateData extends ApiBase {
 					// Ignore pages that already have templatedata or that don't exist.
 					continue;
 				}
-				$content = WikiPage::factory( $pageInfo['title'] )
-					->getContent( RevisionRecord::FOR_PUBLIC )
-					->getNativeData();
-				$resp[ $pageId ][ 'params' ] = TemplateDataBlob::getRawParams( $content );
+
+				$content = $wikiPageFactory->newFromTitle( $pageInfo['title'] )->getContent();
+				$text = $content instanceof TextContent
+					? $content->getText()
+					: $content->getTextForSearchIndex();
+				$resp[$pageId]['params'] = $this->getRawParams( $text );
 			}
 		}
 
+		// TODO tracking will only be implemented temporarily to answer questions on
+		// template usage for the Technical Wishes topic area see T258917
+		if ( ExtensionRegistry::getInstance()->isLoaded( 'EventLogging' ) ) {
+			foreach ( $resp as $pageInfo ) {
+				EventLogging::logEvent(
+					'TemplateDataApi',
+					-1,
+					[
+						'template_name' => $wikiPageFactory->newFromTitle( $pageInfo['title'] )
+							->getTitle()->getDBkey(),
+						'has_template_data' => !isset( $pageInfo['notemplatedata'] ),
+					]
+				);
+			}
+		}
+
+		$pageSet->populateGeneratorData( $resp );
 		ApiResult::setArrayType( $resp, 'kvp', 'id' );
 		ApiResult::setIndexedTagName( $resp, 'page' );
 
@@ -172,21 +209,55 @@ class ApiTemplateData extends ApiBase {
 			$result->addValue( null, 'redirects', $redirects );
 		}
 
-		$this->setContinuationManager( null );
+		$this->setContinuationManager();
 		$continuationManager->setContinuationIntoResult( $this->getResult() );
 	}
 
+	/**
+	 * Get parameter descriptions from raw wikitext (used for templates that have no templatedata).
+	 * @param string $wikitext The text to extract parameters from.
+	 * @return array[] Parameter info in the same format as the templatedata 'params' key.
+	 */
+	private function getRawParams( string $wikitext ): array {
+		// Ignore non-wikitext content in comments and wikitext-escaping tags
+		$wikitext = preg_replace( '/<!--.*?-->/s', '', $wikitext );
+		$wikitext = preg_replace( '/<nowiki\s*>.*?<\/nowiki\s*>/s', '', $wikitext );
+		$wikitext = preg_replace( '/<pre\s*>.*?<\/pre\s*>/s', '', $wikitext );
+
+		// This regex matches the one in ext.TemplateDataGenerator.sourceHandler.js
+		if ( !preg_match_all( '/{{{+([^\n#={|}]*?)([<|]|}}})/m', $wikitext, $rawParams ) ) {
+			return [];
+		}
+
+		$params = [];
+		$normalizedParams = [];
+		foreach ( $rawParams[1] as $rawParam ) {
+			// This normalization process is repeated in JS in ext.TemplateDataGenerator.sourceHandler.js
+			$normalizedParam = strtolower( trim( preg_replace( '/[-_ ]+/', ' ', $rawParam ) ) );
+			if ( !$normalizedParam || in_array( $normalizedParam, $normalizedParams ) ) {
+				// This or a similarly-named parameter has already been found.
+				continue;
+			}
+			$normalizedParams[] = $normalizedParam;
+			$params[ trim( $rawParam ) ] = [];
+		}
+		return $params;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public function getAllowedParams( $flags = 0 ) {
 		$result = [
 			'includeMissingTitles' => [
-				ApiBase::PARAM_TYPE => 'boolean',
+				ParamValidator::PARAM_TYPE => 'boolean',
 			],
 			'doNotIgnoreMissingTitles' => [
-				ApiBase::PARAM_TYPE => 'boolean',
-				ApiBase::PARAM_DEPRECATED => true,
+				ParamValidator::PARAM_TYPE => 'boolean',
+				ParamValidator::PARAM_DEPRECATED => true,
 			],
 			'lang' => [
-				ApiBase::PARAM_TYPE => 'string',
+				ParamValidator::PARAM_TYPE => 'string',
 			],
 		];
 		if ( $flags ) {
@@ -196,8 +267,7 @@ class ApiTemplateData extends ApiBase {
 	}
 
 	/**
-	 * @see ApiBase::getExamplesMessages()
-	 * @return array
+	 * @inheritDoc
 	 */
 	protected function getExamplesMessages() {
 		return [
@@ -208,6 +278,9 @@ class ApiTemplateData extends ApiBase {
 		];
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public function getHelpUrls() {
 		return 'https://www.mediawiki.org/wiki/Special:MyLanguage/Extension:TemplateData';
 	}

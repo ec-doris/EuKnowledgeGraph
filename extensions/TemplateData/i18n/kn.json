@@ -1,9 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
-			"VASANTH S.N.",
 			"AVSmalnad77",
 			"Mahadevaiah Siddaiah",
+			"VASANTH S.N.",
 			"ಮಲ್ನಾಡಾಚ್ ಕೊಂಕ್ಣೊ"
 		]
 	},
@@ -16,7 +16,7 @@
 	"templatedata-doc-param-type": "ನಮೂನೆ",
 	"templatedata-doc-param-type-number": "ಸಂಖ್ಯೆ",
 	"templatedata-doc-param-type-wiki-file-name": "ಕಡತ",
-	"templatedata-doc-param-type-wiki-page-name": "ಪುಟ",
+	"templatedata-doc-param-type-wiki-page-name": "ಪುಟದ ಹೆಸರು",
 	"templatedata-doc-param-type-wiki-user-name": "ಬಳಕೆದಾರ",
 	"templatedata-modal-button-addparam": "ಪರಿಮಿತಿಯನ್ನು ಸೇರಿಸು",
 	"templatedata-modal-button-apply": "ಅನ್ವಯಿಸು",

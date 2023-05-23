@@ -3,9 +3,11 @@
 		"authors": [
 			"A2093064",
 			"Kly",
-			"Xiplus",
+			"SunAfterRain",
 			"Winston Sung",
-			"唐吉訶德的侍從"
+			"Xiplus",
+			"唐吉訶德的侍從",
+			"捍粵者"
 		]
 	},
 	"templatestyles": "模板樣式（TemplateStyles）",
@@ -58,12 +60,12 @@
 	"templatestyles-error-missing-selector-list": "在第 $1 行裡字元 $2 有缺少選擇器。",
 	"templatestyles-error-missing-supports-condition": "在第 $1 行裡字元 $2 有缺少用於 <code>@supports</code> 的條件內容。",
 	"templatestyles-error-missing-value-for-property": "在第 $1 行裡字元 $2 有缺少用於屬性 <code>$3</code> 的值。",
-	"templatestyles-error-newline-in-string": "在第 $1 行裡字元 $2 有無效換行的字串。",
+	"templatestyles-error-newline-in-string": "在第$1行裡字元$2有無效換行的字串。",
 	"templatestyles-error-recursion-depth-exceeded": "在第 $1 行裡字元 $2 有太多巢狀區塊以及/或函式。",
 	"templatestyles-error-unclosed-comment": "有未閉合註釋起始在第 $1 行的字元 $2。",
 	"templatestyles-error-unclosed-string": "有未閉合字串起始在第 $1 行的字元 $2。",
 	"templatestyles-error-unclosed-url": "有未閉合的 URL 起始在第 $1 行的字元 $2。。",
-	"templatestyles-error-unexpected-eof": "在第 $1 行裡字元 $2 有非預期的樣式表結尾。",
+	"templatestyles-error-unexpected-eof": "樣式表在第$1行第$2列意外結束。",
 	"templatestyles-error-unexpected-eof-in-block": "在第 $1 行裡字元 $2 的區塊中有非預期樣式表結尾。",
 	"templatestyles-error-unexpected-eof-in-function": "在第 $1 行裡字元 $2 的函式有非預期樣式表結尾。",
 	"templatestyles-error-unexpected-eof-in-rule": "在第 $1 行裡字元 $2 的規則有非預期樣式表結尾。",

@@ -1,4 +1,7 @@
 <?php
+
+namespace MediaWiki\Extension\TemplateStyles;
+
 /**
  * @file
  * @license GPL-2.0-or-later
@@ -26,11 +29,11 @@ class TemplateStylesFontFaceAtRuleSanitizer extends FontFaceAtRuleSanitizer {
 		// Only allow the font-family if it begins with "TemplateStyles"
 		$this->propertySanitizer->setKnownProperties( [
 			'font-family' => new Alternative( [
-				new TokenMatcher( Token::T_STRING, function ( Token $t ) {
+				new TokenMatcher( Token::T_STRING, static function ( Token $t ) {
 					return substr( $t->value(), 0, 14 ) === 'TemplateStyles';
 				} ),
 				new Juxtaposition( [
-					new TokenMatcher( Token::T_IDENT, function ( Token $t ) {
+					new TokenMatcher( Token::T_IDENT, static function ( Token $t ) {
 						return substr( $t->value(), 0, 14 ) === 'TemplateStyles';
 					} ),
 					Quantifier::star( $matcherFactory->ident() ),

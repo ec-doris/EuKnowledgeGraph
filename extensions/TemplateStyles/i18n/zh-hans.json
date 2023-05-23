@@ -4,8 +4,10 @@
 			"A2093064",
 			"Liuxinyu970226",
 			"Shizhao",
+			"Stang",
+			"Winston Sung",
 			"Xiplus",
-			"Winston Sung"
+			"Yfdyh000"
 		]
 	},
 	"templatestyles": "模板样式（TemplateStyles）",
@@ -26,7 +28,7 @@
 	"templatestyles-error-at-rule-block-not-allowed": "在第$1行字符$2中，不允许将代码块用于<code>@$3</code>。",
 	"templatestyles-error-at-rule-block-required": "在第$1行字符$2中，<code>@$3</code>需要代码块。",
 	"templatestyles-error-bad-character-in-url": "在第$1行字符$2的URL中有无效字符。",
-	"templatestyles-error-bad-escape": "在第$1行字符$2的泄漏内容中有无效字符。",
+	"templatestyles-error-bad-escape": "在第$1行字符$2的有无效转义字符。",
 	"templatestyles-error-bad-value-for-property": "在第$1行字符$2中，用于属性<code>$3</code>的值无效或不受支持。",
 	"templatestyles-error-expected-at-rule": "在第$1行字符$2中应有<code>@$3</code>。",
 	"templatestyles-error-expected-colon": "在第$1行字符$2中应有冒号。",
@@ -63,7 +65,7 @@
 	"templatestyles-error-unclosed-comment": "第$1行字符$2开始有未闭合的注释。",
 	"templatestyles-error-unclosed-string": "第$1行字符$2开始有未闭合的字符串。",
 	"templatestyles-error-unclosed-url": "在第$1行字符$2中有未闭合的URL。",
-	"templatestyles-error-unexpected-eof": "在第$1行字符$2中存在意外的样式表结尾。",
+	"templatestyles-error-unexpected-eof": "样式表在第$1行第$2列意外结束。",
 	"templatestyles-error-unexpected-eof-in-block": "在第$1行字符$2的代码块中存在意外的样式表结尾。",
 	"templatestyles-error-unexpected-eof-in-function": "在第$1行字符$2的函数中存在意外的样式表结尾。",
 	"templatestyles-error-unexpected-eof-in-rule": "在第$1行字符$2的规则中存在意外的样式表结尾。",

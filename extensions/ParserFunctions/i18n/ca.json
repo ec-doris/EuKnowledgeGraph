@@ -2,10 +2,10 @@
 	"@metadata": {
 		"authors": [
 			"Jordi Roqué",
+			"Mguix",
 			"Qllach",
 			"SMP",
-			"Vriullop",
-			"Mguix"
+			"Vriullop"
 		]
 	},
 	"pfunc_desc": "Millora el processat amb funcions lògiques",

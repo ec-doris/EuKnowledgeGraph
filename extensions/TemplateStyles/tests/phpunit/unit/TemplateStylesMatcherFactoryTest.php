@@ -1,11 +1,12 @@
 <?php
 
+use MediaWiki\Extension\TemplateStyles\TemplateStylesMatcherFactory;
 use Wikimedia\CSS\Objects\ComponentValueList;
 use Wikimedia\CSS\Objects\Token;
 
 /**
  * @group TemplateStyles
- * @covers TemplateStylesMatcherFactory
+ * @covers \MediaWiki\Extension\TemplateStyles\TemplateStylesMatcherFactory
  */
 class TemplateStylesMatcherFactoryTest extends MediaWikiUnitTestCase {
 

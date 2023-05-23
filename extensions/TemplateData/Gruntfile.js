@@ -4,9 +4,9 @@
  * @package TemplateData
  */
 
-/* eslint-env node */
+'use strict';
 module.exports = function ( grunt ) {
-	var conf = grunt.file.readJSON( 'extension.json' );
+	const conf = grunt.file.readJSON( 'extension.json' );
 
 	grunt.loadNpmTasks( 'grunt-banana-checker' );
 	grunt.loadNpmTasks( 'grunt-contrib-watch' );
@@ -26,8 +26,7 @@ module.exports = function ( grunt ) {
 		},
 		stylelint: {
 			all: [
-				'modules/*.css',
-				'resources/*.css'
+				'modules/**/*.{css,less}'
 			]
 		},
 		banana: {

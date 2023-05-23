@@ -1,8 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Robby",
-			"Les Meloures"
+			"Les Meloures",
+			"Robby"
 		]
 	},
 	"templatedata-doc-desc-empty": "Keng Beschreiwung.",
@@ -20,6 +20,7 @@
 	"templatedata-doc-param-status-optional": "fakultativ",
 	"templatedata-doc-param-status-required": "obligatoresch",
 	"templatedata-doc-param-status-suggested": "virgeschlo",
+	"templatedata-doc-param-suggestedvalues": "Proposéiert Wäerter",
 	"templatedata-doc-param-type": "Typ",
 	"templatedata-doc-param-type-boolean": "Boolesch",
 	"templatedata-doc-param-type-content": "Inhalt",
@@ -31,7 +32,7 @@
 	"templatedata-doc-param-type-unknown": "Onbekannt",
 	"templatedata-doc-param-type-url": "URL",
 	"templatedata-doc-param-type-wiki-file-name": "Fichier",
-	"templatedata-doc-param-type-wiki-page-name": "Säit",
+	"templatedata-doc-param-type-wiki-page-name": "Numm vun der Säit",
 	"templatedata-doc-param-type-wiki-template-name": "Schabloun",
 	"templatedata-doc-param-type-wiki-user-name": "Benotzer",
 	"templatedata-doc-params": "Parameter vun der Schabloun",
@@ -50,7 +51,9 @@
 	"templatedata-modal-button-changelang": "Sprooch wiesselen",
 	"templatedata-modal-button-delparam": "Informatioun vum Parameter ewechhuelen",
 	"templatedata-modal-button-done": "Fäerdeg",
+	"templatedata-modal-button-map": "Kaarten änneren",
 	"templatedata-modal-button-importParams": "Parameteren importéieren",
+	"templatedata-modal-button-removemap": "Kaart ewechhuelen",
 	"templatedata-modal-button-restoreparam": "Parameter restauréieren",
 	"templatedata-modal-button-saveparam": "Späicheren",
 	"templatedata-modal-confirmcancel": "Sidd Dir sécher datt Dir Är Ännerunge verwerfe wëllt?",
@@ -63,10 +66,12 @@
 	"templatedata-modal-format-null": "Net uginn",
 	"templatedata-modal-json-error-replace": "Ersetzen",
 	"templatedata-modal-notice-import-numparams": "{{PLURAL:$1|Een neie Parameter gouf|$1 nei Parametere goufen}} importéiert: $2",
+	"templatedata-modal-placeholder-add-new-map-input": "Eng nei Kaart derbäisetzen...",
 	"templatedata-modal-placeholder-paramkey": "Numm vum Parameter",
+	"templatedata-modal-placeholder-prompt-map-name": "Numm vun der Kaart aginn",
 	"templatedata-modal-search-input-placeholder": "Nom Numm oder nom Code vun der Sprooch sichen",
 	"templatedata-modal-table-param-actions": "Aktiounen",
-	"templatedata-modal-table-param-aliases": "Aliasen (Komma getrennt)",
+	"templatedata-modal-table-param-aliases": "Aliasen",
 	"templatedata-modal-table-param-autovalue": "Automatesche Wäert",
 	"templatedata-modal-table-param-default": "Standard ($1)",
 	"templatedata-modal-table-param-deprecated": "Net méi aktuell",
