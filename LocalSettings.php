@@ -42,6 +42,7 @@ $wgGroupPermissions['sysop']['edit'] = true;
 $wgGroupPermissions['*']['createaccount'] = false;
 $wgGroupPermissions['sysop']['createaccount'] = true;
 
+$wgFavicon = 'https://linkedopendata.eu/w/images/4/4e/Icon-Logo_EU_knowledgegraph.png';
 $wgLogos = [
 	'1x' => 'https://linkedopendata.eu/w/images/9/98/1x-Logo_EU_knowledgegraph.png',
 	'1.5x' => 'https://linkedopendata.eu/w/images/b/bc/1.5x-Logo_EU_knowledgegraph.png',
