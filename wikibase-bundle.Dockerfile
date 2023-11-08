@@ -9,6 +9,9 @@ COPY extensions/TemplateStyles /var/www/html/extensions/TemplateStyles
 COPY extensions/SyntaxHighlight_GeSHi /var/www/html/extensions/SyntaxHighlight_GeSHi
 COPY extensions/ParserFunctions /var/www/html/extensions/ParserFunctions
 COPY extensions/BatchIngestion /var/www/html/extensions/BatchIngestion
+COPY extensions/WikibaseSync /var/www/html/extensions/WikibaseSync 
+COPY jquery.wikibase.entityselector.js /var/www/html/extensions/Wikibase/view/resources/jquery/wikibase/jquery.wikibase.entityselector.js
+COPY jquery.wikibase.entitysearch.js /var/www/html/extensions/Wikibase/repo/resources/jquery.wikibase/jquery.wikibase.entitysearch.js
 COPY images /var/www/html/images/
 COPY --chown=www-data:www-data jobrunner-entrypoint.sh /var/www/html/maintenance/jobrunner-entrypoint.sh
 RUN chmod +x /var/www/html/maintenance/jobrunner-entrypoint.sh

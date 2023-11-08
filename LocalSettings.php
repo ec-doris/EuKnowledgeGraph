@@ -134,6 +134,13 @@ wfLoadExtension( 'TemplateStyles' );
 wfLoadExtension( 'SyntaxHighlight_GeSHi' );
 wfLoadExtension( 'ParserFunctions' );
 
+wfLoadExtension( 'WikibaseSync' );
+$wgWikibaseSyncUrl = 'https://wikibase-sync.linkedopendata.eu';
+$wgApiKey = 'nafcyg-Pihceb-1xokji';
+$wgQID = 'P1';
+$wgPID = 'P2';
+$wgOpen = true;
+
 # Enable wikimedia commons images
 $wgUseInstantCommons = true;
 $wgShowExceptionDetails = true;

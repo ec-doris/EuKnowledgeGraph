@@ -39,6 +39,9 @@ services:
       - ./extensions/WikibaseQualityConstraints:/var/www/html/extensions/WikibaseQualityConstraints
       - ./extensions/CASAuth:/var/www/html/extensions/CASAuth
       - ./extensions/BatchIngestion:/var/www/html/extensions/BatchIngestion
+      - ./extensions/WikibaseSync:/var/www/html/extensions/WikibaseSync
+      - ./jquery.wikibase.entityselector.js:/var/www/html/extensions/Wikibase/view/resources/jquery/wikibase/jquery.wikibase.entityselector.js
+      - ./jquery.wikibase.entitysearch.js:/var/www/html/extensions/Wikibase/repo/resources/jquery.wikibase/jquery.wikibase.entitysearch.js
       - ./images:/var/www/html/images
     networks:
       default:
