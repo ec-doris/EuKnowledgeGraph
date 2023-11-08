@@ -12,6 +12,12 @@
     },
     "HookHandlers": {},
     "Hooks": {},
+    "config": {
+        "BatchIngestionAllowedGroup": {
+            "description": "The user group required to use the API",
+            "value": "bureaucrat"
+        }
+    },
     "RestRoutes": [
         {
             "path": "/BatchIngestion/v0/batchcreate",

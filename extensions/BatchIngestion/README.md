@@ -31,6 +31,10 @@ The BatchIngestion extension provides a faster and more efficient way to add or 
    php maintenance/update.php
    ```
 
+## Authorization
+
+You can set the group of allowed users in the `extension.json` file, by tweaking the `BatchIngestionAllowedGroup` variable. By default, it is set on `bureaucrat`.
+
 ## Usage
 
 To use BatchIngestion, send a POST request to the API endpoint `/w/rest.php/BatchIngestion/v0/batchcreate` with the information of the entities you want to add or edit in JSON format. The entities parameter should contain an array of the Wikibase entities to add or edit. If an id is specified, the entity will be edited. Otherwise, a new entity will be created.
@@ -127,11 +131,11 @@ Each client provides good type support, but the TypeScript one is more precise d
 
 ## Benchmarks
 
-![Benchmark](bench/simple.png)
+![Benchmark](bench/simple-entities.png)
 
-![Benchmark](bench/complex.png)
+![Benchmark](bench/complex-entities.png)
 
-![Benchmark](bench/simple-edit.png)
+![Benchmark](bench/edit-entities.png)
 
 ## Format specification
 

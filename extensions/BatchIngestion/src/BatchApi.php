@@ -46,12 +46,20 @@ class BatchApi extends Handler {
                     'error' => 'You must be connected to use this API',
                 ]);
         }
-        $isAdmin = $user->isAllowed( 'delete' );
-        if (!$isAdmin) {
+        $groups = $user->getGroups();
+        $allowedGroup = $GLOBALS['wgBatchIngestionAllowedGroup'];
+        $allowed = false;
+        foreach ($groups as $group) {
+            if ($group != $allowedGroup)
+                continue;
+            $allowed = true;
+            break;
+        }
+        if (!$allowed) {
             return $this
                 ->getResponseFactory()
                 ->createHttpError(400, [
-                    'error' => 'You have no permission to use this API',
+                    'error' => 'You have no permission to use this API, you must be in the group "' . $allowedGroup . '".'
                 ]);
         }
         $body = $this->getValidatedBody();

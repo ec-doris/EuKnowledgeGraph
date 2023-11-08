@@ -184,6 +184,11 @@ class BatchIngestion {
             'sitelinks',
             'mode',
         ];
+        $editProps = [
+            'labels',
+            'descriptions',
+            'claims',
+        ];
         foreach ($data as $property => $value) {
             if (in_array($property, $validProperties))
                 continue;
@@ -196,10 +201,18 @@ class BatchIngestion {
             if ($existing === null)
                 throw new InvalidArgumentException('Invalid Wikibase entity: Entity does not exist');
             $existing = $this->entitySerializer->serialize($existing);
-            if ($mode == 'add')
-                $data['claims'] = $data['claims'] + $existing['claims'];
-            if ($mode == 'remove')
-                $data['claims'] = array_diff_key($existing['claims'], $data['claims']);
+            foreach ($editProps as $prop) {
+                $existingProp = $existing[$prop];
+                if (is_null($existingProp))
+                    $existingProp = [];
+                $newProp = $data[$prop];
+                if (is_null($newProp))
+                    $newProp = [];
+                if ($mode == 'add')
+                    $data[$prop] = $newProp + $existingProp;
+                if ($mode == 'remove')
+                    $data[$prop] = array_diff_key($existingProp, $newProp);
+            }
         }
         try {
             return $this->entityDeserializer->deserialize($data);
