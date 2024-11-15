@@ -5,6 +5,8 @@ declare( strict_types = 1 );
 namespace WikibaseQuality\ConstraintReport\Api;
 
 use Language;
+use MessageLocalizer;
+use Wikibase\Lib\LanguageFallbackChainFactory;
 use Wikibase\Lib\Store\EntityTitleLookup;
 use Wikibase\Repo\EntityIdLabelFormatterFactory;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Message\ViolationMessageRendererFactory;
@@ -14,32 +16,40 @@ use WikibaseQuality\ConstraintReport\ConstraintCheck\Message\ViolationMessageRen
  */
 class CheckResultsRendererFactory {
 
-	/** @var EntityTitleLookup */
-	private $entityTitleLookup;
-
-	/** @var EntityIdLabelFormatterFactory */
-	private $entityIdLabelFormatterFactory;
-
-	/** @var ViolationMessageRendererFactory */
-	private $violationMessageRendererFactory;
+	private EntityTitleLookup $entityTitleLookup;
+	private EntityIdLabelFormatterFactory $entityIdLabelFormatterFactory;
+	private LanguageFallbackChainFactory $languageFallbackChainFactory;
+	private ViolationMessageRendererFactory $violationMessageRendererFactory;
 
 	public function __construct(
 		EntityTitleLookup $entityTitleLookup,
 		EntityIdLabelFormatterFactory $entityIdLabelFormatterFactory,
+		LanguageFallbackChainFactory $languageFallbackChainFactory,
 		ViolationMessageRendererFactory $violationMessageRendererFactory
 	) {
 		$this->entityTitleLookup = $entityTitleLookup;
 		$this->entityIdLabelFormatterFactory = $entityIdLabelFormatterFactory;
+		$this->languageFallbackChainFactory = $languageFallbackChainFactory;
 		$this->violationMessageRendererFactory = $violationMessageRendererFactory;
 	}
 
-	public function getCheckResultsRenderer( Language $language ): CheckResultsRenderer {
+	public function getCheckResultsRenderer(
+		Language $userLanguage,
+		MessageLocalizer $messageLocalizer
+	): CheckResultsRenderer {
+		$languageFallbackChain = $this->languageFallbackChainFactory->newFromLanguage( $userLanguage );
+
 		return new CheckResultsRenderer(
 			$this->entityTitleLookup,
 			$this->entityIdLabelFormatterFactory
-				->getEntityIdFormatter( $language ),
+				->getEntityIdFormatter( $userLanguage ),
+			$languageFallbackChain,
 			$this->violationMessageRendererFactory
-				->getViolationMessageRenderer( $language )
+				->getViolationMessageRenderer(
+					$userLanguage,
+					$languageFallbackChain,
+					$messageLocalizer
+				)
 		);
 	}
 

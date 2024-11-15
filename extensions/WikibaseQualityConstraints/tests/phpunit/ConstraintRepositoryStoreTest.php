@@ -11,7 +11,7 @@ use WikibaseQuality\ConstraintReport\ConstraintRepositoryStore;
  * @covers WikibaseQuality\ConstraintReport\ConstraintRepositoryStore
  *
  * @group WikibaseQualityConstraints
- * @group database
+ * @group Database
  * @group medium
  *
  * @author BP2014N1
@@ -43,7 +43,7 @@ class ConstraintRepositoryStoreTest extends \MediaWikiIntegrationTestCase {
 				'constraint_guid',
 				'pid',
 				'constraint_type_qid',
-				'constraint_parameters'
+				'constraint_parameters',
 			],
 			[],
 			[
@@ -51,32 +51,32 @@ class ConstraintRepositoryStoreTest extends \MediaWikiIntegrationTestCase {
 					'1',
 					1,
 					'Multi value',
-					'{}'
+					'{}',
 				],
 				[
 					'3',
 					1,
 					'Single value',
-					'{}'
+					'{}',
 				],
 				[
 					'bar',
 					'42',
 					'TestConstraint',
-					'{"bar":"baz"}'
+					'{"bar":"baz"}',
 				],
 				[
 					'baz',
 					'42',
 					'TestConstraint',
-					'{}'
+					'{}',
 				],
 				[
 					'foo',
 					'42',
 					'TestConstraint',
-					'{"foo":"bar"}'
-				]
+					'{"foo":"bar"}',
+				],
 			]
 		);
 	}
@@ -90,9 +90,9 @@ class ConstraintRepositoryStoreTest extends \MediaWikiIntegrationTestCase {
 				'snaktype' => 'value', 'property' => 'P2303',
 				'hash' => '1deb3a3ba50cbbf2672b0def6c9e96bcf3f533e5', 'datavalue' => [
 					'value' => [
-						'entity-type' => 'item', 'numeric-id' => 2961108, 'id' => 'Q2961108'
+						'entity-type' => 'item', 'numeric-id' => 2961108, 'id' => 'Q2961108',
 					],
-					'type' => 'wikibase-entityid'
+					'type' => 'wikibase-entityid',
 				],
 			];
 		}
@@ -104,7 +104,7 @@ class ConstraintRepositoryStoreTest extends \MediaWikiIntegrationTestCase {
 				new NumericPropertyId( 'P1' ),
 				'Q1',
 				$constraintParameters
-			)
+			),
 		] );
 
 		$this->assertSelect(
@@ -113,7 +113,7 @@ class ConstraintRepositoryStoreTest extends \MediaWikiIntegrationTestCase {
 				'constraint_guid',
 				'pid',
 				'constraint_type_qid',
-				'constraint_parameters'
+				'constraint_parameters',
 			],
 			[],
 			[
@@ -121,8 +121,8 @@ class ConstraintRepositoryStoreTest extends \MediaWikiIntegrationTestCase {
 					'P1$13510cdc-0f91-4ea3-b71d-db2a33c27dff',
 					'1',
 					'Q1',
-					'{"@error":{"toolong":true}}'
-				]
+					'{"@error":{"toolong":true}}',
+				],
 			]
 		);
 	}
@@ -134,13 +134,13 @@ class ConstraintRepositoryStoreTest extends \MediaWikiIntegrationTestCase {
 				'constraint_guid' => '1',
 				'pid' => 1,
 				'constraint_type_qid' => 'Multi value',
-				'constraint_parameters' => '{}'
+				'constraint_parameters' => '{}',
 			],
 			[
 				'constraint_guid' => '3',
 				'pid' => 1,
 				'constraint_type_qid' => 'Single value',
-				'constraint_parameters' => '{}'
+				'constraint_parameters' => '{}',
 			],
 		] );
 	}

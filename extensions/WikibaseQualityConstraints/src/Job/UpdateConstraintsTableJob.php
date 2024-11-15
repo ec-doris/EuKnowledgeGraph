@@ -6,8 +6,8 @@ use Config;
 use Job;
 use JobQueueGroup;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Title\Title;
 use Serializers\Serializer;
-use Title;
 use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Entity\Property;
 use Wikibase\DataModel\Snak\SnakList;
@@ -145,6 +145,7 @@ class UpdateConstraintsTableJob extends Job {
 		Statement $constraintStatement
 	) {
 		$constraintId = $constraintStatement->getGuid();
+		'@phan-var string $constraintId'; // we know the statement has a non-null GUID
 		$snak = $constraintStatement->getMainSnak();
 		'@phan-var \Wikibase\DataModel\Snak\PropertyValueSnak $snak';
 		$dataValue = $snak->getDataValue();

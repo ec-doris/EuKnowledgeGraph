@@ -58,10 +58,10 @@ class ResultsCache {
 	 * @param EntityId $key
 	 * @param mixed &$curTTL
 	 * @param string[] $checkKeys
-	 * @param mixed|null &$info
+	 * @param array &$info
 	 * @return mixed
 	 */
-	public function get( EntityId $key, &$curTTL = null, array $checkKeys = [], &$info = null ) {
+	public function get( EntityId $key, &$curTTL = null, array $checkKeys = [], array &$info = [] ) {
 		return $this->cache->get( $this->makeKey( $key ), $curTTL, $checkKeys, $info );
 	}
 

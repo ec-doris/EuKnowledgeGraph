@@ -7,8 +7,8 @@ use Wikibase\DataModel\Snak\PropertyNoValueSnak;
 use Wikibase\DataModel\Snak\PropertySomeValueSnak;
 use Wikibase\DataModel\Snak\SnakList;
 use Wikibase\DataModel\Statement\Statement;
-use Wikibase\Repo\Tests\NewItem;
-use Wikibase\Repo\Tests\NewStatement;
+use Wikibase\DataModel\Tests\NewItem;
+use Wikibase\DataModel\Tests\NewStatement;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\Context;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\QualifierContext;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\QualifierContextCursor;
@@ -93,7 +93,7 @@ class QualifierContextTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame( [ $qualifier1, $qualifier2 ], $snakGroup );
 	}
 
-	public function provideGroupingModes() {
+	public static function provideGroupingModes() {
 		return [
 			[ Context::GROUP_NON_DEPRECATED ],
 			[ Context::GROUP_BEST_RANK ],

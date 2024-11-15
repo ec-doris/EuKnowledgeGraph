@@ -73,7 +73,6 @@ class AllowedUnitsChecker implements ConstraintChecker {
 	 * @return CheckResult
 	 */
 	public function checkConstraint( Context $context, Constraint $constraint ) {
-		$parameters = [];
 		$constraintParameters = $constraint->getConstraintParameters();
 		$unitsParameter = $this->constraintParameterParser
 			->parseUnitsParameter(
@@ -84,7 +83,7 @@ class AllowedUnitsChecker implements ConstraintChecker {
 		$snak = $context->getSnak();
 		if ( !$snak instanceof PropertyValueSnak ) {
 			// nothing to check
-			return new CheckResult( $context, $constraint, $parameters, CheckResult::STATUS_COMPLIANCE );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_COMPLIANCE );
 		}
 
 		$dataValue = $snak->getDataValue();
@@ -92,7 +91,7 @@ class AllowedUnitsChecker implements ConstraintChecker {
 			$message = ( new ViolationMessage( 'wbqc-violation-message-value-needed-of-type' ) )
 				->withEntityId( new ItemId( $constraint->getConstraintTypeItemId() ), Role::CONSTRAINT_TYPE_ITEM )
 				->withDataValueType( 'quantity' );
-			return new CheckResult( $context, $constraint, $parameters, CheckResult::STATUS_VIOLATION, $message );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_VIOLATION, $message );
 		}
 
 		if ( $dataValue->getUnit() === '1' ) {
@@ -125,7 +124,7 @@ class AllowedUnitsChecker implements ConstraintChecker {
 			$message = null;
 		}
 
-		return new CheckResult( $context, $constraint, $parameters, $status, $message );
+		return new CheckResult( $context, $constraint, $status, $message );
 	}
 
 	/**
@@ -151,7 +150,7 @@ class AllowedUnitsChecker implements ConstraintChecker {
 			$status = CheckResult::STATUS_VIOLATION;
 		}
 
-		return new CheckResult( $context, $constraint, [], $status, $message );
+		return new CheckResult( $context, $constraint, $status, $message );
 	}
 
 	/**

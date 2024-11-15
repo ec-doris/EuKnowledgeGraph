@@ -3,7 +3,8 @@
 		"authors": [
 			"Eleassar",
 			"HairyFotr",
-			"Janezdrilc"
+			"Janezdrilc",
+			"Amire80"
 		]
 	},
 	"wbqc-constraintreport": "Poročilo o omejitvi",
@@ -62,7 +63,7 @@
 	"wbqc-violation-message-value-needed-of-type": "Lastnosti z omejitvijo \"$1\" morajo imeti vrednosti vrste \"$2\".",
 	"wbqc-violation-message-value-needed-of-types-2": "Lastnosti z omejitvijo \"$1\" morajo imeti vrednosti vrst \"$2\" ali \"$3\".",
 	"wbqc-violation-message-parameter-needed": "Lastnosti z omejitvijo \"$1\" morajo imeti parameter \"$2\".",
-	"wbqc-violation-message-parameters-needed-3": "Lastnosti z omejitvijo \"$1\" morajo imeti parametre \"$2\",  \"$3\" in  \"$4\".",
+	"wbqc-violation-message-parameters-needed-3": "Lastnosti z omejitvijo \"$1\" morajo imeti parametre \"$2\", \"$3\" in \"$4\".",
 	"wbqc-violation-message-target-entity-must-exist": "Obstajati mora ciljna entiteta.",
 	"wbqc-violation-message-value-entity-must-exist": "Obstajati mora vrednostna entiteta.",
 	"wbqc-violation-message-parameter-value": "Parameter \"$1\" mora imeti neko vrednost, ne \"brez vrednosti\" ali \"neznana vrednost\".",
@@ -98,7 +99,7 @@
 	"wbqc-violation-message-mandatory-qualifier": "Tej izjavi $1 manjka kvalifikator $2.",
 	"wbqc-violation-message-multi-value": "Ta lastnost mora vsebovati več vrednosti.",
 	"wbqc-violation-message-multi-value-separators": "Ta lastnost mora imeti več vrednosti z enakim {{PLURAL:$2|1=$4 kvalifikatorjem.|naborom kvalifikatorjev za te lastnosti: $3}}",
-	"wbqc-violation-message-one-of": "Vrednost za $1  mora biti {{PLURAL:$2|1=$4.|2=$4 ali $5.|ena izmed naslednjih:$3}}",
+	"wbqc-violation-message-one-of": "Vrednost za $1 mora biti {{PLURAL:$2|1=$4.|2=$4 ali $5.|ena izmed naslednjih:$3}}",
 	"wbqc-violation-message-qualifier": "Lastnost mora biti uporabljena le kot kvalifikator.",
 	"wbqc-violation-message-no-qualifiers": "Izjave $1 ne smejo imeti nobenih kvalifikatorjev.",
 	"wbqc-violation-message-qualifiers": "$2 ni veljaven kvalifikator za $1 – {{PLURAL:$3|1=edini veljavni je $5.|2=edina veljavna sta $5 in $6.|edini veljavni so:$4}}",

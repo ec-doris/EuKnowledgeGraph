@@ -59,14 +59,12 @@ class PropertyScopeChecker implements ConstraintChecker {
 			return new CheckResult(
 				$context->getCursor(),
 				$constraint,
-				[],
 				CheckResult::STATUS_COMPLIANCE
 			);
 		} else {
 			return new CheckResult(
 				$context->getCursor(),
 				$constraint,
-				[],
 				CheckResult::STATUS_VIOLATION,
 				( new ViolationMessage( 'wbqc-violation-message-property-scope' ) )
 					->withEntityId( $context->getSnak()->getPropertyId() )

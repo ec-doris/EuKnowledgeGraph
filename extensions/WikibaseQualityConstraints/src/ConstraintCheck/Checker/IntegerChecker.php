@@ -43,7 +43,7 @@ class IntegerChecker implements ConstraintChecker {
 
 		if ( !$snak instanceof PropertyValueSnak ) {
 			// nothing to check
-			return new CheckResult( $context, $constraint, [], CheckResult::STATUS_COMPLIANCE );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_COMPLIANCE );
 		}
 
 		$violationMessage = $this->checkSnak( $snak );
@@ -51,7 +51,6 @@ class IntegerChecker implements ConstraintChecker {
 		return new CheckResult(
 			$context,
 			$constraint,
-			[],
 			$violationMessage === null ?
 				CheckResult::STATUS_COMPLIANCE :
 				CheckResult::STATUS_VIOLATION,

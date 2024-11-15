@@ -2,7 +2,7 @@
 
 namespace JsonConfig;
 
-use Language;
+use MediaWiki\MediaWikiServices;
 use Scribunto_LuaError;
 use Scribunto_LuaLibraryBase;
 
@@ -42,7 +42,12 @@ class JCLuaLibrary extends Scribunto_LuaLibraryBase {
 			$language = $this->getParser()->getTargetLanguage();
 		} elseif ( $langCode !== '_' ) {
 			$this->checkType( 'get', 2, $langCode, 'string' );
-			$language = Language::factory( $langCode );
+			$services = MediaWikiServices::getInstance();
+			if ( $services->getLanguageNameUtils()->isValidCode( $langCode ) ) {
+				$language = $services->getLanguageFactory()->getLanguage( $langCode );
+			} else {
+				throw new Scribunto_LuaError( 'bad argument #2 to "get" (not a valid language code)' );
+			}
 		} else {
 			$language = null;
 		}
@@ -59,8 +64,8 @@ class JCLuaLibrary extends Scribunto_LuaLibraryBase {
 
 			$prop = 'jsonconfig_getdata';
 			$output = $this->getParser()->getOutput();
-			$prevValue = $output->getPageProperty( $prop ) ?? 0;
-			$output->setPageProperty( $prop, 1 + $prevValue );
+			$prevValue = (int)( $output->getPageProperty( $prop ) ?? 0 );
+			$output->setPageProperty( $prop, strval( 1 + $prevValue ) );
 		}
 
 		if ( !$content ) {
@@ -96,7 +101,7 @@ class JCLuaLibrary extends Scribunto_LuaLibraryBase {
 			$v = get_object_vars( $v );
 		}
 		if ( is_array( $v ) ) {
-			$v = array_map( 'self::objectToArray', $v );
+			$v = array_map( [ self::class, 'objectToArray' ], $v );
 		}
 		return $v;
 	}

@@ -27,12 +27,14 @@
 	 * @cfg {string} status The status of the report, e.g. 'violation' or 'compliance'.
 	 * @cfg {Object} constraint The constraint of the report, as returned by the wbcheckconstraints API.
 	 * @cfg {string} [message=''] The message (HTML) of the report, if present.
+	 * @cfg {string} [constraintClarification] The constraint clarification (plain text) of the report, if any.
 	 * @cfg {string[]} [ancillaryMessages=[]] Additional messages (HTML) attached to the report, if any.
 	 * @cfg {jQuery} [$heading] The heading element of the panel. Should not yet contain the heading links.
 	 * @cfg {jQuery} [$headingLinks] The container for the links in the heading of the panel. Should not yet contain the help link or the discussion link.
 	 * @cfg {jQuery} [$helpLink] The help link for the heading.
 	 * @cfg {jQuery} [$discussLink] The link to the discussion page.
 	 * @cfg {jQuery} [$message] The message paragraph of the panel.
+	 * @cfg {jQuery} [$constraintClarification] The constraint clarification paragraph of the panel.
 	 * @cfg {jQuery} [$ancillaryMessages] The container of the additional messages.
 	 */
 	wb.quality.constraints.ui.ConstraintReportPanel = function WBQCConstraintReportPanel( config ) {
@@ -74,6 +76,9 @@
 			.attr( 'target', '_blank' );
 		this.message = config.message;
 		this.$message = config.$message || $( '<p>' ).html( this.message );
+		this.constraintClarification = config.constraintClarification;
+		this.$constraintClarification = config.$constraintClarification ||
+			( this.constraintClarification && $( '<p>' ).text( this.constraintClarification ) );
 		this.ancillaryMessages = config.ancillaryMessages;
 		this.$ancillaryMessages = config.$ancillaryMessages || $( '<div class="wbqc-ancillary-messages">' ).append(
 			this.ancillaryMessages.map( function ( ancillaryMessage ) {
@@ -99,6 +104,9 @@
 		this.$heading.append( this.$headingLinks );
 		this.$element.append( this.$heading );
 		this.$element.append( this.$message );
+		if ( this.$constraintClarification ) {
+			this.$element.append( this.$constraintClarification );
+		}
 		this.$element.append( this.$ancillaryMessages );
 	};
 

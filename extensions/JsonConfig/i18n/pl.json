@@ -2,10 +2,12 @@
 	"@metadata": {
 		"authors": [
 			"Chrumps",
+			"Msz2001",
 			"Openbk",
 			"Rail",
 			"Railfail536",
-			"SemanticPioneer"
+			"SemanticPioneer",
+			"Woytecr"
 		]
 	},
 	"nstab-data": "Dane",
@@ -58,8 +60,9 @@
 	"jsonconfig-license-name-dl-de-zero-2.0": "Licencja na dane Niemcy - Zero - wersja 2.0",
 	"jsonconfig-license-name-dl-de-by-1.0": "Licencja na dane Niemcy - uznanie autorstwa - wersja 1.0",
 	"jsonconfig-license-name-dl-de-by-2.0": "Licencja na dane Niemcy - uznanie autorstwa - wersja 2.0",
-	"jsonconfig-license-copyrightwarning": "Zapisując zmiany, wyrażasz zgodę na [https://foundation.wikimedia.org/wiki/Terms_of_Use/pl Warunki użytkowania] i nieodwołalnie zgadzasz się na udostępnienie swojego udziału zgodnie z licencją  [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}].",
-	"jsonconfig-license-copyrightwarning-license-unset": "Zapisując zmiany, wyrażasz zgodę na [https://foundation.wikimedia.org/wiki/Terms_of_Use/pl Warunki użytkowania], a nieodwołalnie zgadzasz się na udostępnienie swojego udziału zgodnie z licencją określoną w polu <code>licencja</code>.",
+	"jsonconfig-license-name-GeoNutzV": "Licencja Geo Data Niemcy",
+	"jsonconfig-license-copyrightwarning": "Publikując zmiany, wyrażasz zgodę na [https://foundation.wikimedia.org/wiki/Terms_of_Use/pl Warunki użytkowania] i nieodwołalnie zgadzasz się na udostępnienie swojego udziału zgodnie z licencją  [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}].",
+	"jsonconfig-license-copyrightwarning-license-unset": "Publikując zmiany, wyrażasz zgodę na [https://foundation.wikimedia.org/wiki/Terms_of_Use/pl Warunki użytkowania], a nieodwołalnie zgadzasz się na udostępnienie swojego udziału zgodnie z licencją określoną w polu <code>licencja</code>.",
 	"jsonconfig-license-notice": "'''Uwaga:''' Edytując tę stronę zgadzasz się na publikowanie twojego wkładu na licencji [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}].",
 	"jsonconfig-license-notice-license-unset": "'''Uwaga:''' Edytując tę stronę zgadzasz się na publikowanie twojego wkładu zgodnie z licencją podaną w polu <code>licence</code>.",
 	"right-jsonconfig-flush": "Zmienianie JsonConfig przez API",

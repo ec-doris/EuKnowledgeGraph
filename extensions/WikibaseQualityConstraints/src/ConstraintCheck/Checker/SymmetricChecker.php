@@ -81,17 +81,15 @@ class SymmetricChecker implements ConstraintChecker {
 	 */
 	public function checkConstraint( Context $context, Constraint $constraint ) {
 		if ( $context->getSnakRank() === Statement::RANK_DEPRECATED ) {
-			return new CheckResult( $context, $constraint, [], CheckResult::STATUS_DEPRECATED );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_DEPRECATED );
 		}
-
-		$parameters = [];
 
 		$snak = $context->getSnak();
 		$propertyId = $context->getSnak()->getPropertyId();
 
 		if ( !$snak instanceof PropertyValueSnak ) {
 			// nothing to check
-			return new CheckResult( $context, $constraint, $parameters, CheckResult::STATUS_COMPLIANCE );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_COMPLIANCE );
 		}
 
 		$dataValue = $snak->getDataValue();
@@ -104,14 +102,14 @@ class SymmetricChecker implements ConstraintChecker {
 			$message = ( new ViolationMessage( 'wbqc-violation-message-value-needed-of-type' ) )
 				->withEntityId( new ItemId( $constraint->getConstraintTypeItemId() ), Role::CONSTRAINT_TYPE_ITEM )
 				->withDataValueType( 'wikibase-entityid' );
-			return new CheckResult( $context, $constraint, $parameters, CheckResult::STATUS_VIOLATION, $message );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_VIOLATION, $message );
 		}
 
 		$targetEntityId = $dataValue->getEntityId();
 		$targetEntity = $this->entityLookup->getEntity( $targetEntityId );
 		if ( !$targetEntity instanceof StatementListProvider ) {
 			$message = new ViolationMessage( 'wbqc-violation-message-target-entity-must-exist' );
-			return new CheckResult( $context, $constraint, $parameters, CheckResult::STATUS_VIOLATION, $message );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_VIOLATION, $message );
 		}
 
 		$symmetricStatement = $this->connectionCheckerHelper->findStatementWithPropertyAndEntityIdValue(
@@ -130,7 +128,7 @@ class SymmetricChecker implements ConstraintChecker {
 			$status = CheckResult::STATUS_VIOLATION;
 		}
 
-		return ( new CheckResult( $context, $constraint, $parameters, $status, $message ) )
+		return ( new CheckResult( $context, $constraint, $status, $message ) )
 			->withMetadata( Metadata::ofDependencyMetadata(
 				DependencyMetadata::ofEntityId( $targetEntityId ) ) );
 	}

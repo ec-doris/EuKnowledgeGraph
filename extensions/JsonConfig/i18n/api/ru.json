@@ -5,7 +5,6 @@
 			"Vlad5250"
 		]
 	},
-	"apihelp-jsonconfig-description": "Обеспечивает прямой доступ к подсистеме JsonConfig.",
 	"apihelp-jsonconfig-summary": "Обеспечивает прямой доступ к подсистеме JsonConfig.",
 	"apihelp-jsonconfig-param-command": "Какое поддействие нужно выполнить на JsonConfig:\n;status: Показывает конфигурацию JsonConfig.\n;reset: Очищает настройки из кэша. Требуется параметр $1title и право «jsonconfig-flush».\n;reload: Обновляет и кэширует конфигурации из хранилища настроек. Требуется параметр $1title и право «jsonconfig-reset».",
 	"apihelp-jsonconfig-param-title": "Заголовок для обработки без префикса пространства имён.",
@@ -13,7 +12,6 @@
 	"apihelp-jsonconfig-example-1": "Показать настройки",
 	"apihelp-jsonconfig-example-2": "Сбросить [[Data:Brazil/Amazonas.map]]",
 	"apihelp-jsonconfig-example-3": "Перегрузить [[Data:Brazil/Amazonas.map]]",
-	"apihelp-jsondata-description": "Вызывает локализованные JSON-данные.",
 	"apihelp-jsondata-summary": "Вызывает локализованные JSON-данные.",
 	"apierror-jsonconfig-paramrequired": "Для этой команды требуется параметр <var>$1</var>."
 }

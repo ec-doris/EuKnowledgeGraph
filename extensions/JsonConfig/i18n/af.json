@@ -1,8 +1,11 @@
 {
 	"@metadata": {
-		"authors": []
+		"authors": [
+			"Rooiratel"
+		]
 	},
 	"jsonconfig-err-bool": "Parameter \"$1\" moet waar of vals wees",
 	"jsonconfig-err-string": "Parameter \"$1\" moet 'n string wees",
-	"jsonconfig-optional-field": "(opsioneel)"
+	"jsonconfig-optional-field": "(opsioneel)",
+	"jsonconfig-license-copyrightwarning": "Deur veranderinge te stoor, stem jy in tot die [https://foundation.wikimedia.org/wiki/Terms_of_Use Gebruiksbepalings], en stem jy onherroeplik in om jou bydrae vry te stel onder [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-lisensienaam-$1}}]."
 }

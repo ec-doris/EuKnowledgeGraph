@@ -13,7 +13,7 @@
 	"manifest_version": 2,
 	"load_composer_autoloader": true,
 	"requires": {
-		"MediaWiki": ">= 1.39.0"
+		"MediaWiki": ">= 1.41"
 	},
 	"MessagesDirs": {
 		"TemplateStyles": [
@@ -47,18 +47,17 @@
 	},
 	"callback": "MediaWiki\\Extension\\TemplateStyles\\Hooks::onRegistration",
 	"Hooks": {
-		"ParserFirstCallInit": [
-			"MediaWiki\\Extension\\TemplateStyles\\Hooks::onParserFirstCallInit"
-		],
-		"ParserClearState": [
-			"MediaWiki\\Extension\\TemplateStyles\\Hooks::onParserClearState"
-		],
-		"ContentHandlerDefaultModelFor": [
-			"MediaWiki\\Extension\\TemplateStyles\\Hooks::onContentHandlerDefaultModelFor"
-		],
+		"ParserFirstCallInit": "main",
+		"ParserClearState": "main",
+		"ContentHandlerDefaultModelFor": "main",
 		"CodeEditorGetPageLanguage": [
 			"MediaWiki\\Extension\\TemplateStyles\\Hooks::onCodeEditorGetPageLanguage"
 		]
+	},
+	"HookHandlers": {
+		"main": {
+			"class": "MediaWiki\\Extension\\TemplateStyles\\Hooks"
+		}
 	},
 	"config": {
 		"TemplateStylesDisable": {

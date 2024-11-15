@@ -7,8 +7,8 @@ use IBufferingStatsdDataFactory;
 use Psr\Log\LoggerInterface;
 use Wikibase\DataModel\Entity\ItemId;
 use Wikibase\DataModel\Entity\NumericPropertyId;
-use Wikibase\Repo\Tests\NewItem;
-use Wikibase\Repo\Tests\NewStatement;
+use Wikibase\DataModel\Tests\NewItem;
+use Wikibase\DataModel\Tests\NewStatement;
 use WikibaseQuality\ConstraintReport\Constraint;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\MainSnakContext;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\LoggingHelper;
@@ -48,7 +48,6 @@ class LoggingHelperTest extends \PHPUnit\Framework\TestCase {
 		$checkResult = new CheckResult(
 			$context,
 			$constraint,
-			[ 'test' => 'params' ],
 			CheckResult::STATUS_VIOLATION,
 			new ViolationMessage( 'wbqc-violation-message-single-value' )
 		);
@@ -86,13 +85,12 @@ class LoggingHelperTest extends \PHPUnit\Framework\TestCase {
 						'entityId' => 'Q1',
 						'statementGuid' => $statement->getGuid(),
 						'resultStatus' => CheckResult::STATUS_VIOLATION,
-						'resultParameters' => json_encode( [ 'test' => 'params' ] ),
 						'resultMessage' => 'wbqc-violation-message-single-value',
 					]
 				)
 			);
 
-		$loggingHelper = new LoggingHelper( $dataFactory, $logger, $this->getDefaultConfig() );
+		$loggingHelper = new LoggingHelper( $dataFactory, $logger, self::getDefaultConfig() );
 
 		$loggingHelper->logConstraintCheck(
 			$context, $constraint,
@@ -102,7 +100,7 @@ class LoggingHelperTest extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	public function provideConstraintCheckDurationsAndLogLevels() {
+	public static function provideConstraintCheckDurationsAndLogLevels() {
 		return [
 			'short constraint check, nothing to log' => [ 0.5, null, null ],
 			'long but not extremely long constraint check, log as info' => [ 5.0, 'info', 1.0 ],
@@ -118,7 +116,6 @@ class LoggingHelperTest extends \PHPUnit\Framework\TestCase {
 		$checkResult = new CheckResult(
 			$context,
 			$constraint,
-			[ 'test' => 'params' ],
 			CheckResult::STATUS_VIOLATION,
 			new ViolationMessage( 'wbqc-violation-message-single-value' )
 		);
@@ -179,7 +176,7 @@ class LoggingHelperTest extends \PHPUnit\Framework\TestCase {
 				)
 			);
 
-		$loggingHelper = new LoggingHelper( $dataFactory, $logger, $this->getDefaultConfig() );
+		$loggingHelper = new LoggingHelper( $dataFactory, $logger, self::getDefaultConfig() );
 
 		$loggingHelper->logConstraintCheckOnEntity(
 			$entityId,
@@ -189,7 +186,7 @@ class LoggingHelperTest extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	public function provideConstraintCheckDurationsAndLogLevelsOnEntity() {
+	public static function provideConstraintCheckDurationsAndLogLevelsOnEntity() {
 		return [
 			'short constraint check, nothing to log' => [ 5.0, null, null ],
 			'long but not extremely long constraint check, log as info' => [ 10.0, 'info', 5.0 ],

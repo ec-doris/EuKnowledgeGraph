@@ -159,7 +159,6 @@ class LoggingHelper {
 				'entityId' => $context->getEntity()->getId()->getSerialization(),
 				'statementGuid' => $context->getSnakStatement()->getGuid(),
 				'resultStatus' => $result->getStatus(),
-				'resultParameters' => json_encode( $result->getParameters() ),
 				'resultMessage' => $resultMessageKey,
 			]
 		);

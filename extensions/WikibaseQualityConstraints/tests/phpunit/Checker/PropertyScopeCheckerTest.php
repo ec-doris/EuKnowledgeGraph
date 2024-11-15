@@ -3,8 +3,8 @@
 namespace WikibaseQuality\ConstraintReport\Tests\Checker;
 
 use Wikibase\DataModel\Reference;
-use Wikibase\Repo\Tests\NewItem;
-use Wikibase\Repo\Tests\NewStatement;
+use Wikibase\DataModel\Tests\NewItem;
+use Wikibase\DataModel\Tests\NewStatement;
 use WikibaseQuality\ConstraintReport\Constraint;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Checker\PropertyScopeChecker;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\Context;
@@ -45,7 +45,7 @@ class PropertyScopeCheckerTest extends \PHPUnit\Framework\TestCase {
 		}
 	}
 
-	public function provideContextsAndContextTypes() {
+	public static function provideContextsAndContextTypes() {
 		$statement = NewStatement::noValueFor( 'P1' )
 			->build();
 		$snak = $statement->getMainSnak();

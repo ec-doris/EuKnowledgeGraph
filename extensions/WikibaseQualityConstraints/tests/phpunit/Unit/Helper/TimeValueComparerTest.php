@@ -36,22 +36,22 @@ class TimeValueComparerTest extends \MediaWikiUnitTestCase {
 		}
 	}
 
-	public function provideComparisons() {
+	public static function provideComparisons() {
 		$cases = [
-			[ -1, $this->getTimeValue( 1970 ), $this->getTimeValue( 1971 ) ],
-			[ 0, $this->getTimeValue( 1970 ), $this->getTimeValue( 1970 ) ],
-			[ 1, $this->getTimeValue( 1971 ), $this->getTimeValue( 1970 ) ],
-			[ -1, $this->getTimeValue( 1970, 6, 1 ), $this->getTimeValue( 1970, 6, 2 ) ] ,
-			[ 0, $this->getTimeValue( 1970, 6, 1 ), $this->getTimeValue( 1970, 6, 1 ) ] ,
-			[ 1, $this->getTimeValue( 1970, 6, 1 ), $this->getTimeValue( 1970, 5, 31 ) ] ,
+			[ -1, self::getTimeValue( 1970 ), self::getTimeValue( 1971 ) ],
+			[ 0, self::getTimeValue( 1970 ), self::getTimeValue( 1970 ) ],
+			[ 1, self::getTimeValue( 1971 ), self::getTimeValue( 1970 ) ],
+			[ -1, self::getTimeValue( 1970, 6, 1 ), self::getTimeValue( 1970, 6, 2 ) ] ,
+			[ 0, self::getTimeValue( 1970, 6, 1 ), self::getTimeValue( 1970, 6, 1 ) ] ,
+			[ 1, self::getTimeValue( 1970, 6, 1 ), self::getTimeValue( 1970, 5, 31 ) ] ,
 		];
 
 		return $cases;
 	}
 
 	public function testGetMinimum_first() {
-		$timeValue1 = $this->getTimeValue( 1991, 9, 1 );
-		$timeValue2 = $this->getTimeValue( 1991, 9, 2 );
+		$timeValue1 = self::getTimeValue( 1991, 9, 1 );
+		$timeValue2 = self::getTimeValue( 1991, 9, 2 );
 		$timeValueComparer = new TimeValueComparer();
 
 		$minimum = $timeValueComparer->getMinimum( $timeValue1, $timeValue2 );
@@ -60,8 +60,8 @@ class TimeValueComparerTest extends \MediaWikiUnitTestCase {
 	}
 
 	public function testGetMinimum_second() {
-		$timeValue1 = $this->getTimeValue( 1991, 9, 2 );
-		$timeValue2 = $this->getTimeValue( 1991, 9, 1 );
+		$timeValue1 = self::getTimeValue( 1991, 9, 2 );
+		$timeValue2 = self::getTimeValue( 1991, 9, 1 );
 		$timeValueComparer = new TimeValueComparer();
 
 		$minimum = $timeValueComparer->getMinimum( $timeValue1, $timeValue2 );
@@ -70,7 +70,7 @@ class TimeValueComparerTest extends \MediaWikiUnitTestCase {
 	}
 
 	public function testIsFutureTime_past() {
-		$past = $this->getTimeValue( 2012, 10, 29 );
+		$past = self::getTimeValue( 2012, 10, 29 );
 		$timeValueComparer = new TimeValueComparer();
 
 		$this->assertFalse( $timeValueComparer->isFutureTime( $past ) );
@@ -91,7 +91,7 @@ class TimeValueComparerTest extends \MediaWikiUnitTestCase {
 	}
 
 	public function testIsFutureTime_future() {
-		$future = $this->getTimeValue( 20012, 10, 29 );
+		$future = self::getTimeValue( 20012, 10, 29 );
 		$timeValueComparer = new TimeValueComparer();
 
 		$this->assertTrue( $timeValueComparer->isFutureTime( $future ) );
@@ -104,7 +104,7 @@ class TimeValueComparerTest extends \MediaWikiUnitTestCase {
 	 *
 	 * @return TimeValue
 	 */
-	private function getTimeValue( $year, $month = 1, $day = 1 ) {
+	private static function getTimeValue( $year, $month = 1, $day = 1 ) {
 		$yearString = $year > 0 ? "+$year" : "$year";
 		$monthString = $month < 10 ? "0$month" : "$month";
 		$dayString = $day < 10 ? "0$day" : "$day";

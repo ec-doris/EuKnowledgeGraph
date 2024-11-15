@@ -22,6 +22,7 @@ namespace MediaWiki\SyntaxHighlight;
 
 use MediaWiki\MediaWikiServices;
 use Shellbox\Command\BoxedCommand;
+use Shellbox\ShellboxError;
 
 /**
  * Wrapper around the `pygmentize` command
@@ -189,14 +190,29 @@ class Pygmentize {
 	}
 
 	/**
+	 * Determine if the pygments command line supports the --json option
+	 *
+	 * @return bool
+	 */
+	private static function pygmentsSupportsJsonOutput(): bool {
+		$version = self::getVersion();
+		return ( version_compare( $version, '2.11.0' ) !== -1 );
+	}
+
+	/**
 	 * Shell out to get supported lexers by pygments
 	 *
 	 * @internal Only public for updateLexerList.php
 	 * @return array
 	 */
 	public static function fetchLexers(): array {
+		$cliParams = [ self::getPath(), '-L', 'lexer' ];
+		if ( self::pygmentsSupportsJsonOutput() ) {
+			$cliParams[] = '--json';
+		}
+
 		$result = self::boxedCommand()
-			->params( self::getPath(), '-L', 'lexer' )
+			->params( $cliParams )
 			->includeStderr()
 			->execute();
 		self::recordShellout( 'fetch_lexers' );
@@ -205,9 +221,50 @@ class Pygmentize {
 			throw new PygmentsException( $output );
 		}
 
-		// Post-process the output, ideally pygments would output this in a
-		// machine-readable format (https://github.com/pygments/pygments/issues/1437)
-		$output = $result->getStdout();
+		if ( self::pygmentsSupportsJsonOutput() ) {
+			$lexers = self::parseLexersFromJson( $output );
+		} else {
+			$lexers = self::parseLexersFromText( $output );
+		}
+
+		$lexers = array_unique( $lexers );
+		sort( $lexers );
+		$data = [];
+		foreach ( $lexers as $lexer ) {
+			$data[$lexer] = true;
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Parse json output of the pygments lexers list and return as php array
+	 *
+	 * @param string $output JSON formatted output of pygments lexers list
+	 * @return array
+	 */
+	private static function parseLexersFromJson( $output ): array {
+		$data = json_decode( $output, true );
+		if ( $data === null ) {
+			throw new PygmentsException(
+				'Got invalid JSON from Pygments: ' . $output );
+		}
+		$lexers = [];
+		foreach ( array_values( $data['lexers'] ) as $lexer ) {
+			$lexers = array_merge( $lexers, $lexer['aliases'] );
+		}
+		return $lexers;
+	}
+
+	/**
+	 * Parse original stdout of the pygments lexers list
+	 * This was the only format available before pygments 2.11.0
+	 * NOTE: Should be removed when pygments 2.11 is the minimum version expected to be installed
+	 *
+	 * @param string $output Textual list of pygments lexers
+	 * @return array
+	 */
+	private static function parseLexersFromText( $output ): array {
 		$lexers = [];
 		foreach ( explode( "\n", $output ) as $line ) {
 			if ( substr( $line, 0, 1 ) === '*' ) {
@@ -219,14 +276,7 @@ class Pygmentize {
 				}
 			}
 		}
-		$lexers = array_unique( $lexers );
-		sort( $lexers );
-		$data = [];
-		foreach ( $lexers as $lexer ) {
-			$data[$lexer] = true;
-		}
-
-		return $data;
+		return $lexers;
 	}
 
 	/**
@@ -242,22 +292,33 @@ class Pygmentize {
 		foreach ( $options as $k => $v ) {
 			$optionPairs[] = "{$k}={$v}";
 		}
-		$result = self::boxedCommand()
-			->params(
-				self::getPath(),
-				'-l', $lexer,
-				'-f', 'html',
-				'-O', implode( ',', $optionPairs ),
-				'file'
-			)
-			->inputFileFromString( 'file', $code )
-			->execute();
 		self::recordShellout( 'highlight' );
+
+		try {
+			$result = self::boxedCommand()
+				->params(
+					self::getPath(),
+					'-l', $lexer,
+					'-f', 'html',
+					'-O', implode( ',', $optionPairs ),
+					'file'
+				)
+				->inputFileFromString( 'file', $code )
+				->execute();
+		} catch ( ShellboxError $exception ) {
+			// If we have trouble sending or receiving over the network to
+			// Shellbox, we technically don't know if the command succeed or failed,
+			// but, treat the highlight() command as recoverable by wrapping this in
+			// PygmentsException. This permits the Parser tag to fallback to
+			// plainCodeWrap(), thus avoiding a fatal on pageviews (T292663).
+			throw new PygmentsException( 'ShellboxError', 0, $exception );
+		}
 
 		$output = $result->getStdout();
 		if ( $result->getExitCode() != 0 ) {
 			throw new PygmentsException( $output );
 		}
+
 		return $output;
 	}
 

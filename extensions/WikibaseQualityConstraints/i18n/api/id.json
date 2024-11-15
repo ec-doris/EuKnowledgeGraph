@@ -4,7 +4,6 @@
 			"Daud I.F. Argana"
 		]
 	},
-	"apihelp-wbcheckconstraints-description": "Melakukan pemeriksaan pewatas di entitas apa pun yang Anda inginkan dan mengembalikan hasilnya.",
 	"apihelp-wbcheckconstraints-summary": "Melakukan pemeriksaan pewatas di entitas apa pun yang Anda inginkan dan mengembalikan hasilnya.",
 	"apihelp-wbcheckconstraints-param-id": "Daftar ID dari entitas-entitas yang Anda ambil datanya. Pisahkan nilai-nilai dengan '|' atau cara lain.",
 	"apihelp-wbcheckconstraints-param-constraintid": "Penyaring opsional agar hanya mengembalikan pewatas yang memiliki ID pewatas yang ditentukan.",

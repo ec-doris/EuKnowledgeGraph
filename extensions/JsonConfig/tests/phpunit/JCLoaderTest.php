@@ -1,4 +1,5 @@
 <?php
+
 namespace JsonConfig\Tests;
 
 use JsonConfig\JCSingleton;
@@ -26,7 +27,7 @@ class JCLoaderTest extends MediaWikiIntegrationTestCase {
 		$this->assertArrayEquals( $expected === false ? [ [], [] ] : $expected, $actual, false, true );
 	}
 
-	public function provideConfigs() {
+	public static function provideConfigs() {
 		return [
 			[
 				[], self::getExpectedObj( [], true, false )

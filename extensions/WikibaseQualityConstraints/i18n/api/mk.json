@@ -4,7 +4,6 @@
 			"Bjankuloski06"
 		]
 	},
-	"apihelp-wbcheckconstraints-description": "Проверува услови за било која единица и дава исход.",
 	"apihelp-wbcheckconstraints-summary": "Проверува услови за било која единица и дава исход.",
 	"apihelp-wbcheckconstraints-param-id": "Назнака на единиците за кои ги барате податоците. Одделете ги вредностите со права црта (|) или нешто друго.",
 	"apihelp-wbcheckconstraints-param-claimid": "GUID-список што пронаоѓа тврдење за проверка на извод од услови. Одделете ги вредностите со права црта (|).",

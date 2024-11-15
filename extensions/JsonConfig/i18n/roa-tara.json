@@ -54,6 +54,7 @@
 	"jsonconfig-license-name-dl-de-zero-2.0": "Date licenze Germanie - Zero - Versione 2.0",
 	"jsonconfig-license-name-dl-de-by-1.0": "Date licenze Germanie - attrebuzzione - Versione 1.0",
 	"jsonconfig-license-name-dl-de-by-2.0": "Date licenze Germanie - attrebbuzione - versione 2.0",
+	"jsonconfig-license-name-GeoNutzV": "Date Geo licenze d'a Germanie",
 	"jsonconfig-license-copyrightwarning": "Reggistranne le cangiaminde, sì d'accorde cu le [https://foundation.wikimedia.org/wiki/Terms_of_Use Termine de ause], e si irrevocabbilmende d'accorde de relascià 'u condrebbute tune sotte a [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}].",
 	"jsonconfig-license-copyrightwarning-license-unset": "Reggistranne le cangiaminde, sì d'accorde cu le [https://foundation.wikimedia.org/wiki/Terms_of_Use Termine de ause], e si irrevocabbilmende d'accorde de relascià le condrebbute tune in accorde cu 'a licenze specificate jndr'à 'u cambe <code>licenze</code>.",
 	"jsonconfig-license-notice": "'''Note:''' quanne cange sta pàgene, tu sì d'accorde de relascià 'u condrebbute tune sotte a  [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}].",

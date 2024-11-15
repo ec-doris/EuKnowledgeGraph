@@ -2,10 +2,10 @@
 	"@metadata": {
 		"authors": [
 			"Metalhead64",
+			"Nw520",
 			"Umherirrender"
 		]
 	},
-	"apihelp-wbcheckconstraints-description": "Führt Beschränkungsprüfungen zu jedem gewünschten Objekt aus und gibt das Ergebnis zurück.",
 	"apihelp-wbcheckconstraints-summary": "Führt Beschränkungsprüfungen für jedes beliebige Objekt durch und gibt das Ergebnis aus.",
 	"apihelp-wbcheckconstraints-param-id": "Kennung der Objektliste, von der die Daten abgerufen werden sollen. Mehrere Werte mit „|“ oder Ähnlichem trennen.",
 	"apihelp-wbcheckconstraints-param-claimid": "GUID-Liste, die eine Behauptung erkennt, um einen Beschränkungsbericht zu prüfen. Mehrere Werte mit „|“ trennen.",
@@ -13,7 +13,7 @@
 	"apihelp-wbcheckconstraints-param-status": "Optionaler Filter, der nur Prüfergebnisse mit den ausgewählten Status zurückgibt.\n\nBeachte, dass nur Ergebnisse für die Status „violation“, „warning“, „suggestion“ und „bad-parameters“ zwischengespeichert werden.",
 	"apihelp-wbcheckconstraints-paramvalue-status-compliance": "Die Aussage hält die Beschränkung ein.",
 	"apihelp-wbcheckconstraints-paramvalue-status-violation": "Die Aussage verletzt die Beschränkung.",
-	"apihelp-wbcheckconstraints-paramvalue-status-exception": "Das Themenobjekt der Aussage ist eine bekannte Ausnahme der Beschränkung.",
+	"apihelp-wbcheckconstraints-paramvalue-status-exception": "Der Themendatensatz der Aussage ist eine bekannte Ausnahme der Beschränkung.",
 	"apihelp-wbcheckconstraints-paramvalue-status-todo": "Die Beschränkung ist nicht implementiert.",
 	"apihelp-wbcheckconstraints-paramvalue-status-bad-parameters": "Die Beschränkungsparameter sind defekt.",
 	"apihelp-wbcheckconstraints-paramvalue-status-deprecated": "Die Beschränkung wurde nicht geprüft, da die Aussage veraltet ist.",

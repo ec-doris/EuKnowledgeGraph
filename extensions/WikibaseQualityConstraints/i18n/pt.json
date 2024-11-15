@@ -5,7 +5,8 @@
 			"Hamilton Abreu",
 			"Macofe",
 			"Mansil alfalb",
-			"Vitorvicentevalente"
+			"Vitorvicentevalente",
+			"Amire80"
 		]
 	},
 	"wbqc-constraintreport": "Relatório de restrições",
@@ -116,7 +117,7 @@
 	"wbqc-violation-message-range-time-leftopen": "O valor de $1 ($2) não deve ser depois de $3.",
 	"wbqc-violation-message-range-time-leftopen-rightnow": "O valor de $1 ($2) não deve estar no futuro.",
 	"wbqc-violation-message-range-time-rightopen": "O valor de $1 ($2) não deve ser antes de $3.",
-	"wbqc-violation-message-range-time-rightopen-leftnow": "O  valor de $1 ($2) não deve estar no passado.",
+	"wbqc-violation-message-range-time-rightopen-leftnow": "O valor de $1 ($2) não deve estar no passado.",
 	"wbqc-violation-message-single-value": "Esta propriedade só deve conter um único valor.",
 	"wbqc-violation-message-single-value-separators": "Esta propriedade devia conter apenas um valor único com o mesmo {{PLURAL:$2|1=$4 qualitativo.|conjunto de qualitativos para essas propriedades: $3}}",
 	"wbqc-violation-message-single-best-value-no-preferred": "Esta propriedade só deve conter um único valor, o “melhor”. Dos vários valores atuais, só um pode ser marcado com a classificação “preferido”.",

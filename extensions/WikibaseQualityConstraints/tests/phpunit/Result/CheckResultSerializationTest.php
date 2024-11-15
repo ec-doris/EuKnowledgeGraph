@@ -3,6 +3,8 @@
 namespace WikibaseQuality\ConstraintReport\Tests\Result;
 
 use DataValues\Deserializers\DataValueDeserializer;
+use DataValues\MonolingualTextValue;
+use DataValues\MultilingualTextValue;
 use DataValues\TimeValue;
 use PHPUnit\Framework\TestCase;
 use Wikibase\DataModel\Entity\BasicEntityIdParser;
@@ -111,17 +113,17 @@ class CheckResultSerializationTest extends TestCase {
 			$expected = ( new CheckResult(
 				$checkResult->getContextCursor(),
 				$checkResult->getConstraint(),
-				$checkResult->getParameters(),
 				$checkResult->getStatus(),
 				$checkResult->getMessage()
 			) )->withMetadata(
 				Metadata::ofCachingMetadata( $checkResult->getMetadata()->getCachingMetadata() )
 			);
+			$expected->setConstraintClarification( $checkResult->getConstraintClarification() );
 		}
 		$this->assertEquals( $expected, $deserialized );
 	}
 
-	public function provideCheckResultsWithSerializations() {
+	public static function provideCheckResultsWithSerializations() {
 		$contextCursor = new MainSnakContextCursor(
 			'Q42',
 			'P31',
@@ -134,8 +136,14 @@ class CheckResultSerializationTest extends TestCase {
 			'Q5',
 			[]
 		);
-		yield 'unimplemented constraint type' => [
-			new CheckResult( $contextCursor, $constraint ),
+
+		$checkResult = new CheckResult( $contextCursor, $constraint );
+		$checkResult->setConstraintClarification( new MultilingualTextValue( [
+			new MonolingualTextValue( 'de', 'de clarification' ),
+			new MonolingualTextValue( 'en', 'en clarification' ),
+		] ) );
+		yield 'unimplemented constraint type with constraint clarification' => [
+			$checkResult,
 			[
 				CheckResultSerializer::KEY_CONTEXT_CURSOR => [
 					't' => Context::TYPE_STATEMENT,
@@ -152,10 +160,14 @@ class CheckResultSerializationTest extends TestCase {
 				],
 				CheckResultSerializer::KEY_CHECK_RESULT_STATUS => CheckResult::STATUS_TODO,
 				CheckResultSerializer::KEY_CACHING_METADATA => [],
+				CheckResultSerializer::KEY_CONSTRAINT_CLARIFICATION => [
+					[ 'text' => 'de clarification', 'language' => 'de' ],
+					[ 'text' => 'en clarification', 'language' => 'en' ],
+				],
 				CheckResultSerializer::KEY_DEPENDENCY_METADATA => [
 					CheckResultSerializer::KEY_DEPENDENCY_METADATA_ENTITY_IDS => [],
 				],
-			]
+			],
 		];
 
 		$futureTime = new TimeValue(
@@ -176,7 +188,6 @@ class CheckResultSerializationTest extends TestCase {
 			( new CheckResult(
 				$contextCursor,
 				$constraint,
-				[],
 				CheckResult::STATUS_BAD_PARAMETERS,
 				( new ViolationMessage( 'wbqc-violation-message-parameter-needed' ) )
 					->withEntityId( new ItemId( 'Q21502404' ), Role::CONSTRAINT_TYPE_ITEM )
@@ -220,7 +231,7 @@ class CheckResultSerializationTest extends TestCase {
 					CheckResultSerializer::KEY_DEPENDENCY_METADATA_ENTITY_IDS => [ 'Q42' ],
 					CheckResultSerializer::KEY_DEPENDENCY_METADATA_FUTURE_TIME => $futureTime->getArrayValue(),
 				],
-			]
+			],
 		];
 
 		yield 'NullResult' => [
@@ -242,7 +253,7 @@ class CheckResultSerializationTest extends TestCase {
 					CheckResultSerializer::KEY_DEPENDENCY_METADATA_ENTITY_IDS => [ 'Q42' ],
 					CheckResultSerializer::KEY_DEPENDENCY_METADATA_FUTURE_TIME => $futureTime->getArrayValue(),
 				],
-			]
+			],
 		];
 	}
 

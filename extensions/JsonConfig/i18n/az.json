@@ -1,0 +1,38 @@
+{
+	"@metadata": {
+		"authors": [
+			"Nemoralis"
+		]
+	},
+	"tooltip-ca-nstab-data": "Data səhifəsinə bax",
+	"jsonconfig-desc": "JSON konfiqurasiyasının vikidə saxlanmasına imkan verir",
+	"jsonconfig-duplicate-field": "Birdən çox \"$1\" dəyəri tapıldı",
+	"jsonconfig-edit-action-apply": "Tətbiq et",
+	"jsonconfig-edit-action-cancel": "İmtina",
+	"jsonconfig-edit-button-label": "Cədvəl kimi redaktə et",
+	"jsonconfig-edit-dialog-error": "Cədvəl kimi redaktə etmək mümkün deyil: $1",
+	"jsonconfig-edit-dialog-error-data-missing": "JSON <code>data</code> parametri yoxdur və ya massiv deyil",
+	"jsonconfig-edit-dialog-error-data-too-large": "Dataset cədvəl kimi redaktə etmək üçün çox böyükdür",
+	"jsonconfig-edit-dialog-error-field-name-missing": "Hər sahənin adı olmalıdır",
+	"jsonconfig-edit-dialog-error-field-type-invalid": "Cədvəl kimi redaktə etmək üçün hər bir sahədə tip <code>number</code> və ya <code>string</code> olmalıdır",
+	"jsonconfig-edit-dialog-error-fields-missing": "JSON <code>schema.fields</code> parametri yoxdur və ya massiv deyil",
+	"jsonconfig-edit-dialog-error-schema-missing": "JSON <code>schema</code> parametri yoxdur və ya massiv deyil",
+	"jsonconfig-edit-dialog-title": "JSON-u redaktə et",
+	"jsonconfig-err-array": "\"$1\" parametri siyahı olmalıdır, məsələn <kbd>[\"value1\", \"value2\", ...]</kbd>",
+	"jsonconfig-license-url-CC0-1.0": "https://creativecommons.org/publicdomain/zero/1.0/deed.az/",
+	"jsonconfig-license-url-CC-BY-1.0": "https://creativecommons.org/licenses/by/1.0/deed.az",
+	"jsonconfig-license-url-CC-BY-2.0": "https://creativecommons.org/licenses/by/2.0/deed.az",
+	"jsonconfig-license-url-CC-BY-2.5": "https://creativecommons.org/licenses/by/2.5/deed.az",
+	"jsonconfig-license-url-CC-BY-3.0": "https://creativecommons.org/licenses/by/3.0/deed.az",
+	"jsonconfig-license-url-CC-BY-4.0": "https://creativecommons.org/licenses/by/4.0/deed.az",
+	"jsonconfig-license-url-CC-BY-4.0+": "https://creativecommons.org/licenses/by/4.0/deed.az",
+	"jsonconfig-license-url-CC-BY-SA-1.0": "https://creativecommons.org/licenses/by-sa/1.0/deed.az",
+	"jsonconfig-license-url-CC-BY-SA-2.0": "https://creativecommons.org/licenses/by-sa/2.0/deed.az",
+	"jsonconfig-license-url-CC-BY-SA-2.5": "https://creativecommons.org/licenses/by-sa/2.5/deed.az",
+	"jsonconfig-license-url-CC-BY-SA-3.0": "https://creativecommons.org/licenses/by-sa/3.0/deed.az",
+	"jsonconfig-license-url-CC-BY-SA-4.0": "https://creativecommons.org/licenses/by-sa/4.0/deed.az",
+	"jsonconfig-license-url-CC-BY-SA-4.0+": "https://creativecommons.org/licenses/by-sa/4.0/deed.az",
+	"jsonconfig-license-notice-license-unset": "'''Qeyd:''' Bu səhifəni redaktə edərkən, <code>licence</code> sahəsində göstərilən lisenziyaya uyğun olaraq töhfənizi yayımlamağa razılaşırsınız.",
+	"right-jsonconfig-flush": "API vasitəsilə JsonConfig-i manipulyasiya etmək",
+	"action-jsonconfig-flush": "API vasitəsilə JsonConfig-i manipulyasiya etmək"
+}

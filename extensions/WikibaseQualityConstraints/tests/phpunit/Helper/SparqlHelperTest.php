@@ -14,6 +14,7 @@ use DataValues\UnboundedQuantityValue;
 use HashBagOStuff;
 use HashConfig;
 use MediaWiki\Http\HttpRequestFactory;
+use MediaWiki\Revision\SlotRecord;
 use MultiConfig;
 use NullStatsdDataFactory;
 use WANObjectCache;
@@ -103,7 +104,7 @@ class SparqlHelperTest extends \PHPUnit\Framework\TestCase {
 
 		return $this->getMockBuilder( SparqlHelper::class )
 			->setConstructorArgs( [
-				new MultiConfig( [ $config, $this->getDefaultConfig() ] ),
+				new MultiConfig( [ $config, self::getDefaultConfig() ] ),
 				new RdfVocabulary(
 					[ '' => 'http://www.wikidata.org/entity/' ],
 					[ '' => 'http://www.wikidata.org/wiki/Special:EntityData/' ],
@@ -123,7 +124,7 @@ class SparqlHelperTest extends \PHPUnit\Framework\TestCase {
 				new ExpiryLock( new HashBagOStuff() ),
 				$loggingHelper,
 				'A fancy user agent',
-				$this->createMock( HttpRequestFactory::class )
+				$this->createMock( HttpRequestFactory::class ),
 			] )
 			->onlyMethods( [ 'runQuery' ] )
 			->getMock();
@@ -140,10 +141,10 @@ ASK {
 }
 EOF;
 
-		$sparqlHelper->expects( $this->exactly( 1 ) )
+		$sparqlHelper->expects( $this->once() )
 			->method( 'runQuery' )
 			->willReturn( $this->askResult( true ) )
-			->withConsecutive( [ $this->equalTo( $query ) ] );
+			->withConsecutive( [ $query ] );
 
 		$this->assertTrue( $sparqlHelper->hasType( 'Q1', [ 'Q100', 'Q101' ] )->getBool() );
 	}
@@ -161,26 +162,26 @@ ASK {
 }
 EOF;
 
-		$sparqlHelper->expects( $this->exactly( 1 ) )
+		$sparqlHelper->expects( $this->once() )
 			->method( 'runQuery' )
 			->willReturn( $this->askResult( true ) )
-			->withConsecutive( [ $this->equalTo( $query ) ] );
+			->withConsecutive( [ $query ] );
 
 		$this->assertTrue( $sparqlHelper->hasType( 'Q1', [ 'Q100', 'Q101' ] )->getBool() );
 	}
 
-	public function provideSeparatorIdsAndExpectedFilters() {
+	public static function provideSeparatorIdsAndExpectedFilters() {
 		$p21 = new NumericPropertyId( 'P21' );
 		$p22 = new NumericPropertyId( 'P22' );
 
 		yield [
 			[],  // No separators shouldn't add filtering or declaration
-			''
+			'',
 		];
 
 		yield [
 			[
-				$p21, $p22
+				$p21, $p22,
 			],
 <<<EOF
   MINUS {
@@ -231,7 +232,7 @@ EOF;
       ?statement a wdno:P22.
     }
   }
-EOF
+EOF,
 		];
 	}
 
@@ -267,13 +268,13 @@ SELECT DISTINCT ?otherEntity WHERE {
 LIMIT 10
 EOF;
 
-		$sparqlHelper->expects( $this->exactly( 1 ) )
+		$sparqlHelper->expects( $this->once() )
 			->method( 'runQuery' )
 			->willReturn( $this->selectResults( [
 				[ 'otherEntity' => [ 'type' => 'uri', 'value' => 'http://www.wikidata.org/entity/Q100' ] ],
 				[ 'otherEntity' => [ 'type' => 'uri', 'value' => 'http://www.wikidata.org/entity/Q101' ] ],
 			] ) )
-			->withConsecutive( [ $this->equalTo( $query ) ] );
+			->withConsecutive( [ $query ] );
 
 		$this->assertEquals(
 			$sparqlHelper->findEntitiesWithSameStatement( $statement, $separators )->getArray(),
@@ -310,13 +311,13 @@ SELECT DISTINCT ?otherEntity WHERE {
 LIMIT 10
 EOF;
 
-		$sparqlHelper->expects( $this->exactly( 1 ) )
+		$sparqlHelper->expects( $this->once() )
 			->method( 'runQuery' )
 			->willReturn( $this->selectResults( [
 				[ 'otherEntity' => [ 'type' => 'uri', 'value' => 'http://www.wikidata.org/entity/Q100' ] ],
 				[ 'otherEntity' => [ 'type' => 'uri', 'value' => 'http://www.wikidata.org/entity/Q101' ] ],
 			] ) )
-			->withConsecutive( [ $this->equalTo( $query ) ] );
+			->withConsecutive( [ $query ] );
 
 		$this->assertEquals(
 			$sparqlHelper->findEntitiesWithSameQualifierOrReference(
@@ -329,7 +330,7 @@ EOF;
 		);
 	}
 
-	public function provideSnaksWithSparqlValuesAndPropertyPaths() {
+	public static function provideSnaksWithSparqlValuesAndPropertyPaths() {
 		$pid = new NumericPropertyId( 'P1' );
 		$globeCoordinateValue = new GlobeCoordinateValue( new LatLongValue( 42.0, 13.37 ) );
 		$quantityValue = UnboundedQuantityValue::newFromNumber( -10, 'ms' );
@@ -347,84 +348,84 @@ EOF;
 				'string',
 				'qualifier',
 				'"foo"',
-				'pq:P1'
+				'pq:P1',
 			],
 			'external identifier, reference' => [
 				new PropertyValueSnak( $pid, new StringValue( 'f00' ) ),
 				'external-id',
 				'reference',
 				'"f00"',
-				'prov:wasDerivedFrom/pr:P1'
+				'prov:wasDerivedFrom/pr:P1',
 			],
 			'Commons media, qualifier' => [
 				new PropertyValueSnak( $pid, new StringValue( 'Bar.jpg' ) ),
 				'commonsMedia',
 				'qualifier',
 				'<http://commons.wikimedia.org/wiki/Special:FilePath/Bar.jpg>',
-				'pq:P1'
+				'pq:P1',
 			],
 			'geoshape, reference' => [
 				new PropertyValueSnak( $pid, new StringValue( 'Baznia.map' ) ),
 				'geo-shape',
 				'reference',
 				'<http://commons.wikimedia.org/data/main/Baznia.map>',
-				'prov:wasDerivedFrom/pr:P1'
+				'prov:wasDerivedFrom/pr:P1',
 			],
 			'tabular data, qualifier' => [
 				new PropertyValueSnak( $pid, new StringValue( 'Qux.tab' ) ),
 				'tabular-data',
 				'qualifier',
 				'<http://commons.wikimedia.org/data/main/Qux.tab>',
-				'pq:P1'
+				'pq:P1',
 			],
 			'url, reference' => [
 				new PropertyValueSnak( $pid, new StringValue( 'https://wikibase.example/url' ) ),
 				'url',
 				'reference',
 				'<https://wikibase.example/url>',
-				'prov:wasDerivedFrom/pr:P1'
+				'prov:wasDerivedFrom/pr:P1',
 			],
 			'item, qualifier' => [
 				new PropertyValueSnak( $pid, new EntityIdValue( new ItemId( 'Q100' ) ) ),
 				'wikibase-item',
 				'qualifier',
 				'wd:Q100',
-				'pq:P1'
+				'pq:P1',
 			],
 			'property, reference' => [
 				new PropertyValueSnak( $pid, new EntityIdValue( new NumericPropertyId( 'P100' ) ) ),
 				'wikibase-property',
 				'reference',
 				'wd:P100',
-				'prov:wasDerivedFrom/pr:P1'
+				'prov:wasDerivedFrom/pr:P1',
 			],
 			'monolingual text, qualifier' => [
 				new PropertyValueSnak( $pid, new MonolingualTextValue( 'qqx', 'lorem ipsum' ) ),
 				'monolingualtext',
 				'qualifier',
 				'"lorem ipsum"@qqx',
-				'pq:P1'
+				'pq:P1',
 			],
 			'globe coordinate, reference' => [
 				new PropertyValueSnak( $pid, $globeCoordinateValue ),
 				'globe-coordinate',
 				'reference',
 				"wdv:{$globeCoordinateValue->getHash()}",
-				'prov:wasDerivedFrom/prv:P1'
+				'prov:wasDerivedFrom/prv:P1',
 			],
 			'quantity, qualifier' => [
 				new PropertyValueSnak( $pid, $quantityValue ),
 				'quantity',
 				'qualifier',
 				"wdv:{$quantityValue->getHash()}",
-				'pqv:P1'
+				'pqv:P1',
 			],
 			'time, reference' => [
 				new PropertyValueSnak( $pid, $timeValue ),
 				'time',
 				'reference',
 				"wdv:{$timeValue->getHash()}",
-				'prov:wasDerivedFrom/prv:P1'
+				'prov:wasDerivedFrom/prv:P1',
 			],
 		];
 	}
@@ -479,7 +480,7 @@ EOF;
 
 		$sparqlHelper->expects( $this->once() )
 			->method( 'runQuery' )
-			->with( $this->equalTo( $query ) )
+			->with( $query )
 			->willReturn( $this->selectResults( [ [ 'matches' => [ 'value' => 'false' ] ] ] ) );
 
 		$result = $sparqlHelper->matchesRegularExpressionWithSparql( $text, $regex );
@@ -496,21 +497,19 @@ EOF;
 
 		$sparqlHelper->expects( $this->once() )
 			->method( 'runQuery' )
-			->with( $this->equalTo( $query ) )
+			->with( $query )
 			->willReturn( $this->selectResults( [ [] ] ) );
 
 		try {
 			call_user_func_array( [ $sparqlHelper, 'matchesRegularExpressionWithSparql' ], [ $text, $regex ] );
-			$this->assertTrue(
-				false,
+			$this->fail(
 				"matchesRegularExpressionWithSparql should have thrown a ConstraintParameterException with message "
-			. "⧼${messageKey}⧽."
+			. "⧼{$messageKey}⧽."
 			);
 		} catch ( ConstraintParameterException $exception ) {
 			$checkResult = new CheckResult(
 				$this->createMock( ContextCursor::class ),
 				$this->createMock( Constraint::class ),
-				[],
 				CheckResult::STATUS_VIOLATION,
 				$exception->getViolationMessage()
 			);
@@ -536,7 +535,7 @@ EOF;
 					'(?!this may look like a regular expression)',
 					'/but should not be interpreted as one/',
 					'(x+x+)+y',
-				]
+				],
 			] )
 		);
 		$content = '(x+x+)+y';
@@ -546,16 +545,16 @@ EOF;
 		$this->assertTrue( $actual );
 	}
 
-	public function provideTimeoutMessages() {
+	public static function provideTimeoutMessages() {
 		return [
 			'empty' => [
 				'',
-				false
+				false,
 			],
 			'syntax error' => [
 				'org.openrdf.query.MalformedQueryException: ' .
 					'Encountered "<EOF>" at line 1, column 6.',
-				false
+				false,
 			],
 			'QueryTimeoutException' => [
 				'java.util.concurrent.ExecutionException: ' .
@@ -565,14 +564,14 @@ EOF;
 					'java.util.concurrent.ExecutionException: ' .
 					'com.bigdata.bop.engine.QueryTimeoutException: ' .
 					'Query deadline is expired.',
-				true
+				true,
 			],
 			'TimeoutException' => [
 				"java.util.concurrent.TimeoutException\n" .
 					"\tat java.util.concurrent.FutureTask.get(FutureTask.java:205)\n" .
 					"\tat com.bigdata.rdf.sail.webapp.BigdataServlet.submitApiTask(BigdataServlet.java:289)\n" .
 					"\tat com.bigdata.rdf.sail.webapp.QueryServlet.doSparqlQuery(QueryServlet.java:653)\n",
-				true
+				true,
 			],
 		];
 	}
@@ -588,19 +587,19 @@ EOF;
 		$this->assertSame( $expected, $actual );
 	 }
 
-	 public function provideCacheHeaders() {
+	 public static function provideCacheHeaders() {
 		 return [
 			 'WDQS hit' => [
 				 [ 'x-cache-status' => [ 'hit-front' ], 'cache-control' => [ 'public, max-age=300' ] ],
-				 300
+				 300,
 			 ],
 			 'WDQS miss' => [
 				 [ 'x-cache-status' => [ 'miss' ], 'cache-control' => [ 'public, max-age=300' ] ],
-				 false
+				 false,
 			 ],
 			 'generic hit' => [
 				 [ 'x-cache-status' => [ 'hit' ] ],
-				 true
+				 true,
 			 ],
 		 ];
 	 }
@@ -629,7 +628,7 @@ EOF;
 		 $loggingHelper = $this->getLoggingHelperExpectingRetryAfterPresent( new ConvertibleTimestamp( $expectedTimestamp ) );
 		 $lock->expects( $this->once() )
 			 ->method( 'lock' )
-			 ->with( $this->equalTo( SparqlHelper::EXPIRY_LOCK_ID ),
+			 ->with( SparqlHelper::EXPIRY_LOCK_ID,
 				 $this->callback( function ( $actualTimestamp ) use ( $expectedTimestamp ) {
 					 $actualUnixTime = $actualTimestamp->format( 'U' );
 					 return $actualUnixTime == $expectedTimestamp;
@@ -637,7 +636,7 @@ EOF;
 			 );
 
 		 $sparqlHelper = new SparqlHelper(
-			$this->getDefaultConfig(),
+			self::getDefaultConfig(),
 			$this->createMock( RdfVocabulary::class ),
 			$this->createMock( EntityIdParser::class ),
 			$this->createMock( PropertyDataTypeLookup::class ),
@@ -669,7 +668,7 @@ EOF;
 		$requestFactoryMock->method( 'create' )
 			->willReturn( $requestMock );
 
-		$config = $this->getDefaultConfig();
+		$config = self::getDefaultConfig();
 		$defaultWait = 154;
 		$config->set( 'WBQualityConstraintsSparqlThrottlingFallbackDuration', $defaultWait );
 
@@ -710,7 +709,7 @@ EOF;
 			 ->willReturn( $requestMock );
 
 		 $sparqlHelper = new SparqlHelper(
-			 $this->getDefaultConfig(),
+			 self::getDefaultConfig(),
 			 $this->createMock( RdfVocabulary::class ),
 			 $this->createMock( EntityIdParser::class ),
 			 $this->createMock( PropertyDataTypeLookup::class ),
@@ -732,7 +731,7 @@ EOF;
 
 		$requestFactoryMock = $this->getMock429RequestFactory( [ 'Retry-After' => 'malformedthing' ] );
 
-		$config = $this->getDefaultConfig();
+		$config = self::getDefaultConfig();
 		$defaultWait = 154;
 		$config->set( 'WBQualityConstraintsSparqlThrottlingFallbackDuration', $defaultWait );
 		$fakeNow = 5000;
@@ -766,7 +765,7 @@ EOF;
 		$lock->expects( $this->once() )
 			->method( 'lock' )
 			->with(
-				$this->equalTo( $expectedLockId ),
+				$expectedLockId,
 				$this->callback(
 					function ( $actualTimestamp ) use ( $expectedLockExpiryTimestamp ) {
 						$actualUnixTime = $actualTimestamp->format( 'U' );
@@ -797,7 +796,7 @@ EOF;
 		$helper = $this->createMock( LoggingHelper::class );
 		$helper->expects( $this->once() )
 			->method( 'logSparqlHelperTooManyRequestsRetryAfterPresent' )
-			->with( $this->equalTo( $retryTime ), $this->anything() );
+			->with( $retryTime, $this->anything() );
 		return $helper;
 	}
 
@@ -852,7 +851,7 @@ END;
 			)
 			->willReturn( $request );
 
-		$config = $this->getDefaultConfig();
+		$config = self::getDefaultConfig();
 		$config->set( 'WBQualityConstraintsSparqlHasWikibaseSupport', false );
 
 		$rdfVocabulary = new RdfVocabulary(
@@ -863,21 +862,21 @@ END;
 					'wd',
 					false,
 					[
-						'item' => [ 'namespaceId' => 100 ,'slot' => 'main' ],
-						'property' => [ 'namespaceId' => 200, 'slot' => 'main' ]
+						'item' => [ 'namespaceId' => 100, 'slot' => SlotRecord::MAIN ],
+						'property' => [ 'namespaceId' => 200, 'slot' => SlotRecord::MAIN ],
 					],
 					'http://wiki/entity/',
 					'wd',
 					'',
 					'd'
-				)
+				),
 			], new SubEntityTypesMapper( [] ) ),
 			[ 'wd' => 'wd' ],
 			[ 'wd' => '' ]
 		);
 
 		$sparqlHelper = new SparqlHelper(
-			$this->getDefaultConfig(),
+			self::getDefaultConfig(),
 			$rdfVocabulary,
 			$this->createMock( EntityIdParser::class ),
 			$this->createMock( PropertyDataTypeLookup::class ),
@@ -921,7 +920,7 @@ END;
 		$dataFactory = new BufferingStatsdDataFactory( '' );
 
 		$sparqlHelper = new SparqlHelper(
-			$this->getDefaultConfig(),
+			self::getDefaultConfig(),
 			$this->createMock( RdfVocabulary::class ),
 			$this->createMock( EntityIdParser::class ),
 			$this->createMock( PropertyDataTypeLookup::class ),
@@ -971,7 +970,7 @@ END;
 		$dataFactory = new BufferingStatsdDataFactory( '' );
 
 		$sparqlHelper = new SparqlHelper(
-			$this->getDefaultConfig(),
+			self::getDefaultConfig(),
 			$this->createMock( RdfVocabulary::class ),
 			$this->createMock( EntityIdParser::class ),
 			$this->createMock( PropertyDataTypeLookup::class ),

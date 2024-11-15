@@ -1,13 +1,14 @@
 <?php
 
+declare( strict_types = 1 );
+
 namespace WikibaseQuality\ConstraintReport\Tests\Api;
 
 use ApiTestCase;
 use DataValues\UnknownValue;
 use HashConfig;
-use Language;
 use MediaWiki\Logger\LoggerFactory;
-use MockMessageLocalizer;
+use MediaWiki\MediaWikiServices;
 use NullStatsdDataFactory;
 use ValueFormatters\FormatterOptions;
 use Wikibase\DataModel\Entity\Item;
@@ -19,12 +20,11 @@ use Wikibase\DataModel\Services\Statement\StatementGuidValidator;
 use Wikibase\DataModel\Snak\PropertyValueSnak;
 use Wikibase\DataModel\Statement\Statement;
 use Wikibase\DataModel\Statement\StatementList;
+use Wikibase\DataModel\Tests\NewItem;
+use Wikibase\DataModel\Tests\NewStatement;
 use Wikibase\Lib\Formatters\OutputFormatValueFormatterFactory;
 use Wikibase\Lib\Formatters\SnakFormatter;
 use Wikibase\Lib\LanguageFallbackChainFactory;
-use Wikibase\Repo\EntityIdLabelFormatterFactory;
-use Wikibase\Repo\Tests\NewItem;
-use Wikibase\Repo\Tests\NewStatement;
 use Wikibase\Repo\WikibaseRepo;
 use WikibaseQuality\ConstraintReport\Api\CheckConstraints;
 use WikibaseQuality\ConstraintReport\Api\CheckingResultsSource;
@@ -59,20 +59,17 @@ class CheckConstraintsTest extends ApiTestCase {
 
 	private static $oldModuleDeclaration;
 
-	/**
-	 * @var InMemoryEntityLookup
-	 */
-	private static $entityLookup;
+	private static InMemoryEntityLookup $entityLookup;
 
 	/**
 	 * @var Constraint[]
 	 */
-	private static $constraintLookupContents = [];
+	private static array $constraintLookupContents = [];
 
 	/**
 	 * @var ConstraintChecker[]
 	 */
-	private static $checkerMap = [];
+	private static array $checkerMap = [];
 
 	public static function setUpBeforeClass(): void {
 		parent::setUpBeforeClass();
@@ -84,10 +81,10 @@ class CheckConstraintsTest extends ApiTestCase {
 		self::$entityLookup->addEntity( new Item( new ItemId( self::EMPTY_ITEM ) ) );
 
 		$wgAPIModules['wbcheckconstraints']['factory'] = function ( $main, $name ) {
-			$factory = new EntityIdLabelFormatterFactory();
+			$entityIdLabelFormatterFactory = WikibaseRepo::getEntityIdLabelFormatterFactory();
 			$languageFallbackChainFactory = new LanguageFallbackChainFactory();
 
-			$language = Language::factory( 'en' );
+			$language = MediaWikiServices::getInstance()->getLanguageFactory()->getLanguage( 'en' );
 
 			$formatterOptions = new FormatterOptions();
 			$factoryFunctions = [];
@@ -98,7 +95,6 @@ class CheckConstraintsTest extends ApiTestCase {
 				$language,
 				$languageFallbackChainFactory
 			);
-			$valueFormatter = $valueFormatterFactory->getValueFormatter( SnakFormatter::FORMAT_HTML, $formatterOptions );
 
 			// we can’t use the DefaultConfig trait because we’re in a static method
 			$config = new HashConfig( [
@@ -107,6 +103,7 @@ class CheckConstraintsTest extends ApiTestCase {
 				'WBQualityConstraintsConstraintStatusId' => 'P3',
 				'WBQualityConstraintsConstraintScopeId' => 'P4',
 				'WBQualityConstraintsConstraintEntityTypesId' => 'P4',
+				'WBQualityConstraintsConstraintClarificationId' => 'P5',
 				'WBQualityConstraintsConstraintCheckedOnMainValueId' => 'Q1',
 				'WBQualityConstraintsConstraintCheckedOnQualifiersId' => 'Q2',
 				'WBQualityConstraintsConstraintCheckedOnReferencesId' => 'Q3',
@@ -158,11 +155,12 @@ class CheckConstraintsTest extends ApiTestCase {
 				),
 				new CheckResultsRendererFactory(
 					WikibaseRepo::getEntityTitleLookup(),
-					$factory,
+					$entityIdLabelFormatterFactory,
+					WikibaseRepo::getLanguageFallbackChainFactory(),
 					new ViolationMessageRendererFactory(
 						$config,
-						new MockMessageLocalizer(),
-						$factory,
+						MediaWikiServices::getInstance()->getLanguageNameUtils(),
+						$entityIdLabelFormatterFactory,
 						$valueFormatterFactory
 					)
 				),
@@ -192,7 +190,7 @@ class CheckConstraintsTest extends ApiTestCase {
 
 		$this->assertArrayHasKey( $entityId, $result['wbcheckconstraints'] );
 		$this->assertArrayHasKey( 'claims', $result['wbcheckconstraints'][$entityId] );
-		$this->assertEmpty( $result['wbcheckconstraints'][$entityId]['claims'] );
+		$this->assertSame( [], $result['wbcheckconstraints'][$entityId]['claims'] );
 	}
 
 	public function testReportForNonexistentItemIsEmpty() {
@@ -203,7 +201,7 @@ class CheckConstraintsTest extends ApiTestCase {
 
 		$this->assertArrayHasKey( $entityId, $result['wbcheckconstraints'] );
 		$this->assertArrayHasKey( 'claims', $result['wbcheckconstraints'][$entityId] );
-		$this->assertEmpty( $result['wbcheckconstraints'][$entityId]['claims'] );
+		$this->assertSame( [], $result['wbcheckconstraints'][$entityId]['claims'] );
 	}
 
 	public function testReportForNonexistentClaimIsEmpty() {
@@ -211,7 +209,7 @@ class CheckConstraintsTest extends ApiTestCase {
 			[ CheckConstraints::PARAM_CLAIM_ID => self::NONEXISTENT_CLAIM ]
 		);
 
-		$this->assertEmpty( $result['wbcheckconstraints'] );
+		$this->assertSame( [], $result['wbcheckconstraints'] );
 	}
 
 	public function testItemExistsAndHasViolation_WillGetOnlyThisViolationInTheResult() {
@@ -306,12 +304,12 @@ class CheckConstraintsTest extends ApiTestCase {
 	 * @param array $params
 	 * @return array Array of violations
 	 */
-	private function doRequest( array $params ) {
+	private function doRequest( array $params ): array {
 		$params['action'] = 'wbcheckconstraints';
 		return $this->doApiRequest( $params, [], false, null )[0];
 	}
 
-	private function givenPropertyHasStatus( NumericPropertyId $propertyId, $status ) {
+	private function givenPropertyHasStatus( NumericPropertyId $propertyId, string $status ): void {
 		static $itemIdNumber = 1234;
 		$itemId = 'Q' . $itemIdNumber++;
 		self::$checkerMap[$itemId] = new FakeChecker( $status );
@@ -326,21 +324,19 @@ class CheckConstraintsTest extends ApiTestCase {
 	private function givenItemWithPropertyExists(
 		ItemId $itemId,
 		NumericPropertyId $propertyId,
-		$statementId = 'some-id'
-	) {
+		string $statementId = 'some-id'
+	): void {
 		$item = new Item(
 			$itemId,
 			null,
 			null,
 			new StatementList(
-				[
-					new Statement(
-						new PropertyValueSnak( $propertyId, new UnknownValue( null ) ),
-						null,
-						null,
-						$itemId->getSerialization() . '$' . $statementId
-					)
-				]
+				new Statement(
+					new PropertyValueSnak( $propertyId, new UnknownValue( null ) ),
+					null,
+					null,
+					$itemId->getSerialization() . '$' . $statementId
+				)
 			)
 		);
 		self::$entityLookup->addEntity( $item );

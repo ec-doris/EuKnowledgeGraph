@@ -47,7 +47,7 @@
 	"wbqc-violation-message-value-needed-of-type": "Omadused kitsendusega \"$1\" vajavad väärtusi tüübiga \"$2\".",
 	"wbqc-violation-message-value-needed-of-types-2": "Omadused kitsendusega \"$1\" vajavad väärtusi tüübiga \"$2\" või \"$3\".",
 	"wbqc-violation-message-parameter-needed": "Omadused kitsendusega \"$1\" vajavad parameetrit \"$2\".",
-	"wbqc-violation-message-parameters-needed-3": "Omadused kitsendusega \"$1\" vajavad parameetreid \"$2\",  \"$3\" ja \"$4\".",
+	"wbqc-violation-message-parameters-needed-3": "Omadused kitsendusega \"$1\" vajavad parameetreid \"$2\", \"$3\" ja \"$4\".",
 	"wbqc-violation-message-parameter-value": "Parameetril \"$1\" peab olema kohandatud väärtus, mitte \"väärtus puudub\" ega \"väärtus teadmata\".",
 	"wbqc-violation-message-parameter-value-or-novalue": "Parameetril \"$1\" peab olema kohandatud väärtus või \"väärtus puudub\", mitte \"väärtus teadmata\".",
 	"wbqc-violation-message-parameter-entity": "Parameetri \"$1\" väärtus peab olema olem, mitte \"$2\".",
@@ -122,6 +122,8 @@
 	"wbqc-violation-message-integer": "Omaduse $1 väärtus peaks olema täisarv, aga väärtusel $2 on murdosa.",
 	"wbqc-violation-message-integer-bounds": "Omaduse $1 väärtus peaks olema täisarv, aga väärtuse $2 piiridel on murdosa.",
 	"wbqc-violation-message-citationNeeded": "Avaldusel omaduse $1 kohta peaks olema vähemalt üks viide.",
+	"wbqc-violation-message-language": "Avaldus omadusega $1 peaks olema ainult lekseemil, mille keeleks on määratud {{PLURAL:$2|1=$4.|2=kas $4 või $5.|üks järgmistest: $3}}",
+	"wbqc-violation-message-label-lacking": "Olemil omadusega $1 peaks olema ka silt vähemalt {{PLURAL:$2|1=selles keeles: $4.|ühes järgmistest keeltest: $3}}",
 	"wbqc-violation-message-property-scope": "Omadust $1 ei peaks kasutama selles kohas ($2). {{PLURAL:$3|Seda omadust sobib kasutada ainult $5.|Ainsad sobivad kohad sellele omadusele on järgmised: $4}}",
 	"wbqc-violation-message-exception": "See olem on selle kitsenduse teadaolev erand ja see on erandina märgitud."
 }

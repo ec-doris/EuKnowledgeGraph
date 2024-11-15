@@ -1,8 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
-			"NehalDaveND"
+			"NehalDaveND",
+			"पर्वत सुबेदी"
 		]
 	},
+	"jsonconfig-edit-action-cancel": "रद्द गर्नुहोस्",
 	"jsonconfig-optional-field": "(वैकल्पिक)"
 }

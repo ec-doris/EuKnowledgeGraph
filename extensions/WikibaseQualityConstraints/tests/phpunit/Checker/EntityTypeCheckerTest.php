@@ -3,8 +3,8 @@
 namespace WikibaseQuality\ConstraintReport\Tests\Checker;
 
 use Wikibase\DataModel\Entity\ItemId;
-use Wikibase\Repo\Tests\NewItem;
-use Wikibase\Repo\Tests\NewStatement;
+use Wikibase\DataModel\Tests\NewItem;
+use Wikibase\DataModel\Tests\NewStatement;
 use WikibaseQuality\ConstraintReport\Constraint;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Checker\EntityTypeChecker;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\MainSnakContext;
@@ -39,8 +39,8 @@ class EntityTypeCheckerTest extends \MediaWikiIntegrationTestCase {
 		$this->entityTypeChecker = new EntityTypeChecker(
 			$this->getConstraintParameterParser()
 		);
-		$this->itemEntityType = $this->getDefaultConfig()->get( 'WBQualityConstraintsWikibaseItemId' );
-		$this->propertyEntityType = $this->getDefaultConfig()->get( 'WBQualityConstraintsWikibasePropertyId' );
+		$this->itemEntityType = self::getDefaultConfig()->get( 'WBQualityConstraintsWikibaseItemId' );
+		$this->propertyEntityType = self::getDefaultConfig()->get( 'WBQualityConstraintsWikibasePropertyId' );
 	}
 
 	public function testEntityTypeConstraintValid() {

@@ -4,7 +4,6 @@
 			"Joetaras"
 		]
 	},
-	"apihelp-wbcheckconstraints-description": "Face le condrolle de vingole sus a tutte le endità ca vuè ccu tuèrne jndr'à 'u resultate.",
 	"apihelp-wbcheckconstraints-summary": "Face le condrolle de vingole sus a tutte le endità ca vuè ccu tuèrne jndr'à 'u resultate.",
 	"apihelp-wbcheckconstraints-param-id": "ID de l'elenghe de l'endità da addò pigghià le date. Valore separate cu '|' o 'n'otre simbole.",
 	"apihelp-wbcheckconstraints-param-claimid": "L'elenghe de GUID idendifichescene 'na richieste da condrollà jndr'à 'nu reipiloghe de vingole. Valore separate cu '|'.",

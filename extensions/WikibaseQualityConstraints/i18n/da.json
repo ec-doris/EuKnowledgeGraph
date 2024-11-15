@@ -1,9 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
+			"Dipsacus fullonum",
 			"Jorn Ari",
-			"Saederup92",
-			"Dipsacus fullonum"
+			"Saederup92"
 		]
 	},
 	"wbqc-constraintreport": "Begrænsningsrapport",
@@ -39,7 +39,7 @@
 	"wbqc-potentialissues-short": "Mulige problemer",
 	"wbqc-potentialissues-long": "Dette udsagn har nogle potentielle problemer.",
 	"wbqc-suggestions-short": "Forslag",
-	"wbqc-suggestions-long": "Det er forslag til at forbedre  denne påstand.",
+	"wbqc-suggestions-long": "Det er forslag til at forbedre denne påstand.",
 	"wbqc-badparameters-short": "Dårlige parametre",
 	"wbqc-badparameters-long": "Denne begrænsningspåstand har ugyldige parametre.",
 	"wbqc-parameterissues-short": "Videregående problemer",

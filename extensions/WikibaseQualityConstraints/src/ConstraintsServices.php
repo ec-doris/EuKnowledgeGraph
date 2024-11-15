@@ -13,6 +13,7 @@ use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\RangeCheckerHelper;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\SparqlHelper;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\TypeCheckerHelper;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Message\ViolationMessageDeserializer;
+use WikibaseQuality\ConstraintReport\ConstraintCheck\Message\ViolationMessageRendererFactory;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Message\ViolationMessageSerializer;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Result\CheckResultDeserializer;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Result\CheckResultSerializer;
@@ -37,6 +38,7 @@ class ConstraintsServices {
 	public const DELEGATING_CONSTRAINT_CHECKER = 'WBQC_DelegatingConstraintChecker';
 	public const RESULTS_SOURCE = 'WBQC_ResultsSource';
 	public const EXPIRY_LOCK = 'WBQC_ExpiryLock';
+	public const VIOLATION_MESSAGE_RENDERER_FACTORY = 'WBQC_ViolationMessageRendererFactory';
 
 	private static function getService( ?MediaWikiServices $services, $name ) {
 		if ( $services === null ) {
@@ -119,6 +121,12 @@ class ConstraintsServices {
 
 	public static function getExpiryLock( MediaWikiServices $services = null ): ExpiryLock {
 		return self::getService( $services, self::EXPIRY_LOCK );
+	}
+
+	public static function getViolationMessageRendererFactory(
+		MediaWikiServices $services = null
+	): ViolationMessageRendererFactory {
+		return self::getService( $services, self::VIOLATION_MESSAGE_RENDERER_FACTORY );
 	}
 
 }

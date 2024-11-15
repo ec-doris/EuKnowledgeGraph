@@ -24,7 +24,7 @@ class JCValidators {
 	) {
 		if ( $validators ) {
 			foreach ( $validators as $validator ) {
-				if ( !call_user_func( $validator, $value, $path, $content ) ) {
+				if ( !$validator( $value, $path, $content ) ) {
 					break;
 				}
 			}

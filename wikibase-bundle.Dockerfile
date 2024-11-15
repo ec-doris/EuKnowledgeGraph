@@ -1,9 +1,9 @@
-FROM wikibase/wikibase-bundle:1.39.1-wmde.11
+FROM wikibase/wikibase-bundle:1.41.1-wmde.20
 COPY LocalSettings.php /var/www/html/LocalSettings.d/LocalSettings.override.php
-COPY extensions/JsonConfig /var/www/html/extensions/JsonConfig/
-COPY extensions/Kartographer /var/www/html/extensions/Kartographer/
-COPY extensions/WikibaseQualityConstraints /var/www/html/extensions/WikibaseQualityConstraints/
-COPY extensions/CASAuth /var/www/html/extensions/CASAuth/
+COPY extensions/JsonConfig /var/www/html/extensions/JsonConfig
+COPY extensions/Kartographer /var/www/html/extensions/Kartographer
+COPY extensions/WikibaseQualityConstraints /var/www/html/extensions/WikibaseQualityConstraints
+COPY extensions/CASAuth /var/www/html/extensions/CASAuth
 COPY extensions/TemplateData /var/www/html/extensions/TemplateData
 COPY extensions/TemplateStyles /var/www/html/extensions/TemplateStyles
 COPY extensions/SyntaxHighlight_GeSHi /var/www/html/extensions/SyntaxHighlight_GeSHi

@@ -4,6 +4,7 @@
 			"Alexmar983",
 			"Beta16",
 			"Dansita",
+			"Horcrux92",
 			"Lucas2",
 			"Macofe",
 			"Ontsed",
@@ -117,5 +118,6 @@
 	"wbqc-violation-message-none-of": "Il valore per $1 non dovrebbe essere {{PLURAL:$2|1=$4.|2=$4 o $5.|uno dei seguenti:$3}}",
 	"wbqc-violation-message-integer": "I valori per $1 dovrebbero essere interi, ma $2 ha una parte frazionaria.",
 	"wbqc-violation-message-integer-bounds": "I valori per $1 dovrebbero essere interi, ma i limiti di $2 hanno una parte frazionaria.",
-	"wbqc-violation-message-citationNeeded": "Le dichiarazioni per $1 dovrebbero avere almeno un riferimento."
+	"wbqc-violation-message-citationNeeded": "Le dichiarazioni per $1 dovrebbero avere almeno un riferimento.",
+	"wbqc-violation-message-label-lacking": "Entità con dichiarazioni per $1 dovrebbero avere un'etichetta almeno in {{PLURAL:$2|1=$4.|una delle seguenti lingue: $3}}"
 }

@@ -85,15 +85,12 @@ abstract class JCDataContent extends JCObjContent {
 
 	public function renderDescription( $lang ) {
 		$description = $this->getField( 'description' );
-
-		if ( $description && !$description->error() ) {
-			$description = JCUtils::pickLocalizedString( $description->getValue(), $lang );
-			$html = Html::element( 'p', [ 'class' => 'mw-jsonconfig-description' ], $description );
-		} else {
-			$html = '';
+		if ( !$description || $description->error() ) {
+			return '';
 		}
 
-		return $html;
+		$description = JCUtils::pickLocalizedString( $description->getValue(), $lang );
+		return Html::element( 'p', [ 'class' => 'mw-jsonconfig-description' ], $description );
 	}
 
 	/**
@@ -103,19 +100,15 @@ abstract class JCDataContent extends JCObjContent {
 	 */
 	public function renderLicense() {
 		$license = $this->getLicenseObject();
-		if ( $license ) {
-			$text = Html::element( 'a', [
-				'href' => $license['url']->plain()
-			], $license['text']->plain() );
-
-			$text = wfMessage( 'jsonconfig-license' )->rawParams( $text )->parse();
-
-			$html = Html::rawElement( 'p', [ 'class' => 'mw-jsonconfig-license' ], $text );
-		} else {
-			$html = '';
+		if ( !$license ) {
+			return '';
 		}
 
-		return $html;
+		$text = Html::element( 'a', [
+			'href' => $license['url']->plain()
+		], $license['text']->plain() );
+		$text = wfMessage( 'jsonconfig-license' )->rawParams( $text )->parse();
+		return Html::rawElement( 'p', [ 'class' => 'mw-jsonconfig-license' ], $text );
 	}
 
 	/**
@@ -125,30 +118,27 @@ abstract class JCDataContent extends JCObjContent {
 	 */
 	public function getLicenseObject() {
 		$license = $this->getField( 'license' );
-		if ( $license && !$license->error() ) {
-			// should be a valid license identifier as in https://spdx.org/licenses/
-			$code = $license->getValue();
-
-			return [
-				'code' => $code,
-				'text' => wfMessage( 'jsonconfig-license-name-' . $code ),
-				'url' => wfMessage( 'jsonconfig-license-url-' . $code ),
-			];
+		if ( !$license || $license->error() ) {
+			return false;
 		}
-		return false;
+
+		// should be a valid license identifier as in https://spdx.org/licenses/
+		$code = $license->getValue();
+		return [
+			'code' => $code,
+			'text' => wfMessage( 'jsonconfig-license-name-' . $code ),
+			'url' => wfMessage( 'jsonconfig-license-url-' . $code ),
+		];
 	}
 
 	public function renderSources( Parser $parser, PageReference $page, $revId, ParserOptions $options ) {
 		$sources = $this->getField( 'sources' );
-
-		if ( $sources && !$sources->error() ) {
-			$markup = $sources->getValue();
-			$html = Html::rawElement( 'p', [ 'class' => 'mw-jsonconfig-sources' ],
-				$parser->parse( $markup, $page, $options, true, true, $revId )->getRawText() );
-		} else {
-			$html = '';
+		if ( !$sources || $sources->error() ) {
+			return '';
 		}
 
-		return $html;
+		$markup = $sources->getValue();
+		return Html::rawElement( 'p', [ 'class' => 'mw-jsonconfig-sources' ],
+			$parser->parse( $markup, $page, $options, true, true, $revId )->getRawText() );
 	}
 }

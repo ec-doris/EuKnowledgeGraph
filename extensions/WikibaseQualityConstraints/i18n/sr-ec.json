@@ -6,9 +6,11 @@
 			"Kizule",
 			"Obsuser",
 			"Prevodim",
+			"Zenfiric",
 			"Zoranzoki21",
 			"Милан Јелисавчић",
-			"Сербијана"
+			"Сербијана",
+			"Milicevic01"
 		]
 	},
 	"wbqc-constraintreport": "Извештај о ограничењу",
@@ -17,6 +19,7 @@
 	"wbqc-constraintreport-form-submit-label": "Провера",
 	"wbqc-constraintreport-form-entityid-label": "ID ентитета:",
 	"wbqc-constraintreport-result-headline": "Резултат за",
+	"wbqc-constraintreport-not-existent-entity": "Ентитет не постоји.",
 	"wbqc-constraintreport-empty-result": "Не постоје ограничења дефинисана за овај ентитет.",
 	"wbqc-constraintreport-status-violation": "Кршење",
 	"wbqc-constraintreport-status-compliance": "Усаглашеност",
@@ -41,6 +44,7 @@
 	"wbqc-suggestions-long": "Постоји неколико сугестија за побољшавање ове изјаве.",
 	"wbqc-badparameters-short": "Лоши параметри",
 	"wbqc-constrainttypehelp-short": "Помоћ",
+	"wbqc-constraintdiscuss-short": "Расправа",
 	"wbqc-cached-generic": "Овај резултат је кеширан и можда је застарео.",
 	"wbqc-cached-minutes": "Овај резултат је кеширан и можда је застарео до {{PLURAL:$1|1=један минут|$1&nbsp;минут|$1&nbsp;минута}}.",
 	"wbqc-cached-hours": "Овај резултат је кеширан и можда је застарео до {{PLURAL:$1|1=један сат|$1&nbsp;сат|$1&nbsp;сата|$1&nbsp;сати}}.",

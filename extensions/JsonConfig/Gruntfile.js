@@ -12,7 +12,7 @@ module.exports = function ( grunt ) {
 	grunt.loadNpmTasks( 'grunt-stylelint' );
 
 	grunt.initConfig( {
-		// eslint-disable-next-line es/no-object-assign
+		// eslint-disable-next-line es-x/no-object-assign
 		banana: Object.assign( {
 			options: { requireLowerCase: false }
 		}, conf.MessagesDirs ),

@@ -6,7 +6,6 @@
 			"Felipe L. Ewald"
 		]
 	},
-	"apihelp-jsonconfig-description": "Permite acesso direto ao subsistema JsonConfig.",
 	"apihelp-jsonconfig-summary": "Permite acesso direto ao subsistema JsonConfig.",
 	"apihelp-jsonconfig-param-command": "Que sub-ação realizar em JsonConfig:\n;status:Mostra a configuração JsonConfig.\n;reset:Limpa as configurações do cache. Requer o parâmetro $1title e a permissão jsonconfig-flush.\n;reload:Recarrega e armazena as configurações do armazenamento de configuração. Requer o parâmetro $1title e a permissão jsonconfig-reset.",
 	"apihelp-jsonconfig-param-namespace": "Número do espaço nominal do título a processar.",
@@ -15,7 +14,6 @@
 	"apihelp-jsonconfig-example-1": "Mostrar configuração",
 	"apihelp-jsonconfig-example-2": "Redefinir [[Data:Brazil/Amazonas.map]]",
 	"apihelp-jsonconfig-example-3": "Recarregar [[Data:Brazil/Amazonas.map]]",
-	"apihelp-jsondata-description": "Recuperar dados JSON localizados.",
 	"apihelp-jsondata-summary": "Recuperar dados JSON localizados.",
 	"apihelp-jsondata-param-title": "Título para obter. Por padrão, o espaço nominal deve ser \"Data:\"",
 	"apihelp-jsondata-example-1": "Obtenha o conteúdo JSON da página Sample.tab, localizada no idioma do usuário",

@@ -3,11 +3,11 @@
 namespace WikibaseQuality\ConstraintReport;
 
 use Config;
-use DatabaseUpdater;
+use ExtensionRegistry;
 use JobSpecification;
+use MediaWiki\Hook\BeforePageDisplayHook;
 use MediaWiki\MediaWikiServices;
-use OutputPage;
-use Skin;
+use MediaWiki\Page\Hook\ArticlePurgeHook;
 use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\Lib\Changes\Change;
 use Wikibase\Lib\Changes\EntityChange;
@@ -15,36 +15,16 @@ use Wikibase\Lib\Changes\EntityDiffChangedAspects;
 use Wikibase\Repo\WikibaseRepo;
 use WikibaseQuality\ConstraintReport\Api\ResultsCache;
 use WikibaseQuality\ConstraintReport\Job\CheckConstraintsJob;
-use WikiPage;
 
 /**
  * Container for hook callbacks registered in extension.json.
  *
  * @license GPL-2.0-or-later
  */
-final class WikibaseQualityConstraintsHooks {
-
-	/**
-	 * @param DatabaseUpdater $updater
-	 */
-	public static function onCreateSchema( DatabaseUpdater $updater ) {
-		$dir = dirname( __DIR__ ) . '/sql/';
-
-		$updater->addExtensionTable(
-			'wbqc_constraints',
-			$dir . "/{$updater->getDB()->getType()}/tables-generated.sql"
-		);
-		$updater->addExtensionField(
-			'wbqc_constraints',
-			'constraint_id',
-			$dir . '/patch-wbqc_constraints-constraint_id.sql'
-		);
-		$updater->addExtensionIndex(
-			'wbqc_constraints',
-			'wbqc_constraints_guid_uniq',
-			$dir . '/patch-wbqc_constraints-wbqc_constraints_guid_uniq.sql'
-		);
-	}
+final class WikibaseQualityConstraintsHooks implements
+	ArticlePurgeHook,
+	BeforePageDisplayHook
+{
 
 	public static function onWikibaseChange( Change $change ) {
 		if ( !( $change instanceof EntityChange ) ) {
@@ -112,7 +92,7 @@ final class WikibaseQualityConstraintsHooks {
 		return in_array( $propertyConstraintId, $aspects->getStatementChanges() );
 	}
 
-	public static function onArticlePurge( WikiPage $wikiPage ) {
+	public function onArticlePurge( $wikiPage ) {
 		$entityContentFactory = WikibaseRepo::getEntityContentFactory();
 		if ( $entityContentFactory->isEntityContentModel( $wikiPage->getContentModel() ) ) {
 			$entityIdLookup = WikibaseRepo::getEntityIdLookup();
@@ -124,7 +104,7 @@ final class WikibaseQualityConstraintsHooks {
 		}
 	}
 
-	public static function onBeforePageDisplay( OutputPage $out, Skin $skin ) {
+	public function onBeforePageDisplay( $out, $skin ): void {
 		$lookup = WikibaseRepo::getEntityNamespaceLookup();
 		$title = $out->getTitle();
 		if ( $title === null ) {
@@ -138,13 +118,21 @@ final class WikibaseQualityConstraintsHooks {
 			return;
 		}
 
-		$out->addModules( 'wikibase.quality.constraints.suggestions' );
+		$services = MediaWikiServices::getInstance();
+		$config = $services->getMainConfig();
 
-		if ( !$out->getUser()->isRegistered() ) {
+		$isMobileView = ExtensionRegistry::getInstance()->isLoaded( 'MobileFrontend' ) &&
+			$services->getService( 'MobileFrontend.Context' )->shouldDisplayMobileView();
+		if ( $isMobileView ) {
 			return;
 		}
 
-		$out->addModules( 'wikibase.quality.constraints.gadget' );
+		$out->addModules( 'wikibase.quality.constraints.suggestions' );
+
+		if ( $config->get( 'WBQualityConstraintsShowConstraintViolationToNonLoggedInUsers' )
+			|| $out->getUser()->isRegistered() ) {
+				$out->addModules( 'wikibase.quality.constraints.gadget' );
+		}
 	}
 
 }

@@ -1,11 +1,14 @@
 <?php
 
+declare( strict_types = 1 );
+
 namespace WikibaseQuality\ConstraintReport\Tests\Message;
 
 use Config;
 use DataValues\StringValue;
 use HashConfig;
 use InvalidArgumentException;
+use MediaWiki\Languages\LanguageNameUtils;
 use Message;
 use MockMessageLocalizer;
 use ValueFormatters\StringFormatter;
@@ -15,6 +18,7 @@ use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Services\EntityId\EntityIdFormatter;
 use Wikibase\DataModel\Services\EntityId\PlainEntityIdFormatter;
 use Wikibase\Lib\Formatters\UnDeserializableValueFormatter;
+use Wikibase\Lib\TermLanguageFallbackChain;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\Context;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\ItemIdSnakValue;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Message\ViolationMessage;
@@ -33,25 +37,28 @@ class ViolationMessageRendererTest extends \PHPUnit\Framework\TestCase {
 	/**
 	 * Create a new ViolationMessageRenderer
 	 * with some constructor arguments defaulting to a simple base implementation.
-	 *
-	 * @param EntityIdFormatter|null $entityIdFormatter
-	 * @param ValueFormatter|null $dataValueFormatter
-	 * @param Config|null $config
-	 * @param int $maxListLength
-	 * @return ViolationMessageRenderer
 	 */
 	private function newViolationMessageRenderer(
 		EntityIdFormatter $entityIdFormatter = null,
 		ValueFormatter $dataValueFormatter = null,
 		Config $config = null,
-		$maxListLength = 10
-	) {
+		int $maxListLength = 10
+	): ViolationMessageRenderer {
 		if ( $entityIdFormatter === null ) {
 			$entityIdFormatter = new PlainEntityIdFormatter();
 		}
 		if ( $dataValueFormatter === null ) {
 			$dataValueFormatter = new UnDeserializableValueFormatter();
 		}
+		$userLanguageCode = 'en';
+		$languageNameUtils = $this->createMock( LanguageNameUtils::class );
+		$languageNameUtils->method( 'getLanguageName' )
+			->with( 'pt', $userLanguageCode )
+			->willReturn( 'Portuguese' );
+		$languageFallbackChain = $this->createConfiguredMock( TermLanguageFallbackChain::class, [
+			'getFetchLanguageCodes' => [ $userLanguageCode ],
+		] );
+		$messageLocalizer = new MockMessageLocalizer();
 		if ( $config === null ) {
 			$config = new HashConfig( [
 				'WBQualityConstraintsConstraintCheckedOnMainValueId' => 'Q1',
@@ -65,7 +72,10 @@ class ViolationMessageRendererTest extends \PHPUnit\Framework\TestCase {
 		return new ViolationMessageRenderer(
 			$entityIdFormatter,
 			$dataValueFormatter,
-			new MockMessageLocalizer(),
+			$languageNameUtils,
+			$userLanguageCode,
+			$languageFallbackChain,
+			$messageLocalizer,
 			$config,
 			$maxListLength
 		);
@@ -305,7 +315,7 @@ class ViolationMessageRendererTest extends \PHPUnit\Framework\TestCase {
 		$rendered = $renderer->render( $message );
 
 		$expected = '(wbqc-violation-message-parameter-single-per-language: ' .
-			'P1, português, pt)';
+			'P1, Portuguese, pt)';
 		$this->assertSame( $expected, $rendered );
 	}
 
@@ -869,7 +879,7 @@ class ViolationMessageRendererTest extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	public function provideConstraintScopes() {
+	public static function provideConstraintScopes() {
 		return [
 			[ Context::TYPE_STATEMENT, 'Q10', 'statement scope' ],
 			[ Context::TYPE_QUALIFIER, 'Q20', 'qualifier scope' ],
@@ -988,7 +998,7 @@ class ViolationMessageRendererTest extends \PHPUnit\Framework\TestCase {
 
 		$this->assertSame(
 			[
-				Message::rawParam( 'português' ),
+				Message::rawParam( 'Portuguese' ),
 				Message::plaintextParam( 'pt' ),
 			],
 			$params

@@ -1,5 +1,3 @@
-@import 'mediawiki.mixins';
-
 @ooui-font-size-browser: 16; // assumed browser default of `16px`
 @ooui-font-size-base: 0.875em; // equals `14px` at browser default of `16px`
 
@@ -38,7 +36,7 @@ a.mw-kartographer-link,
 }
 
 .mw-kartographer-map {
-	.mw-kartographer-fullScreen .oo-ui-iconElement > .oo-ui-buttonElement-button {
+	body:not( .skin-monobook ) & .mw-kartographer-fullScreen .oo-ui-iconElement > .oo-ui-buttonElement-button {
 		// Square that OOUI button
 		padding-right: 0;
 	}
@@ -63,21 +61,26 @@ a.mw-kartographer-link,
 		&.mw-kartographer-interactive {
 			cursor: move;
 			cursor: url( ./images/grab.cur ), default;
+			// stylelint-disable-next-line plugin/no-unsupported-browser-features
 			cursor: -webkit-grab;
+			// stylelint-disable-next-line plugin/no-unsupported-browser-features
 			cursor: -moz-grab;
+			// stylelint-disable-next-line plugin/no-unsupported-browser-features
 			cursor: grab;
 
 			&:active {
 				cursor: url( ./images/grabbing.cur ), default;
+				// stylelint-disable-next-line plugin/no-unsupported-browser-features
 				cursor: -webkit-grabbing;
+				// stylelint-disable-next-line plugin/no-unsupported-browser-features
 				cursor: -moz-grabbing;
+				// stylelint-disable-next-line plugin/no-unsupported-browser-features
 				cursor: grabbing;
 			}
 		}
 	}
 
-	/* stylelint-disable-next-line indentation */
-	.mw-kartographer-maplink:not( .mw-kartographer-link ):not( .ve-ce-focusableNode ), /* stylelint-disable-next-line indentation */
+	.mw-kartographer-maplink:not( .mw-kartographer-link ):not( .ve-ce-focusableNode ),
 	.mw-kartographer-map:not( .mw-kartographer-link ):not( .mw-kartographer-interactive ) {
 		pointer-events: none;
 		cursor: default;
@@ -92,7 +95,7 @@ a.mw-kartographer-autostyled {
 	display: inline-block;
 	position: relative;
 	top: -0.08em;
-	.box-sizing ( content-box );
+	box-sizing: content-box;
 	height: 0.85em;
 	margin-left: 0;
 	border-radius: 1px;

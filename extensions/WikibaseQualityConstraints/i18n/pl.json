@@ -31,7 +31,7 @@
 	"wbqc-violation-message-multi-value": "Ta właściwość powinna zawierać wiele wartości.",
 	"wbqc-violation-message-one-of": "Właściwość $1 powinna mieć wartość {{PLURAL:$2|1=$4.|2=$4 albo $5.|jedną z następujących:$3}}",
 	"wbqc-violation-message-qualifier": "Ta właściwość powinna być stosowana tylko jako kwalifikator.",
-	"wbqc-violation-message-range-quantity-leftopen": "Wartość  $1 ($2) nie powinna być większa od $3.",
+	"wbqc-violation-message-range-quantity-leftopen": "Wartość $1 ($2) nie powinna być większa od $3.",
 	"wbqc-violation-message-range-time-closed": "Wartość $1 ($2) powinna być powinna $3 oraz $4.",
 	"wbqc-violation-message-single-value": "Ta właściwość powinna zawierać tylko jedną wartość.",
 	"wbqc-violation-message-target-required-claim": "$1 powinno mieć {{PLURAL:$3|0=deklarację $2.|1=deklarację $2 $5.|deklarację dla $2 z jedną z następujących wartości: $4}}",

@@ -1,11 +1,14 @@
 <?php
 
+declare( strict_types = 1 );
+
 namespace WikibaseQuality\ConstraintReport\Api;
 
 use Wikibase\DataModel\Entity\ItemId;
 use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Services\EntityId\EntityIdFormatter;
 use Wikibase\Lib\Store\EntityTitleLookup;
+use Wikibase\Lib\TermLanguageFallbackChain;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Cache\CachedCheckConstraintsResponse;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Cache\CachedCheckResults;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\Context;
@@ -21,36 +24,24 @@ use WikibaseQuality\ConstraintReport\ConstraintCheck\Result\NullResult;
  */
 class CheckResultsRenderer {
 
-	/**
-	 * @var EntityTitleLookup
-	 */
-	private $entityTitleLookup;
-
-	/**
-	 * @var EntityIdFormatter
-	 */
-	private $entityIdLabelFormatter;
-
-	/**
-	 * @var ViolationMessageRenderer
-	 */
-	private $violationMessageRenderer;
+	private EntityTitleLookup $entityTitleLookup;
+	private EntityIdFormatter $entityIdLabelFormatter;
+	private TermLanguageFallbackChain $languageFallbackChain;
+	private ViolationMessageRenderer $violationMessageRenderer;
 
 	public function __construct(
 		EntityTitleLookup $entityTitleLookup,
 		EntityIdFormatter $entityIdLabelFormatter,
+		TermLanguageFallbackChain $languageFallbackChain,
 		ViolationMessageRenderer $violationMessageRenderer
 	) {
 		$this->entityTitleLookup = $entityTitleLookup;
 		$this->entityIdLabelFormatter = $entityIdLabelFormatter;
+		$this->languageFallbackChain = $languageFallbackChain;
 		$this->violationMessageRenderer = $violationMessageRenderer;
 	}
 
-	/**
-	 * @param CachedCheckResults $checkResults
-	 * @return CachedCheckConstraintsResponse
-	 */
-	public function render( CachedCheckResults $checkResults ) {
+	public function render( CachedCheckResults $checkResults ): CachedCheckConstraintsResponse {
 		$response = [];
 		foreach ( $checkResults->getArray() as $checkResult ) {
 			$resultArray = $this->checkResultToArray( $checkResult );
@@ -62,7 +53,7 @@ class CheckResultsRenderer {
 		);
 	}
 
-	public function checkResultToArray( CheckResult $checkResult ) {
+	public function checkResultToArray( CheckResult $checkResult ): ?array {
 		if ( $checkResult instanceof NullResult ) {
 			return null;
 		}
@@ -87,11 +78,15 @@ class CheckResultsRenderer {
 		$result = [
 			'status' => $checkResult->getStatus(),
 			'property' => $constraintPropertyId->getSerialization(),
-			'constraint' => $constraint
+			'constraint' => $constraint,
 		];
 		$message = $checkResult->getMessage();
 		if ( $message ) {
 			$result['message-html'] = $this->violationMessageRenderer->render( $message );
+		}
+		$constraintClarification = $this->renderConstraintClarification( $checkResult );
+		if ( $constraintClarification !== null ) {
+			$result['constraint-clarification'] = $constraintClarification;
 		}
 		if ( $checkResult->getContextCursor()->getType() === Context::TYPE_STATEMENT ) {
 			$result['claim'] = $checkResult->getContextCursor()->getStatementGuid();
@@ -102,6 +97,17 @@ class CheckResultsRenderer {
 		}
 
 		return $result;
+	}
+
+	private function renderConstraintClarification( CheckResult $result ): ?string {
+		$texts = $result->getConstraintClarification()->getTexts();
+		foreach ( $this->languageFallbackChain->getFetchLanguageCodes() as $languageCode ) {
+			if ( array_key_exists( $languageCode, $texts ) ) {
+				return $texts[$languageCode]->getText();
+			}
+		}
+
+		return null;
 	}
 
 }

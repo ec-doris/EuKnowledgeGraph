@@ -6,8 +6,8 @@ use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Snak\PropertyNoValueSnak;
 use Wikibase\DataModel\Snak\SnakList;
 use Wikibase\DataModel\Statement\Statement;
-use Wikibase\Repo\Tests\NewItem;
-use Wikibase\Repo\Tests\NewStatement;
+use Wikibase\DataModel\Tests\NewItem;
+use Wikibase\DataModel\Tests\NewStatement;
 use WikibaseQuality\ConstraintReport\Constraint;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Checker\MandatoryQualifiersChecker;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\MainSnakContext;
@@ -43,7 +43,7 @@ class MandatoryQualifiersCheckerTest extends \MediaWikiIntegrationTestCase {
 		$statement = new Statement(
 			new PropertyNoValueSnak( new NumericPropertyId( 'P1' ) ),
 			new SnakList( [
-				new PropertyNoValueSnak( new NumericPropertyId( 'P2' ) )
+				new PropertyNoValueSnak( new NumericPropertyId( 'P2' ) ),
 			] )
 		);
 		$entity = NewItem::withId( 'Q5' )
@@ -62,7 +62,7 @@ class MandatoryQualifiersCheckerTest extends \MediaWikiIntegrationTestCase {
 		$statement = new Statement(
 			new PropertyNoValueSnak( new NumericPropertyId( 'P1' ) ),
 			new SnakList( [
-				new PropertyNoValueSnak( new NumericPropertyId( 'P2' ) )
+				new PropertyNoValueSnak( new NumericPropertyId( 'P2' ) ),
 			] )
 		);
 		$entity = NewItem::withId( 'Q5' )

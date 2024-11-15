@@ -1,10 +1,11 @@
 {
 	"@metadata": {
 		"authors": [
-			"ديفيد"
+			"ديفيد",
+			"Hubaishan"
 		]
 	},
-	"templatestyles": "أنماط القالب",
+	"templatestyles": "TemplateStyles",
 	"templatestyles-desc": "تنفيذ أوراق أنماط لكل قالب",
 	"templatestyles-missing-src": "يجب ألا تكون سمة أنماط القالب <code>src</code> فارغة.",
 	"templatestyles-invalid-src": "عنوان غير صالح لخاصية أنماط القالب <code>src</code>.",

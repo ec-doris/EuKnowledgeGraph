@@ -4,15 +4,16 @@
 			"Ebraminio",
 			"FarsiNevis",
 			"Huji",
+			"Jeeputer",
 			"Ladsgroup",
 			"Mjbmr",
 			"Reza1615",
-			"Jeeputer"
+			"Ebrahim"
 		]
 	},
 	"nstab-data": "داده‌ها",
 	"jsonconfig-desc": "اجازه می‌دهد که پیکربندی JSON در یک ویکی ذخیره شود",
-	"jsonconfig-duplicate-field": "بیشتر از یک مقدار برای «$1» یافت شده‌است",
+	"jsonconfig-duplicate-field": "بیشتر از یک مقدار برای «$1» یافت شده است",
 	"jsonconfig-edit-action-apply": "اعمال",
 	"jsonconfig-edit-action-cancel": "لغو",
 	"jsonconfig-edit-button-label": "ویرایش به‌عنوان جدول",

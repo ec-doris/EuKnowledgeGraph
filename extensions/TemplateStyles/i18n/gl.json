@@ -2,13 +2,15 @@
 	"@metadata": {
 		"authors": [
 			"Banjo",
-			"Elisardojm"
+			"Elisardojm",
+			"Toliño"
 		]
 	},
 	"templatestyles": "Estilos de modelos",
 	"templatestyles-desc": "Proporcionar as follas de estilo por modelo",
 	"templatestyles-missing-src": "O atributo <code>src</code> de TemplateStyles non pode estar baleiro.",
 	"templatestyles-invalid-src": "Título non válido para o atributo <code>src</code> de TemplateStyles.",
+	"templatestyles-invalid-wrapper": "Valor non válido para o atributo <code>wrapper</code> de TemplateStyles.",
 	"templatestyles-bad-src-missing": "A páxina [[:$1|$2]] non ten contido.",
 	"templatestyles-bad-src": "A páxina [[:$1|$2]] debe ter o modelo de contido \"{{int:content-model-sanitized-css}}\" para TemplateStyles (o modelo atual é \"$3\").",
 	"templatestyles-errorcomment": "Erros ao procesar a folla de estilo [[:$1]] (rev $2): $3",

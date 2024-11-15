@@ -6,9 +6,12 @@ if ( $IP === false ) {
 require_once "$IP/maintenance/Maintenance.php";
 
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Title\Title;
 
 /**
  * Purges all pages that use <maplink> or <mapframe>, using the tracking category.
+ *
+ * @license MIT
  */
 class PurgeMapPages extends Maintenance {
 
@@ -20,9 +23,7 @@ class PurgeMapPages extends Maintenance {
 		$this->requireExtension( 'Kartographer' );
 	}
 
-	/**
-	 * @inheritDoc
-	 */
+	/** @inheritDoc */
 	public function execute() {
 		$categoryMessage = wfMessage( 'kartographer-tracking-category' );
 		if ( $categoryMessage->isDisabled() ) {
@@ -32,7 +33,7 @@ class PurgeMapPages extends Maintenance {
 		$categoryTitle = Title::makeTitle( NS_CATEGORY, $categoryMessage->inContentLanguage()->text() );
 		$dryRun = $this->hasOption( 'dry-run' );
 		$iterator = new BatchRowIterator(
-			wfGetDB( DB_REPLICA ),
+			MediaWikiServices::getInstance()->getDBLoadBalancerFactory()->getReplicaDatabase(),
 			[ 'categorylinks', 'page' ],
 			[ 'cl_type', 'cl_sortkey', 'cl_from' ],
 			$this->getBatchSize()

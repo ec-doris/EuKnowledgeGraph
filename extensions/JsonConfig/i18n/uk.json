@@ -51,7 +51,6 @@
 	"jsonconfig-move-aborted-model": "модель конфігурації JSON «$1» цієї сторінки не співпаде з новою моделлю назви «$2»",
 	"jsonconfig-move-aborted-ns": "назва нової сторінки не налаштований на JSON-конфігурацію",
 	"jsonconfig-optional-field": "(необов'язково)",
-	"jsonconfig-type-abbr-invalid": "(?)",
 	"jsonconfig-type-name-invalid": "неправильний",
 	"jsonconfig-type-abbr-string": "(S)",
 	"jsonconfig-type-name-string": "рядок",

@@ -43,7 +43,7 @@ class IntegerCheckerTest extends \PHPUnit\Framework\TestCase {
 		}
 	}
 
-	public function provideSnaks() {
+	public static function provideSnaks() {
 		$p1 = new NumericPropertyId( 'P1' );
 		$decimalValue = new DecimalValue( 725.1 );
 		$integerValue = new DecimalValue( 7251 );
@@ -100,7 +100,7 @@ class IntegerCheckerTest extends \PHPUnit\Framework\TestCase {
 
 		$result = $checker->checkConstraintParameters( $constraint );
 
-		$this->assertEmpty( $result );
+		$this->assertSame( [], $result );
 	}
 
 	/**

@@ -1,8 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
-			"MITO"
+			"MITO",
+			"Samoasambia"
 		]
 	},
-	"templatestyles-desc": "Toteuta mallinekohtaiset tyylisivut"
+	"templatestyles-desc": "Toteuttaa mallinekohtaiset tyylisivut",
+	"templatestyles-page-error-category": "Sivut, joissa on TemplateStyles-virheitä"
 }

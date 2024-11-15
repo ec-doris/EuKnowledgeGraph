@@ -2,21 +2,19 @@
 	"@metadata": {
 		"authors": [
 			"Sveinki",
-			"Sveinn í Felli"
+			"Sveinn í Felli",
+			"Stefán Örvar Sigmundsson"
 		]
 	},
-	"kartographer-tracking-category": "Síður með landakortum",
-	"kartographer-coord-lat-positive": "$1N",
-	"kartographer-coord-lat-negative": "$1S",
-	"kartographer-coord-lon-positive": "$1A",
-	"kartographer-coord-lon-negative": "$1V",
+	"kartographer-broken-category": "Síður með brotin landakort",
+	"kartographer-broken-category-desc": "Síðan inniheldur ógilda landakortanotkun",
+	"kartographer-tracking-category": "Síður með landakort",
+	"kartographer-tracking-category-desc": "Síðan inniheldur landakort",
 	"kartographer-linktype-map": "Stöðluð landakort",
 	"kartographer-linktype-other": "Annað",
 	"kartographer-linktype-satellite": "Gervitungl",
 	"kartographer-linktype-terrain": "Yfirborð",
-	"kartographer-link-geonames": "GeoNames",
 	"kartographer-link-google-maps": "Google Kort",
-	"kartographer-link-openstreetmap": "OpenStreetMap",
 	"kartographer-sidebar-coordinates": "Hnit",
 	"kartographer-sidebar-filterdropdown": "Veldu gerð landakorts",
 	"kartographer-sidebar-latitude": "Breiddargráða",
@@ -35,7 +33,7 @@
 	"mapbox-control-zoomout-title": "Renna frá",
 	"kartographer-fullscreen-close": "Loka",
 	"visualeditor-mwmapsdialog-area": "Svæði landakorts",
-	"visualeditor-mwmapsdialog-align": "Hliðjöfnun",
+	"visualeditor-mwmapsdialog-display": "Birting",
 	"visualeditor-mwmapsdialog-geojson": "GeoJSON",
 	"visualeditor-mwmapsdialog-position-lat": "Breiddargráða",
 	"visualeditor-mwmapsdialog-position-lon": "Lengdargráða",

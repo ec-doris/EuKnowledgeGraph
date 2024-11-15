@@ -2,20 +2,19 @@
 	"@metadata": {
 		"authors": [
 			"Fulup",
-			"Y-M D",
+			"Huñvreüs",
 			"VIGNERON",
-			"Huñvreüs"
+			"Y-M D"
 		]
 	},
 	"kartographer-broken-category": "Pajennoù gant kartennoù faziek",
 	"kartographer-tracking-category": "Pajennoù gant kartennoù",
-	"kartographer-coord-combined": "$1 $2",
-	"kartographer-coord-dms": "$1°$2′$3″",
-	"kartographer-coord-lat-positive": "$1N",
-	"kartographer-coord-lat-negative": "$1S",
-	"kartographer-coord-lon-positive": "$1K",
-	"kartographer-coord-lon-negative": "$1R",
+	"kartographer-specialmap-world": "Kartenn ar bed",
+	"kartographer-sidebar-mapdetails": "Kartennoù diavaez",
+	"kartographer-sidebar-togglebutton": "Kartennoù diavaez",
 	"kartographer-fullscreen-collapse": "Kuzhat munudoù ar gartenn",
+	"kartographer-fullscreen-text": "Diskouez er skramm leun",
+	"visualeditor-mwmapsdialog-area": "Takad kartenn",
 	"visualeditor-mwmapsdialog-title": "Kartenn",
 	"visualeditor-mwmapscontextitem-title": "Kartenn"
 }

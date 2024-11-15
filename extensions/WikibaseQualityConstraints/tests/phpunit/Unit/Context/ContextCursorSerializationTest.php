@@ -53,7 +53,7 @@ class ContextCursorSerializationTest extends \MediaWikiUnitTestCase {
 		$deserializer->deserialize( $serialization );
 	}
 
-	public function provideContextCursors() {
+	public static function provideContextCursors() {
 		$entityId = 'Q1';
 		$snakHash = '85266b6fea10b59470d6e5b39b1ba52712822ba8';
 		$statementPropertyId = 'P580';

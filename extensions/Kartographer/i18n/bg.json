@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Iliev",
+			"Kareyac",
 			"StanProg",
 			"Ted Masters"
 		]
@@ -9,10 +10,12 @@
 	"kartographer-attribution": "[https://foundation.wikimedia.org/wiki/Maps_Terms_of_Use Карти на Уикимедия] | Карт. данни © [https://www.openstreetmap.org/copyright Редактори в OpenStreetMap]",
 	"kartographer-broken-category": "Страници с повредени карти",
 	"kartographer-broken-category-desc": "Тази страница ползва карта по неправилен начин",
-	"kartographer-error-context-multi": "Проблеми с &lt;$1&gt;:\n$2",
+	"kartographer-error-context-multi": "Проблеми с $1:\n$2",
 	"kartographer-tracking-category": "Страници с карти",
 	"kartographer-tracking-category-desc": "Тази страница съдържа карта",
 	"kartographer-specialmap-invalid-coordinates": "Указани са невалидни координати",
+	"kartographer-specialmap-world": "Карта на света",
+	"kartographer-static-mapframe-alt": "Карта",
 	"kartographer-linktype-aerial": "Въздушна",
 	"kartographer-linktype-map": "Стандартни карти",
 	"kartographer-linktype-other": "Други",
@@ -50,7 +53,7 @@
 	"kartographer-fullscreen-text": "Показване на цял екран",
 	"visualeditor-mwmapsdialog-content": "Съдържание на картата",
 	"visualeditor-mwmapsdialog-options": "Настройки",
-	"visualeditor-mwmapsdialog-align": "Подравняване",
+	"visualeditor-mwmapsdialog-display": "Визуализиране",
 	"visualeditor-mwmapsdialog-language": "Език",
 	"visualeditor-mwmapsdialog-help-title": "Научете повече за създаването и редактирането на карти.",
 	"visualeditor-mwmapsdialog-position-lat": "Географска ширина",

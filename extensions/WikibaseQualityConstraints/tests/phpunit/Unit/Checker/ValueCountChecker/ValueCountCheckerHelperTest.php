@@ -28,7 +28,7 @@ class ValueCountCheckerHelperTest extends \MediaWikiUnitTestCase {
 		$this->assertSame( $expectedCount, $propertyCount );
 	}
 
-	public function getPropertyCountProvider() {
+	public static function getPropertyCountProvider() {
 		$p1_1 = new PropertyNoValueSnak( new NumericPropertyId( 'P1' ) );
 		$p1_2 = new PropertySomeValueSnak( new NumericPropertyId( 'P1' ) );
 		$p2 = new PropertyNoValueSnak( new NumericPropertyId( 'P2' ) );

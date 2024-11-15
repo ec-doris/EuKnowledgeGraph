@@ -1,6 +1,8 @@
 {
 	"@metadata": {
-		"authors": []
+		"authors": [
+			"Tofeiku"
+		]
 	},
 	"jsonconfig-err-bool": "Parameter \"$1\" mestilah 'true' atau 'false'",
 	"jsonconfig-err-string": "Parameter \"$1\" mestilah berbentuk rentetan",

@@ -2,9 +2,9 @@
 
 namespace WikibaseQuality\ConstraintReport;
 
-use Http;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\WikiMap\WikiMap;
 use ObjectCache;
 use RuntimeException;
 use Wikibase\DataModel\Entity\Property;
@@ -24,10 +24,10 @@ use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\RangeCheckerHelper;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\SparqlHelper;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\TypeCheckerHelper;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Message\ViolationMessageDeserializer;
+use WikibaseQuality\ConstraintReport\ConstraintCheck\Message\ViolationMessageRendererFactory;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Message\ViolationMessageSerializer;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Result\CheckResultDeserializer;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Result\CheckResultSerializer;
-use WikiMap;
 
 return [
 	ConstraintsServices::EXPIRY_LOCK => static function ( MediaWikiServices $services ) {
@@ -159,7 +159,7 @@ return [
 			$services->getStatsdDataFactory(),
 			ConstraintsServices::getExpiryLock( $services ),
 			ConstraintsServices::getLoggingHelper( $services ),
-			WikiMap::getCurrentWikiId() . ' WikibaseQualityConstraints ' . Http::userAgent(),
+			WikiMap::getCurrentWikiId() . ' WikibaseQualityConstraints ' . $services->getHttpRequestFactory()->getUserAgent(),
 			$services->getHttpRequestFactory()
 		);
 	},
@@ -308,5 +308,14 @@ return [
 		}
 
 		return $resultsSource;
+	},
+
+	ConstraintsServices::VIOLATION_MESSAGE_RENDERER_FACTORY => static function ( MediaWikiServices $services ) {
+		return new ViolationMessageRendererFactory(
+			$services->getMainConfig(),
+			$services->getLanguageNameUtils(),
+			WikibaseRepo::getEntityIdHtmlLinkFormatterFactory( $services ),
+			WikibaseRepo::getValueFormatterFactory( $services )
+		);
 	},
 ];

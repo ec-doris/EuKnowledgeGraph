@@ -20,12 +20,12 @@
  * @param {string} [options.lang] Language code
  * @param {string} [options.fullScreenRoute] Route associated to this map
  *   _(internal, used by "`<maplink>`")_.
- * @member Kartographer.Linkbox.LinkClass
+ * @memberof Kartographer.Linkbox.LinkClass
  * @type {Kartographer.Linkbox.LinkClass}
  * @method
  */
 function Link( options ) {
-	var link = this;
+	const link = this;
 
 	/**
 	 * Reference to the link container.
@@ -77,26 +77,17 @@ function Link( options ) {
  * **Uses Resource Loader module: {@link Kartographer.Dialog ext.kartographer.dialog}**
  *
  * @param {Object} [position] Map `center` and `zoom`.
- * @member Kartographer.Linkbox.LinkClass
+ * @memberof Kartographer.Linkbox.LinkClass
  */
 Link.prototype.openFullScreen = function ( position ) {
-
-	var link = this,
-		map = link.fullScreenMap,
-		mapObject,
-		el;
+	const link = this;
+	const map = link.fullScreenMap;
 
 	position = position || {};
 	position.center = position.center || link.center;
 	position.zoom = typeof position.zoom === 'number' ? position.zoom : link.zoom;
 
 	/* eslint-disable no-underscore-dangle */
-	if ( map && map._updatingHash ) {
-		// Skip - there is nothing to do.
-		delete map._updatingHash;
-		return;
-	}
-
 	if ( map && map._container._leaflet_id ) {
 		map.setView(
 			position.center,
@@ -108,9 +99,9 @@ Link.prototype.openFullScreen = function ( position ) {
 		} );
 	/* eslint-enable no-underscore-dangle */
 	} else {
-		el = document.createElement( 'div' );
+		const el = document.createElement( 'div' );
 		el.className = 'mw-kartographer-mapDialog-map';
-		mapObject = {
+		const mapObject = {
 			container: el,
 			featureType: link.featureType,
 			fullscreen: true,
@@ -126,8 +117,8 @@ Link.prototype.openFullScreen = function ( position ) {
 		};
 
 		mw.loader.using( 'ext.kartographer.dialog' ).then( function () {
-			require( 'ext.kartographer.dialog' ).renderNewMap( mapObject ).then( function ( map ) {
-				link.fullScreenMap = map;
+			require( 'ext.kartographer.dialog' ).renderNewMap( mapObject ).then( function ( m ) {
+				link.fullScreenMap = m;
 			} );
 		} );
 	}

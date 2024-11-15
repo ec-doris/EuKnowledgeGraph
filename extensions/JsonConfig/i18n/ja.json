@@ -2,24 +2,36 @@
 	"@metadata": {
 		"authors": [
 			"Akki-102525",
+			"Chqaz",
 			"Kkairri",
 			"Object＊tofu",
 			"Otokoume",
 			"Shirayuki",
 			"Suyama",
 			"Thibaut120094",
+			"Tmv",
 			"Yurik",
 			"Yusuke1109",
-			"つぶあん派"
+			"つぶあん派",
+			"春春眠眠"
 		]
 	},
+	"nstab-data": "データ",
 	"jsonconfig-desc": "JSON設定をwikiに保存できるようにする",
+	"jsonconfig-edit-action-apply": "適用",
 	"jsonconfig-edit-action-cancel": "キャンセル",
+	"jsonconfig-edit-button-label": "テーブルとして編集",
+	"jsonconfig-edit-dialog-error": "テーブルとして編集できません：$1",
+	"jsonconfig-edit-dialog-error-data-inavlid": "データがスキーマと一致しません",
+	"jsonconfig-edit-dialog-error-data-too-large": "データセットが大きすぎるためテーブルとして編集できません",
+	"jsonconfig-edit-dialog-error-field-name-missing": "各フィールドは名前が必須です",
+	"jsonconfig-edit-dialog-title": "JSONを編集",
 	"jsonconfig-err-array": "パラメーター「$1」はリストでなければなりません。例: <kbd>[\"値1\", \"値2\", ...]</kbd>",
 	"jsonconfig-err-assoc-array": "パラメーター「$1」は連想配列 (辞書) でなければなりません。<kbd>例: {\"キー\": \"値\", ...}</kbd>",
 	"jsonconfig-err-bool": "パラメーター「$1」には true または false を設定しなければなりません",
 	"jsonconfig-err-integer": "パラメーター「$1」は整数でなければなりません",
 	"jsonconfig-err-number": "パラメーター「$1」は数値でなければなりません",
+	"jsonconfig-err-root-object-expected": "JSONデータは、{...} 中括弧で囲まれたオブジェクトである必要があります。",
 	"jsonconfig-err-string": "パラメーター「$1」は文字列でなければなりません",
 	"jsonconfig-err-url": "引数「$1」には有効な URL を指定してください",
 	"jsonconfig-optional-field": "(省略可能)",
@@ -29,6 +41,7 @@
 	"jsonconfig-type-name-boolean": "ブール型",
 	"jsonconfig-license": "データは$1の下で利用できます。",
 	"jsonconfig-license-name-CC0-1.0": "クリエイティブ・コモンズ・ゼロ",
+	"jsonconfig-license-name-GeoNutzV": "地理データライセンスドイツ",
 	"right-jsonconfig-flush": "API を経由して JsonConfig を操作",
 	"action-jsonconfig-flush": "API 経由での JsonConfig の操作"
 }

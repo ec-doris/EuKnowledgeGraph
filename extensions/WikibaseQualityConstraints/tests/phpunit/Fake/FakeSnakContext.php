@@ -1,5 +1,7 @@
 <?php
 
+declare( strict_types = 1 );
+
 namespace WikibaseQuality\ConstraintReport\Tests\Fake;
 
 use Wikibase\DataModel\Entity\Item;
@@ -7,6 +9,7 @@ use Wikibase\DataModel\Entity\ItemId;
 use Wikibase\DataModel\Entity\StatementListProvidingEntity;
 use Wikibase\DataModel\Snak\Snak;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\AbstractContext;
+use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\ContextCursor;
 
 /**
  * A constraint check context for a snak not connected to any statement.
@@ -30,18 +33,15 @@ class FakeSnakContext extends AbstractContext {
 		);
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getType() {
+	public function getType(): string {
 		return 'statement';
 	}
 
-	public function getSnakGroup( $groupingMode, array $separators = [] ) {
+	public function getSnakGroup( string $groupingMode, array $separators = [] ): array {
 		return [ $this->snak ];
 	}
 
-	public function getCursor() {
+	public function getCursor(): ContextCursor {
 		return new AppendingContextCursor();
 	}
 

@@ -4,8 +4,8 @@ namespace WikibaseQuality\ConstraintReport\Tests\Checker;
 
 use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Snak\PropertyNoValueSnak;
-use Wikibase\Repo\Tests\NewItem;
-use Wikibase\Repo\Tests\NewStatement;
+use Wikibase\DataModel\Tests\NewItem;
+use Wikibase\DataModel\Tests\NewStatement;
 use WikibaseQuality\ConstraintReport\Constraint;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Checker\ReferenceChecker;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\Context;
@@ -46,7 +46,7 @@ class ReferenceCheckerTest extends \PHPUnit\Framework\TestCase {
 		}
 	}
 
-	public function provideContextTypes() {
+	public static function provideContextTypes() {
 		return [
 			[ Context::TYPE_STATEMENT, 'wbqc-violation-message-reference' ],
 			[ Context::TYPE_QUALIFIER, 'wbqc-violation-message-reference' ],
@@ -75,7 +75,7 @@ class ReferenceCheckerTest extends \PHPUnit\Framework\TestCase {
 
 		$result = $checker->checkConstraintParameters( $constraint );
 
-		$this->assertEmpty( $result );
+		$this->assertSame( [], $result );
 	}
 
 	/**

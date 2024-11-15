@@ -1,0 +1,20 @@
+{
+	"@metadata": {
+		"authors": [
+			"Winston Sung"
+		]
+	},
+	"apihelp-jsonconfig-summary": "Omogućuje izravan pristup podsustavu JsonConfig.",
+	"apihelp-jsonconfig-param-command": "Koju podradnju izvršiti na JsonConfigu:\n;status: Pokazuje JsonConfig konfiguraciju.\n;reset: Briše konfiguracije iz keša. Zahtijeva parametar $1title i pravo ''jsonconfig-flush''.\n;reload: Preučitava i kešira konfiguracije iz spremišta konfiguracije. Zahtijeva parametar $1title i pravo ''jsonconfig-reset''.",
+	"apihelp-jsonconfig-param-namespace": "Broj imenskog prostora naslova za obradu.",
+	"apihelp-jsonconfig-param-title": "Naslov obrade bez prefiksa imenskog prostora.",
+	"apihelp-jsonconfig-param-content": "Za $1command=reload umjesto toga koristite ovaj sadržaj.",
+	"apihelp-jsonconfig-example-1": "Prikaži konfiguraciju",
+	"apihelp-jsonconfig-example-2": "Resetuj [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsonconfig-example-3": "Ponovo učitaj [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsondata-param-title": "Naslov za dobiti. Podrazumijevani imenski prostor je \"Data:\"",
+	"apihelp-jsondata-example-1": "Daje JSON sadržaj stranice Sample.tab, lokaliziran na jezik korisnika",
+	"apihelp-jsondata-example-2": "Daje JSON sadržaj stranice Sample.tab, lokaliziran na francuski",
+	"apierror-jsonconfig-paramrequired": "Za ovu naredbu potreban je parametar <var>$1</var>.",
+	"apierror-jsonconfig-badtitle": "Ova stranica određena parametrima <var>namespace</var> i <var>title</var> ili je nevažeća, ili nije registrirana u konfiguraciji JsonConfig."
+}

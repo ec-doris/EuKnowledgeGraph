@@ -160,24 +160,13 @@ class JCContent extends \TextContent {
 	 */
 	public function getView( $modelId ) {
 		global $wgJsonConfigModels;
-		$view = $this->view;
-		if ( $view === null ) {
+		if ( !$this->view ) {
 			$configModels = \ExtensionRegistry::getInstance()->getAttribute( 'JsonConfigModels' )
 				+ $wgJsonConfigModels;
-			// @phan-suppress-previous-line PhanPossiblyUndeclaredVariable
-			if ( array_key_exists( $modelId, $configModels ) ) {
-				$value = $configModels[$modelId];
-				if ( is_array( $value ) && array_key_exists( 'view', $value ) ) {
-					$class = $value['view'];
-					$view = new $class();
-				}
-			}
-			if ( $view === null ) {
-				$view = $this->createDefaultView();
-			}
-			$this->view = $view;
+			$class = $configModels[$modelId]['view'] ?? null;
+			$this->view = $class ? new $class() : $this->createDefaultView();
 		}
-		return $view;
+		return $this->view;
 	}
 
 	/**

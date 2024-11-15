@@ -31,7 +31,7 @@ class RangeCheckerHelperTest extends \PHPUnit\Framework\TestCase {
 	 */
 	private function getRangeCheckerHelper() {
 		return new RangeCheckerHelper(
-			$this->getDefaultConfig(),
+			self::getDefaultConfig(),
 			new UnitConverter(
 				new CSVUnitStorage( __DIR__ . '/units.csv' ),
 				''
@@ -59,20 +59,20 @@ class RangeCheckerHelperTest extends \PHPUnit\Framework\TestCase {
 		}
 	}
 
-	public function provideComparisons() {
+	public static function provideComparisons() {
 		$cases = [
-			[ -1, $this->getTimeValue( 1970 ), $this->getTimeValue( 1971 ) ],
-			[ 0, $this->getTimeValue( 1970 ), $this->getTimeValue( 1970 ) ],
-			[ 1, $this->getTimeValue( 1971 ), $this->getTimeValue( 1970 ) ],
-			[ -1, $this->getQuantityValue( 42.0 ), $this->getQuantityValue( 1337.0 ) ],
-			[ 0, $this->getQuantityValue( 42.0 ), $this->getQuantityValue( 42.0 ) ],
-			[ 1, $this->getQuantityValue( 1337.0 ), $this->getQuantityValue( 42.0 ) ],
-			[ -1, $this->getUnboundedQuantityValue( 42.0 ), $this->getUnboundedQuantityValue( 1337.0 ) ],
-			[ 0, $this->getUnboundedQuantityValue( 42.0 ), $this->getUnboundedQuantityValue( 42.0 ) ],
-			[ 1, $this->getUnboundedQuantityValue( 1337.0 ), $this->getUnboundedQuantityValue( 42.0 ) ],
-			[ -1, $this->getQuantityValue( 500.0, 'g' ), $this->getQuantityValue( 1.0, 'kg' ) ],
-			[ 0, $this->getQuantityValue( 1000.0, 'g' ), $this->getQuantityValue( 1.0, 'kg' ) ],
-			[ 1, $this->getQuantityValue( 1.5, 'kg' ), $this->getQuantityValue( 1000, 'g' ) ],
+			[ -1, self::getTimeValue( 1970 ), self::getTimeValue( 1971 ) ],
+			[ 0, self::getTimeValue( 1970 ), self::getTimeValue( 1970 ) ],
+			[ 1, self::getTimeValue( 1971 ), self::getTimeValue( 1970 ) ],
+			[ -1, self::getQuantityValue( 42.0 ), self::getQuantityValue( 1337.0 ) ],
+			[ 0, self::getQuantityValue( 42.0 ), self::getQuantityValue( 42.0 ) ],
+			[ 1, self::getQuantityValue( 1337.0 ), self::getQuantityValue( 42.0 ) ],
+			[ -1, self::getUnboundedQuantityValue( 42.0 ), self::getUnboundedQuantityValue( 1337.0 ) ],
+			[ 0, self::getUnboundedQuantityValue( 42.0 ), self::getUnboundedQuantityValue( 42.0 ) ],
+			[ 1, self::getUnboundedQuantityValue( 1337.0 ), self::getUnboundedQuantityValue( 42.0 ) ],
+			[ -1, self::getQuantityValue( 500.0, 'g' ), self::getQuantityValue( 1.0, 'kg' ) ],
+			[ 0, self::getQuantityValue( 1000.0, 'g' ), self::getQuantityValue( 1.0, 'kg' ) ],
+			[ 1, self::getQuantityValue( 1.5, 'kg' ), self::getQuantityValue( 1000, 'g' ) ],
 		];
 
 		return $cases;
@@ -88,54 +88,54 @@ class RangeCheckerHelperTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame( (float)$expected, $actual );
 	}
 
-	public function provideDifferences() {
+	public static function provideDifferences() {
 		$secondsPerYear = 60 * 60 * 24 * 365;
 		$secondsPerLeapYear = 60 * 60 * 24 * 366;
 		$cases = [
 			'negative year difference, no leap year' => [
-				-$secondsPerYear, $this->getTimeValue( 1970 ), $this->getTimeValue( 1971 )
+				-$secondsPerYear, self::getTimeValue( 1970 ), self::getTimeValue( 1971 ),
 			],
 			'positive year difference, no leap year' => [
-				$secondsPerYear, $this->getTimeValue( 1971 ), $this->getTimeValue( 1970 )
+				$secondsPerYear, self::getTimeValue( 1971 ), self::getTimeValue( 1970 ),
 			],
 			'negative year difference, leap year' => [
-				-$secondsPerLeapYear, $this->getTimeValue( 1972 ), $this->getTimeValue( 1973 )
+				-$secondsPerLeapYear, self::getTimeValue( 1972 ), self::getTimeValue( 1973 ),
 			],
 			'positive year difference, leap year' => [
-				$secondsPerLeapYear, $this->getTimeValue( 1973 ), $this->getTimeValue( 1972 )
+				$secondsPerLeapYear, self::getTimeValue( 1973 ), self::getTimeValue( 1972 ),
 			],
 			'positive year difference, leap year, excluding leap day' => [
-				$secondsPerYear, $this->getTimeValue( 1973, 6 ), $this->getTimeValue( 1972, 6 )
+				$secondsPerYear, self::getTimeValue( 1973, 6 ), self::getTimeValue( 1972, 6 ),
 			],
 			'negative year difference, across epoch (1 BCE is leap year)' => [
-				-$secondsPerLeapYear, $this->getTimeValue( -1 ), $this->getTimeValue( 1 )
+				-$secondsPerLeapYear, self::getTimeValue( -1 ), self::getTimeValue( 1 ),
 			],
 			'positive year difference, across epoch (1 BCE is leap year)' => [
-				$secondsPerLeapYear, $this->getTimeValue( 1 ), $this->getTimeValue( -1 )
+				$secondsPerLeapYear, self::getTimeValue( 1 ), self::getTimeValue( -1 ),
 			],
 			'negative year difference, before Common Era' => [
-				-$secondsPerYear, $this->getTimeValue( -1971 ), $this->getTimeValue( -1970 )
+				-$secondsPerYear, self::getTimeValue( -1971 ), self::getTimeValue( -1970 ),
 			],
 			'positive year difference, before Common Era' => [
-				$secondsPerYear, $this->getTimeValue( -1970 ), $this->getTimeValue( -1971 )
+				$secondsPerYear, self::getTimeValue( -1970 ), self::getTimeValue( -1971 ),
 			],
 			'negative quantity difference' => [
-				-1295, $this->getQuantityValue( 42.0 ), $this->getQuantityValue( 1337.0 )
+				-1295, self::getQuantityValue( 42.0 ), self::getQuantityValue( 1337.0 ),
 			],
 			'positive quantity difference' => [
-				1295, $this->getQuantityValue( 1337.0 ), $this->getQuantityValue( 42.0 )
+				1295, self::getQuantityValue( 1337.0 ), self::getQuantityValue( 42.0 ),
 			],
 			'negative quantity difference, bounded/unbounded' => [
-				-1295, $this->getQuantityValue( 42.0 ), $this->getUnboundedQuantityValue( 1337.0 )
+				-1295, self::getQuantityValue( 42.0 ), self::getUnboundedQuantityValue( 1337.0 ),
 			],
 			'negative quantity difference, unbounded/bounded' => [
-				-1295, $this->getUnboundedQuantityValue( 42.0 ), $this->getQuantityValue( 1337.0 )
+				-1295, self::getUnboundedQuantityValue( 42.0 ), self::getQuantityValue( 1337.0 ),
 			],
 			'negative quantity difference, gram/kilogram' => [
-				-0.5, $this->getQuantityValue( 500.0, 'g' ), $this->getQuantityValue( 1.0, 'kg' )
+				-0.5, self::getQuantityValue( 500.0, 'g' ), self::getQuantityValue( 1.0, 'kg' ),
 			],
 			'positive quantity difference, gram/gram' => [
-				1.0, $this->getQuantityValue( 2000.0, 'g' ), $this->getQuantityValue( 1000, 'g' )
+				1.0, self::getQuantityValue( 2000.0, 'g' ), self::getQuantityValue( 1000, 'g' ),
 			],
 		];
 
@@ -161,11 +161,11 @@ class RangeCheckerHelperTest extends \PHPUnit\Framework\TestCase {
 		$this->assertLessThanOrEqual( $maxExpected, $actual );
 	}
 
-	public function provideDifferencesInYears() {
-		$spring74 = $this->getTimeValue( 1974, 04, 01 );
-		$fall74 = $this->getTimeValue( 1974, 10, 01 );
-		$spring75 = $this->getTimeValue( 1975, 04, 01 );
-		$fall75 = $this->getTimeValue( 1975, 10, 01 );
+	public static function provideDifferencesInYears() {
+		$spring74 = self::getTimeValue( 1974, 04, 01 );
+		$fall74 = self::getTimeValue( 1974, 10, 01 );
+		$spring75 = self::getTimeValue( 1975, 04, 01 );
+		$fall75 = self::getTimeValue( 1975, 10, 01 );
 
 		$cases = [
 			'spring ’74 to spring ’74' => [ 0, 0, $spring74, $spring74 ],
@@ -185,10 +185,10 @@ class RangeCheckerHelperTest extends \PHPUnit\Framework\TestCase {
 			'fall ’75 to spring ’75' => [ -0.9, -0.1, $fall75, $spring75 ],
 			'fall ’75 to fall ’75' => [ 0, 0, $fall75, $fall75 ],
 			'spring 1 BCE to fall 1 CE' => [
-				1.1, 1.9, $this->getTimeValue( -1, 04, 01 ), $this->getTimeValue( 1, 10, 01 )
+				1.1, 1.9, self::getTimeValue( -1, 04, 01 ), self::getTimeValue( 1, 10, 01 ),
 			],
 			'spring 10 CE to fall 10 BCE' => [
-				-18.9, -18.1, $this->getTimeValue( 10, 04, 01 ), $this->getTimeValue( -10, 10, 01 )
+				-18.9, -18.1, self::getTimeValue( 10, 04, 01 ), self::getTimeValue( -10, 10, 01 ),
 			],
 		];
 
@@ -204,12 +204,12 @@ class RangeCheckerHelperTest extends \PHPUnit\Framework\TestCase {
 	public function testGetComparison_differingDataValueTypeThrowsException() {
 		$rangeCheckerHelper = $this->getRangeCheckerHelper();
 		$this->expectException( InvalidArgumentException::class );
-		$rangeCheckerHelper->getComparison( $this->getQuantityValue( 42.0 ), $this->getTimeValue( 1970 ) );
+		$rangeCheckerHelper->getComparison( self::getQuantityValue( 42.0 ), self::getTimeValue( 1970 ) );
 	}
 
 	public function testIsFutureTime() {
 		$rangeCheckerHelper = $this->getRangeCheckerHelper();
-		$past = $this->getTimeValue( 2012, 10, 29 );
+		$past = self::getTimeValue( 2012, 10, 29 );
 
 		$this->assertFalse( $rangeCheckerHelper->isFutureTime( $past ) );
 	}
@@ -221,7 +221,7 @@ class RangeCheckerHelperTest extends \PHPUnit\Framework\TestCase {
 	 *
 	 * @return TimeValue
 	 */
-	private function getTimeValue( $year, $month = 1, $day = 1 ) {
+	private static function getTimeValue( $year, $month = 1, $day = 1 ) {
 		$yearString = $year > 0 ? "+$year" : "$year";
 		$monthString = $month < 10 ? "0$month" : "$month";
 		$dayString = $day < 10 ? "0$day" : "$day";
@@ -241,7 +241,7 @@ class RangeCheckerHelperTest extends \PHPUnit\Framework\TestCase {
 	 *
 	 * @return QuantityValue
 	 */
-	private function getQuantityValue( $amount, $unit = '1' ) {
+	private static function getQuantityValue( $amount, $unit = '1' ) {
 		$decimalValue = new DecimalValue( $amount );
 
 		return new QuantityValue( $decimalValue, $unit, $decimalValue, $decimalValue );
@@ -253,7 +253,7 @@ class RangeCheckerHelperTest extends \PHPUnit\Framework\TestCase {
 	 *
 	 * @return UnboundedQuantityValue
 	 */
-	private function getUnboundedQuantityValue( $amount, $unit = '1' ) {
+	private static function getUnboundedQuantityValue( $amount, $unit = '1' ) {
 		return UnboundedQuantityValue::newFromNumber( $amount, $unit );
 	}
 

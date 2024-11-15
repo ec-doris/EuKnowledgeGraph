@@ -1,11 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
+			"Beginneruser",
 			"FarsiNevis",
 			"Ladsgroup",
 			"Reza1615",
 			"Rtemis",
-			"Beginneruser"
+			"Ebraminio",
+			"Ebrahim"
 		]
 	},
 	"wbqc-constraintreport": "محدوده گزارش",
@@ -18,7 +20,7 @@
 	"wbqc-constraintreport-result-headline": "نتیجه برای",
 	"wbqc-constraintreport-invalid-entity-id": "شناسهٔ نادرست ورودی.",
 	"wbqc-constraintreport-not-existent-entity": "ورودی وجود ندارد.",
-	"wbqc-constraintreport-empty-result": "هیچ محدودیتی برای این ورودی (جوهره) تعریف نشده‌است.",
+	"wbqc-constraintreport-empty-result": "هیچ محدودیتی برای این ورودی (جوهره) تعریف نشده است.",
 	"wbqc-constraintreport-status-violation": "خرابکاری",
 	"wbqc-constraintreport-status-compliance": "مطلوبیت",
 	"wbqc-constraintreport-status-exception": "استثنا",
@@ -51,5 +53,5 @@
 	"wbqc-violation-message-commons-link-no-existent": "پیوند به انبار باید وجود داشته باشد.",
 	"wbqc-violation-message-noBounds": "مقدار برای $1 نباید محدود باشد",
 	"wbqc-violation-message-units-none": "مقدار برای $1 باید یکا داشته باشد",
-	"wbqc-violation-message-citationNeeded": "اظهار $1 باید حداقل یک منبع داشته‌باشد."
+	"wbqc-violation-message-citationNeeded": "اظهار $1 باید حداقل یک منبع داشته باشد."
 }

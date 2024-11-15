@@ -1,5 +1,7 @@
 <?php
 
+declare( strict_types = 1 );
+
 namespace WikibaseQuality\ConstraintReport\ConstraintCheck;
 
 use InvalidArgumentException;
@@ -38,52 +40,29 @@ use WikibaseQuality\ConstraintReport\ConstraintLookup;
  */
 class DelegatingConstraintChecker {
 
-	/**
-	 * Wikibase entity lookup.
-	 *
-	 * @var EntityLookup
-	 */
-	private $entityLookup;
+	private EntityLookup $entityLookup;
 
 	/**
 	 * @var ConstraintChecker[]
 	 */
-	private $checkerMap;
+	private array $checkerMap;
 
-	/**
-	 * @var ConstraintLookup
-	 */
-	private $constraintLookup;
+	private ConstraintLookup $constraintLookup;
 
-	/**
-	 * @var ConstraintParameterParser
-	 */
-	private $constraintParameterParser;
+	private ConstraintParameterParser $constraintParameterParser;
 
-	/**
-	 * @var StatementGuidParser
-	 */
-	private $statementGuidParser;
+	private StatementGuidParser $statementGuidParser;
 
-	/**
-	 * @var LoggingHelper
-	 */
-	private $loggingHelper;
+	private LoggingHelper $loggingHelper;
 
-	/**
-	 * @var bool
-	 */
-	private $checkQualifiers;
+	private bool $checkQualifiers;
 
-	/**
-	 * @var bool
-	 */
-	private $checkReferences;
+	private bool $checkReferences;
 
 	/**
 	 * @var string[]
 	 */
-	private $propertiesWithViolatingQualifiers;
+	private array $propertiesWithViolatingQualifiers;
 
 	/**
 	 * @param EntityLookup $lookup
@@ -104,8 +83,8 @@ class DelegatingConstraintChecker {
 		ConstraintParameterParser $constraintParameterParser,
 		StatementGuidParser $statementGuidParser,
 		LoggingHelper $loggingHelper,
-		$checkQualifiers,
-		$checkReferences,
+		bool $checkQualifiers,
+		bool $checkReferences,
 		array $propertiesWithViolatingQualifiers
 	) {
 		$this->entityLookup = $lookup;
@@ -142,7 +121,7 @@ class DelegatingConstraintChecker {
 		array $constraintIds = null,
 		callable $defaultResultsPerContext = null,
 		callable $defaultResultsPerEntity = null
-	) {
+	): array {
 		$checkResults = [];
 		$entity = $this->entityLookup->getEntity( $entityId );
 
@@ -188,10 +167,10 @@ class DelegatingConstraintChecker {
 	 * @return CheckResult[]
 	 */
 	public function checkAgainstConstraintsOnClaimId(
-		$guid,
+		string $guid,
 		array $constraintIds = null,
 		callable $defaultResults = null
-	) {
+	): array {
 
 		$parsedGuid = $this->statementGuidParser->parse( $guid );
 		$entityId = $parsedGuid->getEntityId();
@@ -213,7 +192,7 @@ class DelegatingConstraintChecker {
 		return [];
 	}
 
-	private function getValidContextTypes( Constraint $constraint ) {
+	private function getValidContextTypes( Constraint $constraint ): array {
 		if ( !array_key_exists( $constraint->getConstraintTypeItemId(), $this->checkerMap ) ) {
 			return [
 				Context::TYPE_STATEMENT,
@@ -230,7 +209,7 @@ class DelegatingConstraintChecker {
 		) );
 	}
 
-	private function getValidEntityTypes( Constraint $constraint ) {
+	private function getValidEntityTypes( Constraint $constraint ): array {
 		if ( !array_key_exists( $constraint->getConstraintTypeItemId(), $this->checkerMap ) ) {
 			return array_keys( ConstraintChecker::ALL_ENTITY_TYPES_SUPPORTED );
 		}
@@ -251,7 +230,7 @@ class DelegatingConstraintChecker {
 	 *
 	 * @return ConstraintParameterException[]
 	 */
-	private function checkCommonConstraintParameters( Constraint $constraint ) {
+	private function checkCommonConstraintParameters( Constraint $constraint ): array {
 		$constraintParameters = $constraint->getConstraintParameters();
 		try {
 			$this->constraintParameterParser->checkError( $constraintParameters );
@@ -262,6 +241,11 @@ class DelegatingConstraintChecker {
 		$problems = [];
 		try {
 			$this->constraintParameterParser->parseExceptionParameter( $constraintParameters );
+		} catch ( ConstraintParameterException $e ) {
+			$problems[] = $e;
+		}
+		try {
+			$this->constraintParameterParser->parseConstraintClarificationParameter( $constraintParameters );
 		} catch ( ConstraintParameterException $e ) {
 			$problems[] = $e;
 		}
@@ -290,7 +274,7 @@ class DelegatingConstraintChecker {
 	 * @return ConstraintParameterException[][] first level indexed by constraint ID,
 	 * second level like checkConstraintParametersOnConstraintId (but without possibility of null)
 	 */
-	public function checkConstraintParametersOnPropertyId( NumericPropertyId $propertyId ) {
+	public function checkConstraintParametersOnPropertyId( NumericPropertyId $propertyId ): array {
 		$constraints = $this->constraintLookup->queryConstraintsForProperty( $propertyId );
 		$result = [];
 
@@ -316,7 +300,7 @@ class DelegatingConstraintChecker {
 	 * @return ConstraintParameterException[]|null list of constraint parameter exceptions
 	 * (empty means all parameters okay), or null if constraint is not found
 	 */
-	public function checkConstraintParametersOnConstraintId( $constraintId ) {
+	public function checkConstraintParametersOnConstraintId( string $constraintId ): ?array {
 		$propertyId = $this->statementGuidParser->parse( $constraintId )->getEntityId();
 		'@phan-var NumericPropertyId $propertyId';
 		$constraints = $this->constraintLookup->queryConstraintsForProperty( $propertyId );
@@ -346,9 +330,9 @@ class DelegatingConstraintChecker {
 	 */
 	private function checkEveryStatement(
 		StatementListProvidingEntity $entity,
-		array $constraintIds = null,
-		callable $defaultResultsPerContext = null
-	) {
+		?array $constraintIds,
+		?callable $defaultResultsPerContext
+	): array {
 		$result = [];
 
 		/** @var Statement $statement */
@@ -376,9 +360,9 @@ class DelegatingConstraintChecker {
 	private function checkStatement(
 		StatementListProvidingEntity $entity,
 		Statement $statement,
-		array $constraintIds = null,
-		callable $defaultResultsPerContext = null
-	) {
+		?array $constraintIds,
+		?callable $defaultResultsPerContext
+	): array {
 		$result = [];
 
 		$result = array_merge( $result,
@@ -421,7 +405,7 @@ class DelegatingConstraintChecker {
 	 * @param string[]|null $constraintIds
 	 * @return Constraint[]
 	 */
-	private function getConstraintsToUse( PropertyId $propertyId, array $constraintIds = null ) {
+	private function getConstraintsToUse( PropertyId $propertyId, ?array $constraintIds ): array {
 		if ( !( $propertyId instanceof NumericPropertyId ) ) {
 			throw new InvalidArgumentException(
 				'Non-numeric property ID not supported:' . $propertyId->getSerialization()
@@ -452,9 +436,9 @@ class DelegatingConstraintChecker {
 	private function checkConstraintsForMainSnak(
 		StatementListProvidingEntity $entity,
 		Statement $statement,
-		array $constraintIds = null,
-		callable $defaultResults = null
-	) {
+		?array $constraintIds,
+		?callable $defaultResults
+	): array {
 		$context = new MainSnakContext( $entity, $statement );
 		$constraints = $this->getConstraintsToUse(
 			$statement->getPropertyId(),
@@ -470,15 +454,15 @@ class DelegatingConstraintChecker {
 				$result[] = new CheckResult(
 					$context,
 					$constraint,
-					[],
-					CheckResult::STATUS_BAD_PARAMETERS, $e->getViolationMessage()
+					CheckResult::STATUS_BAD_PARAMETERS,
+					$e->getViolationMessage()
 				);
 				continue;
 			}
 
 			if ( in_array( $entity->getId(), $exceptions ) ) {
 				$message = new ViolationMessage( 'wbqc-violation-message-exception' );
-				$result[] = new CheckResult( $context, $constraint, [], CheckResult::STATUS_EXCEPTION, $message );
+				$result[] = new CheckResult( $context, $constraint, CheckResult::STATUS_EXCEPTION, $message );
 				continue;
 			}
 
@@ -499,9 +483,9 @@ class DelegatingConstraintChecker {
 	private function checkConstraintsForQualifiers(
 		StatementListProvidingEntity $entity,
 		Statement $statement,
-		array $constraintIds = null,
-		callable $defaultResultsPerContext = null
-	) {
+		?array $constraintIds,
+		?callable $defaultResultsPerContext
+	): array {
 		$result = [];
 
 		if ( in_array(
@@ -539,9 +523,9 @@ class DelegatingConstraintChecker {
 	private function checkConstraintsForReferences(
 		StatementListProvidingEntity $entity,
 		Statement $statement,
-		array $constraintIds = null,
-		callable $defaultResultsPerContext = null
-	) {
+		?array $constraintIds,
+		?callable $defaultResultsPerContext
+	): array {
 		$result = [];
 
 		/** @var Reference $reference */
@@ -569,14 +553,7 @@ class DelegatingConstraintChecker {
 		return $result;
 	}
 
-	/**
-	 * @param Context $context
-	 * @param Constraint $constraint
-	 *
-	 * @throws InvalidArgumentException
-	 * @return CheckResult
-	 */
-	private function getCheckResultFor( Context $context, Constraint $constraint ) {
+	private function getCheckResultFor( Context $context, Constraint $constraint ): CheckResult {
 		if ( array_key_exists( $constraint->getConstraintTypeItemId(), $this->checkerMap ) ) {
 			$checker = $this->checkerMap[$constraint->getConstraintTypeItemId()];
 			$result = $this->handleScope( $checker, $context, $constraint );
@@ -593,19 +570,20 @@ class DelegatingConstraintChecker {
 				$result = new CheckResult(
 					$context,
 					$constraint,
-					[],
 					CheckResult::STATUS_BAD_PARAMETERS,
 					$e->getViolationMessage()
 				);
 			} catch ( SparqlHelperException $e ) {
 				$message = new ViolationMessage( 'wbqc-violation-message-sparql-error' );
-				$result = new CheckResult( $context, $constraint, [], CheckResult::STATUS_TODO, $message );
+				$result = new CheckResult( $context, $constraint, CheckResult::STATUS_TODO, $message );
 			}
 			$endTime = microtime( true );
 
 			$this->addMetadata( $context, $result );
 
-			$this->downgradeResultStatus( $context, $result );
+			$this->addConstraintClarification( $result );
+
+			$this->downgradeResultStatus( $result );
 
 			$this->loggingHelper->logConstraintCheck(
 				$context,
@@ -618,7 +596,7 @@ class DelegatingConstraintChecker {
 
 			return $result;
 		} else {
-			return new CheckResult( $context, $constraint, [], CheckResult::STATUS_TODO, null );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_TODO, null );
 		}
 	}
 
@@ -637,7 +615,7 @@ class DelegatingConstraintChecker {
 				$validEntityTypes
 			);
 		} catch ( ConstraintParameterException $e ) {
-			return new CheckResult( $context, $constraint, [], CheckResult::STATUS_BAD_PARAMETERS, $e->getViolationMessage() );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_BAD_PARAMETERS, $e->getViolationMessage() );
 		}
 
 		if ( $checkedContextTypes === null ) {
@@ -645,10 +623,10 @@ class DelegatingConstraintChecker {
 		}
 		$contextType = $context->getType();
 		if ( !in_array( $contextType, $checkedContextTypes ) ) {
-			return new CheckResult( $context, $constraint, [], CheckResult::STATUS_NOT_IN_SCOPE, null );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_NOT_IN_SCOPE, null );
 		}
 		if ( $checker->getSupportedContextTypes()[$contextType] === CheckResult::STATUS_TODO ) {
-			return new CheckResult( $context, $constraint, [], CheckResult::STATUS_TODO, null );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_TODO, null );
 		}
 
 		if ( $checkedEntityTypes === null ) {
@@ -656,16 +634,16 @@ class DelegatingConstraintChecker {
 		}
 		$entityType = $context->getEntity()->getType();
 		if ( !in_array( $entityType, $checkedEntityTypes ) ) {
-			return new CheckResult( $context, $constraint, [], CheckResult::STATUS_NOT_IN_SCOPE, null );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_NOT_IN_SCOPE, null );
 		}
 		if ( $checker->getSupportedEntityTypes()[$entityType] === CheckResult::STATUS_TODO ) {
-			return new CheckResult( $context, $constraint, [], CheckResult::STATUS_TODO, null );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_TODO, null );
 		}
 
 		return null;
 	}
 
-	private function addMetadata( Context $context, CheckResult $result ) {
+	private function addMetadata( Context $context, CheckResult $result ): void {
 		$result->withMetadata( Metadata::merge( [
 			$result->getMetadata(),
 			Metadata::ofDependencyMetadata( DependencyMetadata::merge( [
@@ -675,14 +653,27 @@ class DelegatingConstraintChecker {
 		] ) );
 	}
 
-	private function downgradeResultStatus( Context $context, CheckResult &$result ) {
+	private function addConstraintClarification( CheckResult $result ): void {
+		$constraint = $result->getConstraint();
+		try {
+			$constraintClarification = $this->constraintParameterParser
+				->parseConstraintClarificationParameter( $constraint->getConstraintParameters() );
+			$result->setConstraintClarification( $constraintClarification );
+		} catch ( ConstraintParameterException $e ) {
+			$result->setStatus( CheckResult::STATUS_BAD_PARAMETERS );
+			$result->setMessage( $e->getViolationMessage() );
+		}
+	}
+
+	private function downgradeResultStatus( CheckResult $result ): void {
 		$constraint = $result->getConstraint();
 		try {
 			$constraintStatus = $this->constraintParameterParser
 				->parseConstraintStatusParameter( $constraint->getConstraintParameters() );
 		} catch ( ConstraintParameterException $e ) {
-			$result = new CheckResult( $context, $constraint, [], CheckResult::STATUS_BAD_PARAMETERS, $e->getViolationMessage() );
-			$constraintStatus = null;
+			$result->setStatus( CheckResult::STATUS_BAD_PARAMETERS );
+			$result->setMessage( $e->getViolationMessage() );
+			return;
 		}
 		if ( $constraintStatus === null ) {
 			// downgrade violation to warning
@@ -694,7 +685,6 @@ class DelegatingConstraintChecker {
 			if ( $result->getStatus() === CheckResult::STATUS_VIOLATION ) {
 				$result->setStatus( CheckResult::STATUS_SUGGESTION );
 			}
-			$result->addParameter( 'constraint_status', $constraintStatus );
 		} else {
 			if ( $constraintStatus !== 'mandatory' ) {
 				// @codeCoverageIgnoreStart
@@ -704,7 +694,6 @@ class DelegatingConstraintChecker {
 				);
 				// @codeCoverageIgnoreEnd
 			}
-			$result->addParameter( 'constraint_status', $constraintStatus );
 		}
 	}
 
@@ -713,7 +702,7 @@ class DelegatingConstraintChecker {
 	 *
 	 * @return CheckResult[]
 	 */
-	private function sortResult( array $result ) {
+	private function sortResult( array $result ): array {
 		if ( count( $result ) < 2 ) {
 			return $result;
 		}

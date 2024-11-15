@@ -4,7 +4,6 @@
 			"Tacsipacsi"
 		]
 	},
-	"apihelp-wbcheckconstraints-description": "Kikötések ellenőrzése egy megadott entitáson, és az eredmények visszaadása.",
 	"apihelp-wbcheckconstraints-summary": "Kikötések ellenőrzése egy megadott entitáson, és az eredmények visszaadása.",
 	"apihelp-wbcheckconstraints-param-id": "A lekérdezendő entitások azonosítóinak listája.",
 	"apihelp-wbcheckconstraints-param-constraintid": "Opcionális szűrő, csak a megadott kikötésazonosítóval rendelkező kikötések visszaadása.",

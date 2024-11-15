@@ -4,8 +4,9 @@
 			"Gomoko",
 			"Thibaut120094",
 			"Urhixidur",
+			"Verdy p",
 			"Wladek92",
-			"Verdy p"
+			"Tacsipacsi"
 		]
 	},
 	"templatestyles": "Styles de modèles",
@@ -48,7 +49,7 @@
 	"templatestyles-error-invalid-page-margin-at-rule": "<code>@$3</code> ne permet rien avant le bloc à la ligne $1, caractère $2.",
 	"templatestyles-error-invalid-page-rule-content": "Contenu non valide pour <code>@page</code> à la ligne $1, caractère $2..",
 	"templatestyles-error-invalid-page-selector": "Sélecteur de page non valide à la ligne $1, caractère $2.",
-	"templatestyles-error-invalid-selector-list": "Liste de sélecteur non valide à la ligne $1, caractère $2.",
+	"templatestyles-error-invalid-selector-list": "Liste de sélecteurs non valide à la ligne $1, caractère $2.",
 	"templatestyles-error-invalid-supports-condition": "Condition non valide pour <code>@supports</code> à la ligne $1, caractère $2.",
 	"templatestyles-error-misordered-rule": "Règle dans le mauvais ordre à la ligne $1, caractère $2.",
 	"templatestyles-error-missing-font-feature-values-font-list": "Liste de polices manquante pour <code>@font-feature-values</code> à la ligne $1, caractère $2.",

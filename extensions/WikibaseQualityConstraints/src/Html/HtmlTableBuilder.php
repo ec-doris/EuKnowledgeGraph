@@ -44,7 +44,7 @@ class HtmlTableBuilder {
 	 * @throws InvalidArgumentException
 	 */
 	private function addHeader( $header ) {
-		Assert::parameterType( 'string|' . HtmlTableHeaderBuilder::class, $header, '$header' );
+		Assert::parameterType( [ 'string', HtmlTableHeaderBuilder::class ], $header, '$header' );
 
 		if ( is_string( $header ) ) {
 			$header = new HtmlTableHeaderBuilder( $header );

@@ -1,5 +1,7 @@
 <?php
 
+declare( strict_types = 1 );
+
 namespace WikibaseQuality\ConstraintReport\ConstraintCheck\Result;
 
 use DomainException;
@@ -35,11 +37,11 @@ class NullResult extends CheckResult {
 		parent::__construct( $contextCursor, $constraint );
 	}
 
-	public function getConstraint() {
+	public function getConstraint(): Constraint {
 		throw new DomainException( 'NullResult holds no constraint' );
 	}
 
-	public function getConstraintId() {
+	public function getConstraintId(): string {
 		throw new DomainException( 'NullResult holds no constraint' );
 	}
 

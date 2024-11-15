@@ -1,8 +1,11 @@
 <?php
 
+declare( strict_types = 1 );
+
 namespace WikibaseQuality\ConstraintReport\ConstraintCheck\Result;
 
 use DataValues\DataValue;
+use DataValues\MultilingualTextValue;
 use Wikibase\DataModel\Snak\PropertyValueSnak;
 use WikibaseQuality\ConstraintReport\Constraint;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Cache\Metadata;
@@ -73,60 +76,36 @@ class CheckResult {
 	 * * update PARAM_STATUS type in CheckConstraints::getAllowedParams
 	 */
 
-	/**
-	 * @var Constraint
-	 */
-	private $constraint;
+	/** @var Constraint */
+	private Constraint $constraint;
 
-	/**
-	 * @var ContextCursor
-	 */
-	private $contextCursor;
-
-	/**
-	 * @var array[]
-	 * Includes arrays of ItemIds or PropertyIds or strings.
-	 */
-	private $parameters;
+	private ContextCursor $contextCursor;
 
 	/**
 	 * @var string One of the self::STATUS_… constants
 	 */
-	private $status;
+	private string $status;
 
-	/**
-	 * @var ViolationMessage|null
-	 */
-	private $message;
+	private ?ViolationMessage $message;
 
-	/**
-	 * @var Metadata
-	 */
-	private $metadata;
+	private Metadata $metadata;
 
-	/**
-	 * @var string|null
-	 */
-	private $snakType;
+	private ?string $snakType;
 
-	/**
-	 * @var DataValue|null
-	 */
-	private $dataValue;
+	private ?DataValue $dataValue;
+
+	private MultilingualTextValue $constraintClarification;
 
 	/**
 	 * @param Context|ContextCursor $contextCursor
 	 * @param Constraint $constraint
-	 * @param array[] $parameters (string => string[]) parsed constraint parameters
-	 * ($constraint->getParameters() contains the unparsed parameters)
 	 * @param string $status One of the self::STATUS_… constants
 	 * @param ViolationMessage|null $message
 	 */
 	public function __construct(
 		$contextCursor,
 		Constraint $constraint,
-		array $parameters = [],
-		$status = self::STATUS_TODO,
+		string $status = self::STATUS_TODO,
 		ViolationMessage $message = null
 	) {
 		if ( $contextCursor instanceof Context ) {
@@ -145,97 +124,72 @@ class CheckResult {
 			$this->dataValue = null;
 		}
 		$this->constraint = $constraint;
-		$this->parameters = $parameters;
 		$this->status = $status;
 		$this->message = $message;
 		$this->metadata = Metadata::blank();
+		$this->constraintClarification = new MultilingualTextValue( [] );
 	}
 
-	/**
-	 * @return ContextCursor
-	 */
-	public function getContextCursor() {
+	public function getContextCursor(): ContextCursor {
 		return $this->contextCursor;
 	}
 
 	/**
 	 * @return string|null only available if the CheckResult was created from a full Context
 	 */
-	public function getSnakType() {
+	public function getSnakType(): ?string {
 		return $this->snakType;
 	}
 
 	/**
 	 * @return DataValue|null only available if the CheckResult was created from a full Context
 	 */
-	public function getDataValue() {
+	public function getDataValue(): ?DataValue {
 		return $this->dataValue;
 	}
 
-	/**
-	 * @return Constraint
-	 */
-	public function getConstraint() {
+	public function getConstraint(): Constraint {
 		return $this->constraint;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getConstraintId() {
+	public function getConstraintId(): string {
 		return $this->constraint->getConstraintId();
-	}
-
-	/**
-	 * @return array[]
-	 */
-	public function getParameters() {
-		return $this->parameters;
-	}
-
-	/**
-	 * @param string $key
-	 * @param string $value
-	 */
-	public function addParameter( $key, $value ) {
-		$this->parameters[$key][] = $value;
 	}
 
 	/**
 	 * @return string One of the self::STATUS_… constants
 	 */
-	public function getStatus() {
+	public function getStatus(): string {
 		return $this->status;
 	}
 
-	/**
-	 * @param string $status
-	 */
-	public function setStatus( $status ) {
+	public function setStatus( string $status ): void {
 		$this->status = $status;
 	}
 
-	/**
-	 * @return ViolationMessage|null
-	 */
-	public function getMessage() {
+	public function getMessage(): ?ViolationMessage {
 		return $this->message;
 	}
 
-	/**
-	 * @param Metadata $metadata
-	 * @return self
-	 */
-	public function withMetadata( Metadata $metadata ) {
+	public function setMessage( ?ViolationMessage $message ) {
+		$this->message = $message;
+	}
+
+	public function withMetadata( Metadata $metadata ): self {
 		$this->metadata = $metadata;
 		return $this;
 	}
 
-	/**
-	 * @return Metadata
-	 */
-	public function getMetadata() {
+	public function getMetadata(): Metadata {
 		return $this->metadata;
+	}
+
+	public function getConstraintClarification(): MultilingualTextValue {
+		return $this->constraintClarification;
+	}
+
+	public function setConstraintClarification( MultilingualTextValue $constraintClarification ) {
+		$this->constraintClarification = $constraintClarification;
 	}
 
 }

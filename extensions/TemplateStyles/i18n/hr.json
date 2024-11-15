@@ -1,9 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
-			"Bugoslav"
+			"Bugoslav",
+			"Ponor"
 		]
 	},
-	"templatestyles-stylesheet-error-category": "Stranice stilova CSS-a s pogrješkama u stilovima predložaka",
-	"templatestyles-page-error-category": "Stranice s pogrješkama u stilovima predložaka"
+	"templatestyles-stylesheet-error-category": "CSS stilovi TemplateStyles s pogreškama",
+	"templatestyles-page-error-category": "Stranice s pogreškama u stilovima predložaka"
 }

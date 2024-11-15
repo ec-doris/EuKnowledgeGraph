@@ -29,7 +29,6 @@ class CachedCheckResultsTest extends \MediaWikiUnitTestCase {
 		$result1 = ( new CheckResult(
 			new AppendingContextCursor(),
 			$constraint,
-			[],
 			CheckResult::STATUS_COMPLIANCE
 		) )->withMetadata(
 			Metadata::ofDependencyMetadata( DependencyMetadata::ofEntityId( $p1 ) )
@@ -37,7 +36,6 @@ class CachedCheckResultsTest extends \MediaWikiUnitTestCase {
 		$result2 = ( new CheckResult(
 			new AppendingContextCursor(),
 			$constraint,
-			[],
 			CheckResult::STATUS_VIOLATION,
 			new ViolationMessage( 'wbqc-violation-message-single-value' )
 		) )->withMetadata(

@@ -1,5 +1,7 @@
 <?php
 
+declare( strict_types = 1 );
+
 namespace WikibaseQuality\ConstraintReport\ConstraintCheck\Context;
 
 use Wikibase\DataModel\Entity\StatementListProvidingEntity;
@@ -14,15 +16,9 @@ use Wikibase\DataModel\Statement\Statement;
  */
 class ReferenceContext extends AbstractContext {
 
-	/**
-	 * @var Statement
-	 */
-	private $statement;
+	private Statement $statement;
 
-	/**
-	 * @var Reference
-	 */
-	private $reference;
+	private Reference $reference;
 
 	public function __construct(
 		StatementListProvidingEntity $entity,
@@ -35,20 +31,20 @@ class ReferenceContext extends AbstractContext {
 		$this->reference = $reference;
 	}
 
-	public function getType() {
+	public function getType(): string {
 		return self::TYPE_REFERENCE;
 	}
 
-	public function getSnakGroup( $groupingMode, array $separators = [] ) {
+	public function getSnakGroup( string $groupingMode, array $separators = [] ): array {
 		$snaks = $this->reference->getSnaks();
 		return array_values( $snaks->getArrayCopy() );
 	}
 
-	public function getCursor() {
+	public function getCursor(): ContextCursor {
 		return new ReferenceContextCursor(
 			$this->entity->getId()->getSerialization(),
 			$this->statement->getPropertyId()->getSerialization(),
-			$this->statement->getGuid(),
+			$this->getStatementGuid( $this->statement ),
 			$this->snak->getHash(),
 			$this->snak->getPropertyId()->getSerialization(),
 			$this->reference->getHash()

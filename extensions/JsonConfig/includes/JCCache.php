@@ -43,9 +43,9 @@ class JCCache {
 			$titleValue->getDBkey(),
 		];
 		if ( $conf->isLocal ) {
-			$this->key = call_user_func_array( [ $this->cache, 'makeKey' ], $keyArgs );
+			$this->key = $this->cache->makeKey( ...$keyArgs );
 		} else {
-			$this->key = call_user_func_array( [ $this->cache, 'makeGlobalKey' ], $keyArgs );
+			$this->key = $this->cache->makeGlobalKey( ...$keyArgs );
 		}
 		$this->cacheExpiration = $conf->cacheExp;
 		$this->content = $content ?: null; // ensure that if we don't have content, we use 'null'
@@ -92,12 +92,10 @@ class JCCache {
 	private function memcSet() {
 		global $wgJsonConfigDisableCache;
 		if ( !$wgJsonConfigDisableCache ) {
-			$value = $this->content;
-			$exp = $this->cacheExpiration;
-			if ( !$value ) {
-				$value = '';
-				$exp = 10; // caching an error condition for short time
-			} elseif ( !is_string( $value ) ) {
+			// caching an error condition for short time
+			$exp = $this->content ? $this->cacheExpiration : 10;
+			$value = $this->content ?: '';
+			if ( !is_string( $value ) ) {
 				$value = $value->getNativeData();
 			}
 
@@ -215,7 +213,6 @@ class JCCache {
 			if ( $result === false ) {
 				break;
 			}
-
 		} while ( false );
 
 		$this->content = $result;
@@ -242,8 +239,7 @@ class JCCache {
 			return false;
 		}
 		$pageInfo = reset( $pages ); // get the only element of the array
-		if ( isset( $revInfo['missing'] ) ) {
-			JCUtils::warn( 'Config page does not exist', [ 'title' => $articleName ], $query );
+		if ( isset( $pageInfo['missing'] ) ) {
 			return false;
 		}
 		return $pageInfo;

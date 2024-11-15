@@ -1,14 +1,20 @@
 /**
  * Wikivoyage Map class.
  *
- * @alternateClassName WVMap
+ * @borrows Kartographer.Wikivoyage.WVMap as WVMap
  * @class Kartographer.Wikivoyage.WVMap
  */
-var wikivoyage = require( './wikivoyage.js' ),
-	WVMapLayers = require( './WVMapLayers.js' ),
-	ControlNearby = require( './ControlNearby.js' );
+const wikivoyage = require( './wikivoyage.js' );
+const WVMapLayers = require( './WVMapLayers.js' );
+const ControlNearby = require( './ControlNearby.js' );
 
 /* eslint-disable no-underscore-dangle */
+
+/**
+ * @constructor
+ * @memberof Kartographer.Wikivoyage.WVMapLayers
+ * @param {L.Map} map
+ */
 function WVMap( map ) {
 	this.map = map;
 }
@@ -19,7 +25,11 @@ function WVMap( map ) {
  * @return {Kartographer.Wikivoyage.ControlNearby}
  */
 WVMap.prototype.nearby = function () {
-	var control = this._controlNearby;
+	if ( mw.config.get( 'wgKartographerWikivoyageNearby' ) === false ) {
+		return;
+	}
+
+	let control = this._controlNearby;
 	if ( control ) {
 		return control;
 	}

@@ -8,20 +8,21 @@
 			"Wladek92"
 		]
 	},
-	"apihelp-jsonconfig-description": "Permet l’accès direct au sous-système JsonConfig.",
 	"apihelp-jsonconfig-summary": "Permet l’accès direct au sous-système JsonConfig.",
-	"apihelp-jsonconfig-param-command": "Quelle sous-action effectuer sur JsonConfig :\n; status\n: affiche la configuration de JsonConfig.\n; reset\n: efface les configurations du cache. Nécessite  le paramètre de $1titre et le droit de réinitialiser JsonConfig.\n; reload\n: recharge et met en cache les configurations du dépôt de configurations. Nécessite le paramètre $1titre et le droit de réinitialiser JsonConfig.",
+	"apihelp-jsonconfig-param-command": "Quelle sous-action effectuer sur JsonConfig :",
+	"apihelp-jsonconfig-paramvalue-command-status": "Affiche la configuration de JsonConfig.",
+	"apihelp-jsonconfig-paramvalue-command-reset": "Efface les configurations du cache. Nécessite le paramètre $1title et le droit jsonconfig-flush.",
+	"apihelp-jsonconfig-paramvalue-command-reload": "Recharge et met en cache les configurations du magasin de configuration. Nécessite le paramètre $1title et le droit jsonconfig-reset.",
 	"apihelp-jsonconfig-param-namespace": "Numéro de l’espace de noms du titre à utiliser.",
 	"apihelp-jsonconfig-param-title": "Titre à traiter sans le préfixe de l’espace de noms.",
-	"apihelp-jsonconfig-param-content": "Pour la commande $1=recharger, utiliser ce contenu à la place.",
+	"apihelp-jsonconfig-param-content": "Pour « $1command=reload », utiliser ce contenu à la place.",
 	"apihelp-jsonconfig-example-1": "Afficher la configuration",
 	"apihelp-jsonconfig-example-2": "Reinitialiser [[Data:Brazil/Amazonas.map]]",
 	"apihelp-jsonconfig-example-3": "Recharger [[Data:Brazil/Amazonas.map]]",
-	"apihelp-jsondata-description": "Récupérer les données JSON localisées.",
-	"apihelp-jsondata-summary": "Récupérer les données JSON localisées.",
-	"apihelp-jsondata-param-title": "Titre à récupérer. Par défaut, l’espace de noms est supposé être « Data: »",
-	"apihelp-jsondata-example-1": "Obtenir le contenu JSON de la page Sample.tab, localisée dans la langue de l’utilisateur",
-	"apihelp-jsondata-example-2": "Obtenir le contenu JSON de la page Sample.tab localisée en français",
+	"apihelp-jsondata-summary": "Récupérer les données JSON régionalisées.",
+	"apihelp-jsondata-param-title": "Titre à récupérer. Par défaut, l’espace de noms est supposé être « Data: ».",
+	"apihelp-jsondata-example-1": "Obtenir le contenu JSON de la page « Sample.tab », régionalisée dans la langue de l’utilisateur",
+	"apihelp-jsondata-example-2": "Obtenir le contenu JSON de la page « Sample.tab » régionalisée en français",
 	"apierror-jsonconfig-paramrequired": "Le paramètre <var>$1</var> est nécessaire pour cette commande.",
-	"apierror-jsonconfig-badtitle": "La page spécifiée par les paramètres <var>namespace</var> et <var>title</var> est soit invalide soit non enregistrée dans la configuration JsonConfig."
+	"apierror-jsonconfig-badtitle": "La page spécifiée par les paramètres <var>namespace</var> et <var>title</var> est soit invalide, soit non inscrite dans la configuration JsonConfig."
 }

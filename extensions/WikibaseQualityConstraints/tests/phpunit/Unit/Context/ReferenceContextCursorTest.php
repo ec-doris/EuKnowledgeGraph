@@ -60,14 +60,14 @@ class ReferenceContextCursorTest extends \MediaWikiUnitTestCase {
 										'hash' => $snak1Hash,
 										'results' => [
 											$result1,
-										]
+										],
 									],
 									[
 										'hash' => $snak2Hash,
 										'results' => [
 											$result2,
-										]
-									]
+										],
+									],
 								],
 								'P12' => [
 									[
@@ -75,10 +75,10 @@ class ReferenceContextCursorTest extends \MediaWikiUnitTestCase {
 										'results' => [
 											$result3,
 											$result4,
-										]
-									]
-								]
-							]
+										],
+									],
+								],
+							],
 						],
 						[
 							'hash' => $reference2Hash,
@@ -88,18 +88,18 @@ class ReferenceContextCursorTest extends \MediaWikiUnitTestCase {
 										'hash' => $snak2Hash,
 										'results' => [
 											$result4,
-										]
-									]
+										],
+									],
 								],
 								'P12' => [
 									[
 										'hash' => $snak3Hash,
 										'results' => [
 											$result5,
-										]
-									]
-								]
-							]
+										],
+									],
+								],
+							],
 						],
 					],
 				],
@@ -114,10 +114,10 @@ class ReferenceContextCursorTest extends \MediaWikiUnitTestCase {
 										'hash' => $snak1Hash,
 										'results' => [
 											$result5,
-										]
+										],
 									],
 								],
-							]
+							],
 						],
 					],
 				],
@@ -134,10 +134,10 @@ class ReferenceContextCursorTest extends \MediaWikiUnitTestCase {
 										'hash' => $snak3Hash,
 										'results' => [
 											$result5,
-										]
+										],
 									],
 								],
-							]
+							],
 						],
 					],
 				],
@@ -186,20 +186,20 @@ class ReferenceContextCursorTest extends \MediaWikiUnitTestCase {
 								'P11' => [
 									[
 										'hash' => $snak1Hash,
-										'results' => []
+										'results' => [],
 									],
 									[
 										'hash' => $snak2Hash,
-										'results' => []
-									]
+										'results' => [],
+									],
 								],
 								'P12' => [
 									[
 										'hash' => $snak3Hash,
-										'results' => []
-									]
-								]
-							]
+										'results' => [],
+									],
+								],
+							],
 						],
 						[
 							'hash' => $reference2Hash,
@@ -207,16 +207,16 @@ class ReferenceContextCursorTest extends \MediaWikiUnitTestCase {
 								'P11' => [
 									[
 										'hash' => $snak2Hash,
-										'results' => []
-									]
+										'results' => [],
+									],
 								],
 								'P12' => [
 									[
 										'hash' => $snak3Hash,
-										'results' => []
-									]
-								]
-							]
+										'results' => [],
+									],
+								],
+							],
 						],
 					],
 				],
@@ -229,10 +229,10 @@ class ReferenceContextCursorTest extends \MediaWikiUnitTestCase {
 								'P11' => [
 									[
 										'hash' => $snak1Hash,
-										'results' => []
+										'results' => [],
 									],
 								],
-							]
+							],
 						],
 					],
 				],
@@ -247,10 +247,10 @@ class ReferenceContextCursorTest extends \MediaWikiUnitTestCase {
 								'P12' => [
 									[
 										'hash' => $snak3Hash,
-										'results' => []
+										'results' => [],
 									],
 								],
-							]
+							],
 						],
 					],
 				],

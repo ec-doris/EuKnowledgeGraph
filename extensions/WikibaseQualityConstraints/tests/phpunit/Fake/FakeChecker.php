@@ -50,7 +50,7 @@ class FakeChecker implements ConstraintChecker {
 	 * @see ConstraintChecker::checkConstraint
 	 */
 	public function checkConstraint( Context $context, Constraint $constraint ) {
-		return new CheckResult( $context, $constraint, [], $this->status );
+		return new CheckResult( $context, $constraint, $this->status );
 	}
 
 	public function checkConstraintParameters( Constraint $constraint ) {

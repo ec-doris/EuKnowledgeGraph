@@ -5,7 +5,6 @@ namespace JsonConfig\Tests;
 use FormatJson;
 use JsonConfig\JCLuaLibrary;
 use JsonConfig\JCTabularContent;
-use Language;
 use MediaWikiIntegrationTestCase;
 use Scribunto_LuaLibraryBase;
 
@@ -31,11 +30,10 @@ class JCTabularContentTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @dataProvider provideTestCases
-	 * @param string $fileName
+	 * @param string $file
 	 * @param bool $thorough
 	 */
-	public function testValidateContent( $fileName, $thorough ) {
-		$file = __DIR__ . '/' . $fileName;
+	public function testValidateContent( $file, $thorough ) {
 		$content = file_get_contents( $file );
 		if ( $content === false ) {
 			$this->fail( "Can't read file $file" );
@@ -51,13 +49,14 @@ class JCTabularContentTest extends MediaWikiIntegrationTestCase {
 		$c = new JCTabularContent( $testData, 'Tabular.JsonConfig', $thorough );
 		if ( $c->isValid() ) {
 			$this->assertTrue( true );
+			$languageFactory = $this->getServiceContainer()->getLanguageFactory();
 			foreach ( $content as $langCode => $expected ) {
 				if ( $langCode == 'raw' ) {
 					continue;
 				} elseif ( $langCode == '_' ) {
 					$actual = $c->getData();
 				} else {
-					$actual = $c->getLocalizedData( Language::factory( $langCode ) );
+					$actual = $c->getLocalizedData( $languageFactory->getLanguage( $langCode ) );
 					unset( $actual->license->text );
 					unset( $actual->license->url );
 				}
@@ -68,24 +67,18 @@ class JCTabularContentTest extends MediaWikiIntegrationTestCase {
 		}
 	}
 
-	public function provideTestCases() {
-		$result = [];
-
+	public static function provideTestCases() {
 		foreach ( glob( __DIR__ . "/tabular-good/*.json" ) as $file ) {
-			$file = substr( $file, strlen( __DIR__ ) + 1 );
-			$result[] = [ $file, false ];
-			$result[] = [ $file, true ];
+			yield [ $file, false ];
+			yield [ $file, true ];
 		}
-
-		return $result;
 	}
 
 	/**
 	 * @dataProvider provideBadTestCases
-	 * @param string $fileName
+	 * @param string $file
 	 */
-	public function testValidateBadContent( $fileName ) {
-		$file = __DIR__ . '/' . $fileName;
+	public function testValidateBadContent( $file ) {
 		$content = file_get_contents( $file );
 		if ( $content === false ) {
 			$this->fail( "Can't read file $file" );
@@ -95,15 +88,10 @@ class JCTabularContentTest extends MediaWikiIntegrationTestCase {
 		$this->assertFalse( $c->isValid(), 'Validation unexpectedly succeeded' );
 	}
 
-	public function provideBadTestCases() {
-		$result = [];
-
+	public static function provideBadTestCases() {
 		foreach ( glob( __DIR__ . "/tabular-bad/*.json" ) as $file ) {
-			$file = substr( $file, strlen( __DIR__ ) + 1 );
-			$result[] = [ $file ];
+			yield [ $file ];
 		}
-
-		return $result;
 	}
 
 	/**
@@ -113,21 +101,27 @@ class JCTabularContentTest extends MediaWikiIntegrationTestCase {
 	 * @param array $data
 	 * @param array $expected
 	 */
-	public function testLuaTabDataReindexing( $fieldCount, $data, $expected ) {
+	public function testLuaTabDataReindexing( int $fieldCount, array $data, array $expected ) {
 		if ( !class_exists( Scribunto_LuaLibraryBase::class ) ) {
 			$this->markTestSkipped( "Scribunto is required for this integration test" );
 		}
 
-		$value = (object)[ 'schema' => (object)[] ];
-		$value->data = $data;
-		$value->schema->fields = $fieldCount > 0 ? array_fill( 0, $fieldCount, (object)[] ) : [];
+		$value = (object)[
+			'schema' => (object)[
+				'fields' => array_fill( 0, $fieldCount, (object)[] ),
+			],
+			'data' => $data,
+		];
 		JCLuaLibrary::reindexTabularData( $value );
-		$this->assertEquals( $expected, $value->data );
-		$this->assertEquals( $fieldCount > 0 ? range( 1, $fieldCount ) : [],
-			array_keys( $value->schema->fields ) );
+		$this->assertSame( $expected, $value->data );
+		if ( !$fieldCount ) {
+			$this->assertSame( [], $value->schema->fields );
+		} else {
+			$this->assertSame( range( 1, $fieldCount ), array_keys( $value->schema->fields ) );
+		}
 	}
 
-	public function provideLuaReindexingTests() {
+	public static function provideLuaReindexingTests() {
 		return [
 			// fieldCount, data, expected
 			[ 0, [], [] ],

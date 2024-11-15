@@ -55,8 +55,8 @@ class CheckingResultsSourceTest extends \MediaWikiUnitTestCase {
 		$delegatingConstraintChecker = $mock->getMock();
 		$delegatingConstraintChecker->method( 'checkAgainstConstraintsOnEntityId' )
 			->withConsecutive(
-				[ $this->equalTo( $q1 ), $this->equalTo( $constraintIds ), $this->callback( 'is_callable' ) ],
-				[ $this->equalTo( $q2 ), $this->equalTo( $constraintIds ), $this->callback( 'is_callable' ) ]
+				[ $q1, $constraintIds, $this->callback( 'is_callable' ) ],
+				[ $q2, $constraintIds, $this->callback( 'is_callable' ) ]
 			)
 			->willReturnCallback( function ( $entityId ) {
 				return [ new CheckResult(
@@ -74,8 +74,8 @@ class CheckingResultsSourceTest extends \MediaWikiUnitTestCase {
 			} );
 		$delegatingConstraintChecker->method( 'checkAgainstConstraintsOnClaimId' )
 			->withConsecutive(
-				[ $this->equalTo( $s1 ), $this->equalTo( $constraintIds ), $this->callback( 'is_callable' ) ],
-				[ $this->equalTo( $s2 ), $this->equalTo( $constraintIds ), $this->callback( 'is_callable' ) ]
+				[ $s1, $constraintIds, $this->callback( 'is_callable' ) ],
+				[ $s2, $constraintIds, $this->callback( 'is_callable' ) ]
 			)
 			->willReturnCallback( function ( $claimId ) {
 				$entityId = new ItemId( substr( $claimId, 0, 2 ) );
@@ -127,7 +127,7 @@ class CheckingResultsSourceTest extends \MediaWikiUnitTestCase {
 			[ CheckResult::STATUS_TODO ]
 		)->getArray();
 
-		$this->assertEmpty( $result );
+		$this->assertSame( [], $result );
 	}
 
 	public function testGetResults_Empty_WithDefaultResults() {
@@ -185,7 +185,7 @@ class CheckingResultsSourceTest extends \MediaWikiUnitTestCase {
 						[]
 					)
 				) )->withMetadata( Metadata::ofDependencyMetadata(
-					DependencyMetadata::ofEntityId( new ItemId( 'Q100' ) ) ) )
+					DependencyMetadata::ofEntityId( new ItemId( 'Q100' ) ) ) ),
 			] );
 		$delegatingConstraintChecker->method( 'checkAgainstConstraintsOnClaimId' )
 			->willReturn( [
@@ -201,7 +201,7 @@ class CheckingResultsSourceTest extends \MediaWikiUnitTestCase {
 						[]
 					)
 				) )->withMetadata( Metadata::ofDependencyMetadata(
-					DependencyMetadata::ofEntityId( new NumericPropertyId( 'P100' ) ) ) )
+					DependencyMetadata::ofEntityId( new NumericPropertyId( 'P100' ) ) ) ),
 			] );
 
 		$metadata = $this->getResultsSource( $delegatingConstraintChecker )->getResults(
@@ -238,7 +238,6 @@ class CheckingResultsSourceTest extends \MediaWikiUnitTestCase {
 						new Statement( new PropertyNoValueSnak( new NumericPropertyId( 'P1' ) ) )
 					),
 					$constraint,
-					[],
 					CheckResult::STATUS_VIOLATION
 				),
 				new CheckResult(
@@ -247,7 +246,6 @@ class CheckingResultsSourceTest extends \MediaWikiUnitTestCase {
 						new Statement( new PropertySomeValueSnak( new NumericPropertyId( 'P1' ) ) )
 					),
 					$constraint,
-					[],
 					CheckResult::STATUS_COMPLIANCE
 				),
 			] );
@@ -282,11 +280,10 @@ class CheckingResultsSourceTest extends \MediaWikiUnitTestCase {
 						'Q1',
 						[]
 					),
-					[],
 					CheckResult::STATUS_COMPLIANCE
 				) )->withMetadata( Metadata::ofDependencyMetadata(
 					DependencyMetadata::ofEntityId( new ItemId( 'Q100' ) ) ) ),
-				( new NullResult( $context->getCursor() ) )
+				( new NullResult( $context->getCursor() ) ),
 			] );
 
 		$result = $this->getResultsSource( $delegatingConstraintChecker )->getResults(

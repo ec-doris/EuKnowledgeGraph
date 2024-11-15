@@ -7,6 +7,7 @@ use Deserializers\Deserializer;
 use Maintenance;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\WikiMap\WikiMap;
 use Serializers\Serializer;
 use User;
 use Wikibase\DataModel\Entity\Item;
@@ -15,7 +16,6 @@ use Wikibase\DataModel\Statement\StatementListProvider;
 use Wikibase\Lib\Store\EntityStore;
 use Wikibase\Lib\Store\StorageException;
 use Wikibase\Repo\WikibaseRepo;
-use WikiMap;
 
 // @codeCoverageIgnoreStart
 $basePath = getenv( "MW_INSTALL_PATH" ) !== false

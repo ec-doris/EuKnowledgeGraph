@@ -4,7 +4,6 @@
 			"Tacsipacsi"
 		]
 	},
-	"apihelp-jsonconfig-description": "Közvetlen hozzáférés a JsonConfig alrendszerhez.",
 	"apihelp-jsonconfig-summary": "Közvetlen hozzáférés a JsonConfig alrendszerhez.",
 	"apihelp-jsonconfig-param-command": "A JsonConfigon végrehajtandó alművelet:\n;status:JsonConfig-konfiguráció megjelenítése.\n;reset:Konfigurációk kiürítése a gyorsítótárból. Szükséges hozzá a $1title paraméter és a jsonconfig-flush jogosultság.\n;reload:Konfiguráció újratöltése és gyorsítótárazása a konfigurációtárolóból. Szükséges hozzá a $1title paraméter és a jsonconfig-reset jogosultság.",
 	"apihelp-jsonconfig-param-namespace": "A feldolgozandó cím névtere.",
@@ -13,7 +12,6 @@
 	"apihelp-jsonconfig-example-1": "Konfiguráció megjelenítése",
 	"apihelp-jsonconfig-example-2": "[[Data:Brazil/Amazonas.map]] visszaállítása",
 	"apihelp-jsonconfig-example-3": "[[Data:Brazil/Amazonas.map]] újratöltése",
-	"apihelp-jsondata-description": "Lokalizált JSON-adatok lekérése.",
 	"apihelp-jsondata-summary": "Lokalizált JSON-adatok lekérése.",
 	"apihelp-jsondata-param-title": "A lekérendő cím. Alapértelmezetten felteszi a „Data:” névteret.",
 	"apihelp-jsondata-example-1": "A Sample.tab lap JSON-tartalmának lekérése a felhasználó nyelvén",

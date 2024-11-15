@@ -1,8 +1,25 @@
 {
 	"@metadata": {
 		"authors": [
-			"Mainframe98"
+			"Mainframe98",
+			"McDutchie"
 		]
 	},
-	"apihelp-jsonconfig-example-1": "Toon configuratie"
+	"apihelp-jsonconfig-summary": "Verstrekt rechtstreekse toegang tot het JsonConfig-subsysteem.",
+	"apihelp-jsonconfig-param-command": "Welke deelhandeling moet worden verricht op JsonConfig:",
+	"apihelp-jsonconfig-paramvalue-command-status": "Toont de JsonConfig-instellingen.",
+	"apihelp-jsonconfig-paramvalue-command-reset": "Wist instellingen uit de cache. Vereist de parameter $1title en het recht jsonconfig-flush.",
+	"apihelp-jsonconfig-paramvalue-command-reload": "Herlaadt instellingen uit de configuratieopslag en slaat ze op in de cache. Vereist de parameter $1title en het recht jsonconfig-reset.",
+	"apihelp-jsonconfig-param-namespace": "Naamruimtenummer van de te verwerken titel.",
+	"apihelp-jsonconfig-param-title": "De te verwerken titel zonder naamruimtevoorvoegsel.",
+	"apihelp-jsonconfig-param-content": "Voor $1command=reload, in plaats daarvan deze inhoud gebruiken.",
+	"apihelp-jsonconfig-example-1": "Toon configuratie",
+	"apihelp-jsonconfig-example-2": "Opnieuw instellen van [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsonconfig-example-3": "Herladen van [[Data:Brazil/Amazonas.map]]",
+	"apihelp-jsondata-summary": "Gelokaliseerde JSON-gegevens ophalen.",
+	"apihelp-jsondata-param-title": "De te verkrijgen titel. Standaard wordt ervan uitgegaan dat de naamruimte “Data:” is.",
+	"apihelp-jsondata-example-1": "JSON-inhoud ophalen van de pagina Sample.tab, gelokaliseerd in de taal van de gebruiker",
+	"apihelp-jsondata-example-2": "JSON-inhoud ophalen van de in het Frans gelokaliseerde pagina Sample.tab",
+	"apierror-jsonconfig-paramrequired": "Voor deze opdracht is de parameter <var>$1</var> vereist.",
+	"apierror-jsonconfig-badtitle": "De pagina die is opgegeven middels de parameters <var>namespace</var> en <var>title</var> is ongeldig of is niet geregistreerd in de JsonConfig-instellingen."
 }

@@ -9,8 +9,8 @@ use Wikibase\DataModel\Snak\PropertyNoValueSnak;
 use Wikibase\DataModel\Snak\PropertySomeValueSnak;
 use Wikibase\DataModel\Snak\SnakList;
 use Wikibase\DataModel\Statement\Statement;
-use Wikibase\Repo\Tests\NewItem;
-use Wikibase\Repo\Tests\NewStatement;
+use Wikibase\DataModel\Tests\NewItem;
+use Wikibase\DataModel\Tests\NewStatement;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\Context;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\ReferenceContext;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\ReferenceContextCursor;
@@ -116,7 +116,7 @@ class ReferenceContextTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame( [ $referenceSnak1, $referenceSnak2 ], $snakGroup );
 	}
 
-	public function provideGroupingModes() {
+	public static function provideGroupingModes() {
 		return [
 			[ Context::GROUP_NON_DEPRECATED ],
 			[ Context::GROUP_BEST_RANK ],

@@ -4,7 +4,6 @@
 			"Joetaras"
 		]
 	},
-	"apihelp-jsonconfig-description": "Dèje l'accesse dirette a 'u sottesisteme JsonConfig.",
 	"apihelp-jsonconfig-summary": "Dèje l'accesse dirette a 'u sottesisteme JsonConfig.",
 	"apihelp-jsonconfig-param-command": "Ce sotte azione a eseguì sus a JsonConfig:\n;status:Face 'ndrucà 'a configurazione de JsonConfig.\n;reset:Sdevache le configuraziune da 'a cache. Vole 'u parametre $1title e 'u deritte jsonconfig-flush.\n;reload:Recareche e mette jndr'à cache le configuraziune da 'u reggìstre de configurazione. Vole 'u parametre $1title e 'u deritte jsonconfig-reset.",
 	"apihelp-jsonconfig-param-namespace": "Numere d'u namespace d'u titole da elabborà.",
@@ -13,7 +12,6 @@
 	"apihelp-jsonconfig-example-1": "Fà 'ndrucà 'a configurazione",
 	"apihelp-jsonconfig-example-2": "Azzere [[Data:Brazil/Amazonas.map]]",
 	"apihelp-jsonconfig-example-3": "Recareche [[Data:Brazil/Amazonas.map]]",
-	"apihelp-jsondata-description": "Pigghie le date JSON localezzate.",
 	"apihelp-jsondata-summary": "Pigghie le date JSON localezzate.",
 	"apihelp-jsondata-param-title": "Titole da pigghià. Se dice ca 'u namespace predefinite adda essere \"Data:\"",
 	"apihelp-jsondata-example-1": "Pigghie 'u condenute JSON d'a pàgene Sample.tab, localezzate jndr'à lènghe de l'utende",

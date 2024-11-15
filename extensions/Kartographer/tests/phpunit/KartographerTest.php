@@ -1,19 +1,21 @@
 <?php
 namespace Kartographer\Tests;
 
-use ExtensionRegistry;
 use Kartographer\State;
+use MediaWiki\MainConfigNames;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Title\Title;
 use MediaWikiLangTestCase;
 use ParserOptions;
 use ParserOutput;
-use Title;
 
 /**
  * @group Kartographer
- * @covers \Kartographer\Tag\TagHandler
- * @covers \Kartographer\Tag\MapFrame
- * @covers \Kartographer\Tag\MapLink
+ * @group Database
+ * @covers \Kartographer\Tag\LegacyTagHandler
+ * @covers \Kartographer\Tag\LegacyMapFrame
+ * @covers \Kartographer\Tag\LegacyMapLink
+ * @license MIT
  */
 class KartographerTest extends MediaWikiLangTestCase {
 
@@ -32,36 +34,28 @@ class KartographerTest extends MediaWikiLangTestCase {
 
 	protected function setUp(): void {
 		parent::setUp();
-		$this->setMwGlobals( [
-			'wgScriptPath' => '/w',
-			'wgScript' => '/w/index.php',
+		$this->overrideConfigValues( [
+			'KartographerMapServer' => 'http://192.0.2.0',
+			'KartographerMediaWikiInternalUrl' => 'localhost',
+			MainConfigNames::LanguageCode => 'qqx',
+			MainConfigNames::Script => '/w/index.php',
+			MainConfigNames::ScriptPath => '/w',
+			'KartographerParsoidSupport' => 'true',
 		] );
-	}
-
-	/**
-	 * @return bool
-	 */
-	private function hasParserFunctions() {
-		return ExtensionRegistry::getInstance()->isLoaded( 'ParserFunctions' );
 	}
 
 	/**
 	 * @dataProvider provideTagData
 	 */
-	public function testTagData( $expected, $input, $message, $wikivoyageMode = false ) {
+	public function testTagData( $expected, string $input, string $message, bool $wikivoyageMode = false ) {
 		$this->setMwGlobals( 'wgKartographerWikivoyageMode', $wikivoyageMode );
 		$output = $this->parse( $input );
 		$state = State::getState( $output );
 
 		if ( $expected === false ) {
 			$this->assertTrue( $state->hasBrokenTags(), $message . ' Parse is expected to fail' );
-
-			if ( $this->hasParserFunctions() ) {
-				$this->assertTrue(
-					$this->hasTrackingCategory( $output, 'kartographer-broken-category' ),
-					$message . ' Category for failed maps should be added'
-				);
-			}
+			$this->assertTrackingCategory( 'kartographer-broken-category', $output );
+			$this->assertNotTrackingCategory( 'kartographer-tracking-category', $output );
 			return;
 		}
 		$this->assertFalse( $state->hasBrokenTags(), $message . ' Parse is expected to succeed' );
@@ -69,17 +63,46 @@ class KartographerTest extends MediaWikiLangTestCase {
 			$state->hasValidTags(),
 			$message . ' State is expected to have valid tags'
 		);
-		$this->assertFalse(
-			$this->hasTrackingCategory( $output, 'kartographer-broken-category' ),
-			$message . ' No tracking category'
-		);
+		$this->assertNotTrackingCategory( 'kartographer-broken-category', $output );
+		$this->assertTrackingCategory( 'kartographer-tracking-category', $output );
 
-		$expected = json_encode( json_decode( $expected ) ); // Normalize JSON
+		// Normalize JSON
+		$expected = json_encode( json_decode( $expected ) );
 
 		$this->assertEquals( $expected, json_encode( $state->getData() ), $message );
 	}
 
-	public function provideTagData() {
+	/**
+	 * @dataProvider provideTagData
+	 */
+	public function testTagDataParsoid( $expected, string $input, string $message, bool $wikivoyageMode = false,
+										?string $parsoid = null
+	) {
+		$this->setMwGlobals( 'wgKartographerWikivoyageMode', $wikivoyageMode );
+		$output = $this->parseParsoid( $input );
+		$state = $output->getExtensionData( 'kartographer' );
+
+		if ( $expected === false ) {
+			$this->assertTrue( $state['broken'] > 0, $message . ' Parse is expected to fail' );
+			$this->assertTrackingCategory( 'kartographer-broken-category', $output );
+			$this->assertNotTrackingCategory( 'kartographer-tracking-category', $output );
+			return;
+		}
+		$this->assertFalse( $state['broken'] > 0, $message . ' Parse is expected to succeed' );
+		$this->assertTrue(
+			$state['maplinks'] + $state['mapframes'] > $state['broken'],
+			$message . ' State is expected to have valid tags'
+		);
+		$this->assertNotTrackingCategory( 'kartographer-broken-category', $output );
+		$this->assertTrackingCategory( 'kartographer-tracking-category', $output );
+
+		// Normalize JSON
+		$expected = json_encode( json_decode( $parsoid ?? $expected ) );
+
+		$this->assertEquals( $expected, json_encode( $state['data'] ), $message );
+	}
+
+	public static function provideTagData() {
 		// phpcs:disable Generic.Files.LineLength
 		$validJson = '{
     "type": "Feature",
@@ -124,10 +147,15 @@ class KartographerTest extends MediaWikiLangTestCase {
 			{"type":"Feature","geometry":{"type":"Point","coordinates":[-122,37]},"properties":{"title":"Foo bar"}},
 			{"type":"GeometryCollection","geometries":[{"type":"Point","coordinates":[0,0],"properties":{}}]}
 		]}';
-		$wikitextJsonParsed = '{"_ee2aa7342f7aee686e9d155932d0118dd4370c36":[
+		$wikitextJsonParsed = '{"_d0b261d7d6c90ab9ca4b2cbc36b5171b11510015":[
 				{"type":"Feature","geometry":{"type":"Point","coordinates":[-122,37]},
 				"properties":{"title":"&lt;script&gt;alert(document.cookie);&lt;\/script&gt;",
-				"description":"<a href=\"\/w\/index.php?title=Link_to_nowhere&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Link to nowhere (page does not exist)\">Link to nowhere<\/a>","marker-symbol":"1"}}
+				"description":"<a href=\"\/w\/index.php?title=Link_to_nowhere&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"(red-link-title: Link to nowhere)\">Link to nowhere<\/a>","marker-symbol":"1"}}
+			]}';
+		$wikitextJsonParsoid = '{"_301c273795f88ed29491555b76a382a279ea387e":[
+			{"type":"Feature","geometry":{"type":"Point","coordinates":[-122,37]},
+			"properties":{"title":"&lt;script>alert(document.cookie);&lt;\/script>",
+			"description":"<a rel=\"mw:WikiLink\" href=\".\/Link_to_nowhere\" title=\"Link to nowhere\" data-parsoid=\'{\"tsr\":[0,19],\"stx\":\"simple\",\"a\":{\"href\":\".\/Link_to_nowhere\"},\"sa\":{\"href\":\"Link to nowhere\"}}\'>Link to nowhere<\/a>","marker-symbol":"1"}}
 			]}';
 		return [
 			[ '[]', '<mapframe width=700 height=400 zoom=13 longitude=-122 latitude=37/>', '<mapframe> without JSON' ],
@@ -155,13 +183,17 @@ class KartographerTest extends MediaWikiLangTestCase {
 				$wikitextJsonParsed,
 				'<mapframe width=700 height=400 zoom=13 longitude=-122 latitude=37>[' .
 					self::WIKITEXT_JSON . ']</mapframe>',
-				'<mapframe> with parsable text and description'
+				'<mapframe> with parsable text and description',
+				false,
+				$wikitextJsonParsoid
 			],
 			[
 				$wikitextJsonParsed,
 				'<maplink zoom=13 longitude=-122 latitude=37>[' .
 					self::WIKITEXT_JSON . ']</maplink>',
-				'<maplink> with parsable text and description'
+				'<maplink> with parsable text and description',
+				false,
+				$wikitextJsonParsoid
 			],
 
 			// Bugs
@@ -172,10 +204,38 @@ class KartographerTest extends MediaWikiLangTestCase {
 		// phpcs:enable
 	}
 
+	public function testBothTrackingCategories() {
+		// An invalid and a valid mapframe
+		$wikitext = '<mapframe /><mapframe width="1" height="1" />';
+		$output = $this->parse( $wikitext );
+		$this->assertTrackingCategory( 'kartographer-broken-category', $output );
+		$this->assertTrackingCategory( 'kartographer-tracking-category', $output );
+	}
+
+	public function testBothTrackingCategoriesParsoid() {
+		// An invalid and a valid mapframe
+		$wikitext = '<mapframe /><mapframe width="1" height="1" />';
+		$output = $this->parseParsoid( $wikitext );
+		$this->assertTrackingCategory( 'kartographer-broken-category', $output );
+		$this->assertTrackingCategory( 'kartographer-tracking-category', $output );
+	}
+
+	public function testNoTrackingCategories() {
+		$output = $this->parse( '' );
+		$this->assertNotTrackingCategory( 'kartographer-broken-category', $output );
+		$this->assertNotTrackingCategory( 'kartographer-tracking-category', $output );
+	}
+
+	public function testNoTrackingCategoriesParsoid() {
+		$output = $this->parseParsoid( '' );
+		$this->assertNotTrackingCategory( 'kartographer-broken-category', $output );
+		$this->assertNotTrackingCategory( 'kartographer-tracking-category', $output );
+	}
+
 	/**
 	 * @dataProvider provideResourceModulesData
 	 */
-	public function testResourceModules( $input, array $expectedModules, array $expectedStyles ) {
+	public function testResourceModules( string $input, array $expectedModules, array $expectedStyles ) {
 		$this->setMwGlobals( 'wgKartographerStaticMapframe', false );
 		$output = $this->parse( $input );
 
@@ -187,7 +247,22 @@ class KartographerTest extends MediaWikiLangTestCase {
 		);
 	}
 
-	public function provideResourceModulesData() {
+	/**
+	 * @dataProvider provideResourceModulesData
+	 */
+	public function testResourceModulesParsoid( string $input, array $expectedModules, array $expectedStyles ) {
+		$this->setMwGlobals( 'wgKartographerStaticMapframe', false );
+		$output = $this->parseParsoid( $input );
+
+		$this->assertArrayEquals(
+			array_keys( $expectedModules ), array_unique( $output->getModules() )
+		);
+		$this->assertArrayEquals(
+			array_keys( $expectedStyles ), array_unique( $output->getModuleStyles() )
+		);
+	}
+
+	public static function provideResourceModulesData() {
 		$mapframe = '<mapframe width=700 height=400 zoom=13 longitude=-122 latitude=37/>';
 		$maplink = '<maplink width=700 height=400 zoom=13 longitude=-122 latitude=37/>';
 
@@ -211,24 +286,18 @@ class KartographerTest extends MediaWikiLangTestCase {
 		// Previews should not contain group data for the static image
 		$this->setMwGlobals( [
 			'wgKartographerStaticMapframe' => false,
-			'wgKartographerMapServer' => '',
 			'KartographerDfltStyle' => 'osm-intl',
 		] );
 		$input = '<mapframe width=700 height=400 zoom=13 longitude=-122 latitude=37>' .
 				self::WIKITEXT_JSON .
 				'</mapframe>';
-		$output = $this->parse( $input,
-			static function ( ParserOptions $options ) {
-				$options->setIsPreview( true );
-				$options->setIsSectionPreview( true );
-			}
-		);
+		$output = $this->parse( $input, true, true );
 		// In preview mode, static maps get disabled and dynamic maps are used
 		// The embedded img url therefor cannot refer to any groups,
 		// because they might not yet exist when the renderer requests them.
 		$this->assertStringNotContainsString( 'domain=localhost&amp;title=Test&amp;', $output->getRawText() );
 		$this->assertStringContainsString(
-			'/img/osm-intl,13,37,-122,700x400.png?lang=en',
+			'/img/osm-intl,13,37,-122,700x400.png?lang=qqx',
 			$output->getRawText()
 		);
 	}
@@ -237,28 +306,47 @@ class KartographerTest extends MediaWikiLangTestCase {
 	 * @dataProvider provideLiveData
 	 */
 	public function testLiveData(
-		$wikitext,
+		string $wikitext,
 		array $expected,
-		$isPreview = false,
-		$isSectionPreview = false,
-		$wikivoyageMode = false
+		bool $isPreview = false,
+		bool $isSectionPreview = false,
+		bool $wikivoyageMode = false
 	) {
 		$this->setMwGlobals( [
 			'wgKartographerWikivoyageMode' => $wikivoyageMode,
 		] );
-		$output = $this->parse(
-			$wikitext,
-			static function ( ParserOptions $options ) use ( $isPreview, $isSectionPreview ) {
-				$options->setIsPreview( $isPreview );
-				$options->setIsSectionPreview( $isSectionPreview );
-			}
-		);
+		$output = $this->parse( $wikitext, $isPreview, $isSectionPreview );
 		$vars = $output->getJsConfigVars();
 		$this->assertArrayHasKey( 'wgKartographerLiveData', $vars );
 		$this->assertArrayEquals( $expected, array_keys( (array)$vars['wgKartographerLiveData'] ) );
 	}
 
-	public function provideLiveData() {
+	/** @dataProvider provideLiveData */
+	public function testLiveDataParsoid(
+		string $wikitext,
+		array $expected,
+		bool $isPreview = false,
+		bool $isSectionPreview = false,
+		bool $wikivoyageMode = false
+	) {
+		$this->setMwGlobals( 'wgKartographerWikivoyageMode', $wikivoyageMode );
+		$output = $this->parseParsoid( $wikitext );
+		$vars = $output->getJsConfigVars();
+		$this->assertArrayHasKey( 'wgKartographerLiveData', $vars );
+
+		if ( MediaWikiServices::getInstance()->getMainConfig()->has( 'KartographerParsoidSupport' ) &&
+			MediaWikiServices::getInstance()->getMainConfig()->get( 'KartographerParsoidSupport' ) !== true ) {
+			// not testing the exact content without parsoid, this would fail
+			return;
+		}
+		// FIXME ideally, we would not ship more data than we strictly need, but for now we're fine with it.
+		// To be revisited when preview mode is implemented in Parsoid.
+		foreach ( $expected as $v ) {
+			self::assertArrayHasKey( $v, (array)$vars['wgKartographerLiveData'] );
+		}
+	}
+
+	public static function provideLiveData() {
 		$maplinkJson = '{"type":"Feature","geometry":{"type":"Point","coordinates":[-122,37]}}';
 		$mapframeJson = '{"type":"Feature","geometry":{"type":"Point","coordinates":[10,20]}}';
 		$maplinkHash = '_' . sha1( "[$maplinkJson]" );
@@ -302,13 +390,13 @@ class KartographerTest extends MediaWikiLangTestCase {
 	/**
 	 * @dataProvider providePageProps
 	 */
-	public function testPageProps( $text, $frames, $links ) {
+	public function testPageProps( string $text, ?int $frames, ?int $links ) {
 		$po = $this->parse( $text );
 		$this->assertEquals( $frames, $po->getPageProperty( 'kartographer_frames' ) );
 		$this->assertEquals( $links, $po->getPageProperty( 'kartographer_links' ) );
 	}
 
-	public function providePageProps() {
+	public static function providePageProps() {
 		return [
 			[ '', null, null ],
 			[ '<foo>', null, null ],
@@ -321,7 +409,7 @@ class KartographerTest extends MediaWikiLangTestCase {
 	/**
 	 * @dataProvider provideGroupNames
 	 */
-	public function testGroupNames( $expected, $input ) {
+	public function testGroupNames( array $expected, string $input ) {
 		$this->setMwGlobals( 'wgKartographerWikivoyageMode', true );
 		$output = $this->parse( $input );
 		$state = State::getState( $output );
@@ -331,22 +419,22 @@ class KartographerTest extends MediaWikiLangTestCase {
 		$this->assertSame( $expected, $state->getRequestedGroups() );
 	}
 
-	public function provideGroupNames() {
+	public static function provideGroupNames() {
 		return [
 			[ [], '<maplink></maplink>' ],
-			[ [ 'a1' => 0 ], '<maplink show="a1"></maplink>' ],
-			[ [ 'a1' => 0, 'b1' => 1 ], '<maplink group="b1" show="a1"></maplink>' ],
-			[ [ 'a 1' => 0, 'b 1' => 1 ], '<maplink group="b 1" show="a 1"></maplink>' ],
-			[ [ 'a 1' => 0, 'b 1' => 1 ], '<maplink group="b 1" show="a 1, b 1"></maplink>' ],
-			[ [ 'cab 1' => 0, 'b 1' => 1 ], '<maplink group="b 1" show="cab 1, b 1"></maplink>' ],
-			[ [ 'שלום' => 0 ], '<maplink show="שלום"></maplink>' ],
+			[ [ 'a1' ], '<maplink show="a1"></maplink>' ],
+			[ [ 'a1', 'b1' ], '<maplink group="b1" show="a1"></maplink>' ],
+			[ [ 'a 1', 'b 1' ], '<maplink group="b 1" show="a 1"></maplink>' ],
+			[ [ 'a 1', 'b 1' ], '<maplink group="b 1" show="a 1, b 1"></maplink>' ],
+			[ [ 'cab 1', 'b 1' ], '<maplink group="b 1" show="cab 1, b 1"></maplink>' ],
+			[ [ 'שלום' ], '<maplink show="שלום"></maplink>' ],
 		];
 	}
 
 	/**
 	 * @dataProvider provideInvalidGroupNames
 	 */
-	public function testInvalidGroupNames( $input ) {
+	public function testInvalidGroupNames( string $input ) {
 		$this->setMwGlobals( 'wgKartographerWikivoyageMode', true );
 		$output = $this->parse( $input );
 		$state = State::getState( $output );
@@ -355,7 +443,7 @@ class KartographerTest extends MediaWikiLangTestCase {
 		$this->assertTrue( $state->hasBrokenTags() );
 	}
 
-	public function provideInvalidGroupNames() {
+	public static function provideInvalidGroupNames() {
 		return [
 			[ '<maplink show="test😂"></maplink>' ],
 			[ '<maplink show="hell.o"></maplink>' ],
@@ -366,24 +454,45 @@ class KartographerTest extends MediaWikiLangTestCase {
 	/**
 	 * Parses wikitext
 	 * @param string $text
-	 * @param callable|null $optionsCallback
+	 * @param bool $isPreview
+	 * @param bool $isSectionPreview
 	 * @return ParserOutput
 	 */
-	private function parse( $text, callable $optionsCallback = null ) {
-		$parser = MediaWikiServices::getInstance()->getParserFactory()->create();
+	private function parse( string $text, bool $isPreview = false, bool $isSectionPreview = false ): ParserOutput {
+		$parser = $this->getServiceContainer()->getParserFactory()->create();
 		$options = ParserOptions::newFromAnon();
-		if ( $optionsCallback ) {
-			$optionsCallback( $options );
-		}
+		$options->setIsPreview( $isPreview );
+		$options->setIsSectionPreview( $isSectionPreview );
 		$title = Title::newFromText( 'Test' );
 
 		return $parser->parse( $text, $title, $options );
 	}
 
-	private function hasTrackingCategory( ParserOutput $output, $key ) {
+	private function assertTrackingCategory( string $expected, ParserOutput $output ): void {
+		$this->assertHasTrackingCategory( true, $expected, $output,
+			"Expected tracking category $expected" );
+	}
+
+	private function assertNotTrackingCategory( string $expected, ParserOutput $output ): void {
+		$this->assertHasTrackingCategory( false, $expected, $output,
+			"Unexpected tracking category $expected" );
+	}
+
+	private function assertHasTrackingCategory(
+		bool $expected,
+		string $key,
+		ParserOutput $output,
+		string $message
+	): void {
 		$cat = wfMessage( $key )->inContentLanguage()->text();
 		$title = Title::makeTitleSafe( NS_CATEGORY, $cat );
-		$cats = $output->getCategories();
-		return isset( $cats[$title->getDBkey()] );
+		$cats = $output->getCategoryNames();
+		$this->assertSame( $expected, in_array( $title->getDBkey(), $cats, true ), $message );
+	}
+
+	private function parseParsoid( string $wikitext ) {
+		$parsoid = $this->getServiceContainer()->getParsoidParserFactory()->create();
+		return $parsoid->parse( $wikitext, Title::newFromText( 'Test Page' ),
+			ParserOptions::newFromAnon() );
 	}
 }

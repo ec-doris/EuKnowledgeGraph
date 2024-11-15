@@ -100,16 +100,7 @@ Model.static.compare = function ( obj1, obj2, allowSubset ) {
  * @return {string} Normalized non-obsolete type
  */
 Model.static.translateObsoleteParamTypes = function ( paramType ) {
-	switch ( paramType ) {
-		case 'string/wiki-page-name':
-			return 'wiki-page-name';
-		case 'string/wiki-file-name':
-			return 'wiki-file-name';
-		case 'string/wiki-user-name':
-			return 'wiki-user-name';
-		default:
-			return paramType;
-	}
+	return paramType.replace( /^string\//, '' );
 };
 
 /**
@@ -337,10 +328,8 @@ Model.prototype.importSourceCodeParameters = function () {
 
 	// Add sourceCodeParameters to the model
 	this.sourceCodeParameters.forEach( function ( sourceCodeParameter ) {
-		if (
-			existingArray.indexOf( sourceCodeParameter ) === -1 &&
-			model.addParam( sourceCodeParameter )
-		) {
+		if ( existingArray.indexOf( sourceCodeParameter ) === -1 ) {
+			model.addParam( sourceCodeParameter );
 			importedArray.push( sourceCodeParameter );
 		} else {
 			skippedArray.push( sourceCodeParameter );
@@ -386,7 +375,6 @@ Model.prototype.getExistingLanguageCodes = function () {
  *
  * @param {string} key Parameter key
  * @param {Object} [paramData] Parameter data
- * @return {boolean} Parameter was added successfully
  * @fires add-param
  * @fires change
  */
@@ -470,7 +458,6 @@ Model.prototype.addParam = function ( key, paramData ) {
 	// Trigger the add parameter event
 	this.emit( 'add-param', key, this.params[ key ] );
 	this.emit( 'change' );
-	return true;
 };
 
 /**
@@ -520,9 +507,7 @@ Model.prototype.setTemplateDescription = function ( desc, language ) {
  * Get the template description.
  *
  * @param {string} [language] Optional language key
- * @return {string|Object} The template description. If it is set
- *  as multilanguage object and no language is set, the whole object
- *  will be returned.
+ * @return {string}
  */
 Model.prototype.getTemplateDescription = function ( language ) {
 	language = language || this.getDefaultLanguage();
@@ -530,9 +515,7 @@ Model.prototype.getTemplateDescription = function ( language ) {
 };
 
 /**
- * Set the template description
- *
- * @param {string|Object|undefined} map New template map info
+ * @param {Object|undefined} map New template map info
  * @fires change-map
  * @fires change
  */
@@ -553,7 +536,7 @@ Model.prototype.setMapInfo = function ( map ) {
 /**
  * Get the template info.
  *
- * @return {string|Object|undefined} The template map info.
+ * @return {Object|undefined} The template map info.
  */
 Model.prototype.getMapInfo = function () {
 	return this.maps;
@@ -614,7 +597,7 @@ Model.prototype.setTemplateParamOrder = function ( orderArray ) {
  * @fires change
  */
 Model.prototype.setTemplateFormat = function ( format ) {
-	format = format !== undefined ? format : null;
+	format = format || null;
 	if ( this.format !== format ) {
 		this.format = format;
 		this.emit( 'change-format', format );
@@ -1013,11 +996,12 @@ Model.prototype.outputTemplateData = function () {
 
 		// Go over all properties
 		for ( var prop in allProps ) {
-			switch ( prop ) {
-				case 'deprecatedValue':
-				case 'name':
-					continue;
-				case 'type':
+			if ( prop === 'deprecatedValue' || prop === 'name' ) {
+				continue;
+			}
+
+			switch ( allProps[ prop ].type ) {
+				case 'select':
 					// Only include type if the original included type
 					// or if the current type is not undefined
 					if (
@@ -1030,9 +1014,7 @@ Model.prototype.outputTemplateData = function () {
 						result.params[ name ][ prop ] = this.params[ key ].type;
 					}
 					break;
-				case 'deprecated':
-				case 'required':
-				case 'suggested':
+				case 'boolean':
 					if ( !this.params[ key ][ prop ] ) {
 						// Only add a literal false value if there was a false
 						// value before
@@ -1052,8 +1034,7 @@ Model.prototype.outputTemplateData = function () {
 						}
 					}
 					break;
-				case 'suggestedvalues':
-				case 'aliases':
+				case 'array':
 					// Only update these if the new templatedata has an
 					// array that isn't empty
 					if (

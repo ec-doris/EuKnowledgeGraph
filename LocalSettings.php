@@ -144,3 +144,6 @@ $wgOpen = true;
 # Enable wikimedia commons images
 $wgUseInstantCommons = true;
 $wgShowExceptionDetails = true;
+
+$wgDefaultSkin = 'vector';
+$wgRestAPIAdditionalRouteFiles[] = 'extensions/Wikibase/repo/rest-api/routes.json'; 

@@ -1,5 +1,7 @@
 <?php
 
+declare( strict_types = 1 );
+
 namespace WikibaseQuality\ConstraintReport\ConstraintCheck\Context;
 
 use LogicException;
@@ -17,10 +19,7 @@ use Wikibase\DataModel\Statement\StatementList;
  */
 class MainSnakContext extends AbstractContext {
 
-	/**
-	 * @var Statement
-	 */
-	private $statement;
+	private Statement $statement;
 
 	public function __construct( StatementListProvidingEntity $entity, Statement $statement ) {
 		parent::__construct( $entity, $statement->getMainSnak() );
@@ -28,19 +27,19 @@ class MainSnakContext extends AbstractContext {
 		$this->statement = $statement;
 	}
 
-	public function getType() {
+	public function getType(): string {
 		return self::TYPE_STATEMENT;
 	}
 
-	public function getSnakRank() {
+	public function getSnakRank(): ?int {
 		return $this->statement->getRank();
 	}
 
-	public function getSnakStatement() {
+	public function getSnakStatement(): Statement {
 		return $this->statement;
 	}
 
-	public function getSnakGroup( $groupingMode, array $separators = [] ) {
+	public function getSnakGroup( string $groupingMode, array $separators = [] ): array {
 		/** @var StatementList $statements */
 		$statements = $this->entity->getStatements();
 		switch ( $groupingMode ) {
@@ -63,7 +62,7 @@ class MainSnakContext extends AbstractContext {
 		)->getMainSnaks();
 	}
 
-	private function getBestStatementsPerPropertyId( StatementList $statements ) {
+	private function getBestStatementsPerPropertyId( StatementList $statements ): StatementList {
 		$allBestStatements = new StatementList();
 		foreach ( $statements->getPropertyIds() as $propertyId ) {
 			$bestStatements = $statements->getByPropertyId( $propertyId )
@@ -89,7 +88,7 @@ class MainSnakContext extends AbstractContext {
 		Statement $currentStatement,
 		StatementList $allStatements,
 		array $qualifierPropertyIds
-	) {
+	): StatementList {
 		$similarStatements = new StatementList();
 		foreach ( $allStatements as $statement ) {
 			if ( $statement === $currentStatement ) {
@@ -112,13 +111,8 @@ class MainSnakContext extends AbstractContext {
 	/**
 	 * Tests whether two statements have the same qualifiers with a certain property ID.
 	 * “unknown value” qualifiers are considered different from each other.
-	 *
-	 * @param Statement $s1
-	 * @param Statement $s2
-	 * @param PropertyId $propertyId
-	 * @return bool
 	 */
-	private function haveSameQualifiers( Statement $s1, Statement $s2, PropertyId $propertyId ) {
+	private function haveSameQualifiers( Statement $s1, Statement $s2, PropertyId $propertyId ): bool {
 		$q1 = $this->getSnaksWithPropertyId( $s1->getQualifiers(), $propertyId );
 		$q2 = $this->getSnaksWithPropertyId( $s2->getQualifiers(), $propertyId );
 
@@ -147,12 +141,8 @@ class MainSnakContext extends AbstractContext {
 
 	/**
 	 * Returns the snaks of the given snak list with the specified property ID.
-	 *
-	 * @param SnakList $allSnaks
-	 * @param PropertyId $propertyId
-	 * @return SnakList
 	 */
-	private function getSnaksWithPropertyId( SnakList $allSnaks, PropertyId $propertyId ) {
+	private function getSnaksWithPropertyId( SnakList $allSnaks, PropertyId $propertyId ): SnakList {
 		$snaks = new SnakList();
 		/** @var Snak $snak */
 		foreach ( $allSnaks as $snak ) {
@@ -163,11 +153,11 @@ class MainSnakContext extends AbstractContext {
 		return $snaks;
 	}
 
-	public function getCursor() {
+	public function getCursor(): ContextCursor {
 		return new MainSnakContextCursor(
 			$this->entity->getId()->getSerialization(),
 			$this->statement->getPropertyId()->getSerialization(),
-			$this->statement->getGuid(),
+			$this->getStatementGuid( $this->statement ),
 			$this->statement->getMainSnak()->getHash()
 		);
 	}

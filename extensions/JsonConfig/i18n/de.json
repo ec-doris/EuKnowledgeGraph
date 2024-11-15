@@ -1,10 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
+			"Brettchenweber",
 			"Metalhead64",
 			"Umherirrender",
-			"Yurik",
-			"Brettchenweber"
+			"Yurik"
 		]
 	},
 	"nstab-data": "Daten",
@@ -57,8 +57,9 @@
 	"jsonconfig-license-name-dl-de-zero-2.0": "Datenlizenz Deutschland – Zero – Version 2.0",
 	"jsonconfig-license-name-dl-de-by-1.0": "Datenlizenz Deutschland – Namensnennung – Version 1.0",
 	"jsonconfig-license-name-dl-de-by-2.0": "Datenlizenz Deutschland – Namensnennung – Version 2.0",
-	"jsonconfig-license-copyrightwarning": "Mit dem Speichern der Änderungen stimmst du den [https://foundation.wikimedia.org/wiki/Terms_of_Use Nutzungsbedingungen] und der unwiderruflichen Veröffentlichung deines Beitrags unter [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}] zu.",
-	"jsonconfig-license-copyrightwarning-license-unset": "Mit dem Speichern der Änderungen stimmst du den [https://foundation.wikimedia.org/wiki/Terms_of_Use Nutzungsbedingungen] und der unwiderruflichen Veröffentlichung deines Beitrags unter der im Fedl <code>licence</code> angegebenen Lizenz zu.",
+	"jsonconfig-license-name-GeoNutzV": "Geodatenlizenz Deutschland",
+	"jsonconfig-license-copyrightwarning": "Mit dem Veröffentlichen der Änderungen stimmst du den [https://foundation.wikimedia.org/wiki/Terms_of_Use Nutzungsbedingungen] und der unwiderruflichen Veröffentlichung deines Beitrags unter [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}] zu.",
+	"jsonconfig-license-copyrightwarning-license-unset": "Mit dem Veröffentlichen der Änderungen stimmst du den [https://foundation.wikimedia.org/wiki/Terms_of_Use Nutzungsbedingungen] und der unwiderruflichen Veröffentlichung deines Beitrags unter der im Feld <code>licence</code> angegebenen Lizenz zu.",
 	"jsonconfig-license-notice": "'''Hinweis:''' Wenn du diese Seite bearbeitest, stimmst du der Veröffentlichung deines Beitrags unter [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}] zu.",
 	"jsonconfig-license-notice-license-unset": "'''Hinweis:''' Wenn du diese Seite bearbeitest, stimmst du der Veröffentlichung deines Beitrags unter der im Feld <code>licence</code> angegebenen Lizenz zu.",
 	"right-jsonconfig-flush": "JSON-Konfiguration über die API verändern",

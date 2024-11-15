@@ -1,5 +1,7 @@
 <?php
 
+declare( strict_types = 1 );
+
 namespace WikibaseQuality\ConstraintReport\ConstraintCheck\Result;
 
 use Wikibase\DataModel\Entity\EntityId;
@@ -10,8 +12,7 @@ use WikibaseQuality\ConstraintReport\ConstraintSerializer;
 
 /**
  * A serializer for {@link CheckResult}s.
- * Note that serializing the {@link CheckResult::getParameters parameters} is not (yet?) supported.
- * Also, caching metadata for {@link NullResult}s is never serialized,
+ * Caching metadata for {@link NullResult}s is never serialized,
  * since it doesn’t make sense for those results to be cached
  * (though they can carry dependency metadata, which is serialized correctly).
  *
@@ -24,6 +25,7 @@ class CheckResultSerializer {
 	public const KEY_CONSTRAINT = 'c';
 	public const KEY_CHECK_RESULT_STATUS = 's';
 	public const KEY_VIOLATION_MESSAGE = 'm';
+	public const KEY_CONSTRAINT_CLARIFICATION = 'l';
 	public const KEY_CACHING_METADATA = 'CM';
 	public const KEY_DEPENDENCY_METADATA = 'DM';
 	public const KEY_NULL_RESULT = '0';
@@ -33,25 +35,10 @@ class CheckResultSerializer {
 	public const KEY_DEPENDENCY_METADATA_ENTITY_IDS = 'e';
 	public const KEY_DEPENDENCY_METADATA_FUTURE_TIME = 'f';
 
-	/**
-	 * @var ConstraintSerializer
-	 */
-	private $constraintSerializer;
-
-	/**
-	 * @var ContextCursorSerializer
-	 */
-	private $contextCursorSerializer;
-
-	/**
-	 * @var ViolationMessageSerializer
-	 */
-	private $violationMessageSerializer;
-
-	/**
-	 * @var bool
-	 */
-	private $serializeDependencyMetadata;
+	private ConstraintSerializer $constraintSerializer;
+	private ContextCursorSerializer $contextCursorSerializer;
+	private ViolationMessageSerializer $violationMessageSerializer;
+	private bool $serializeDependencyMetadata;
 
 	/**
 	 * @param ConstraintSerializer $constraintSerializer
@@ -64,7 +51,7 @@ class CheckResultSerializer {
 		ConstraintSerializer $constraintSerializer,
 		ContextCursorSerializer $contextCursorSerializer,
 		ViolationMessageSerializer $violationMessageSerializer,
-		$serializeDependencyMetadata = true
+		bool $serializeDependencyMetadata = true
 	) {
 		$this->constraintSerializer = $constraintSerializer;
 		$this->contextCursorSerializer = $contextCursorSerializer;
@@ -72,11 +59,7 @@ class CheckResultSerializer {
 		$this->serializeDependencyMetadata = $serializeDependencyMetadata;
 	}
 
-	/**
-	 * @param CheckResult $checkResult
-	 * @return array
-	 */
-	public function serialize( CheckResult $checkResult ) {
+	public function serialize( CheckResult $checkResult ): array {
 		$contextCursor = $checkResult->getContextCursor();
 
 		$serialization = [
@@ -89,6 +72,7 @@ class CheckResultSerializer {
 			$constraint = $checkResult->getConstraint();
 			$cachingMetadata = $checkResult->getMetadata()->getCachingMetadata();
 			$violationMessage = $checkResult->getMessage();
+			$clarification = $checkResult->getConstraintClarification();
 
 			$serialization[self::KEY_CONSTRAINT] =
 				$this->constraintSerializer->serialize( $constraint );
@@ -101,6 +85,10 @@ class CheckResultSerializer {
 				$serialization[self::KEY_VIOLATION_MESSAGE] =
 					$this->violationMessageSerializer->serialize( $violationMessage );
 			}
+			if ( $clarification->getTexts() !== [] ) {
+				$serialization[self::KEY_CONSTRAINT_CLARIFICATION] =
+					$clarification->getArrayValue();
+			}
 		}
 
 		if ( $this->serializeDependencyMetadata ) {
@@ -111,11 +99,7 @@ class CheckResultSerializer {
 		return $serialization;
 	}
 
-	/**
-	 * @param CachingMetadata $cachingMetadata
-	 * @return array
-	 */
-	private function serializeCachingMetadata( CachingMetadata $cachingMetadata ) {
+	private function serializeCachingMetadata( CachingMetadata $cachingMetadata ): array {
 		$maximumAge = $cachingMetadata->getMaximumAgeInSeconds();
 
 		$serialization = [];
@@ -127,11 +111,7 @@ class CheckResultSerializer {
 		return $serialization;
 	}
 
-	/**
-	 * @param CheckResult $checkResult
-	 * @return array
-	 */
-	private function serializeDependencyMetadata( CheckResult $checkResult ) {
+	private function serializeDependencyMetadata( CheckResult $checkResult ): array {
 		$dependencyMetadata = $checkResult->getMetadata()->getDependencyMetadata();
 		$entityIds = $dependencyMetadata->getEntityIds();
 		$futureTime = $dependencyMetadata->getFutureTime();

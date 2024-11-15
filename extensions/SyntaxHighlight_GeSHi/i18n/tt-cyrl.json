@@ -1,11 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
+			"Blackisnewyellow",
 			"Ерней",
-			"Ильнар",
-			"Blackisnewyellow"
+			"З. ӘЙЛЕ",
+			"Ильнар"
 		]
 	},
+	"syntaxhighlight-error-category": "Синтаксисны аерымлап алуда хаталар булган битләр",
 	"syntaxhighlight-source-category": "Искергән source тегын кулланучы битләр",
 	"syntaxhighlight-visualeditor-mwsyntaxhighlightinspector-none": "(һични)",
 	"syntaxhighlight-visualeditor-mwsyntaxhighlightinspector-title": "Код өлеше"

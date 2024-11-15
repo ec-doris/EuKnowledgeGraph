@@ -1,14 +1,14 @@
 /**
  * Module containing useful methods when editing a map.
  *
- * @alternateClassName Editing
- * @alternateClassName ext.kartographer.editing
+ * @borrows Kartographer.Editing as Editing
+ * @borrows Kartographer.Editing as ext.kartographer.editing
  * @class Kartographer.Editing
  * @singleton
  */
 
 /**
- * Get "editable" geojson layer for the map.
+ * Get "editable" GeoJSON layer for the map.
  *
  * If a layer doesn't exist, create and attach one.
  *
@@ -46,16 +46,14 @@ function updateKartographerLayer( map, geoJsonString ) {
 		text: geoJsonString,
 		title: mw.config.get( 'wgPageName' )
 	} ).then( function ( resp ) {
-		var geoJson, layer,
-			data = resp[ 'sanitize-mapdata' ],
-			sanitizedJsonString = data && data.sanitized;
+		const data = resp[ 'sanitize-mapdata' ];
+		const sanitizedJsonString = data && data.sanitized;
 
 		if ( data.error || !sanitizedJsonString ) {
 			return $.Deferred().reject().promise();
 		}
-		geoJson = JSON.parse( sanitizedJsonString );
-		layer = getKartographerLayer( map );
-		layer.setGeoJSON( geoJson );
+		const layer = getKartographerLayer( map );
+		layer.setGeoJSON( JSON.parse( sanitizedJsonString ) );
 	} );
 }
 
@@ -68,10 +66,9 @@ function updateKartographerLayer( map, geoJsonString ) {
  * @param {Object} geoJson GeoJSON object, will be modified
  */
 function restoreUnparsedText( geoJson ) {
-	var key, baseKey;
-	for ( key in geoJson ) {
-		if ( key.substring( 0, '_orig'.length ) === '_orig' ) {
-			baseKey = key.substring( '_orig'.length );
+	for ( const key in geoJson ) {
+		if ( key.slice( 0, '_orig'.length ) === '_orig' ) {
+			const baseKey = key.slice( '_orig'.length );
 			// Copy the original value back, and delete the _orig key
 			geoJson[ baseKey ] = geoJson[ key ];
 			delete geoJson[ key ];

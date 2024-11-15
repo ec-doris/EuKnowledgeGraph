@@ -52,7 +52,7 @@ class ConstraintRepositoryStore implements ConstraintStore {
 					'constraint_guid' => $constraint->getConstraintId(),
 					'pid' => $constraint->getPropertyId()->getNumericId(),
 					'constraint_type_qid' => $constraint->getConstraintTypeItemId(),
-					'constraint_parameters' => $this->encodeConstraintParameters( $constraint->getConstraintParameters() )
+					'constraint_parameters' => $this->encodeConstraintParameters( $constraint->getConstraintParameters() ),
 				];
 			},
 			$constraints

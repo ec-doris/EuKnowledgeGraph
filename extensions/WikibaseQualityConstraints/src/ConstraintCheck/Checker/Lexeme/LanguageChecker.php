@@ -78,10 +78,9 @@ class LanguageChecker implements ConstraintChecker {
 	 */
 	public function checkConstraint( Context $context, Constraint $constraint ) {
 		if ( $context->getSnakRank() === Statement::RANK_DEPRECATED ) {
-			return new CheckResult( $context, $constraint, [], CheckResult::STATUS_DEPRECATED );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_DEPRECATED );
 		}
 
-		$parameters = [];
 		$constraintParameters = $constraint->getConstraintParameters();
 		$constraintTypeItemId = $constraint->getConstraintTypeItemId();
 
@@ -90,7 +89,6 @@ class LanguageChecker implements ConstraintChecker {
 			$constraintTypeItemId,
 			true
 		);
-		$parameters['languages'] = $languages;
 
 		$message = ( new ViolationMessage( 'wbqc-violation-message-language' ) )
 			->withEntityId( $context->getSnak()->getPropertyId(), Role::PREDICATE )
@@ -100,7 +98,7 @@ class LanguageChecker implements ConstraintChecker {
 		$lexeme = $this->getLexeme( $context );
 		if ( !$lexeme ) {
 			// Lexeme doesn't exist, let's not bother
-			return new CheckResult( $context, $constraint, [], CheckResult::STATUS_NOT_IN_SCOPE );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_NOT_IN_SCOPE );
 		}
 
 		/** @var Lexeme $lexeme */
@@ -117,7 +115,7 @@ class LanguageChecker implements ConstraintChecker {
 			}
 		}
 
-		return new CheckResult( $context, $constraint, $parameters, $status, $message );
+		return new CheckResult( $context, $constraint, $status, $message );
 	}
 
 	private function getLexeme( Context $context ): ?EntityDocument {

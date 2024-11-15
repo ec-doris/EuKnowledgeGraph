@@ -6,10 +6,12 @@ namespace WikibaseQuality\ConstraintReport\ConstraintCheck\Message;
 
 use Config;
 use Language;
+use MediaWiki\Languages\LanguageNameUtils;
 use MessageLocalizer;
 use ValueFormatters\FormatterOptions;
 use Wikibase\Lib\Formatters\OutputFormatValueFormatterFactory;
 use Wikibase\Lib\Formatters\SnakFormatter;
+use Wikibase\Lib\TermLanguageFallbackChain;
 use Wikibase\View\EntityIdFormatterFactory;
 
 /**
@@ -17,39 +19,40 @@ use Wikibase\View\EntityIdFormatterFactory;
  */
 class ViolationMessageRendererFactory {
 
-	/** @var Config */
-	private $config;
-
-	/** @var MessageLocalizer */
-	private $messageLocalizer;
-
-	/** @var EntityIdFormatterFactory */
-	private $entityIdHtmlLinkFormatterFactory;
-
-	/** @var OutputFormatValueFormatterFactory */
-	private $valueFormatterFactory;
+	private Config $config;
+	private LanguageNameUtils $languageNameUtils;
+	private EntityIdFormatterFactory $entityIdHtmlLinkFormatterFactory;
+	private OutputFormatValueFormatterFactory $valueFormatterFactory;
 
 	public function __construct(
 		Config $config,
-		MessageLocalizer $messageLocalizer,
+		LanguageNameUtils $languageNameUtils,
 		EntityIdFormatterFactory $entityIdHtmlLinkFormatterFactory,
 		OutputFormatValueFormatterFactory $valueFormatterFactory
 	) {
 		$this->config = $config;
-		$this->messageLocalizer = $messageLocalizer;
+		$this->languageNameUtils = $languageNameUtils;
 		$this->entityIdHtmlLinkFormatterFactory = $entityIdHtmlLinkFormatterFactory;
 		$this->valueFormatterFactory = $valueFormatterFactory;
 	}
 
-	public function getViolationMessageRenderer( Language $language ): ViolationMessageRenderer {
+	public function getViolationMessageRenderer(
+		Language $userLanguage,
+		TermLanguageFallbackChain $languageFallbackChain,
+		MessageLocalizer $messageLocalizer
+	): ViolationMessageRenderer {
+		$userLanguageCode = $userLanguage->getCode();
 		$formatterOptions = new FormatterOptions();
-		$formatterOptions->setOption( SnakFormatter::OPT_LANG, $language->getCode() );
+		$formatterOptions->setOption( SnakFormatter::OPT_LANG, $userLanguageCode );
 		return new MultilingualTextViolationMessageRenderer(
 			$this->entityIdHtmlLinkFormatterFactory
-				->getEntityIdFormatter( $language ),
+				->getEntityIdFormatter( $userLanguage ),
 			$this->valueFormatterFactory
 				->getValueFormatter( SnakFormatter::FORMAT_HTML, $formatterOptions ),
-			$this->messageLocalizer,
+			$this->languageNameUtils,
+			$userLanguageCode,
+			$languageFallbackChain,
+			$messageLocalizer,
 			$this->config
 		);
 	}

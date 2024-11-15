@@ -5,8 +5,8 @@
  * This module may be loaded and executed by
  * {@link Kartographer.Box.enablePreview ext.kartographer.box}.
  *
- * @alternateClassName Preview
- * @alternateClassName ext.kartographer.preview
+ * @borrows Kartographer.Preview as Preview
+ * @borrows Kartographer.Preview as ext.kartographer.preview
  * @class Kartographer.Preview
  * @singleton
  */
@@ -16,15 +16,15 @@
 		maps = Array.isArray( maps ) ? maps : [ maps ];
 
 		maps.forEach( function ( map ) {
-			var popup = L.popup();
+			const popup = L.popup();
 
 			function onMapMenu( e ) {
-				var content = '',
-					zoom = map.getZoom(),
-					coords = map.getScaleLatLng(
-						e.latlng.lat,
-						e.latlng.lng
-					);
+				let content = '';
+				const zoom = map.getZoom();
+				const coords = map.getScaleLatLng(
+					e.latlng.lat,
+					e.latlng.lng
+				);
 
 				content += '<table>';
 				content += '<tr><th>' + mw.message( 'visualeditor-mwmapsdialog-position-lat' ).escaped() + '</th><td>' + coords[ 0 ] + '</td></tr>';
@@ -39,8 +39,10 @@
 					.openOn( map );
 			}
 
-			// on right click, add a little popup with the coordinates.
-			map.on( 'contextmenu', onMapMenu );
+			if ( !map.isStatic() ) {
+				// on right click, add a little popup with the coordinates.
+				map.on( 'contextmenu', onMapMenu );
+			}
 		} );
 	} );
 

@@ -127,7 +127,7 @@ class CachingMetadataTest extends \MediaWikiUnitTestCase {
 		$this->assertEquals( $cm, $cm_ );
 	}
 
-	public function provideCachingMetadata() {
+	public static function provideCachingMetadata() {
 		return [
 			[ CachingMetadata::fresh() ],
 			[ CachingMetadata::ofMaximumAgeInSeconds( 52 ) ],

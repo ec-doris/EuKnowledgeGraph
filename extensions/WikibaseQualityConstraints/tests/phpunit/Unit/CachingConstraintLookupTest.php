@@ -25,8 +25,8 @@ class CachingConstraintLookupTest extends \MediaWikiUnitTestCase {
 			->method( 'queryConstraintsForProperty' )
 			->willReturn( [] )
 			->withConsecutive(
-				[ $this->equalTo( $p2 ) ],
-				[ $this->equalTo( $p3 ) ]
+				[ $p2 ],
+				[ $p3 ]
 			);
 
 		/** @var ConstraintLookup $mock */

@@ -12,7 +12,7 @@ use WikibaseQuality\ConstraintReport\ConstraintsServices;
  * @covers WikibaseQuality\ConstraintReport\Constraint
  *
  * @group WikibaseQualityConstraints
- * @group database
+ * @group Database
  * @group medium
  *
  * @author BP2014N1
@@ -54,7 +54,7 @@ class ConstraintTest extends \MediaWikiIntegrationTestCase {
 				'constraint_guid' => '1',
 				'pid' => 1,
 				'constraint_type_qid' => 'Item',
-				'constraint_parameters' => '{"property":"P21","constraint_status":"mandatory"}'
+				'constraint_parameters' => '{"property":"P21","constraint_status":"mandatory"}',
 			],
 		] );
 	}

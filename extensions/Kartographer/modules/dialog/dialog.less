@@ -1,35 +1,59 @@
-@import '../../lib/external/wikimedia-ui-base';
+@import 'mediawiki.skin.variables.less';
 
-/*
-	Anyone who changes the width of the sidebar should
-	update Kartographer.Dialog.DialogClass `SIDEBAR_WIDTH` accordingly
-*/
-@sidebarWidth: 320px;
+// Anyone who changes the width of the sidebar should update Kartographer.Dialog.DialogClass
+// `SIDEBAR_WIDTH` accordingly
+@width-kartographer-sidebar: 320px;
+
+.oo-ui-window-body.mw-kartographer-mapDialog-body {
+	display: flex;
+	flex-direction: column;
+	// We never want scrollbars that cover the entire dialog, not even temporarily
+	overflow: hidden;
+}
+
+.mw-kartographer-map-body {
+	position: relative;
+	flex-grow: 1;
+}
+
+.mw-kartographer-reload-nearbybutton {
+	display: flex;
+	justify-content: center;
+	padding-top: 20px;
+}
 
 /* Dialog footer */
-.mw-kartographer-mapDialog-foot {
-	/*
-		Anyone who changes the height of the footer should
-		update Kartographer.Dialog.DialogClass `FOOTER_HEIGHT` accordingly
-	*/
-	padding: 1em;
-	height: 4.5em;
+.mw-kartographer-map-foot {
+	overflow-x: hidden;
+	overflow-y: scroll;
+	max-height: 30vh;
+	padding: 14px 14px 0 14px;
 	font-size: 14px; // same as font-size of .mw-kartographer-interactive.leaflet-container
 	background-color: @background-color-base;
 	border-top: @border-base;
 }
 
 .mw-kartographer-captionfoot {
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	font-size: 20px;
-	line-height: 31px;
+	float: left;
+	padding-bottom: 14px;
+	font-size: 16px;
+	line-height: @line-height-xx-small;
+	word-break: break-word;
+
+	@media screen and ( min-width: @min-width-breakpoint-tablet ) {
+		font-size: 20px;
+	}
 }
 
 .mw-kartographer-buttonfoot {
 	float: right;
-	margin-left: 1em;
+	text-align: right;
+	padding: 0 0 6px 6px;
+
+	.oo-ui-toggleButtonWidget {
+		margin: 0 0 0 8px;
+		padding-bottom: 8px;
+	}
 }
 
 /* Dialog Sidebar */
@@ -37,65 +61,141 @@
 	position: absolute;
 	right: 0;
 	top: 0;
-	bottom: 4.5em;
+	bottom: 0;
 	z-index: 2;
-	border-left: @border-base;
-	/*
-		Anyone who changes the width of the sidebar should
-		update Kartographer.Dialog.DialogClass `SIDEBAR_WIDTH` accordingly
-	*/
-	width: @sidebarWidth + 1px; /* 320+1 so border is hidden on common 320px wide mobile devices */
+	border-left: @border-width-base @border-style-base @border-color-base;
+	width: @width-kartographer-sidebar + @border-width-base; /* 320+1 so border is hidden on common 320px wide mobile devices */
 	max-width: 100vw;
 	box-sizing: border-box;
-	background-color: #fff;
+	background-color: @background-color-base;
 	overflow-y: auto;
 	transform: translateX( 100% );
-	transition: transform 100ms ease-out;
+	transition: transform @transition-duration-base @transition-timing-function-user;
 	/* don't use padding on this object, because then it will retain height after being pushed off screen */
+
+	&-opened & {
+		transform: translateX( 0 );
+	}
+
+	&-opened {
+		.leaflet-right.leaflet-top .leaflet-bar.leaflet-control {
+			// Match the margin with the text inside the sidebar
+			margin-top: 1em;
+		}
+
+		.leaflet-right.leaflet-top,
+		.leaflet-right.leaflet-bottom {
+			right: @width-kartographer-sidebar;
+		}
+	}
 
 	/* For MobileFrontend */
 	.skin-minerva & h2 {
 		margin-bottom: 0.6em;
 	}
+
+	/*
+		When hidden aria hidden takes effect, truly hide the sidebar,
+		instead of just translating it off screen.
+	*/
+	&[ aria-hidden='true' ] {
+		display: none;
+	}
+}
+
+.mw-kartographer-mapDialog-focusBox {
+	display: none;
+	position: absolute;
+	margin: auto;
+	max-width: 256px;
+	max-height: 256px;
+	top: @spacing-125;
+	right: @spacing-125;
+	bottom: @spacing-125;
+	left: @spacing-125;
+	border: @border-width-thick @border-style-base @border-color-progressive;
+	border-radius: @border-radius-base;
+	z-index: 1;
+	aspect-ratio: 1;
 }
 
 .mw-kartographer-mapDialog-map {
 	position: absolute;
 	top: 0;
-	bottom: 4.5em;
+	bottom: 0;
 	left: 0;
 	right: 0;
 	z-index: 1;
 
-	.leaflet-right.leaflet-top,
-	.leaflet-right.leaflet-bottom {
-		transition: right 100ms ease-out;
-	}
-
-	.leaflet-right.leaflet-top .leaflet-bar.leaflet-control {
-		transition: margin 100ms ease-out;
-	}
-}
-
-.mw-kartographer-mapDialog-sidebar-opened {
-	.mw-kartographer-mapDialog-sidebar {
-		transform: translateX( 0 );
-	}
-
-	.leaflet-right.leaflet-top .leaflet-bar.leaflet-control {
-		// Match the margin with the text inside the sidebar
-		margin-top: 1em;
+	&:focus .mw-kartographer-mapDialog-focusBox.mw-kartographer-mapDialog-focusBox-available {
+		display: block;
 	}
 
 	.leaflet-right.leaflet-top,
 	.leaflet-right.leaflet-bottom {
-		right: @sidebarWidth;
+		transition: right @transition-duration-base @transition-timing-function-user;
+	}
+
+	.leaflet-right.leaflet-top .leaflet-bar.leaflet-control {
+		transition: margin @transition-duration-base @transition-timing-function-user;
+	}
+
+	.nearby-icon {
+		display: -ms-grid;
+		display: grid;
+		align-items: center;
+		justify-content: center;
+		color: @color-base;
+		background-color: @background-color-interactive;
+		// TODO: `color` tokens shouldn't be used for `border-color`.
+		border: @border-width-thick @border-style-base @color-subtle;
+		border-radius: @border-radius-circle;
+	}
+
+	.nearby-marker .nearby-icon {
+		width: @min-size-icon-medium;
+		height: @min-size-icon-medium;
+	}
+
+	.nearby-cluster .nearby-icon {
+		width: @min-size-interactive-pointer;
+		height: @min-size-interactive-pointer;
+	}
+
+	.nearby-marker,
+	.nearby-cluster {
+		display: -ms-grid;
+		display: grid;
+		align-items: center;
+		justify-content: center;
+
+		&:focus {
+			// Expanded markers in a cluster of identical points use an offset of +1000000
+			// stylelint-disable-next-line declaration-no-important
+			z-index: 9999999 !important;
+		}
+
+		&:focus .nearby-icon,
+		&:hover .nearby-icon {
+			background-color: @background-color-base;
+			border-width: @border-width-thick * 1.5;
+		}
+
+		&:active .nearby-icon {
+			background-color: @background-color-base;
+			border-width: @border-width-thick * 2;
+		}
+	}
+
+	// T308227: The center of a cluster is pointless when expanded, hide it
+	.nearby-cluster[ style*='opacity:\ 0.3' ] {
+		display: none;
 	}
 }
 
 .mw-kartographer-mapdetails {
 	margin: 1.5em 0;
-	padding: 0 16px;
+	padding: 0 @spacing-100;
 
 	.geo {
 		white-space: nowrap;
@@ -120,7 +220,7 @@
 
 		&-latlon {
 			display: block;
-			color: #54595d; // Base20
+			color: @color-subtle;
 			margin-top: 0.5em;
 		}
 	}
@@ -128,7 +228,7 @@
 
 .mw-kartographer-filterservices {
 	margin: 1em 0;
-	padding: 0 16px;
+	padding: 0 @spacing-100;
 
 	&-title {
 		margin-bottom: 1em;
@@ -136,7 +236,7 @@
 	}
 
 	&-toggleButton {
-		margin-left: 16px;
+		margin-left: @spacing-100;
 	}
 
 	&-list {
@@ -149,7 +249,7 @@
 				box-sizing: border-box;
 
 				&:hover {
-					background-color: #eaf3ff;
+					background-color: @background-color-progressive-subtle;
 				}
 
 				.oo-ui-buttonElement-button {
@@ -169,18 +269,4 @@
 
 .mw-kartographer-externalservices {
 	margin: 1em 0;
-}
-
-.kartographer-mapDialog-loading {
-	position: absolute;
-	left: 0;
-	top: 0;
-	right: 0;
-	bottom: 4.5em;
-
-	/* @embed */
-	background-image: url( ../../styles/images/ajax-loader.gif );
-	background-position: center;
-	background-size: 32px;
-	background-repeat: no-repeat;
 }

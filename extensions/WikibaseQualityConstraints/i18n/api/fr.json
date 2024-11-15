@@ -3,11 +3,10 @@
 		"authors": [
 			"Gomoko",
 			"Thibaut120094",
-			"Wladek92",
-			"Verdy p"
+			"Verdy p",
+			"Wladek92"
 		]
 	},
-	"apihelp-wbcheckconstraints-description": "Réalise des vérifications de contraintes sur toute entité que vous désirez et renvoie le résultat.",
 	"apihelp-wbcheckconstraints-summary": "Réalise des vérifications de contraintes sur toute entité que vous désirez et renvoie le résultat.",
 	"apihelp-wbcheckconstraints-param-id": "Liste d’identifiants des entités pour lesquelles obtenir les données. Séparez les valeurs par « | » ou similaire.",
 	"apihelp-wbcheckconstraints-param-claimid": "Liste des GUID identifiant une déclaration à vérifier pour générer un rapport sur leur contraintes. Séparez les valeurs par « | ».",

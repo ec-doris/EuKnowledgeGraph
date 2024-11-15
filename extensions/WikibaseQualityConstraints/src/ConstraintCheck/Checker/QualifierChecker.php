@@ -46,10 +46,10 @@ class QualifierChecker implements ConstraintChecker {
 	 */
 	public function checkConstraint( Context $context, Constraint $constraint ) {
 		if ( $context->getType() === Context::TYPE_QUALIFIER ) {
-			return new CheckResult( $context, $constraint, [], CheckResult::STATUS_COMPLIANCE );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_COMPLIANCE );
 		} else {
 			$message = new ViolationMessage( 'wbqc-violation-message-qualifier' );
-			return new CheckResult( $context, $constraint, [], CheckResult::STATUS_VIOLATION, $message );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_VIOLATION, $message );
 		}
 	}
 

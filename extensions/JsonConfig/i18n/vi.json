@@ -31,7 +31,6 @@
 	"jsonconfig-move-aborted-model": "Mô hình cấu hình JSON của trang này, “$1”, sẽ không phù hợp với mô hình tại tên mới, “$2”",
 	"jsonconfig-move-aborted-ns": "Tên trang mới chưa được thiết lập để lưu giữ cấu hình JSON",
 	"jsonconfig-optional-field": "(tùy chọn)",
-	"jsonconfig-type-abbr-invalid": "(?)",
 	"jsonconfig-type-name-invalid": "không hợp lệ",
 	"jsonconfig-type-abbr-string": "(Ch)",
 	"jsonconfig-type-name-string": "chuỗi",

@@ -90,22 +90,15 @@ class ValueTypeChecker implements ConstraintChecker {
 	 */
 	public function checkConstraint( Context $context, Constraint $constraint ) {
 		if ( $context->getSnakRank() === Statement::RANK_DEPRECATED ) {
-			return new CheckResult( $context, $constraint, [], CheckResult::STATUS_DEPRECATED );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_DEPRECATED );
 		}
 
-		$parameters = [];
 		$constraintParameters = $constraint->getConstraintParameters();
 		$constraintTypeItemId = $constraint->getConstraintTypeItemId();
 
 		$classes = $this->constraintParameterParser->parseClassParameter(
 			$constraintParameters,
 			$constraintTypeItemId
-		);
-		$parameters['class'] = array_map(
-			static function ( $id ) {
-				return new ItemId( $id );
-			},
-			$classes
 		);
 
 		$relation = $this->constraintParameterParser->parseRelationParameter(
@@ -119,13 +112,12 @@ class ValueTypeChecker implements ConstraintChecker {
 		if ( $relation === 'subclass' || $relation === 'instanceOrSubclass' ) {
 			$relationIds[] = $this->config->get( 'WBQualityConstraintsSubclassOfId' );
 		}
-		$parameters['relation'] = [ $relation ];
 
 		$snak = $context->getSnak();
 
 		if ( !$snak instanceof PropertyValueSnak ) {
 			// nothing to check
-			return new CheckResult( $context, $constraint, $parameters, CheckResult::STATUS_COMPLIANCE );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_COMPLIANCE );
 		}
 
 		$dataValue = $snak->getDataValue();
@@ -138,7 +130,7 @@ class ValueTypeChecker implements ConstraintChecker {
 			$message = ( new ViolationMessage( 'wbqc-violation-message-value-needed-of-type' ) )
 				->withEntityId( new ItemId( $constraintTypeItemId ), Role::CONSTRAINT_TYPE_ITEM )
 				->withDataValueType( 'wikibase-entityid' );
-			return new CheckResult( $context, $constraint, $parameters, CheckResult::STATUS_VIOLATION, $message );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_VIOLATION, $message );
 		}
 
 		try {
@@ -150,7 +142,7 @@ class ValueTypeChecker implements ConstraintChecker {
 
 		if ( !( $item instanceof StatementListProvidingEntity ) ) {
 			$message = new ViolationMessage( 'wbqc-violation-message-value-entity-must-exist' );
-			return new CheckResult( $context, $constraint, $parameters, CheckResult::STATUS_VIOLATION, $message );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_VIOLATION, $message );
 		}
 
 		$statements = $item->getStatements();
@@ -175,7 +167,7 @@ class ValueTypeChecker implements ConstraintChecker {
 			$status = CheckResult::STATUS_VIOLATION;
 		}
 
-		return ( new CheckResult( $context, $constraint, $parameters, $status, $message ) )
+		return ( new CheckResult( $context, $constraint, $status, $message ) )
 			->withMetadata( $result->getMetadata() );
 	}
 

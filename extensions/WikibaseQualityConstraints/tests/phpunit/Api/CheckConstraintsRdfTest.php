@@ -5,11 +5,12 @@ namespace WikibaseQuality\ConstraintReport\Tests\Api;
 use Article;
 use HashConfig;
 use IContextSource;
+use MediaWiki\Request\WebResponse;
+use MediaWiki\Title\Title;
 use NullStatsdDataFactory;
 use OutputPage;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\NullLogger;
-use Title;
 use WANObjectCache;
 use WebRequest;
 use Wikibase\DataModel\Entity\EntityId;
@@ -70,7 +71,6 @@ class CheckConstraintsRdfTest extends \PHPUnit\Framework\TestCase {
 				'Q12345',
 				[]
 			),
-			[],
 			$status,
 			new ViolationMessage( 'wbqc-violation-message-single-value' )
 		);
@@ -109,20 +109,6 @@ class CheckConstraintsRdfTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	/**
-	 * @return CheckResultSerializer
-	 */
-	private function getCheckResultSerializer() {
-		return $this->createMock( CheckResultSerializer::class );
-	}
-
-	/**
-	 * @return CheckResultDeserializer
-	 */
-	private function getCheckResultDeserializer() {
-		return $this->createMock( CheckResultDeserializer::class );
-	}
-
-	/**
 	 * @return LoggingHelper
 	 */
 	private function getLoggingHelper() {
@@ -146,8 +132,8 @@ class CheckConstraintsRdfTest extends \PHPUnit\Framework\TestCase {
 			->setConstructorArgs( [
 				$this->createMock( ResultsSource::class ),
 				new ResultsCache( WANObjectCache::newEmpty(), 'v2' ),
-				$this->getCheckResultSerializer(),
-				$this->getCheckResultDeserializer(),
+				$this->createMock( CheckResultSerializer::class ),
+				$this->createMock( CheckResultDeserializer::class ),
 				$this->createMock( WikiPageEntityMetaDataAccessor::class ),
 				new ItemIdParser(),
 				86400,
@@ -187,7 +173,7 @@ class CheckConstraintsRdfTest extends \PHPUnit\Framework\TestCase {
 				);
 			} );
 
-		$mockResponse = $this->createMock( \WebResponse::class );
+		$mockResponse = $this->createMock( WebResponse::class );
 		$mockResponse->expects( $this->never() )->method( 'statusHeader' );
 		$mockResponse->expects( $this->once() )->method( 'header' )
 			->with( 'Content-Type: text/turtle; charset=UTF-8' );
@@ -216,7 +202,7 @@ TEXT;
 	}
 
 	public function testShow404() {
-		$mockResponse = $this->createMock( \WebResponse::class );
+		$mockResponse = $this->createMock( WebResponse::class );
 		$mockResponse->expects( $this->once() )->method( 'statusHeader' )->with( 404 );
 		$action = $this->getCheckConstraintsRdf(
 			new Article( Title::newFromText( 'something strange' ) ),
@@ -232,7 +218,7 @@ TEXT;
 	}
 
 	public function testShowNoResults() {
-		$mockResponse = $this->createMock( \WebResponse::class );
+		$mockResponse = $this->createMock( WebResponse::class );
 		$mockResponse->expects( $this->once() )->method( 'statusHeader' )->with( 204 );
 		$action = $this->getCheckConstraintsRdf(
 			new Article( Title::newFromText( 'Item:Q1' ) ),
@@ -255,13 +241,13 @@ TEXT;
 				return new CachedCheckResults(
 					[
 						$this->getNullResult( $serialization ),
-						$this->getCheckResult( $serialization, CheckResult::STATUS_BAD_PARAMETERS )
+						$this->getCheckResult( $serialization, CheckResult::STATUS_BAD_PARAMETERS ),
 					],
 					Metadata::ofCachingMetadata( CachingMetadata::ofMaximumAgeInSeconds( 64800 ) )
 				);
 			} );
 
-		$mockResponse = $this->createMock( \WebResponse::class );
+		$mockResponse = $this->createMock( WebResponse::class );
 		$mockResponse->expects( $this->once() )->method( 'statusHeader' )->with( 204 );
 		$action = $this->getCheckConstraintsRdf(
 			new Article( Title::newFromText( 'Property:P1' ) ),

@@ -1,0 +1,9 @@
+{
+	"@metadata": {
+		"authors": [
+			"Muhammad Shuaib"
+		]
+	},
+	"apihelp-jsonconfig-summary": "JsonConfig کے ذیلی نظام تک راست رسائی کی اجازت دیتا ہے۔",
+	"apihelp-jsonconfig-param-command": "JsonConfig پر کون سی ذیلی کارروائی کرنی ہے:"
+}

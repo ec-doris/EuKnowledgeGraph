@@ -30,7 +30,7 @@ class InstalledVersions
     'aliases' => 
     array (
     ),
-    'reference' => 'd5c691956c41c73a5eb1d9263fb635d9abf651a3',
+    'reference' => '2397185e32a5bf1610278ac10659b4cd46e590df',
     'name' => '__root__',
   ),
   'versions' => 
@@ -42,16 +42,16 @@ class InstalledVersions
       'aliases' => 
       array (
       ),
-      'reference' => 'd5c691956c41c73a5eb1d9263fb635d9abf651a3',
+      'reference' => '2397185e32a5bf1610278ac10659b4cd46e590df',
     ),
     'justinrainbow/json-schema' => 
     array (
-      'pretty_version' => '5.2.12',
-      'version' => '5.2.12.0',
+      'pretty_version' => '5.3.0',
+      'version' => '5.3.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'ad87d5a5ca981228e0e205c2bc7dfb8e24559b60',
+      'reference' => 'feb2ca6dd1cebdaf1ed60a4c8de2e53ce11c4fd8',
     ),
   ),
 );

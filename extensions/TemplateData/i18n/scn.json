@@ -4,7 +4,7 @@
 			"Ajeje Brazorf"
 		]
 	},
-	"templatedata-doc-desc-empty": "Nudda discrizzioni.",
+	"templatedata-doc-desc-empty": "Nuḍḍa discrizzioni.",
 	"templatedata-doc-param-default": "Pridifinutu",
 	"templatedata-doc-param-desc": "Discrizzioni",
 	"templatedata-doc-param-status": "Statu",
@@ -28,7 +28,6 @@
 	"templatedata-modal-button-saveparam": "Sarva",
 	"templatedata-modal-current-language": "Lingua attuali: $1",
 	"templatedata-modal-format-custom": "Pirsunalizzatu",
-	"templatedata-modal-table-param-actions": "Azzioni",
 	"templatedata-modal-table-param-default": "Pridifinutu ($1)",
 	"templatedata-modal-table-param-description": "Discrizzioni ($1)",
 	"templatedata-modal-table-param-example": "Asempiu ($1)",

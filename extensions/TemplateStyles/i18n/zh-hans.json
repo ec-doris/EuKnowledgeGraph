@@ -7,11 +7,12 @@
 			"Stang",
 			"Winston Sung",
 			"Xiplus",
-			"Yfdyh000"
+			"Yfdyh000",
+			"LittlePaw365"
 		]
 	},
 	"templatestyles": "模板样式（TemplateStyles）",
-	"templatestyles-desc": "实施基于模板的样式表",
+	"templatestyles-desc": "实现单个模板样式表",
 	"templatestyles-missing-src": "模板样式的<code>src</code>属性不得为空。",
 	"templatestyles-invalid-src": "用于模板样式<code>src</code>属性的标题无效。",
 	"templatestyles-invalid-wrapper": "模板样式的<code>wrapper</code>属性值无效。",
@@ -44,7 +45,7 @@
 	"templatestyles-error-invalid-font-feature-value-declaration": "在第$1行字符$2中，用于字体功能值属性的值无效。",
 	"templatestyles-error-invalid-font-feature-values-font-list": "在第$1行字符$2中，用于<code>@font-feature-values</code>的字体列表无效。",
 	"templatestyles-error-invalid-import-value": "在第$1行字符$2中，用于<code>@import</code>的值无效。",
-	"templatestyles-error-invalid-keyframe-name": "在第$1行字符$2中有无效关键帧名。",
+	"templatestyles-error-invalid-keyframe-name": "第$1行第$2个字符处有无效关键帧名。",
 	"templatestyles-error-invalid-media-query": "在第$1行字符$2中有无效媒体查询。",
 	"templatestyles-error-invalid-namespace-value": "在第$1行字符$2中，用于<code>@namespace</code>的值无效。",
 	"templatestyles-error-invalid-page-margin-at-rule": "在第$1行字符$2中，代码块之前不允许任何形式的<code>@$3</code>。",

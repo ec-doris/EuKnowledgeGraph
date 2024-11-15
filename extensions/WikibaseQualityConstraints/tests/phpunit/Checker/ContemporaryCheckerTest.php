@@ -8,8 +8,8 @@ use Wikibase\DataModel\Entity\ItemId;
 use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Services\Lookup\InMemoryEntityLookup;
 use Wikibase\DataModel\Statement\Statement;
-use Wikibase\Repo\Tests\NewItem;
-use Wikibase\Repo\Tests\NewStatement;
+use Wikibase\DataModel\Tests\NewItem;
+use Wikibase\DataModel\Tests\NewStatement;
 use WikibaseQuality\ConstraintReport\Constraint;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Checker\ContemporaryChecker;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\MainSnakContext;
@@ -61,11 +61,11 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->startPropertyIds = $this->getDefaultConfig()
+		$this->startPropertyIds = self::getDefaultConfig()
 			->get( ContemporaryChecker::CONFIG_VARIABLE_START_PROPERTY_IDS );
-		$this->endPropertyIds = $this->getDefaultConfig()
+		$this->endPropertyIds = self::getDefaultConfig()
 			->get( ContemporaryChecker::CONFIG_VARIABLE_END_PROPERTY_IDS );
-		$this->rangeCheckerHelper = new RangeCheckerHelper( $this->getDefaultConfig() );
+		$this->rangeCheckerHelper = new RangeCheckerHelper( self::getDefaultConfig() );
 		$this->linkingPropertyId = 'P123456';
 		$this->timestamps = [
 			'-000401862-05-31T00:00:00Z', // BCE
@@ -92,7 +92,7 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 		$expectedStatus
 	) {
 		$constraint = $this->getConstraintMock();
-		$checker = new ContemporaryChecker( $lookup, $this->rangeCheckerHelper, $this->getDefaultConfig() );
+		$checker = new ContemporaryChecker( $lookup, $this->rangeCheckerHelper, self::getDefaultConfig() );
 		$checkResult = $checker->checkConstraint( new MainSnakContext( $subjectItem, $statement ), $constraint );
 		if ( $expectedStatus === CheckResult::STATUS_COMPLIANCE ) {
 			$this->assertCompliance( $checkResult );
@@ -107,10 +107,9 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	/**
-	 * @return array
 	 * @throws \ConfigException
 	 */
-	public function provideStandardStatements() {
+	public static function provideStandardStatements(): iterable {
 		$orderedTimestamps = [
 			'-000001862-05-31T00:00:00Z', // BCE
 			'+000000015-04-30T00:00:00Z', // CE
@@ -236,7 +235,7 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 		$lookup = new InMemoryEntityLookup();
 		$toBeReturned = [];
 		foreach ( $violationMatrix as $violationArray ) {
-			$generatedLinkedPair = $this->generateLinkedItemPair(
+			$generatedLinkedPair = self::generateLinkedItemPair(
 				$lookup,
 				'P1',
 				'Q' . $currentItemId++,
@@ -259,16 +258,16 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_COMPLIANCE );
 	}
 
 	public function testContemporaryConstraintEternalObject() {
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )->build();
@@ -293,8 +292,8 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 
 	public function testContemporaryConstraintNoObject() {
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->andStatement( NewStatement::noValueFor( new NumericPropertyId( $this->linkingPropertyId ) ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, null, CheckResult::STATUS_COMPLIANCE );
@@ -302,8 +301,8 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 
 	public function testContemporaryConstraintSomeObject() {
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
 			->andStatement( NewStatement::someValueFor( new NumericPropertyId( $this->linkingPropertyId ) ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, null, CheckResult::STATUS_COMPLIANCE );
@@ -311,96 +310,96 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 
 	public function testContemporaryConstraintUndefinedSubjectStartCompliance() {
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_COMPLIANCE );
 	}
 
 	public function testContemporaryConstraintUndefinedSubjectStartViolation() {
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_VIOLATION );
 	}
 
 	public function testContemporaryConstraintUndefinedSubjectEndCompliance() {
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[1] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_COMPLIANCE );
 	}
 
 	public function testContemporaryConstraintUndefinedSubjectEndViolation() {
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_VIOLATION );
 	}
 
 	public function testContemporaryConstraintUndefinedObjectStartCompliance() {
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[3] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_COMPLIANCE );
 	}
 
 	public function testContemporaryConstraintUndefinedObjectStartViolation() {
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[3] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_VIOLATION );
 	}
 
 	public function testContemporaryConstraintUndefinedObjectEndCompliance() {
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[1] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_COMPLIANCE );
 	}
 
 	public function testContemporaryConstraintUndefinedObjectEndViolation() {
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[0] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[0] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[1] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_VIOLATION );
 	}
@@ -408,12 +407,12 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 	public function testContemporaryConstraintNoSubjectStartCompliance() {
 		$subjectItem = NewItem::withId( 'Q1' )
 			->andStatement( NewStatement::noValueFor( $this->startPropertyIds[0] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[1] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_COMPLIANCE );
 	}
@@ -421,76 +420,76 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 	public function testContemporaryConstraintNoSubjectStartViolation() {
 		$subjectItem = NewItem::withId( 'Q1' )
 			->andStatement( NewStatement::noValueFor( $this->startPropertyIds[0] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_VIOLATION );
 	}
 
 	public function testContemporaryConstraintNoSubjectEndCompliance() {
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
 			->andStatement( NewStatement::noValueFor( $this->endPropertyIds[0] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[1] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_COMPLIANCE );
 	}
 
 	public function testContemporaryConstraintNoSubjectEndViolation() {
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
 			->andStatement( NewStatement::noValueFor( $this->endPropertyIds[0] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[1] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_VIOLATION );
 	}
 
 	public function testContemporaryConstraintNoObjectStartCompliance() {
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
 			->andStatement( NewStatement::noValueFor( $this->startPropertyIds[0] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_COMPLIANCE );
 	}
 
 	public function testContemporaryConstraintNoObjectStartViolation() {
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
 			->andStatement( NewStatement::noValueFor( $this->startPropertyIds[0] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_VIOLATION );
 	}
 
 	public function testContemporaryConstraintNoObjectEndCompliance() {
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[1] ) )
 			->andStatement( NewStatement::noValueFor( $this->endPropertyIds[0] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_COMPLIANCE );
@@ -498,12 +497,12 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 
 	public function testContemporaryConstraintNoObjectEndViolation() {
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[0] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[0] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[1] ) )
 			->andStatement( NewStatement::noValueFor( $this->endPropertyIds[0] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_VIOLATION );
@@ -512,50 +511,50 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 	public function testContemporaryConstraintSomeSubjectStart() {
 		$subjectItem = NewItem::withId( 'Q1' )
 			->andStatement( NewStatement::someValueFor( $this->startPropertyIds[0] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[1] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_COMPLIANCE );
 	}
 
 	public function testContemporaryConstraintSomeSubjectEnd() {
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
 			->andStatement( NewStatement::someValueFor( $this->endPropertyIds[0] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[1] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_COMPLIANCE );
 	}
 
 	public function testContemporaryConstraintSomeObjectStart() {
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
 			->andStatement( NewStatement::someValueFor( $this->startPropertyIds[0] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_COMPLIANCE );
 	}
 
 	public function testContemporaryConstraintSomeObjectEnd() {
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[1] ) )
 			->andStatement(
 				NewStatement::someValueFor( $this->endPropertyIds[0] )
 			)
@@ -566,13 +565,13 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 	public function testContemporaryConstraintSubjectEndBeforeStart1() {
 		// Compliance expected if start and end times were exchanged
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[3] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_COMPLIANCE );
 	}
@@ -580,13 +579,13 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 	public function testContemporaryConstraintSubjectEndBeforeStart2() {
 		// Violation expected if start and end times were exchanged
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[3] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_COMPLIANCE );
 	}
@@ -594,13 +593,13 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 	public function testContemporaryConstraintObjectEndBeforeStart1() {
 		// Compliance expected if start and end times were exchanged
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[3] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[0] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[0] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_COMPLIANCE );
 	}
@@ -608,13 +607,13 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 	public function testContemporaryConstraintObjectEndBeforeStart2() {
 		// Violation expected if start and end times were exchanged
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[3] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[0] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[0] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_COMPLIANCE );
 	}
@@ -622,12 +621,12 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 	public function testContemporaryConstraintDeprecatedLink1() {
 		// Compliance expected if not deprecated, but STATUS_DEPRECATED expected if deprecated
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' )->withDeprecatedRank() )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_DEPRECATED );
 	}
@@ -635,36 +634,36 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 	public function testContemporaryConstraintDeprecatedLink2() {
 		// Violation expected if not deprecated, but STATUS_DEPRECATED expected if deprecated
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' )->withDeprecatedRank() )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_DEPRECATED );
 	}
 
 	public function testContemporaryConstraintPreferredLinkCompliance() {
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' )->withPreferredRank() )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[1] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_COMPLIANCE );
 	}
 
 	public function testContemporaryConstraintPreferredLinkViolation() {
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' )->withPreferredRank() )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_VIOLATION );
 	}
@@ -676,15 +675,15 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 			);
 		}
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[3] ) )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[1], $this->timestamps[1] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[1], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[1], $this->timestamps[0] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[1], $this->timestamps[0] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_COMPLIANCE );
 	}
@@ -696,15 +695,15 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 			);
 		}
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[1] ) )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[1], $this->timestamps[0] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[1], $this->timestamps[0] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[1], $this->timestamps[2] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[1], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_VIOLATION );
 	}
@@ -716,15 +715,15 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 			);
 		}
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[1], $this->timestamps[3] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[1], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[3] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_COMPLIANCE );
 	}
@@ -736,15 +735,15 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 			);
 		}
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[1], $this->timestamps[2] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[1], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[3] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_VIOLATION );
 	}
@@ -756,15 +755,15 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 			);
 		}
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[1], $this->timestamps[0] ) )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[3] ) )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[1], $this->timestamps[1] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[1], $this->timestamps[0] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[1], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_COMPLIANCE );
 	}
@@ -776,15 +775,15 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 			);
 		}
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[1], $this->timestamps[2] ) )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[3] ) )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[1], $this->timestamps[2] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[1], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[1], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_VIOLATION );
 	}
@@ -796,15 +795,15 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 			);
 		}
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[1], $this->timestamps[3] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[1], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_COMPLIANCE );
 	}
@@ -816,15 +815,15 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 			);
 		}
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[1], $this->timestamps[3] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[1], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_VIOLATION );
 	}
@@ -832,14 +831,14 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 	public function testContemporaryConstraintSubjectStartDeprecatedCompliance() {
 		$subjectItem = NewItem::withId( 'Q1' )
 			->andStatement(
-				$this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] )->withDeprecatedRank()
+				self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] )->withDeprecatedRank()
 			)
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_COMPLIANCE );
 	}
@@ -847,91 +846,91 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 	public function testContemporaryConstraintSubjectStartDeprecatedViolation() {
 		$subjectItem = NewItem::withId( 'Q1' )
 			->andStatement(
-				$this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[1] )->withDeprecatedRank()
+				self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[1] )->withDeprecatedRank()
 			)
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[3] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_VIOLATION );
 	}
 
 	public function testContemporaryConstraintSubjectEndDeprecatedCompliance() {
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
 			->andStatement(
-				$this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] )->withDeprecatedRank()
+				self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] )->withDeprecatedRank()
 			)
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_COMPLIANCE );
 	}
 
 	public function testContemporaryConstraintSubjectEndDeprecatedViolation() {
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
 			->andStatement(
-				$this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] )->withDeprecatedRank()
+				self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] )->withDeprecatedRank()
 			)
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_VIOLATION );
 	}
 
 	public function testContemporaryConstraintObjectStartDeprecatedCompliance() {
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
 			->andStatement(
-				$this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] )->withDeprecatedRank()
+				self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] )->withDeprecatedRank()
 			)
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_COMPLIANCE );
 	}
 
 	public function testContemporaryConstraintObjectStartDeprecatedViolation() {
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
 			->andStatement(
-				$this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[1] )->withDeprecatedRank()
+				self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[1] )->withDeprecatedRank()
 			)
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_VIOLATION );
 	}
 
 	public function testContemporaryConstraintObjectEndDeprecatedCompliance() {
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
 			->andStatement(
-				$this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] )->withDeprecatedRank()
+				self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[1] )->withDeprecatedRank()
 			)
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_COMPLIANCE );
@@ -939,15 +938,15 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 
 	public function testContemporaryConstraintObjectEndDeprecatedViolation() {
 		$subjectItem = NewItem::withId( 'Q1' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[3] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[3] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] ) )
 			->andStatement( $this->newLinkingStatement( 'Q2' ) )
 			->build();
 		$valueItem = NewItem::withId( 'Q2' )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
+			->andStatement( self::newTimeStatement( $this->startPropertyIds[0], $this->timestamps[0] ) )
+			->andStatement( self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[2] ) )
 			->andStatement(
-				$this->newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] )->withDeprecatedRank()
+				self::newTimeStatement( $this->endPropertyIds[0], $this->timestamps[3] )->withDeprecatedRank()
 			)
 			->build();
 		$this->saveAndCheck( $subjectItem, $valueItem, CheckResult::STATUS_VIOLATION );
@@ -978,7 +977,7 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 	 * @return array with lookup, subject item and linking statement
 	 * @throws \ConfigException
 	 */
-	private function generateLinkedItemPair(
+	private static function generateLinkedItemPair(
 		InMemoryEntityLookup $lookup,
 		$linkingPropertyId,
 		$subjectItemId,
@@ -988,13 +987,13 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 		$valueStartTimestamp,
 		$valueEndTimestamp
 	) {
-		$this->startPropertyIds = $this->getDefaultConfig()
+		$startPropertyIds = self::getDefaultConfig()
 			->get( ContemporaryChecker::CONFIG_VARIABLE_START_PROPERTY_IDS );
-		$this->endPropertyIds = $this->getDefaultConfig()
+		$endPropertyIds = self::getDefaultConfig()
 			->get( ContemporaryChecker::CONFIG_VARIABLE_END_PROPERTY_IDS );
 		$subjectItem = NewItem::withId( $subjectItemId )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $subjectStartTimestamp ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $subjectEndTimestamp ) )
+			->andStatement( self::newTimeStatement( $startPropertyIds[0], $subjectStartTimestamp ) )
+			->andStatement( self::newTimeStatement( $endPropertyIds[0], $subjectEndTimestamp ) )
 			->andStatement(
 				NewStatement::forProperty( $linkingPropertyId )
 					->withValue( new ItemId( $valueItemId ) )
@@ -1002,14 +1001,14 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 			->build();
 		$lookup->addEntity( $subjectItem );
 		$valueItem = NewItem::withId( $valueItemId )
-			->andStatement( $this->newTimeStatement( $this->startPropertyIds[0], $valueStartTimestamp ) )
-			->andStatement( $this->newTimeStatement( $this->endPropertyIds[0], $valueEndTimestamp ) )
+			->andStatement( self::newTimeStatement( $startPropertyIds[0], $valueStartTimestamp ) )
+			->andStatement( self::newTimeStatement( $endPropertyIds[0], $valueEndTimestamp ) )
 			->build();
 		$lookup->addEntity( $valueItem );
 		return [
 			$lookup,
 			$subjectItem,
-			$this->getLinkingStatement( $subjectItem, $linkingPropertyId )
+			self::getLinkingStatement( $subjectItem, $linkingPropertyId ),
 		];
 	}
 
@@ -1027,8 +1026,8 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 			$lookup->addEntity( $valueItem );
 		}
 		$constraint = $this->getConstraintMock();
-		$checker = new ContemporaryChecker( $lookup, $this->rangeCheckerHelper, $this->getDefaultConfig() );
-		$statement = $this->getLinkingStatement( $subjectItem, $this->linkingPropertyId );
+		$checker = new ContemporaryChecker( $lookup, $this->rangeCheckerHelper, self::getDefaultConfig() );
+		$statement = self::getLinkingStatement( $subjectItem, $this->linkingPropertyId );
 		$checkResult = $checker->checkConstraint( new MainSnakContext( $subjectItem, $statement ), $constraint );
 		if ( $expectedStatus === CheckResult::STATUS_COMPLIANCE ) {
 			$this->assertCompliance( $checkResult );
@@ -1050,7 +1049,7 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 	 *
 	 * @return NewStatement
 	 */
-	private function newTimeStatement( $extremePropertyId, $timestamp ) {
+	private static function newTimeStatement( $extremePropertyId, $timestamp ) {
 		return NewStatement::forProperty( $extremePropertyId )
 			->withValue(
 				new TimeValue(
@@ -1067,7 +1066,7 @@ class ContemporaryCheckerTest extends \PHPUnit\Framework\TestCase {
 	 *
 	 * @return mixed
 	 */
-	private function getLinkingStatement( Item $subjectItem, $linkingPropertyId ) {
+	private static function getLinkingStatement( Item $subjectItem, $linkingPropertyId ) {
 		return $subjectItem
 			->getStatements()
 			->getByPropertyId( new NumericPropertyId( $linkingPropertyId ) )

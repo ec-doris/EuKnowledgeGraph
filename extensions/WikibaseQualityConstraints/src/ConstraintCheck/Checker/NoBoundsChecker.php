@@ -41,7 +41,7 @@ class NoBoundsChecker implements ConstraintChecker {
 
 		if ( !$snak instanceof PropertyValueSnak ) {
 			// nothing to check
-			return new CheckResult( $context, $constraint, [], CheckResult::STATUS_COMPLIANCE );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_COMPLIANCE );
 		}
 
 		if ( $snak->getDataValue() instanceof QuantityValue ) {
@@ -50,13 +50,12 @@ class NoBoundsChecker implements ConstraintChecker {
 			return new CheckResult(
 				$context,
 				$constraint,
-				[],
 				CheckResult::STATUS_VIOLATION,
 				$message
 			);
 		}
 
-		return new CheckResult( $context, $constraint, [], CheckResult::STATUS_COMPLIANCE );
+		return new CheckResult( $context, $constraint, CheckResult::STATUS_COMPLIANCE );
 	}
 
 	public function checkConstraintParameters( Constraint $constraint ) {

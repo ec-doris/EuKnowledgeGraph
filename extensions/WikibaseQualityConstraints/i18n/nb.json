@@ -5,7 +5,8 @@
 			"Imre Eilertsen",
 			"Jeblad",
 			"Jon Harald Søby",
-			"Kingu"
+			"Kingu",
+			"Amire80"
 		]
 	},
 	"wbqc-constraintreport": "Begrensningsrapporter",
@@ -128,8 +129,8 @@
 	"wbqc-violation-message-type-subclass": "Elementer som bruker egenskapen $1 bør være underklasser av {{PLURAL:$3|1=$5|2=$5 eller $6|en av følgende klasser: $4}} (eller {{PLURAL:$3|en underklasse}}), but $2 er ikke det",
 	"wbqc-violation-message-type-instanceOrSubclass": "Entiteter som bruker egenskapen $1 bør være underklasser av {{PLURAL:$3|$5|2=$5 eller $6|én av følgende klasser}} (eller {{PLURAL:$3|en underklasse av den|2=en underklasse av dem|én av deres underklasser}}), men $2 er for tiden {{PLURAL:$3|ikke det|ikke det: $4}}.",
 	"wbqc-violation-message-valueType-instance": "Verdier i $1-utsagn bør være forekomster av {{PLURAL:$3|1=$5|2=$5 eller $6|en av følgende klasser: $4}} (eller {{PLURAL:$3|en underklasse}}), men $2 er ikke det",
-	"wbqc-violation-message-valueType-subclass": "Verdier i $1-utsagn bør være underklasser av {{PLURAL:$3|1=$5|2=$5 eller $6|en av følgende klasser: $4}} (eller {{PLURAL:$3|en underklasse}}),  men $2 er ikke det",
-	"wbqc-violation-message-valueType-instanceOrSubclass": "Verdier i $1-utsagn bør være forekomst eller underklasse av {{PLURAL:$3|1=$5|2=$5 eller $6|en av følgende klasser: $4}} (eller {{PLURAL:$3|en underklasse}}),  men $2 er ikke det",
+	"wbqc-violation-message-valueType-subclass": "Verdier i $1-utsagn bør være underklasser av {{PLURAL:$3|1=$5|2=$5 eller $6|en av følgende klasser: $4}} (eller {{PLURAL:$3|en underklasse}}), men $2 er ikke det",
+	"wbqc-violation-message-valueType-instanceOrSubclass": "Verdier i $1-utsagn bør være forekomst eller underklasse av {{PLURAL:$3|1=$5|2=$5 eller $6|en av følgende klasser: $4}} (eller {{PLURAL:$3|en underklasse}}), men $2 er ikke det",
 	"wbqc-violation-message-target-required-claim": "$1 bør ha {{PLURAL:$3|0=et $2-utsagn.|1=$2 $5.|et $2-utsagn med en av følgende verdier:$4}}",
 	"wbqc-violation-message-unique-value": "Denne verdien skal ikke finnes for andre elementer, men finnes på {{PLURAL:$1|1=$3.|2=$3 og $4.|følgende elementer: $2}}",
 	"wbqc-violation-message-valueOnly": "Denne egenskapen bør kun brukes for hovedverdien til en påstand, ikke for kvalifikatorer eller referanser.",
@@ -143,6 +144,8 @@
 	"wbqc-violation-message-integer": "Verdier for $1 bør være heltall, men $2 har en desimaldel.",
 	"wbqc-violation-message-integer-bounds": "Verdier for $1 bør være heltall, men grensene til $2 har en desimaldel.",
 	"wbqc-violation-message-citationNeeded": "Påstander for $1 bør ha minst én referanse.",
+	"wbqc-violation-message-language": "Utsagn for $1 bør kun være på leksemer på {{PLURAL:$2|1=$4|2=$4 eller $5|ett av følgende språk: $3}}.",
+	"wbqc-violation-message-label-lacking": "Entiteter med utsagn for $1 bør også ha {{PLURAL:$2|en etikett på $4|etiketter på følgende språk: $3}}.",
 	"wbqc-violation-message-property-scope": "Egenskapen $1 bør ikke brukes for dette stedet ($2). {{PLURAL:$3|Det eneste gyldige stedet|De eneste gyldige stedene}} for denne egenskapen er {{PLURAL:$3|$5|$4}}.",
 	"wbqc-violation-message-exception": "Denne entiteten er et kjent unntak fra denne begrensningen og har blitt merket som det."
 }

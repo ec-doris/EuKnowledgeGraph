@@ -3,10 +3,12 @@
 namespace WikibaseQuality\ConstraintReport\Tests;
 
 use HashConfig;
-use Language;
+use MediaWiki\MediaWikiServices;
+use Message;
 use MockMessageLocalizer;
 use Wikibase\DataModel\Services\EntityId\PlainEntityIdFormatter;
 use Wikibase\Lib\Formatters\UnDeserializableValueFormatter;
+use Wikibase\Lib\TermLanguageFallbackChain;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Message\ViolationMessageRenderer;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Result\CheckResult;
 
@@ -30,9 +32,17 @@ trait ResultAssertions {
 			return '';
 		}
 
+		$userLanguageCode = 'qqx';
+		$languageFallbackChain = $this->createMock( TermLanguageFallbackChain::class );
+		$languageFallbackChain->method( 'getFetchLanguageCodes' )
+			->willReturn( [ $userLanguageCode ] );
+
 		$renderer = new ViolationMessageRenderer(
 			new PlainEntityIdFormatter(),
 			new UnDeserializableValueFormatter(),
+			MediaWikiServices::getInstance()->getLanguageNameUtils(),
+			$userLanguageCode,
+			$languageFallbackChain,
 			new MockMessageLocalizer(),
 			new HashConfig( [
 				'WBQualityConstraintsConstraintCheckedOnMainValueId' => 'Q1',
@@ -76,15 +86,15 @@ trait ResultAssertions {
 		);
 		$resultMessage = $result->getMessage();
 		$resultMessageKey = $resultMessage->getMessageKey();
-		$this->assertNotNull(
-			Language::getMessageFor( $resultMessageKey, 'en' ),
+		$this->assertTrue(
+			( new Message( $resultMessageKey ) )->inLanguage( 'en' )->exists(),
 			"Message should not refer to a non-existing message key (⧼{$resultMessageKey}⧽)."
 		);
 		if ( $messageKey !== null ) {
 			$this->assertSame(
 				$messageKey,
 				$resultMessageKey,
-				"Violation message should be ⧼${messageKey}⧽."
+				"Violation message should be ⧼{$messageKey}⧽."
 			);
 		}
 	}

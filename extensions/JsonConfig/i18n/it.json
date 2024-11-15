@@ -4,7 +4,8 @@
 			"Beta16",
 			"PeppeAeco",
 			"Vanzottico",
-			"Yurik"
+			"Yurik",
+			"Valepert"
 		]
 	},
 	"nstab-data": "Dati",
@@ -34,7 +35,7 @@
 	"jsonconfig-err-url": "Il parametro \"$1\" deve essere un URL valido",
 	"jsonconfig-move-aborted-model": "il modello di configurazione JSON \"$1\" di questa pagina non corrisponde al nuovo modello \"$2\"",
 	"jsonconfig-move-aborted-ns": "il nuovo titolo della pagina non è impostato per contenere la configurazione JSON",
-	"jsonconfig-optional-field": "(opzionale)",
+	"jsonconfig-optional-field": "(facoltativo)",
 	"jsonconfig-type-name-invalid": "non valido",
 	"jsonconfig-type-name-string": "stringa",
 	"jsonconfig-type-name-localized": "localizzato",

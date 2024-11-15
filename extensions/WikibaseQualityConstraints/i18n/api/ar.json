@@ -6,7 +6,6 @@
 			"ديفيد"
 		]
 	},
-	"apihelp-wbcheckconstraints-description": "إجراء عملية تحقق للمحددات على أي عنصر تريد وإرجاع النتيجة.",
 	"apihelp-wbcheckconstraints-summary": "إجراء عملية تحقق للمحددات على أي عنصر تريد وإرجاع النتيجة.",
 	"apihelp-wbcheckconstraints-param-id": "معرف العناصر للحصول على البيانات منه. قيم منفصلة بـ '|'.",
 	"apihelp-wbcheckconstraints-param-claimid": "قائمة غويد تحدد إدعاء للتحقق من تقرير المحددات. قيم منفصلة مع '|'.",

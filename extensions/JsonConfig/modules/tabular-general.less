@@ -4,10 +4,11 @@
  * @file
  * @author Yuri Astrakhan (yurik/at/wikimedia.org)
  * @author Julien Girault (jgirault/at/wikimedia.org)
+ * @author Volker E. (volker.e/at/wikimedia.org)
  * @author Munaf Assaf <massaf@wikimedia.org> (adapted from)
  * @ingroup Extensions
  */
-@import '../lib/wikimedia-ui-base.less';
+@import 'mediawiki.skin.variables.less';
 
 /* Tabular */
 .mw-tabular-default {
@@ -15,8 +16,8 @@
 }
 
 .mw-tabular-error {
-	color: @wmui-color-red50;
-	font-weight: bold;
+	color: @color-error;
+	font-weight: @font-weight-bold;
 }
 
 .mw-tabular caption {
@@ -25,7 +26,7 @@
 }
 
 .mw-tabular table caption {
-	color: @wmui-color-base50;
+	color: #72777d;
 	display: inline-block;
 	margin-bottom: 0.5em;
 	font-size: 10px;
@@ -34,8 +35,8 @@
 }
 
 .mw-tabular-editnotice {
-	background-color: @background-color-framed;
-	color: @wmui-color-base0;
+	background-color: #f8f9fa;
+	color: @color-emphasized;
 	margin: 0.5em 0;
 	padding: 0.5em;
 	border: @border-base;

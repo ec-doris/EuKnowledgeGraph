@@ -1,12 +1,12 @@
 /**
  * Module to fetch nearby articles.
  *
- * @alternateClassName NearbyArticles
+ * @borrows Kartographer.Wikivoyage.NearbyArticles as NearbyArticles
  * @class Kartographer.Wikivoyage.NearbyArticles
  * @singleton
  */
-var fetchArticlesPromise,
-	config = {};
+let fetchArticlesPromise;
+const config = {};
 
 module.exports = {
 	/**
@@ -17,8 +17,7 @@ module.exports = {
 	 *   articles.
 	 */
 	setConfig: function ( obj ) {
-		var key;
-		for ( key in obj ) {
+		for ( const key in obj ) {
 			config[ key ] = obj[ key ];
 		}
 	},
@@ -27,7 +26,7 @@ module.exports = {
 	 * Gets a configuration parameter.
 	 *
 	 * @param {string} configParam
-	 * @return {*}
+	 * @return {string}
 	 */
 	getConfig: function ( configParam ) {
 		return config[ configParam ];

@@ -6,12 +6,13 @@ use NullStatsdDataFactory;
 use Wikibase\DataModel\Entity\EntityIdValue;
 use Wikibase\DataModel\Entity\ItemId;
 use Wikibase\DataModel\Entity\NumericPropertyId;
+use Wikibase\DataModel\Services\Lookup\InMemoryEntityLookup;
 use Wikibase\DataModel\Snak\PropertyNoValueSnak;
 use Wikibase\DataModel\Snak\PropertyValueSnak;
 use Wikibase\DataModel\Snak\Snak;
 use Wikibase\DataModel\Statement\Statement;
-use Wikibase\Repo\Tests\NewItem;
-use Wikibase\Repo\Tests\NewStatement;
+use Wikibase\DataModel\Tests\NewItem;
+use Wikibase\DataModel\Tests\NewStatement;
 use WikibaseQuality\ConstraintReport\Constraint;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Checker\TypeChecker;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\MainSnakContext;
@@ -20,7 +21,6 @@ use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\DummySparqlHelper;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\TypeCheckerHelper;
 use WikibaseQuality\ConstraintReport\Tests\ConstraintParameters;
 use WikibaseQuality\ConstraintReport\Tests\Fake\FakeSnakContext;
-use WikibaseQuality\ConstraintReport\Tests\Helper\JsonFileEntityLookup;
 use WikibaseQuality\ConstraintReport\Tests\ResultAssertions;
 
 /**
@@ -37,7 +37,7 @@ class TypeCheckerTest extends \MediaWikiIntegrationTestCase {
 	use ResultAssertions;
 
 	/**
-	 * @var JsonFileEntityLookup
+	 * @var InMemoryEntityLookup
 	 */
 	private $lookup;
 
@@ -51,24 +51,59 @@ class TypeCheckerTest extends \MediaWikiIntegrationTestCase {
 	 */
 	private $typeSnak;
 
+	/**
+	 * @var string
+	 */
+	private $subclassPid;
+
+	/**
+	 * @var string
+	 */
+	private $instanceOfId;
+
 	protected function setUp(): void {
 		parent::setUp();
-		$this->lookup = new JsonFileEntityLookup( __DIR__ );
+		$this->lookup = new InMemoryEntityLookup();
+		$this->subclassPid = self::getDefaultConfig()->get( 'WBQualityConstraintsSubclassOfId' );
+		$this->instanceOfId = self::getDefaultConfig()->get( 'WBQualityConstraintsInstanceOfId' );
 		$this->checker = new TypeChecker(
 			$this->getConstraintParameterParser(),
 			new TypeCheckerHelper(
 				$this->lookup,
-				$this->getDefaultConfig(),
+				self::getDefaultConfig(),
 				new DummySparqlHelper(),
 				new NullStatsdDataFactory()
 			),
-			$this->getDefaultConfig()
+			self::getDefaultConfig()
 		);
 		$this->typeSnak = new PropertyValueSnak( new NumericPropertyId( 'P1' ), new EntityIdValue( new ItemId( 'Q42' ) ) );
 	}
 
+	private function getItemWithSubclassOfStatement( string $itemId, string $statementItemId ) {
+		$entity = NewItem::withId( new ItemId( $itemId ) )
+			->andStatement(
+				NewStatement::forProperty( $this->subclassPid )
+					->withValue( new ItemId( $statementItemId ) )
+			)
+			->build();
+
+		return $entity;
+	}
+
+	private function getItemWithInstanceOfStatement( string $itemId, string $statementItemId ) {
+		$entity = NewItem::withId( new ItemId( $itemId ) )
+			->andStatement(
+				NewStatement::forProperty( $this->instanceOfId )
+					->withValue( new ItemId( $statementItemId ) )
+			)
+			->build();
+
+		return $entity;
+	}
+
 	public function testTypeConstraintInstanceValid() {
-		$entity = $this->lookup->getEntity( new ItemId( 'Q1' ) );
+		$entity = $this->getItemWithInstanceOfStatement( 'Q1', 'Q100' );
+		$this->lookup->addEntity( $entity );
 		$constraintParameters = array_merge(
 			$this->relationParameter( 'instance' ),
 			$this->classParameter( [ 'Q100', 'Q101' ] )
@@ -80,7 +115,10 @@ class TypeCheckerTest extends \MediaWikiIntegrationTestCase {
 	}
 
 	public function testTypeConstraintInstanceValidWithIndirection() {
-		$entity = $this->lookup->getEntity( new ItemId( 'Q2' ) );
+		$entity = $this->getItemWithInstanceOfStatement( 'Q2', 'Q4' );
+		$otherEntity = $this->getItemWithSubclassOfStatement( 'Q4', 'Q100' );
+		$this->lookup->addEntity( $entity );
+		$this->lookup->addEntity( $otherEntity );
 		$constraintParameters = array_merge(
 			$this->relationParameter( 'instance' ),
 			$this->classParameter( [ 'Q100', 'Q101' ] )
@@ -92,7 +130,14 @@ class TypeCheckerTest extends \MediaWikiIntegrationTestCase {
 	}
 
 	public function testTypeConstraintInstanceValidWithMoreIndirection() {
-		$entity = $this->lookup->getEntity( new ItemId( 'Q3' ) );
+		$entity = $this->getItemWithInstanceOfStatement( 'Q3', 'Q5' );
+		$secondEntity = $this->getItemWithSubclassOfStatement( 'Q5', 'Q4' );
+		$thirdEntity = $this->getItemWithSubclassOfStatement( 'Q4', 'Q100' );
+
+		$this->lookup->addEntity( $entity );
+		$this->lookup->addEntity( $secondEntity );
+		$this->lookup->addEntity( $thirdEntity );
+
 		$constraintParameters = array_merge(
 			$this->relationParameter( 'instance' ),
 			$this->classParameter( [ 'Q100', 'Q101' ] )
@@ -104,7 +149,8 @@ class TypeCheckerTest extends \MediaWikiIntegrationTestCase {
 	}
 
 	public function testTypeConstraintSubclassValid() {
-		$entity = $this->lookup->getEntity( new ItemId( 'Q4' ) );
+		$entity = $this->getItemWithSubclassOfStatement( 'Q4', 'Q100' );
+		$this->lookup->addEntity( $entity );
 		$constraintParameters = array_merge(
 			$this->relationParameter( 'subclass' ),
 			$this->classParameter( [ 'Q100', 'Q101' ] )
@@ -116,19 +162,32 @@ class TypeCheckerTest extends \MediaWikiIntegrationTestCase {
 	}
 
 	public function testTypeConstraintSubclassValidWithIndirection() {
-		$entity = $this->lookup->getEntity( new ItemId( 'Q5' ) );
+		$entity = $this->getItemWithSubclassOfStatement( 'Q5', 'Q4' );
+		$otherEntity = $this->getItemWithSubclassOfStatement( 'Q4', 'Q100' );
+
+		$this->lookup->addEntity( $entity );
+		$this->lookup->addEntity( $otherEntity );
+
 		$constraintParameters = array_merge(
 			$this->relationParameter( 'subclass' ),
 			$this->classParameter( [ 'Q100', 'Q101' ] )
 		);
 		$constraint = $this->getConstraintMock( $constraintParameters );
-
 		$checkResult = $this->checker->checkConstraint( new FakeSnakContext( $this->typeSnak, $entity ), $constraint );
 		$this->assertCompliance( $checkResult );
 	}
 
+	/**
+	 * Given the relation Q6->Q5->Q4->Q100, this tests that Q6->Q100 is still a valid relation
+	 */
 	public function testTypeConstraintSubclassValidWithMoreIndirection() {
-		$entity = $this->lookup->getEntity( new ItemId( 'Q6' ) );
+		$entity = $this->getItemWithSubclassOfStatement( 'Q6', 'Q5' );
+		$secondEntity = $this->getItemWithSubclassOfStatement( 'Q5', 'Q4' );
+		$thirdEntity = $this->getItemWithSubclassOfStatement( 'Q4', 'Q100' );
+		$this->lookup->addEntity( $entity );
+		$this->lookup->addEntity( $secondEntity );
+		$this->lookup->addEntity( $thirdEntity );
+
 		$constraintParameters = array_merge(
 			$this->relationParameter( 'subclass' ),
 			$this->classParameter( [ 'Q100', 'Q101' ] )
@@ -140,7 +199,8 @@ class TypeCheckerTest extends \MediaWikiIntegrationTestCase {
 	}
 
 	public function testTypeConstraintInstanceOrSubclassValidViaInstance() {
-		$entity = $this->lookup->getEntity( new ItemId( 'Q1' ) );
+		$entity = $this->getItemWithInstanceOfStatement( 'Q1', 'Q100' );
+		$this->lookup->addEntity( $entity );
 		$constraintParameters = array_merge(
 			$this->relationParameter( 'instanceOrSubclass' ),
 			$this->classParameter( [ 'Q100', 'Q101' ] )
@@ -152,7 +212,8 @@ class TypeCheckerTest extends \MediaWikiIntegrationTestCase {
 	}
 
 	public function testTypeConstraintInstanceOrSubclassValidViaSubclass() {
-		$entity = $this->lookup->getEntity( new ItemId( 'Q4' ) );
+		$entity = $this->getItemWithSubclassOfStatement( 'Q4', 'Q100' );
+		$this->lookup->addEntity( $entity );
 		$constraintParameters = array_merge(
 			$this->relationParameter( 'instanceOrSubclass' ),
 			$this->classParameter( [ 'Q100', 'Q101' ] )
@@ -164,7 +225,8 @@ class TypeCheckerTest extends \MediaWikiIntegrationTestCase {
 	}
 
 	public function testTypeConstraintInstanceInvalid() {
-		$entity = $this->lookup->getEntity( new ItemId( 'Q1' ) );
+		$entity = $this->getItemWithInstanceOfStatement( 'Q1', 'Q100' );
+		$this->lookup->addEntity( $entity );
 		$constraintParameters = array_merge(
 			$this->relationParameter( 'instance' ),
 			$this->classParameter( [ 'Q200', 'Q201' ] )
@@ -175,8 +237,16 @@ class TypeCheckerTest extends \MediaWikiIntegrationTestCase {
 		$this->assertViolation( $checkResult, 'wbqc-violation-message-type-instance' );
 	}
 
+	/**
+	 * Violation should occur since there's no relation between Q2 and Q200
+	 */
 	public function testTypeConstraintInstanceInvalidWithIndirection() {
-		$entity = $this->lookup->getEntity( new ItemId( 'Q2' ) );
+		$entity = $this->getItemWithInstanceOfStatement( 'Q2', 'Q4' );
+		$otherEntity = $this->getItemWithSubclassOfStatement( 'Q4', 'Q100' );
+
+		$this->lookup->addEntity( $entity );
+		$this->lookup->addEntity( $otherEntity );
+
 		$constraintParameters = array_merge(
 			$this->relationParameter( 'instance' ),
 			$this->classParameter( [ 'Q200', 'Q201' ] )
@@ -188,7 +258,14 @@ class TypeCheckerTest extends \MediaWikiIntegrationTestCase {
 	}
 
 	public function testTypeConstraintInstanceInvalidWithMoreIndirection() {
-		$entity = $this->lookup->getEntity( new ItemId( 'Q3' ) );
+		$entity = $this->getItemWithInstanceOfStatement( 'Q3', 'Q5' );
+		$secondEntity = $this->getItemWithSubclassOfStatement( 'Q5', 'Q4' );
+		$thirdEntity = $this->getItemWithSubclassOfStatement( 'Q4', 'Q100' );
+
+		$this->lookup->addEntity( $entity );
+		$this->lookup->addEntity( $secondEntity );
+		$this->lookup->addEntity( $thirdEntity );
+
 		$constraintParameters = array_merge(
 			$this->relationParameter( 'instance' ),
 			$this->classParameter( [ 'Q200', 'Q201' ] )
@@ -200,7 +277,8 @@ class TypeCheckerTest extends \MediaWikiIntegrationTestCase {
 	}
 
 	public function testTypeConstraintSubclassInvalid() {
-		$entity = $this->lookup->getEntity( new ItemId( 'Q4' ) );
+		$entity = $this->getItemWithSubclassOfStatement( 'Q4', 'Q100' );
+		$this->lookup->addEntity( $entity );
 		$constraintParameters = array_merge(
 			$this->relationParameter( 'subclass' ),
 			$this->classParameter( [ 'Q200', 'Q201' ] )
@@ -212,7 +290,12 @@ class TypeCheckerTest extends \MediaWikiIntegrationTestCase {
 	}
 
 	public function testTypeConstraintSubclassInvalidWithIndirection() {
-		$entity = $this->lookup->getEntity( new ItemId( 'Q5' ) );
+		$entity = $this->getItemWithSubclassOfStatement( 'Q5', 'Q4' );
+		$otherEntity = $this->getItemWithSubclassOfStatement( 'Q4', 'Q100' );
+
+		$this->lookup->addEntity( $entity );
+		$this->lookup->addEntity( $otherEntity );
+
 		$constraintParameters = array_merge(
 			$this->relationParameter( 'subclass' ),
 			$this->classParameter( [ 'Q200', 'Q201' ] )
@@ -224,7 +307,14 @@ class TypeCheckerTest extends \MediaWikiIntegrationTestCase {
 	}
 
 	public function testTypeConstraintSubclassInvalidWithMoreIndirection() {
-		$entity = $this->lookup->getEntity( new ItemId( 'Q6' ) );
+		$entity = $this->getItemWithSubclassOfStatement( 'Q6', 'Q5' );
+		$secondEntity = $this->getItemWithSubclassOfStatement( 'Q5', 'Q4' );
+		$thirdEntity = $this->getItemWithSubclassOfStatement( 'Q4', 'Q100' );
+
+		$this->lookup->addEntity( $entity );
+		$this->lookup->addEntity( $secondEntity );
+		$this->lookup->addEntity( $thirdEntity );
+
 		$constraintParameters = array_merge(
 			$this->relationParameter( 'subclass' ),
 			$this->classParameter( [ 'Q200', 'Q201' ] )
@@ -235,8 +325,16 @@ class TypeCheckerTest extends \MediaWikiIntegrationTestCase {
 		$this->assertViolation( $checkResult, 'wbqc-violation-message-type-subclass' );
 	}
 
+	/**
+	 * Subclass Cycle: Q7 is a subclass of Q8 and vice versa
+	 */
 	public function testTypeConstraintSubclassCycle() {
-		$entity = $this->lookup->getEntity( new ItemId( 'Q7' ) );
+		$entity = $this->getItemWithSubclassOfStatement( 'Q7', 'Q8' );
+		$otherEntity = $this->getItemWithSubclassOfStatement( 'Q8', 'Q7' );
+
+		$this->lookup->addEntity( $entity );
+		$this->lookup->addEntity( $otherEntity );
+
 		$constraintParameters = array_merge(
 			$this->relationParameter( 'instance' ),
 			$this->classParameter( [ 'Q100', 'Q101' ] )
@@ -261,7 +359,9 @@ class TypeCheckerTest extends \MediaWikiIntegrationTestCase {
 	}
 
 	public function testTypeConstraintInstanceValidQualifier() {
-		$entity = $this->lookup->getEntity( new ItemId( 'Q1' ) );
+		$entity = $this->getItemWithInstanceOfStatement( 'Q1', 'Q100' );
+		$this->lookup->addEntity( $entity );
+
 		$constraintParameters = array_merge(
 			$this->relationParameter( 'instance' ),
 			$this->classParameter( [ 'Q100', 'Q101' ] )

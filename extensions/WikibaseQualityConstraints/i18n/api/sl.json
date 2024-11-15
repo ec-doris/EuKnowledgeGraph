@@ -1,15 +1,14 @@
 {
 	"@metadata": {
 		"authors": [
-			"Janezdrilc",
-			"Eleassar"
+			"Eleassar",
+			"Janezdrilc"
 		]
 	},
-	"apihelp-wbcheckconstraints-description": "Izvede preverjanje omejitev katerekoli želene stvari in izpiše rezultat.",
 	"apihelp-wbcheckconstraints-summary": "Izvede preverjanje omejitev katerekoli želene stvari in izpiše rezultat.",
 	"apihelp-wbcheckconstraints-param-id": "Seznam ID-jev entitet, katerih podatki naj se pridobijo. Vrednosti ločite z »|« ali podobnim.",
 	"apihelp-wbcheckconstraints-param-claimid": "Seznam GUID, ki identificira zahtevek za preverjanje poročila o omejitvah. Vrednosti ločite z »|«.",
-	"apihelp-wbcheckconstraints-param-constraintid": "Izbrini filter za vrnitev samo omejitev, ki imajo podani ID omejitve.",
+	"apihelp-wbcheckconstraints-param-constraintid": "Izbirni filter za vrnitev samo tistih omejitev, ki imajo določen ID omejitve.",
 	"apihelp-wbcheckconstraints-param-status": "Izbirni filter za vrnitev samo zadetkov preverjanja z izbranimi statusi.\n\nUpoštevajte, da so predpomnjeni samo zadetki za stanja »violation«, »warning«, »suggestion« in »bad-parameters«, zato zahtevki, ki izberejo katera koli stanja, ki presegajo ta štiri, nso podprti s predpomnjenjem.",
 	"apihelp-wbcheckconstraints-paramvalue-status-compliance": "Izjava je v skladu z omejitvijo.",
 	"apihelp-wbcheckconstraints-paramvalue-status-violation": "Ta izjava krši omejitev.",

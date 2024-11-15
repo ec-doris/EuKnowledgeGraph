@@ -1,5 +1,7 @@
 <?php
 
+declare( strict_types = 1 );
+
 namespace WikibaseQuality\ConstraintReport\Tests\Message;
 
 use Config;
@@ -7,7 +9,7 @@ use DataValues\MonolingualTextValue;
 use DataValues\MultilingualTextValue;
 use DataValues\StringValue;
 use HashConfig;
-use Language;
+use MediaWiki\Languages\LanguageNameUtils;
 use Message;
 use MessageLocalizer;
 use MockMessageLocalizer;
@@ -17,6 +19,7 @@ use Wikibase\DataModel\Entity\ItemId;
 use Wikibase\DataModel\Services\EntityId\EntityIdFormatter;
 use Wikibase\DataModel\Services\EntityId\PlainEntityIdFormatter;
 use Wikibase\Lib\Formatters\UnDeserializableValueFormatter;
+use Wikibase\Repo\WikibaseRepo;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Message\MultilingualTextViolationMessageRenderer;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Message\ViolationMessage;
 use WikibaseQuality\ConstraintReport\Role;
@@ -33,21 +36,15 @@ class MultilingualTextViolationMessageRendererTest extends \MediaWikiIntegration
 	/**
 	 * Create a new MultilingualTextViolationMessageRenderer
 	 * with some constructor arguments defaulting to a simple base implementation.
-	 *
-	 * @param EntityIdFormatter|null $entityIdFormatter
-	 * @param ValueFormatter|null $dataValueFormatter
-	 * @param MessageLocalizer|null $messageLocalizer
-	 * @param Config|null $config
-	 * @param int $maxListLength
-	 * @return MultilingualTextViolationMessageRenderer
 	 */
 	private function newMultilingualTextViolationMessageRenderer(
+		string $userLanguageCode = 'qqx',
 		EntityIdFormatter $entityIdFormatter = null,
 		ValueFormatter $dataValueFormatter = null,
 		MessageLocalizer $messageLocalizer = null,
 		Config $config = null,
-		$maxListLength = 10
-	) {
+		int $maxListLength = 10
+	): MultilingualTextViolationMessageRenderer {
 		if ( $entityIdFormatter === null ) {
 			$entityIdFormatter = new PlainEntityIdFormatter();
 		}
@@ -64,9 +61,16 @@ class MultilingualTextViolationMessageRendererTest extends \MediaWikiIntegration
 				'WBQualityConstraintsConstraintCheckedOnReferencesId' => 'Q3',
 			] );
 		}
+		$languageFallbackChain = WikibaseRepo::getLanguageFallbackChainFactory(
+			$this->getServiceContainer()
+		)->newFromLanguageCode( $userLanguageCode );
+
 		return new MultilingualTextViolationMessageRenderer(
 			$entityIdFormatter,
 			$dataValueFormatter,
+			$this->createMock( LanguageNameUtils::class ),
+			$userLanguageCode,
+			$languageFallbackChain,
 			$messageLocalizer,
 			$config,
 			$maxListLength
@@ -83,7 +87,7 @@ class MultilingualTextViolationMessageRendererTest extends \MediaWikiIntegration
 			->withEntityId( new ItemId( 'Q1' ) )
 			->withDataValue( new StringValue( 'ftp://mirror.example/' ) )
 			->withInlineCode( $code );
-		$renderer = $this->newMultilingualTextViolationMessageRenderer( null, new StringFormatter() );
+		$renderer = $this->newMultilingualTextViolationMessageRenderer( 'qqx', null, new StringFormatter() );
 
 		$rendered = $renderer->render( $message );
 
@@ -104,7 +108,7 @@ class MultilingualTextViolationMessageRendererTest extends \MediaWikiIntegration
 			->withDataValue( new StringValue( 'ftp://mirror.example/' ) )
 			->withInlineCode( 'https?://[^/]+/.*' )
 			->withMultilingualText( $multilingualText );
-		$renderer = $this->newMultilingualTextViolationMessageRenderer( null, new StringFormatter() );
+		$renderer = $this->newMultilingualTextViolationMessageRenderer( 'qqx', null, new StringFormatter() );
 
 		$rendered = $renderer->render( $message );
 
@@ -126,9 +130,8 @@ class MultilingualTextViolationMessageRendererTest extends \MediaWikiIntegration
 			->withDataValue( new StringValue( 'ftp://mirror.example/' ) )
 			->withInlineCode( 'https?://[^/]+/.*' )
 			->withMultilingualText( $multilingualText );
-		$renderer = $this->newMultilingualTextViolationMessageRenderer( null, new StringFormatter() );
+		$renderer = $this->newMultilingualTextViolationMessageRenderer( 'de-at', null, new StringFormatter() );
 
-		$this->setMwGlobals( [ 'wgLang' => Language::factory( 'de-at' ) ] );
 		$rendered = $renderer->render( $message );
 
 		$expected = '(wbqc-violation-message-format-clarification: Q1, ' .
@@ -149,9 +152,8 @@ class MultilingualTextViolationMessageRendererTest extends \MediaWikiIntegration
 			->withDataValue( new StringValue( 'ftp://mirror.example/' ) )
 			->withInlineCode( 'https?://[^/]+/.*' )
 			->withMultilingualText( $multilingualText );
-		$renderer = $this->newMultilingualTextViolationMessageRenderer( null, new StringFormatter() );
+		$renderer = $this->newMultilingualTextViolationMessageRenderer( 'pt', null, new StringFormatter() );
 
-		$this->setMwGlobals( [ 'wgLang' => Language::factory( 'pt' ) ] );
 		$rendered = $renderer->render( $message );
 
 		$expected = '(wbqc-violation-message-format: Q1, ' .
@@ -166,9 +168,8 @@ class MultilingualTextViolationMessageRendererTest extends \MediaWikiIntegration
 	public function testRenderMultilingualText_English() {
 		$text = new MultilingualTextValue( [ new MonolingualTextValue( 'en', 'explanation' ) ] );
 		$role = null;
-		$renderer = $this->newMultilingualTextViolationMessageRenderer( null, new StringFormatter() );
+		$renderer = $this->newMultilingualTextViolationMessageRenderer( 'en', null, new StringFormatter() );
 
-		$this->setMwGlobals( [ 'wgLang' => Language::factory( 'en' ) ] );
 		$params = TestingAccessWrapper::newFromObject( $renderer )
 			->renderMultilingualText( $text, $role );
 
@@ -184,9 +185,8 @@ class MultilingualTextViolationMessageRendererTest extends \MediaWikiIntegration
 	public function testRenderMultilingualText_German() {
 		$text = new MultilingualTextValue( [ new MonolingualTextValue( 'de', 'Erklärung' ) ] );
 		$role = null;
-		$renderer = $this->newMultilingualTextViolationMessageRenderer( null, new StringFormatter() );
+		$renderer = $this->newMultilingualTextViolationMessageRenderer( 'de', null, new StringFormatter() );
 
-		$this->setMwGlobals( [ 'wgLang' => Language::factory( 'de' ) ] );
 		$params = TestingAccessWrapper::newFromObject( $renderer )
 			->renderMultilingualText( $text, $role );
 
@@ -202,9 +202,8 @@ class MultilingualTextViolationMessageRendererTest extends \MediaWikiIntegration
 	public function testRenderMultilingualText_AustrianGermanFallback() {
 		$text = new MultilingualTextValue( [ new MonolingualTextValue( 'de', 'Erklärung' ) ] );
 		$role = null;
-		$renderer = $this->newMultilingualTextViolationMessageRenderer( null, new StringFormatter() );
+		$renderer = $this->newMultilingualTextViolationMessageRenderer( 'de-at', null, new StringFormatter() );
 
-		$this->setMwGlobals( [ 'wgLang' => Language::factory( 'de-at' ) ] );
 		$params = TestingAccessWrapper::newFromObject( $renderer )
 			->renderMultilingualText( $text, $role );
 
@@ -220,9 +219,8 @@ class MultilingualTextViolationMessageRendererTest extends \MediaWikiIntegration
 	public function testRenderMultilingualText_KlingonFallback() {
 		$text = new MultilingualTextValue( [ new MonolingualTextValue( 'en', 'explanation' ) ] );
 		$role = null;
-		$renderer = $this->newMultilingualTextViolationMessageRenderer( null, new StringFormatter() );
+		$renderer = $this->newMultilingualTextViolationMessageRenderer( 'tlh', null, new StringFormatter() );
 
-		$this->setMwGlobals( [ 'wgLang' => Language::factory( 'tlh' ) ] );
 		$params = TestingAccessWrapper::newFromObject( $renderer )
 			->renderMultilingualText( $text, $role );
 
@@ -242,9 +240,8 @@ class MultilingualTextViolationMessageRendererTest extends \MediaWikiIntegration
 			new MonolingualTextValue( 'pt', 'explicação' ),
 		] );
 		$role = null;
-		$renderer = $this->newMultilingualTextViolationMessageRenderer( null, new StringFormatter() );
+		$renderer = $this->newMultilingualTextViolationMessageRenderer( 'pt', null, new StringFormatter() );
 
-		$this->setMwGlobals( [ 'wgLang' => Language::factory( 'pt' ) ] );
 		$params = TestingAccessWrapper::newFromObject( $renderer )
 			->renderMultilingualText( $text, $role );
 
@@ -260,9 +257,8 @@ class MultilingualTextViolationMessageRendererTest extends \MediaWikiIntegration
 	public function testRenderMultilingualText_noFallback() {
 		$text = new MultilingualTextValue( [ new MonolingualTextValue( 'de', 'Erklärung' ) ] );
 		$role = null;
-		$renderer = $this->newMultilingualTextViolationMessageRenderer( null, new StringFormatter() );
+		$renderer = $this->newMultilingualTextViolationMessageRenderer( 'pt', null, new StringFormatter() );
 
-		$this->setMwGlobals( [ 'wgLang' => Language::factory( 'pt' ) ] );
 		$params = TestingAccessWrapper::newFromObject( $renderer )
 			->renderMultilingualText( $text, $role );
 
@@ -275,7 +271,7 @@ class MultilingualTextViolationMessageRendererTest extends \MediaWikiIntegration
 	public function testRenderMultilingualText_noLanguages() {
 		$text = new MultilingualTextValue( [] );
 		$role = null;
-		$renderer = $this->newMultilingualTextViolationMessageRenderer( null, new StringFormatter() );
+		$renderer = $this->newMultilingualTextViolationMessageRenderer( 'qqx', null, new StringFormatter() );
 
 		$params = TestingAccessWrapper::newFromObject( $renderer )
 			->renderMultilingualText( $text, $role );
@@ -290,9 +286,8 @@ class MultilingualTextViolationMessageRendererTest extends \MediaWikiIntegration
 	public function testRenderMultilingualText_withRole() {
 		$text = new MultilingualTextValue( [ new MonolingualTextValue( 'en', 'explanation' ) ] );
 		$role = Role::CONSTRAINT_PARAMETER_VALUE;
-		$renderer = $this->newMultilingualTextViolationMessageRenderer( null, new StringFormatter() );
+		$renderer = $this->newMultilingualTextViolationMessageRenderer( 'en', null, new StringFormatter() );
 
-		$this->setMwGlobals( [ 'wgLang' => Language::factory( 'en' ) ] );
 		$params = TestingAccessWrapper::newFromObject( $renderer )
 			->renderMultilingualText( $text, $role );
 

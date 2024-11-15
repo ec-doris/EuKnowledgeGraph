@@ -1,5 +1,4 @@
-@import 'mediawiki.mixins';
-@import '../lib/external/wikimedia-ui-base';
+@import 'mediawiki.skin.variables.less';
 
 /* stylelint-disable no-descending-specificity */
 .mw-kartographer-interactive {
@@ -11,35 +10,66 @@
 		font-size: 14px;
 		font-family: @font-family-base;
 
-		.marker-description img {
-			width: 100%;
-			height: auto;
-			margin-bottom: 0;
-			margin-top: 0.5em;
+		.marker-description {
+			img {
+				display: block;
+				max-width: 250px;
+				height: auto;
+				max-height: 250px;
+				margin: @spacing-30 auto 0 auto;
+				object-fit: cover;
+			}
+
+			.tleft,
+			.tright {
+				float: none;
+				margin: 0;
+			}
+
+			.thumbinner {
+				width: auto !important; /* stylelint-disable-line declaration-no-important */
+
+				img {
+					max-width: 100%;
+					margin-top: 0;
+				}
+			}
 		}
 
-		a {
-			color: @color-primary;
+		.leaflet-map-pane a {
+			color: @color-progressive;
 
 			&:hover {
-				color: @color-primary--hover;
+				color: @color-progressive--hover;
 				text-decoration: underline;
 			}
 
 			&:active {
-				color: @color-primary--active;
+				color: @color-progressive--active;
 			}
 
 			&:focus {
-				color: @color-primary--focus;
+				color: @color-progressive--focus;
 			}
 
 			// These colors are copied from mediawiki.skinning/elements.css
 			&.new {
-				color: #d33;
+				color: @color-link-red;
 
 				&:visited {
-					color: #a55858;
+					color: @color-link-red--visited;
+				}
+
+				&:hover {
+					color: @color-link-red--hover;
+				}
+
+				&:active {
+					color: @color-link-red--active;
+				}
+
+				&:focus {
+					color: @color-link-red--focus;
 				}
 			}
 		}
@@ -48,7 +78,7 @@
 	/* Leaflet Popups */
 
 	.leaflet-popup-content {
-		padding: 1em;
+		padding: @spacing-75;
 	}
 
 	.leaflet-popup-content .marker-title {
@@ -61,6 +91,10 @@
 
 	.leaflet-popup-content .marker-description {
 		text-align: center;
+	}
+
+	.leaflet-popup-content-wrapper {
+		padding: 0;
 	}
 
 	.leaflet-popup-content-wrapper,
@@ -77,7 +111,7 @@
 	.leaflet-draw-actions,
 	.leaflet-control-layers,
 	.leaflet-bar {
-		background-color: @background-color-framed;
+		background-color: @background-color-interactive-subtle;
 		border: 0;
 		box-shadow: none;
 	}
@@ -90,30 +124,32 @@
 
 	.leaflet-draw-actions a,
 	.leaflet-bar > a {
-		background-color: @background-color-framed; // Override Leaflet.Draw default
+		background-color: @background-color-interactive-subtle; // Override Leaflet.Draw default
 		color: @color-base;
-		.box-sizing( content-box );
+		box-sizing: content-box;
 		border: @border-base;
 		border-radius: @border-radius-base;
 		border-bottom-width: 0;
-		.transition( ~'background-color @transition-ease-quick, color @transition-ease-quick, border-color @transition-ease-quick, box-shadow @transition-ease-quick' );
+		transition-property: @transition-property-base;
+		transition-duration: @transition-duration-base;
 
 		&:hover {
-			background-color: @background-color-framed--hover;
+			background-color: @background-color-base;
+			border-bottom-width: 0;
 			color: @color-base--hover;
-			border-color: @border-color-base--hover;
+			border-color: @border-color-base;
 		}
 
 		&:active {
-			background-color: @background-color-framed--active;
-			color: @color-base--active;
-			border-color: @border-color-base--active;
+			background-color: @background-color-interactive;
+			color: @color-emphasized;
+			border-color: @border-color-interactive;
 		}
 
 		&:focus {
-			border-color: @color-primary--focus;
-			outline: 0;
-			box-shadow: @box-shadow-primary--focus;
+			border-color: @border-color-progressive--focus;
+			outline: @outline-base--focus;
+			box-shadow: @box-shadow-inset-small @box-shadow-color-progressive--focus, @box-shadow-inset-medium @box-shadow-color-inverted;
 		}
 
 		&:only-of-type {
@@ -130,17 +166,17 @@
 		}
 
 		&:last-child {
-			border-bottom: @border-width-base solid;
+			border-bottom: @border-width-base @border-style-base;
 			border-color: @border-color-base;
 
 			&:hover {
-				border-color: @border-color-base--hover;
+				border-color: @border-color-base;
 				border-bottom-width: @border-width-base;
 			}
 
 			&:active {
 				border-bottom-width: @border-width-base;
-				border-color: @border-color-base--active;
+				border-color: @border-color-interactive;
 			}
 
 			&:not( :only-of-type ) {
@@ -154,7 +190,7 @@
 		background-position: center;
 	}
 
-	.leaflet-control-attribution:after,
+	.leaflet-control-attribution::after,
 	.leaflet-control-zoom-in,
 	.leaflet-control-zoom-out,
 	.leaflet-popup-close-button,

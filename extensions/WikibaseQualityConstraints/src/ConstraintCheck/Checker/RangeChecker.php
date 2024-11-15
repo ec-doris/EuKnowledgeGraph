@@ -83,17 +83,16 @@ class RangeChecker implements ConstraintChecker {
 	 */
 	public function checkConstraint( Context $context, Constraint $constraint ) {
 		if ( $context->getSnakRank() === Statement::RANK_DEPRECATED ) {
-			return new CheckResult( $context, $constraint, [], CheckResult::STATUS_DEPRECATED );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_DEPRECATED );
 		}
 
-		$parameters = [];
 		$constraintParameters = $constraint->getConstraintParameters();
 
 		$snak = $context->getSnak();
 
 		if ( !$snak instanceof PropertyValueSnak ) {
 			// nothing to check
-			return new CheckResult( $context, $constraint, $parameters, CheckResult::STATUS_COMPLIANCE );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_COMPLIANCE );
 		}
 
 		$dataValue = $snak->getDataValue();
@@ -103,13 +102,6 @@ class RangeChecker implements ConstraintChecker {
 			$constraint->getConstraintTypeItemId(),
 			$dataValue->getType()
 		);
-		$parameterKey = $dataValue->getType() === 'quantity' ? 'quantity' : 'date';
-		if ( $min !== null ) {
-			$parameters['minimum_' . $parameterKey] = [ $min ];
-		}
-		if ( $max !== null ) {
-			$parameters['maximum_' . $parameterKey] = [ $max ];
-		}
 
 		if ( $this->rangeCheckerHelper->getComparison( $min, $dataValue ) > 0 ||
 			 $this->rangeCheckerHelper->getComparison( $dataValue, $max ) > 0
@@ -136,7 +128,7 @@ class RangeChecker implements ConstraintChecker {
 			$dependencyMetadata = DependencyMetadata::blank();
 		}
 
-		return ( new CheckResult( $context, $constraint, $parameters, $status, $message ) )
+		return ( new CheckResult( $context, $constraint, $status, $message ) )
 			->withMetadata( Metadata::ofDependencyMetadata( $dependencyMetadata ) );
 	}
 

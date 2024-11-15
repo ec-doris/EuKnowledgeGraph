@@ -11,10 +11,10 @@ use Wikibase\DataModel\Snak\PropertySomeValueSnak;
 use Wikibase\DataModel\Snak\PropertyValueSnak;
 use Wikibase\DataModel\Snak\SnakList;
 use Wikibase\DataModel\Statement\Statement;
+use Wikibase\DataModel\Tests\NewItem;
+use Wikibase\DataModel\Tests\NewStatement;
 use Wikibase\Lib\Units\CSVUnitStorage;
 use Wikibase\Lib\Units\UnitConverter;
-use Wikibase\Repo\Tests\NewItem;
-use Wikibase\Repo\Tests\NewStatement;
 use WikibaseQuality\ConstraintReport\Constraint;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Checker\DiffWithinRangeChecker;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\MainSnakContext;
@@ -125,7 +125,7 @@ class DiffWithinRangeCheckerTest extends \MediaWikiIntegrationTestCase {
 
 	protected function setUp(): void {
 		parent::setUp();
-		$config = $this->getDefaultConfig();
+		$config = self::getDefaultConfig();
 		$yearUnit = $config->get( 'WBQualityConstraintsYearUnit' );
 		$this->dob0to150Parameters = array_merge(
 			$this->propertyParameter( 'P569' ),
@@ -566,7 +566,7 @@ class DiffWithinRangeCheckerTest extends \MediaWikiIntegrationTestCase {
 	}
 
 	public function testDiffWithinRangeConstraint_yearQuantityInYearRange() {
-		$yearUnit = $this->getDefaultConfig()->get( 'WBQualityConstraintsYearUnit' );
+		$yearUnit = self::getDefaultConfig()->get( 'WBQualityConstraintsYearUnit' );
 		$subtrahendStatement = NewStatement::forProperty( 'P1' )
 			->withValue( UnboundedQuantityValue::newFromNumber( 0, $yearUnit ) )
 			->build();

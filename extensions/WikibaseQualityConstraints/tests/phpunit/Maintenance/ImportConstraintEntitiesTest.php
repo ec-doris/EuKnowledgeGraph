@@ -5,20 +5,21 @@ namespace WikibaseQuality\ConstraintReport\Tests\Maintenance;
 use HashConfig;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Tests\Maintenance\MaintenanceBaseTestCase;
+use MediaWiki\WikiMap\WikiMap;
 use Wikibase\DataModel\Entity\Item;
+use Wikibase\DataModel\Tests\NewItem;
 use Wikibase\InternalSerialization\Deserializers\EntityDeserializer;
 use Wikibase\Lib\Store\EntityRevision;
 use Wikibase\Lib\Store\EntityStore;
 use Wikibase\Lib\Store\StorageException;
-use Wikibase\Repo\Tests\NewItem;
 use Wikibase\Repo\WikibaseRepo;
 use WikibaseQuality\ConstraintReport\Maintenance\ImportConstraintEntities;
-use WikiMap;
 
 /**
  * @covers \WikibaseQuality\ConstraintReport\Maintenance\ImportConstraintEntities
  *
  * @group WikibaseQualityConstraints
+ * @group Database
  *
  * @author Lucas Werkmeister
  * @license GPL-2.0-or-later
@@ -97,8 +98,8 @@ class ImportConstraintEntitiesTest extends MaintenanceBaseTestCase {
 
 		$localEntityArray = json_decode( $this->getActualOutput(), true );
 		$this->assertSame( 'type constraint', $localEntityArray['labels']['en']['value'] );
-		$this->assertEmpty( $localEntityArray['sitelinks'] );
-		$this->assertEmpty( $localEntityArray['claims'] );
+		$this->assertSame( [], $localEntityArray['sitelinks'] );
+		$this->assertSame( [], $localEntityArray['claims'] );
 	}
 
 	public function testImportEntityFromJson() {
@@ -112,11 +113,11 @@ class ImportConstraintEntitiesTest extends MaintenanceBaseTestCase {
 			->getEntity( WikibaseRepo::getEntityIdParser()->parse( $localEntityId ) );
 		$this->assertInstanceOf( Item::class, $localEntity );
 		$this->assertSame( 'type constraint', $localEntity->getLabels()->getByLanguage( 'en' )->getText() );
-		$this->assertEmpty( $localEntity->getSiteLinkList()->toArray() );
-		$this->assertEmpty( $localEntity->getStatements()->toArray() );
+		$this->assertSame( [], $localEntity->getSiteLinkList()->toArray() );
+		$this->assertSame( [], $localEntity->getStatements()->toArray() );
 	}
 
-	public function provideStorageExceptions() {
+	public static function provideStorageExceptions() {
 		yield 'item in separate namespace' => [
 			new StorageException(
 				'Item [[Item:Q475|Q475]] already has label "as references" ' .

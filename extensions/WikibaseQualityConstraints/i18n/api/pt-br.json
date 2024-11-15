@@ -6,7 +6,6 @@
 			"Felipe L. Ewald"
 		]
 	},
-	"apihelp-wbcheckconstraints-description": "Executa verificações de restrição em qualquer entidade que deseja e retorna o resultado.",
 	"apihelp-wbcheckconstraints-summary": "Executa verificações de restrição em qualquer entidade que deseja e retorna o resultado.",
 	"apihelp-wbcheckconstraints-param-id": "Lista de ID das entidades para obter os dados. Separar valores com '|' ou alternativa.",
 	"apihelp-wbcheckconstraints-param-claimid": "Uma lista GUID identificando uma reivindicação para verificar um relatório de restrição. Separar valores com '|'.",

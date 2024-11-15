@@ -3,8 +3,8 @@
 namespace WikibaseQuality\ConstraintReport\Tests\Job;
 
 use Job;
+use MediaWiki\Title\Title;
 use MediaWikiIntegrationTestCase;
-use Title;
 use Wikibase\DataModel\Entity\ItemId;
 use WikibaseQuality\ConstraintReport\Api\CachingResultsSource;
 use WikibaseQuality\ConstraintReport\Job\CheckConstraintsJob;
@@ -49,7 +49,7 @@ class CheckConstraintsJobTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame(
 			[
 				'type' => CheckConstraintsJob::COMMAND,
-				'params' => $params
+				'params' => $params,
 			],
 			$job->getDeduplicationInfo()
 		);
@@ -61,7 +61,7 @@ class CheckConstraintsJobTest extends MediaWikiIntegrationTestCase {
 		$resultSource = $this->createMock( CachingResultsSource::class );
 		$resultSource->expects( $this->once() )
 			->method( 'getResults' )
-			->with( $this->equalTo( [ new ItemId( self::ENTITY_ID ) ] ) );
+			->with( [ new ItemId( self::ENTITY_ID ) ] );
 
 		$job = $this->createJob( self::JOB_TITLE_STRING, [ 'entityId' => self::ENTITY_ID ] );
 		$job->setResultsSource( $resultSource );

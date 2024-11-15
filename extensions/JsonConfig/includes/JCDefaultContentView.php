@@ -69,7 +69,7 @@ class JCDefaultContentView extends JCContentView {
 			} elseif ( $isList ) {
 				$res = implode( ', ', $rows );
 				// HACK: The space prevents caller from treating it as a complex value
-				if ( substr( $res, 0, 1 ) === '<' ) {
+				if ( str_starts_with( $res, '<' ) ) {
 					$res = ' ' . $res;
 				}
 			} else {
@@ -78,11 +78,7 @@ class JCDefaultContentView extends JCContentView {
 						Html::rawElement( 'tbody', [], implode( "\n", $rows ) ) );
 			}
 		} else {
-			if ( is_string( $data ) ) {
-				$res = $data;
-			} else {
-				$res = FormatJson::encode( $data );
-			}
+			$res = is_string( $data ) ? $data : FormatJson::encode( $data );
 			$res = htmlspecialchars( $res );
 		}
 
@@ -116,8 +112,8 @@ class JCDefaultContentView extends JCContentView {
 		$tdVal = $this->renderValue( $content, $data, $path );
 		// If html begins with a '<', its a complex object, and should not have a class
 		$attribs = [];
-		if ( substr( $tdVal, 0, 1 ) !== '<' ) {
-			$attribs = [ 'class' => 'mw-jsonconfig-value' ];
+		if ( !str_starts_with( $tdVal, '<' ) ) {
+			$attribs['class'] = 'mw-jsonconfig-value';
 		}
 		$td = Html::rawElement( 'td', $attribs, $tdVal );
 

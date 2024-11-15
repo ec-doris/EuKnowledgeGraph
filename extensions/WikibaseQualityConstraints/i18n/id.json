@@ -4,7 +4,8 @@
 			"Daud I.F. Argana",
 			"Pebaryan",
 			"RXerself",
-			"Zakiy"
+			"Zakiy",
+			"Amire80"
 		]
 	},
 	"wbqc-constraintreport": "Laporan pewatas",
@@ -118,7 +119,7 @@
 	"wbqc-violation-message-range-time-rightopen-leftnow": "Nilai untuk $1 ($2) tidak bisa berada di masa lalu.",
 	"wbqc-violation-message-single-value": "Atribut ini sebaiknya hanya memiliki satu nilai.",
 	"wbqc-violation-message-single-value-separators": "Atribut ini sebaiknya hanya memiliki satu nilai dengan penjelas {{PLURAL:$2|1=$4.|berikut: $3}}",
-	"wbqc-violation-message-single-best-value-no-preferred": "Atribut ini seharusnya memiliki satu nilai dengan \"peringkat  utama\". Mohon pilih salah satu.",
+	"wbqc-violation-message-single-best-value-no-preferred": "Atribut ini seharusnya memiliki satu nilai dengan \"peringkat utama\". Mohon pilih salah satu.",
 	"wbqc-violation-message-single-best-value-no-preferred-separators": "Atribut ini seharusnya memiliki satu nilai dengan \"peringkat utama\" dan {{PLURAL:$2|1=penjelas $4.|penjelas: $3}}.",
 	"wbqc-violation-message-single-best-value-multi-preferred": "Atribut ini seharusnya memiliki hanya satu nilai dengan \"peringkat utama\".",
 	"wbqc-violation-message-single-best-value-multi-preferred-separators": "Atribut ini seharusnya memiliki hanya satu nilai dengan {{PLURAL:$2|1=penjelas $4.|penjelas: $3}}",

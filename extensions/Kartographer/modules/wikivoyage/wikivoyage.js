@@ -1,18 +1,21 @@
 /**
  * Utility methods.
  *
- * @alternateClassName wikivoyage
+ * @borrows Kartographer.Wikivoyage.wikivoyage as wikivoyage
  * @class Kartographer.Wikivoyage.wikivoyage
  * @singleton
  */
-var tileLayerDefs = {},
-	areExternalAllowed,
-	windowManager,
-	messageDialog,
-	STORAGE_KEY = 'mwKartographerExternalSources',
-	pathToKartographerImages = mw.config.get( 'wgExtensionAssetsPath' ) +
-		'/Kartographer/modules/wikivoyage/images/';
+const tileLayerDefs = {};
+let areExternalAllowed;
+let windowManager;
+let messageDialog;
+const STORAGE_KEY = 'mwKartographerExternalSources';
+const pathToKartographerImages = mw.config.get( 'wgExtensionAssetsPath' ) +
+'/Kartographer/modules/wikivoyage/images/';
 
+/**
+ * @return {OO.ui.WindowManager}
+ */
 function getWindowManager() {
 	if ( windowManager ) {
 		return windowManager;
@@ -24,6 +27,9 @@ function getWindowManager() {
 	return windowManager;
 }
 
+/**
+ * @return {OO.ui.WindowInstance}
+ */
 function alertExternalData() {
 	return getWindowManager().openWindow( messageDialog, {
 		title: mw.msg( 'kartographer-wv-warning-external-source-title' ),
@@ -63,16 +69,27 @@ module.exports = {
 		return this;
 	},
 
+	/**
+	 * @param {string} id
+	 * @return {{layer: L.TileLayer, name: string}}
+	 */
 	createTileLayer: function ( id ) {
-		var layerDefs = tileLayerDefs[ id ];
+		const layerDefs = tileLayerDefs[ id ];
 		return {
 			layer: new L.TileLayer( layerDefs.url, layerDefs.options ),
 			name: this.formatLayerName( layerDefs.options.wvName, layerDefs.options )
 		};
 	},
 
+	/**
+	 * @param {string} name
+	 * @param {Object} [options]
+	 * @param {boolean} [options.wvIsExternal]
+	 * @param {boolean} [options.wvIsWMF]
+	 * @return {string} HTML
+	 */
 	formatLayerName: function ( name, options ) {
-		var icon = '';
+		let icon = '';
 		options = options || {};
 		if ( options.wvIsExternal ) {
 			icon = new OO.ui.IconWidget( {
@@ -106,7 +123,6 @@ module.exports = {
 	 */
 	isAllowed: function ( layer ) {
 		return mw.loader.using( 'mediawiki.storage' ).then( function () {
-
 			if ( areExternalAllowed === undefined ) {
 				areExternalAllowed = mw.storage.get( STORAGE_KEY ) === '1';
 			}
@@ -123,6 +139,5 @@ module.exports = {
 				}
 			} );
 		} );
-
 	}
 };

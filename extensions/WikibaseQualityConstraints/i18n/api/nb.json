@@ -4,7 +4,6 @@
 			"Jon Harald Søby"
 		]
 	},
-	"apihelp-wbcheckconstraints-description": "Utfører begrensningssjekk på de entitetene du ønsker og returnerer resultatet.",
 	"apihelp-wbcheckconstraints-summary": "Utfører begrensningssjekk på de entitetene du ønsker og returnerer resultatet.",
 	"apihelp-wbcheckconstraints-param-id": "ID-liste over entiteter du ønsker å hente data fra. Atskill verdier med «|» eller alternativer.",
 	"apihelp-wbcheckconstraints-param-claimid": "GUID-liste som identifiserer en påstand for å sjekke en begrensningsrapport. Atskill verdier med «|».",

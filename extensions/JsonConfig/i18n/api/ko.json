@@ -5,7 +5,6 @@
 			"Ykhwong"
 		]
 	},
-	"apihelp-jsonconfig-description": "JsonConfig 하위 시스템으로의 직접 접근을 허용합니다.",
 	"apihelp-jsonconfig-summary": "JsonConfig 하위 시스템으로의 직접 접근을 허용합니다.",
 	"apihelp-jsonconfig-param-namespace": "처리할 제목의 이름공간 숫자.",
 	"apihelp-jsonconfig-param-title": "네임스페이스의 어미가 없는 타이틀",

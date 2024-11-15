@@ -11,8 +11,8 @@ use IBufferingStatsdDataFactory;
 use InvalidArgumentException;
 use MapCacheLRU;
 use MediaWiki\Http\HttpRequestFactory;
-use MWException;
 use MWHttpRequest;
+use UnexpectedValueException;
 use WANObjectCache;
 use Wikibase\DataModel\Entity\EntityId;
 use Wikibase\DataModel\Entity\EntityIdParser;
@@ -366,15 +366,17 @@ EOF;
 		Statement $statement,
 		array $separators
 	) {
-		$pid = $statement->getPropertyId()->serialize();
-		$guid = str_replace( '$', '-', $statement->getGuid() );
+		$pid = $statement->getPropertyId()->getSerialization();
+		$guid = $statement->getGuid();
+		'@phan-var string $guid'; // statement must have a non-null GUID
+		$guidForRdf = str_replace( '$', '-', $guid );
 
 		$separatorFilters = array_map( [ $this, 'nestedSeparatorFilter' ], $separators );
 		$finalSeparatorFilter = implode( "\n", $separatorFilters );
 
 		$query = <<<EOF
 SELECT DISTINCT ?otherEntity WHERE {
-  BIND(wds:$guid AS ?statement)
+  BIND(wds:$guidForRdf AS ?statement)
   BIND(p:$pid AS ?p)
   BIND(ps:$pid AS ?ps)
   ?entity ?p ?statement.
@@ -628,7 +630,7 @@ EOF;
 				$matches['type'] == ConstraintParameterException::class ) {
 				throw $this->deserializeConstraintParameterException( $matches );
 			} else {
-				throw new MWException(
+				throw new UnexpectedValueException(
 					'Value of unknown type in object cache (' .
 					'cache key: ' . $cacheKey . ', ' .
 					'cache map key: ' . $textHash . ', ' .

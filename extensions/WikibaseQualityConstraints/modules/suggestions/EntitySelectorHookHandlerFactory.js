@@ -41,15 +41,29 @@ module.exports = function ( $, mw, config, isQualifierContext, getMainSnakProper
 			var data = [],
 				item = null;
 			ids.forEach( function ( id ) {
+				var filterTerm = '';
 				item = {
 					id: id,
-					label: ld.entities[ id ] && ld.entities[ id ].labels && ld.entities[ id ].labels[ language ] && ld.entities[ id ].labels[ language ].value || '',
-					description: ld.entities[ id ] && ld.entities[ id ].descriptions && ld.entities[ id ].descriptions[ language ] && ld.entities[ id ].descriptions[ language ].value || '',
+					display: {},
 					rating: 1,
 					url: articlePathPattern.replace( '$1', 'Special:EntityPage/' + id )
 				};
 
-				if ( !filter( item.label + item.description ) && ( item.label !== '' || item.description !== '' ) ) {
+				try {
+					item.display.label = ld.entities[ id ].labels[ language ];
+					filterTerm += item.display.label.value;
+				} catch ( _ ) {
+					// no label, ignore
+				}
+
+				try {
+					item.display.description = ld.entities[ id ].descriptions[ language ];
+					filterTerm += item.display.description.value;
+				} catch ( _ ) {
+					// no description, ignore
+				}
+
+				if ( !filter( filterTerm ) && ( item.display.label || item.display.description ) ) {
 					data.push( item );
 				}
 

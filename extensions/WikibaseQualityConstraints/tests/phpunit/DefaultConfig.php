@@ -10,27 +10,24 @@ use HashConfig;
  */
 trait DefaultConfig {
 
-	/**
-	 * @var HashConfig
-	 */
-	private $defaultConfig;
+	private static ?HashConfig $defaultConfig = null;
 
-	public function getDefaultConfig() {
-		if ( $this->defaultConfig === null ) {
-			$this->defaultConfig = new HashConfig();
+	public static function getDefaultConfig(): HashConfig {
+		if ( self::$defaultConfig === null ) {
+			self::$defaultConfig = new HashConfig();
 			$extensionJsonFile = __DIR__ . '/../../extension.json';
 			$extensionJsonText = file_get_contents( $extensionJsonFile );
 			$extensionJson = json_decode( $extensionJsonText, /* assoc = */ true );
 			foreach ( $extensionJson['config'] as $key => $value ) {
-				$this->defaultConfig->set( $key, $value['value'] );
+				self::$defaultConfig->set( $key, $value['value'] );
 			}
 			// reduce some limits to make tests run faster
-			$this->defaultConfig->set( 'WBQualityConstraintsTypeCheckMaxEntities', 10 );
+			self::$defaultConfig->set( 'WBQualityConstraintsTypeCheckMaxEntities', 10 );
 			// never query remote servers
-			$this->defaultConfig->set( 'WBQualityConstraintsSparqlEndpoint', 'http://localhost:65536/' );
+			self::$defaultConfig->set( 'WBQualityConstraintsSparqlEndpoint', 'http://localhost:65536/' );
 		}
 
-		return $this->defaultConfig;
+		return clone self::$defaultConfig;
 	}
 
 }

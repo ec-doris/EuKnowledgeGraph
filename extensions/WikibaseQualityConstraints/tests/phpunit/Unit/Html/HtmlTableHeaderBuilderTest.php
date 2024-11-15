@@ -31,22 +31,22 @@ class HtmlTableHeaderBuilderTest extends \MediaWikiUnitTestCase {
 	/**
 	 * Test cases for testConstruct
 	 */
-	public function constructDataProvider() {
+	public static function constructDataProvider() {
 		return [
 			[
 				'foobar',
-				true
+				true,
 			],
 			[
 				42,
 				true,
-				InvalidArgumentException::class
+				InvalidArgumentException::class,
 			],
 			[
 				'fooar',
 				42,
-				InvalidArgumentException::class
-			]
+				InvalidArgumentException::class,
+			],
 		];
 	}
 
@@ -63,18 +63,18 @@ class HtmlTableHeaderBuilderTest extends \MediaWikiUnitTestCase {
 	/**
 	 * Test cases for testToHtml
 	 */
-	public function toHtmlDataProvider() {
+	public static function toHtmlDataProvider() {
 		return [
 			[
 				'foobar',
 				true,
-				'<th role="columnheader button">foobar</th>'
+				'<th role="columnheader button">foobar</th>',
 			],
 			[
 				'foobar',
 				false,
-				'<th role="columnheader button" class="unsortable">foobar</th>'
-			]
+				'<th role="columnheader button" class="unsortable">foobar</th>',
+			],
 		];
 	}
 

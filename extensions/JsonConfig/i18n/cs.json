@@ -4,5 +4,13 @@
 			"Mormegil"
 		]
 	},
-	"jsonconfig-desc": "Umožňuje do wiki ukládat konfiguraci v JSON"
+	"nstab-data": "Data",
+	"tooltip-ca-nstab-data": "Zobrazit stránku s daty",
+	"jsonconfig-desc": "Umožňuje do wiki ukládat konfiguraci v JSON",
+	"jsonconfig-duplicate-field": "Nalezena více než jedna hodnota pro „$1“",
+	"jsonconfig-edit-action-apply": "Použít",
+	"jsonconfig-edit-action-cancel": "Storno",
+	"jsonconfig-edit-button-label": "Editovat jako tabulku",
+	"jsonconfig-edit-dialog-error": "Nelze editovat jako tabulku: $1",
+	"jsonconfig-edit-dialog-error-data-inavlid": "Data neodpovídají schématu"
 }

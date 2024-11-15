@@ -1,9 +1,14 @@
 {
 	"@metadata": {
 		"authors": [
-			"Bjh21"
+			"Bjh21",
+			"Piano1forte2",
+			"Reedy",
+			"Shirayuki"
 		]
 	},
 	"jsonconfig-err-license": "Parameter \"$1\" must be one of the valid licence codes, for example $2",
-	"jsonconfig-license-not-set": "When you edit this page, you agree to release your contribution according to the licence specified in the <code>licence</code> field."
+	"jsonconfig-type-name-localized": "localised",
+	"jsonconfig-license-not-set": "When you edit this page, you agree to release your contribution according to the licence specified in the <code>licence</code> field.",
+	"jsonconfig-license-name-GeoNutzV": "Geo Data licence Germany"
 }

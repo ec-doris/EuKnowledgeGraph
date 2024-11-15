@@ -277,7 +277,7 @@ class ViolationMessageDeserializerTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame( $contextType, $deserialized );
 	}
 
-	public function provideContextTypeAbbreviations() {
+	public static function provideContextTypeAbbreviations() {
 		return [
 			[ 's', Context::TYPE_STATEMENT ],
 			[ 'q', Context::TYPE_QUALIFIER ],

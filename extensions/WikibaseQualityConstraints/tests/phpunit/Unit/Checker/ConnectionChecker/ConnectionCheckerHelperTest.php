@@ -35,7 +35,7 @@ class ConnectionCheckerHelperTest extends \MediaWikiUnitTestCase {
 
 	protected function setUp(): void {
 		parent::setUp();
-		$this->statementList = new StatementList( [
+		$this->statementList = new StatementList(
 			new Statement( new PropertyValueSnak( new NumericPropertyId( 'P1' ), new EntityIdValue( new ItemId( 'Q1' ) ) ) ),
 			new Statement( new PropertyValueSnak( new NumericPropertyId( 'P2' ), new EntityIdValue( new ItemId( 'Q2' ) ) ) ),
 			new Statement( new PropertyValueSnak(
@@ -44,7 +44,7 @@ class ConnectionCheckerHelperTest extends \MediaWikiUnitTestCase {
 			) ),
 			new Statement( new PropertySomeValueSnak( new NumericPropertyId( 'P1' ) ) ),
 			new Statement( new PropertyNoValueSnak( new NumericPropertyId( 'P2' ) ) )
-		] );
+		);
 		$this->connectionCheckerHelper = new ConnectionCheckerHelper();
 	}
 
@@ -154,7 +154,7 @@ class ConnectionCheckerHelperTest extends \MediaWikiUnitTestCase {
 			[
 				ItemIdSnakValue::noValue(),
 				ItemIdSnakValue::fromItemId( new ItemId( 'Q100' ) ),
-				ItemIdSnakValue::fromItemId( new ItemId( 'Q1' ) )
+				ItemIdSnakValue::fromItemId( new ItemId( 'Q1' ) ),
 			]
 		);
 

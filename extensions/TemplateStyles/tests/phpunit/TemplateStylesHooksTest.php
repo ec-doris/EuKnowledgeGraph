@@ -5,6 +5,7 @@ use MediaWiki\Extension\TemplateStyles\TemplateStylesContent;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\MutableRevisionRecord;
 use MediaWiki\Revision\SlotRecord;
+use MediaWiki\Title\Title;
 use Wikimedia\AtEase\AtEase;
 use Wikimedia\CSS\Parser\Parser as CSSParser;
 
@@ -113,7 +114,7 @@ class TemplateStylesHooksTest extends MediaWikiLangTestCase {
 		);
 
 		$model = 'unchanged';
-		$ret = TemplateStylesHooks::onContentHandlerDefaultModelFor(
+		$ret = ( new TemplateStylesHooks )->onContentHandlerDefaultModelFor(
 			Title::makeTitle( $ns, $title ), $model
 		);
 		$this->assertSame( !$expect, $ret );
@@ -299,10 +300,10 @@ class TemplateStylesHooksTest extends MediaWikiLangTestCase {
 				// phpcs:disable Generic.Files.LineLength
 				trim( '
 <div class="templatestyles-test"><style data-mw-deduplicate="TemplateStyles:r{{REV:styles1.css}}/templatestyles-test">.templatestyles-test .foo{color:blue}</style>
-<link rel="mw-deduplicated-inline-style" href="mw-data:TemplateStyles:r{{REV:styles1.css}}/templatestyles-test"/>
+<link rel="mw-deduplicated-inline-style" href="mw-data:TemplateStyles:r{{REV:styles1.css}}/templatestyles-test">
 <style data-mw-deduplicate="TemplateStyles:r{{REV:styles2.css}}/templatestyles-test">.templatestyles-test .bar{color:green}</style>
-<link rel="mw-deduplicated-inline-style" href="mw-data:TemplateStyles:r{{REV:styles1.css}}/templatestyles-test"/>
-<link rel="mw-deduplicated-inline-style" href="mw-data:TemplateStyles:r{{REV:styles2.css}}/templatestyles-test"/></div>
+<link rel="mw-deduplicated-inline-style" href="mw-data:TemplateStyles:r{{REV:styles1.css}}/templatestyles-test">
+<link rel="mw-deduplicated-inline-style" href="mw-data:TemplateStyles:r{{REV:styles2.css}}/templatestyles-test"></div>
 				' ),
 				// phpcs:enable
 			],
@@ -336,10 +337,10 @@ class TemplateStylesHooksTest extends MediaWikiLangTestCase {
 				// phpcs:disable Generic.Files.LineLength
 				trim( '
 <div class="mw-parser-output"><style data-mw-deduplicate="TemplateStyles:r{{REV:styles1.css}}">.mw-parser-output .foo{color:blue}</style>
-<link rel="mw-deduplicated-inline-style" href="mw-data:TemplateStyles:r{{REV:styles1.css}}"/>
+<link rel="mw-deduplicated-inline-style" href="mw-data:TemplateStyles:r{{REV:styles1.css}}">
 <style data-mw-deduplicate="TemplateStyles:r{{REV:styles1.css}}/mw-parser-output/.foobar">.mw-parser-output .foobar .foo{color:blue}</style>
 <style data-mw-deduplicate="TemplateStyles:r{{REV:styles1.css}}/mw-parser-output/.foobaz">.mw-parser-output .foobaz .foo{color:blue}</style>
-<link rel="mw-deduplicated-inline-style" href="mw-data:TemplateStyles:r{{REV:styles1.css}}/mw-parser-output/.foobar"/></div>
+<link rel="mw-deduplicated-inline-style" href="mw-data:TemplateStyles:r{{REV:styles1.css}}/mw-parser-output/.foobar"></div>
 				' ),
 				// phpcs:enable
 			],

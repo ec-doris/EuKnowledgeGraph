@@ -2,13 +2,18 @@
  * Module to add {@link Kartographer.Wikivoyage.ControlLayers} control to the
  * map and add the tile layers and overlays.
  *
- * @alternateClassName WVMapLayers
+ * @borrows Kartograhper.Wikivoyage as WVMapLayers
  * @class Kartographer.Wikivoyage.WVMapLayers
  * @private
  */
-var wikivoyage = require( './wikivoyage.js' ),
-	ControlLayers = require( './ControlLayers.js' );
+const wikivoyage = require( './wikivoyage.js' );
+const ControlLayers = require( './ControlLayers.js' );
 
+/**
+ * @constructor
+ * @memberof Kartographer.Wikivoyage.WVMapLayers
+ * @param {L.Map} map
+ */
 function WVMapLayers( map ) {
 	this.map = map;
 	this.control = new ControlLayers();
@@ -30,6 +35,11 @@ function WVMapLayers( map ) {
  * @chainable
  */
 WVMapLayers.prototype.addLayer = function ( layer, name, overlay ) {
+	// Don't add controls for unnamed groups
+	if ( name && name.charAt( 0 ) === '_' ) {
+		return;
+	}
+
 	// eslint-disable-next-line no-underscore-dangle
 	this.control._addLayer( layer, name, overlay );
 	return this;
@@ -53,7 +63,7 @@ WVMapLayers.prototype.update = function () {
  * @chainable
  */
 WVMapLayers.prototype.basemap = function ( id ) {
-	var tileLayer = wikivoyage.createTileLayer( id );
+	const tileLayer = wikivoyage.createTileLayer( id );
 	this.addLayer( tileLayer.layer, tileLayer.name );
 	return this;
 };
@@ -65,7 +75,7 @@ WVMapLayers.prototype.basemap = function ( id ) {
  * @chainable
  */
 WVMapLayers.prototype.overlay = function ( id ) {
-	var tileLayer = wikivoyage.createTileLayer( id );
+	const tileLayer = wikivoyage.createTileLayer( id );
 	this.addLayer( tileLayer.layer, tileLayer.name, true );
 	return this;
 };
@@ -78,7 +88,7 @@ WVMapLayers.prototype.overlay = function ( id ) {
  * @chainable
  */
 WVMapLayers.prototype.datalayer = function ( id, layer ) {
-	var self = this;
+	const self = this;
 	if ( typeof id === 'object' ) {
 		// eslint-disable-next-line no-jquery/no-each-util
 		$.each( id, function ( group, groupLayer ) {

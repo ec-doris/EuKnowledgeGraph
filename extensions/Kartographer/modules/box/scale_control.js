@@ -2,13 +2,13 @@
 /**
  * # Control to display the scale.
  *
- * See [L.Control](https://www.mapbox.com/mapbox.js/api/v2.3.0/l-control/)
+ * See [L.Control](https://www.mapbox.com/mapbox.js/api/v3.3.1/l-control/)
  * documentation for more details.
  *
  * @class Kartographer.Box.ScaleControl
  * @extends L.Control
  */
-var ScaleControl = L.Control.Scale.extend( {
+const ScaleControl = L.Control.Scale.extend( {
 
 	isMetric: true,
 
@@ -17,7 +17,6 @@ var ScaleControl = L.Control.Scale.extend( {
 	 * @private
 	 */
 	_updateScales: function ( options, maxMeters ) {
-
 		L.Control.Scale.prototype._updateScales.call( this, options, maxMeters );
 
 		this._toggleScale();

@@ -43,7 +43,7 @@ class NoBoundsCheckerTest extends \PHPUnit\Framework\TestCase {
 		}
 	}
 
-	public function provideSnaks() {
+	public static function provideSnaks() {
 		$decimalValue = new DecimalValue( 7251 );
 
 		$quantityValue = new QuantityValue( $decimalValue, '1', $decimalValue, $decimalValue );
@@ -64,7 +64,7 @@ class NoBoundsCheckerTest extends \PHPUnit\Framework\TestCase {
 
 		$result = $checker->checkConstraintParameters( $constraint );
 
-		$this->assertEmpty( $result );
+		$this->assertSame( [], $result );
 	}
 
 	/**

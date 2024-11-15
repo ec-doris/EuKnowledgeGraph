@@ -98,12 +98,12 @@ class ContemporaryChecker implements ConstraintChecker {
 	 */
 	public function checkConstraint( Context $context, Constraint $constraint ) {
 		if ( $context->getSnakRank() === Statement::RANK_DEPRECATED ) {
-			return new CheckResult( $context, $constraint, [], CheckResult::STATUS_DEPRECATED );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_DEPRECATED );
 		}
 		$snak = $context->getSnak();
 		if ( !$snak instanceof PropertyValueSnak ) {
 			// nothing to check
-			return new CheckResult( $context, $constraint, [], CheckResult::STATUS_COMPLIANCE );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_COMPLIANCE );
 		}
 
 		$dataValue = $snak->getDataValue();
@@ -112,7 +112,7 @@ class ContemporaryChecker implements ConstraintChecker {
 			$message = ( new ViolationMessage( 'wbqc-violation-message-value-needed-of-type' ) )
 				->withEntityId( new ItemId( $constraint->getConstraintTypeItemId() ), Role::CONSTRAINT_TYPE_ITEM )
 				->withDataValueType( 'wikibase-entityid' );
-			return new CheckResult( $context, $constraint, [], CheckResult::STATUS_VIOLATION, $message );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_VIOLATION, $message );
 		}
 
 		$objectId = $dataValue->getEntityId();
@@ -120,7 +120,7 @@ class ContemporaryChecker implements ConstraintChecker {
 		if ( !( $objectItem instanceof StatementListProvider ) ) {
 			// object was deleted/doesn't exist
 			$message = new ViolationMessage( 'wbqc-violation-message-value-entity-must-exist' );
-			return new CheckResult( $context, $constraint, [], CheckResult::STATUS_VIOLATION, $message );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_VIOLATION, $message );
 		}
 		/** @var Statement[] $objectStatements */
 		$objectStatements = $objectItem->getStatements()->toArray();
@@ -185,7 +185,7 @@ class ContemporaryChecker implements ConstraintChecker {
 			$message = null;
 			$status = CheckResult::STATUS_COMPLIANCE;
 		}
-		return new CheckResult( $context, $constraint, [], $status, $message );
+		return new CheckResult( $context, $constraint, $status, $message );
 	}
 
 	/**

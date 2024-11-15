@@ -1,0 +1,290 @@
+<?php
+/**
+ *
+ * @license MIT
+ * @file
+ *
+ * @author Yuri Astrakhan
+ */
+
+namespace Kartographer\Tag;
+
+use Config;
+use FormatJson;
+use Html;
+use InvalidArgumentException;
+use Kartographer\ParserFunctionTracker;
+use Kartographer\PartialWikitextParser;
+use Kartographer\SimpleStyleParser;
+use Kartographer\State;
+use Language;
+use MediaWiki\Logger\LoggerFactory;
+use MediaWiki\MediaWikiServices;
+use MediaWiki\Title\Title;
+use Message;
+use Parser;
+use PPFrame;
+use StatusValue;
+use stdClass;
+use Wikimedia\Parsoid\Core\ContentMetadataCollector;
+
+/**
+ * Base class for all <map...> tags
+ *
+ * @license MIT
+ */
+abstract class LegacyTagHandler {
+
+	/**
+	 * Lower case name of the XML-style parser tag, e.g. "mapframe". Currently expected to start
+	 * with "map…" by the {@see State} class.
+	 */
+	public const TAG = '';
+
+	/** @var stdClass[] */
+	private array $geometries = [];
+	protected MapTagArgumentValidator $args;
+	protected ?string $counter = null;
+	protected Config $config;
+	protected Parser $parser;
+	private Language $targetLanguage;
+	protected State $state;
+	protected ?stdClass $markerProperties = null;
+
+	/**
+	 * Entry point for all tags
+	 *
+	 * @param string|null $input
+	 * @param array $args
+	 * @param Parser $parser
+	 * @param PPFrame $frame
+	 * @return string
+	 */
+	public static function entryPoint( ?string $input, array $args, Parser $parser, PPFrame $frame ): string {
+		/** @phan-suppress-next-line PhanTypeInstantiateAbstractStatic */
+		$handler = new static();
+
+		return $handler->handle( $input, $args, $parser, $frame );
+	}
+
+	/**
+	 * @param string|null $input
+	 * @param array $args
+	 * @param Parser $parser
+	 * @param PPFrame $frame
+	 * @return string
+	 */
+	private function handle( ?string $input, array $args, Parser $parser, PPFrame $frame ): string {
+		$this->config = MediaWikiServices::getInstance()->getMainConfig();
+		$mapServer = $this->config->get( 'KartographerMapServer' );
+		if ( !$mapServer ) {
+			throw new \ConfigException( '$wgKartographerMapServer doesn\'t have a default, please set your own' );
+		}
+
+		$this->parser = $parser;
+		// Can only be StubUserLang on special pages, but these can't contain <map…> tags
+		$this->targetLanguage = $parser->getTargetLanguage();
+		$options = $parser->getOptions();
+		$isPreview = $options->getIsPreview() || $options->getIsSectionPreview();
+		$parserOutput = $parser->getOutput();
+
+		$parserOutput->addModuleStyles( [ 'ext.kartographer.style' ] );
+		$parserOutput->addExtraCSPDefaultSrc( $mapServer );
+		$this->state = State::getOrCreate( $parserOutput );
+		$this->state->incrementUsage( static::TAG );
+
+		$this->args = new MapTagArgumentValidator(
+			static::TAG,
+			$args,
+			$this->config,
+			$this->getLanguage(),
+			MediaWikiServices::getInstance()->getLanguageNameUtils()
+		);
+		$status = $this->args->status;
+		if ( $status->isOK() ) {
+			$status = SimpleStyleParser::newFromParser( $parser, $frame )->parse( $input );
+			if ( $status->isOK() ) {
+				$this->geometries = $status->getValue()['data'];
+			}
+		}
+
+		if ( !$status->isGood() ) {
+			$this->state->incrementBrokenTags();
+			State::setState( $parserOutput, $this->state );
+			return $this->reportError( $status );
+		}
+
+		$this->saveData();
+
+		$result = $this->render( new PartialWikitextParser( $parser, $frame ), !$isPreview );
+
+		State::setState( $parserOutput, $this->state );
+		return $result;
+	}
+
+	/**
+	 * When overridden in a descendant class, returns tag HTML
+	 *
+	 * @param PartialWikitextParser $parser
+	 * @param bool $serverMayRenderOverlays If the map server should attempt to render GeoJSON
+	 *  overlays via their group id
+	 * @return string
+	 */
+	abstract protected function render( PartialWikitextParser $parser, bool $serverMayRenderOverlays ): string;
+
+	private function saveData(): void {
+		$this->state->addRequestedGroups( $this->args->showGroups );
+
+		if ( !$this->geometries ) {
+			return;
+		}
+
+		// Merge existing data with the new tag's data under the same group name
+
+		// For all GeoJSON items whose marker-symbol value begins with '-counter' and '-letter',
+		// recursively replace them with an automatically incremented marker icon.
+		$counters = $this->state->getCounters();
+		$marker = SimpleStyleParser::updateMarkerSymbolCounters( $this->geometries, $counters );
+		if ( $marker ) {
+			[ $this->counter, $this->markerProperties ] = $marker;
+		}
+		$this->state->setCounters( $counters );
+
+		if ( $this->args->groupId === null ) {
+			// This hash calculation MUST be the same as in ParsoidDomProcessor::wtPostprocess
+			$groupId = '_' . sha1( FormatJson::encode( $this->geometries, false, FormatJson::ALL_OK ) );
+			$this->args->groupId = $groupId;
+			$this->args->showGroups[] = $groupId;
+			// no need to array_unique() because it's impossible to manually add a private group
+		} else {
+			$groupId = (string)$this->args->groupId;
+		}
+
+		$this->state->addData( $groupId, $this->geometries );
+	}
+
+	/**
+	 * Handles the last step of parse process
+	 *
+	 * @param State $state
+	 * @param ContentMetadataCollector $parserOutput
+	 * @param bool $outputAllLiveData
+	 * @param ParserFunctionTracker $tracker
+	 */
+	public static function finalParseStep(
+		State $state,
+		ContentMetadataCollector $parserOutput,
+		bool $outputAllLiveData,
+		ParserFunctionTracker $tracker
+	): void {
+		foreach ( $state->getUsages() as $key => $count ) {
+			// Resulting page property names are "kartographer_links" and "kartographer_frames"
+			$name = 'kartographer_' . preg_replace( '/^map/', '', $key );
+			$parserOutput->setPageProperty( $name, (string)$count );
+		}
+
+		$tracker->addTrackingCategories( [
+			'kartographer-broken-category' => $state->hasBrokenTags(),
+			'kartographer-tracking-category' => $state->hasValidTags(),
+		] );
+
+		// https://phabricator.wikimedia.org/T145615 - include all data in previews
+		$data = $state->getData();
+		if ( $data && $outputAllLiveData ) {
+			$parserOutput->setJsConfigVar( 'wgKartographerLiveData', $data );
+		} else {
+			$interact = $state->getInteractiveGroups();
+			$requested = $state->getRequestedGroups();
+			if ( $interact || $requested ) {
+				$liveData = array_intersect_key( $data, array_flip( $interact ) );
+				// Prevent pointless API requests for missing groups
+				foreach ( $requested as $groupId ) {
+					if ( !isset( $data[$groupId] ) ) {
+						$liveData[$groupId] = [];
+					}
+				}
+				$parserOutput->setJsConfigVar( 'wgKartographerLiveData', (object)$liveData );
+			}
+		}
+	}
+
+	/**
+	 * @param StatusValue $status
+	 * @return string HTML
+	 */
+	private function reportError( StatusValue $status ): string {
+		$errors = array_merge( $status->getErrorsByType( 'error' ),
+			$status->getErrorsByType( 'warning' )
+		);
+		if ( !$errors ) {
+			throw new InvalidArgumentException( 'Attempt to report error when none took place' );
+		}
+
+		$tag = '<' . static::TAG . '>';
+		if ( count( $errors ) > 1 ) {
+			$html = '';
+			foreach ( $errors as $err ) {
+				$html .= Html::rawElement( 'li', [], wfMessage( $err['message'], $err['params'] )
+					->inLanguage( $this->getLanguage() )->parse() ) . "\n";
+			}
+			$msg = wfMessage( 'kartographer-error-context-multi', $tag )
+				->rawParams( Html::rawElement( 'ul', [], $html ) );
+		} else {
+			$errorText = wfMessage( $errors[0]['message'], $errors[0]['params'] )
+				->inLanguage( $this->getLanguage() )->parse();
+			$msg = wfMessage( 'kartographer-error-context', $tag, Message::rawParam( $errorText ) );
+		}
+		return Html::rawElement( 'div', [ 'class' => 'mw-kartographer-error' ],
+			$msg->inLanguage( $this->getLanguage() )->escaped() .
+			$this->getJSONValidatorLog( $status->getValue()['schema-errors'] ?? [] )
+		);
+	}
+
+	/**
+	 * @param array[] $errors
+	 *
+	 * @return string HTML
+	 */
+	private function getJSONValidatorLog( array $errors ): string {
+		if ( !$errors ) {
+			return '';
+		}
+
+		$log = "\n";
+		/** These errors come from {@see \JsonSchema\Constraints\BaseConstraint::addError} */
+		foreach ( $errors as $error ) {
+			$log .= Html::element( 'li', [],
+				$error['pointer'] . wfMessage( 'colon-separator' )->text() . $error['message']
+			) . "\n";
+		}
+		return Html::rawElement( 'ul', [ 'class' => [
+			'mw-kartographer-error-log',
+			'mw-collapsible',
+			'mw-collapsed',
+		] ], $log );
+	}
+
+	private function getLanguage(): Language {
+		// Log if the user language is different from the page language (T311592)
+		$page = $this->parser->getPage();
+		if ( $page ) {
+			$pageLang = Title::castFromPageReference( $page )->getPageLanguage();
+			if ( $this->targetLanguage->getCode() !== $pageLang->getCode() ) {
+				LoggerFactory::getInstance( 'Kartographer' )->notice( 'Target language (' .
+					$this->targetLanguage->getCode() . ') is different than page language (' .
+					$pageLang->getCode() . ') (T311592)' );
+			}
+		}
+
+		return $this->targetLanguage;
+	}
+
+	protected function getLanguageCode(): string {
+		return $this->getLanguage()->getCode();
+	}
+
+	protected function getOutput(): ContentMetadataCollector {
+		return $this->parser->getOutput();
+	}
+
+}

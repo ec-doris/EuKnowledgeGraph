@@ -4,7 +4,7 @@ namespace WikibaseQuality\ConstraintReport\Maintenance;
 
 use Maintenance;
 use MediaWiki\MediaWikiServices;
-use Title;
+use MediaWiki\Title\Title;
 use Wikibase\Lib\Store\PropertyInfoLookup;
 use Wikibase\Repo\WikibaseRepo;
 use WikibaseQuality\ConstraintReport\Job\UpdateConstraintsTableJob;

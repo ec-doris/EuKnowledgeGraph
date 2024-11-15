@@ -158,7 +158,8 @@ class TemplateStylesContentHandler extends CodeContentHandler {
 		$sanitizer = Hooks::getSanitizer(
 			$options['class'] ?: 'mw-parser-output', $options['extraWrapper']
 		);
-		$sanitizer->clearSanitizationErrors(); // Just in case
+		// Just in case
+		$sanitizer->clearSanitizationErrors();
 		$stylesheet = $sanitizer->sanitize( $stylesheet );
 		self::processErrors( $status, $sanitizer->getSanitizationErrors(), $options['severity'] );
 		$sanitizer->clearSanitizationErrors();

@@ -7,7 +7,6 @@
 			"Shizhao"
 		]
 	},
-	"apihelp-wbcheckconstraints-description": "在任何您希望执行检查的实体上，执行约束检查并返回结果。",
 	"apihelp-wbcheckconstraints-summary": "在任何您希望执行的实体上执行约束检查，并返回结果。",
 	"apihelp-wbcheckconstraints-param-id": "要获取数据的实体ID列表。使用“|”或替代字符分隔值。",
 	"apihelp-wbcheckconstraints-param-claimid": "识别要检查约束报告的声明的GUID列表。使用“|”分隔值。",

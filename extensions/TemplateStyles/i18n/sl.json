@@ -14,7 +14,7 @@
 	"templatestyles-errorcomment": "Napake pri obdelavi slogovnega lista [[:$1]] (red. $2):\n$3",
 	"templatestyles-size-exceeded": "Slogovni list presega največjo dovoljeno velikost $2.",
 	"templatestyles-end-tag-injection": "Predloženi slogovni list vsebuje <code>&lt;/style</code>, kar ni dovoljeno.",
-	"content-model-sanitized-css": "Očiščeni CSS",
+	"content-model-sanitized-css": "očiščeni CSS",
 	"templatestyles-stylesheet-error-category": "Slogovni listi TemplateStyles z napakami",
 	"templatestyles-stylesheet-error-category-desc": "Slogovni list TemplateStyles vsebuje napako.",
 	"templatestyles-page-error-category": "Strani z napakami TemplateStyles",

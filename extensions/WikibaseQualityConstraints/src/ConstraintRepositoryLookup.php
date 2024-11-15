@@ -36,14 +36,19 @@ class ConstraintRepositoryLookup implements ConstraintLookup {
 	 * @return Constraint[]
 	 */
 	public function queryConstraintsForProperty( NumericPropertyId $propertyId ) {
-		$dbr = $this->lb->getConnectionRef( ILoadBalancer::DB_REPLICA, [], $this->dbName );
+		$dbr = $this->lb->getConnection( ILoadBalancer::DB_REPLICA, [], $this->dbName );
 
-		$results = $dbr->select(
-			'wbqc_constraints',
-			'*',
-			[ 'pid' => $propertyId->getNumericId() ],
-			__METHOD__
-		);
+		$results = $dbr->newSelectQueryBuilder()
+			->select( [
+				'constraint_type_qid',
+				'constraint_parameters',
+				'constraint_guid',
+				'pid',
+			] )
+			->from( 'wbqc_constraints' )
+			->where( [ 'pid' => $propertyId->getNumericId() ] )
+			->caller( __METHOD__ )
+			->fetchResultSet();
 
 		return $this->convertToConstraints( $results );
 	}

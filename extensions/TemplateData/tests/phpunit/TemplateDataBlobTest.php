@@ -4,14 +4,16 @@ use MediaWiki\Extension\TemplateData\Api\ApiTemplateData;
 use MediaWiki\Extension\TemplateData\TemplateDataBlob;
 use MediaWiki\Extension\TemplateData\TemplateDataHtmlFormatter;
 use MediaWiki\Extension\TemplateData\TemplateDataValidator;
+use MediaWiki\Title\Title;
 use Wikimedia\TestingAccessWrapper;
 
 /**
- * @group TemplateData
  * @group Database
  * @covers \MediaWiki\Extension\TemplateData\TemplateDataBlob
  * @covers \MediaWiki\Extension\TemplateData\TemplateDataCompressedBlob
+ * @covers \MediaWiki\Extension\TemplateData\TemplateDataNormalizer
  * @covers \MediaWiki\Extension\TemplateData\TemplateDataValidator
+ * @license GPL-2.0-or-later
  */
 class TemplateDataBlobTest extends MediaWikiIntegrationTestCase {
 
@@ -25,10 +27,10 @@ class TemplateDataBlobTest extends MediaWikiIntegrationTestCase {
 	 *
 	 * Output is consistent when given the same seed.
 	 * @param int $minLength
-	 * @param string $seed
+	 * @param int $seed
 	 * @return string
 	 */
-	private function generatePseudorandomString( $minLength, $seed ): string {
+	private function generatePseudorandomString( int $minLength, int $seed ): string {
 		srand( $seed );
 		$string = '';
 		while ( strlen( $string ) < $minLength ) {
@@ -37,7 +39,7 @@ class TemplateDataBlobTest extends MediaWikiIntegrationTestCase {
 		return $string;
 	}
 
-	public function provideParse() {
+	public static function provideParse() {
 		$cases = [
 			[
 				'input' => '{',
@@ -85,6 +87,10 @@ class TemplateDataBlobTest extends MediaWikiIntegrationTestCase {
 			[
 				'input' => '{ "params": [] }',
 				'status' => '(templatedata-invalid-type: params, object)',
+			],
+			[
+				'input' => '{ "params": { "": {} } }',
+				'status' => '(templatedata-invalid-unnamed-parameter)',
 			],
 			[
 				'input' => '{ "params": { "a": [] } }',
@@ -609,6 +615,10 @@ class TemplateDataBlobTest extends MediaWikiIntegrationTestCase {
 				'status' => '(templatedata-invalid-type: maps.application.things[0][0], string)'
 			],
 			[
+				'input' => '{ "params": {}, "format": "" }',
+				'status' => '(templatedata-invalid-format: format)'
+			],
+			[
 				'input' => '{
 					"params": {
 						"foo": {}
@@ -683,11 +693,9 @@ class TemplateDataBlobTest extends MediaWikiIntegrationTestCase {
 			],
 		];
 
-		$calls = [];
 		foreach ( $cases as $case ) {
-			$calls[] = [ $case ];
+			yield [ $case ];
 		}
-		return $calls;
 	}
 
 	private function getStatusText( Status $status ): string {
@@ -698,7 +706,7 @@ class TemplateDataBlobTest extends MediaWikiIntegrationTestCase {
 		return $str;
 	}
 
-	private function ksort( array &$input ) {
+	private function ksort( array &$input ): void {
 		ksort( $input );
 		foreach ( $input as &$value ) {
 			if ( is_array( $value ) ) {
@@ -716,15 +724,15 @@ class TemplateDataBlobTest extends MediaWikiIntegrationTestCase {
 	 * so "array( 'a' => '' )" still equals "array( 'a' => null )"
 	 * because empty string equals null in PHP's weak comparison.
 	 *
-	 * @param mixed $expected
-	 * @param mixed $actual
+	 * @param string $expected
+	 * @param stdClass $actual
 	 * @param string|null $message
 	 */
-	private function assertStrictJsonEquals( $expected, $actual, $message = null ) {
+	private function assertStrictJsonEquals( string $expected, stdClass $actual, string $message = null ): void {
 		// Lazy recursive strict comparison: Serialise to JSON and compare that
 		// Sort first to ensure key-order
 		$expected = json_decode( $expected, /* assoc = */ true );
-		$actual = json_decode( $actual, /* assoc = */ true );
+		$actual = json_decode( json_encode( $actual ), /* assoc = */ true );
 		$this->ksort( $expected );
 		$this->ksort( $actual );
 
@@ -735,19 +743,13 @@ class TemplateDataBlobTest extends MediaWikiIntegrationTestCase {
 		);
 	}
 
-	private function assertTemplateData( array $case ) {
+	private function assertTemplateData( array $case ): void {
 		// Expand defaults
-		if ( !isset( $case['status'] ) ) {
-			$case['status'] = true;
-		}
-		if ( !isset( $case['msg'] ) ) {
-			$case['msg'] = is_string( $case['status'] ) ? $case['status'] : 'TemplateData assertion';
-		}
+		$case['status'] ??= true;
+		$case['msg'] ??= $case['status'];
 
 		$t = TemplateDataBlob::newFromJSON( $this->db, $case['input'] );
-		/** @var TemplateDataBlob $t */
-		$t = TestingAccessWrapper::newFromObject( $t );
-		$actual = $t->getJSON();
+		$actual = $t->getData();
 		$status = $t->getStatus();
 
 		$this->assertSame(
@@ -766,8 +768,6 @@ class TemplateDataBlobTest extends MediaWikiIntegrationTestCase {
 
 			// Assert this case roundtrips properly by running through the output as input.
 			$t = TemplateDataBlob::newFromJSON( $this->db, $case['output'] );
-			/** @var TemplateDataBlob $t */
-			$t = TestingAccessWrapper::newFromObject( $t );
 			$status = $t->getStatus();
 
 			if ( !$status->isGood() ) {
@@ -775,7 +775,7 @@ class TemplateDataBlobTest extends MediaWikiIntegrationTestCase {
 					'Roundtrip status: ' . $case['msg']
 				);
 			}
-			$this->assertStrictJsonEquals( $case['output'], $t->getJSON(),
+			$this->assertStrictJsonEquals( $case['output'], $t->getData(),
 				'Roundtrip: ' . $case['msg']
 			);
 		}
@@ -815,12 +815,12 @@ class TemplateDataBlobTest extends MediaWikiIntegrationTestCase {
 	public function testIsValidInterfaceText( $text, bool $expected ) {
 		/** @var TemplateDataValidator $validator */
 		$validator = TestingAccessWrapper::newFromObject(
-			new TemplateDataValidator()
+			new TemplateDataValidator( [] )
 		);
 		$this->assertSame( $expected, $validator->isValidInterfaceText( $text ) );
 	}
 
-	public function provideInterfaceTexts() {
+	public static function provideInterfaceTexts() {
 		return [
 			// Invalid stuff
 			[ null, false ],
@@ -865,7 +865,7 @@ class TemplateDataBlobTest extends MediaWikiIntegrationTestCase {
 		$this->assertInstanceOf( TemplateDataBlob::class, $templateData );
 	}
 
-	public function provideGetDataInLanguage() {
+	public static function provideGetDataInLanguage() {
 		$cases = [
 			[
 				'input' => '{
@@ -1126,11 +1126,10 @@ class TemplateDataBlobTest extends MediaWikiIntegrationTestCase {
 				'msg' => 'Set label is not optional, choose first available key as final fallback'
 			],
 		];
-		$calls = [];
+
 		foreach ( $cases as $case ) {
-			$calls[] = [ $case ];
+			yield [ $case ];
 		}
-		return $calls;
 	}
 
 	/**
@@ -1140,10 +1139,6 @@ class TemplateDataBlobTest extends MediaWikiIntegrationTestCase {
 		// Change content-language to be non-English so we can distinguish between the
 		// last 'en' fallback and the content language in our tests
 		$this->setContentLang( 'nl' );
-
-		if ( !isset( $case['msg'] ) ) {
-			$case['msg'] = is_string( $case['status'] ) ? $case['status'] : 'TemplateData assertion';
-		}
 
 		$t = TemplateDataBlob::newFromJSON( $this->db, $case['input'] );
 		$status = $t->getStatus();
@@ -1161,7 +1156,7 @@ class TemplateDataBlobTest extends MediaWikiIntegrationTestCase {
 		);
 	}
 
-	public function provideParamOrder() {
+	public static function provideParamOrder() {
 		$cases = [
 			[
 				'input' => '{
@@ -1297,7 +1292,7 @@ class TemplateDataBlobTest extends MediaWikiIntegrationTestCase {
 					"paramOrder": ["foo", "bar"]
 				}
 				',
-				'status' => '(templatedata-invalid-missing: paramOrder[2])',
+				'status' => '(templatedata-invalid-missing: paramOrder[ "baz" ])',
 				'msg' => 'Incomplete paramOrder'
 			],
 			[
@@ -1325,7 +1320,7 @@ class TemplateDataBlobTest extends MediaWikiIntegrationTestCase {
 					"paramOrder": ["foo", "bar", "baz", "quux"]
 				}
 				',
-				'status' => '(templatedata-invalid-value: paramOrder[3])',
+				'status' => '(templatedata-invalid-value: paramOrder[ "quux" ])',
 				'msg' => 'Unknown params in paramOrder'
 			],
 			[
@@ -1342,11 +1337,10 @@ class TemplateDataBlobTest extends MediaWikiIntegrationTestCase {
 				'msg' => 'Duplicate params in paramOrder'
 			],
 		];
-		$calls = [];
+
 		foreach ( $cases as $case ) {
-			$calls[] = [ $case ];
+			yield [ $case ];
 		}
-		return $calls;
 	}
 
 	/**
@@ -1367,7 +1361,7 @@ class TemplateDataBlobTest extends MediaWikiIntegrationTestCase {
 		$this->assertArrayEquals( $expectedParams, $params, true, true );
 	}
 
-	public function provideGetRawParams() {
+	public static function provideGetRawParams() {
 		return [
 			'No params' => [
 				'Lorem ipsum {{tpl}}.',
@@ -1433,7 +1427,7 @@ class TemplateDataBlobTest extends MediaWikiIntegrationTestCase {
 		];
 	}
 
-	public function provideGetHtml() {
+	public static function provideGetHtml() {
 		// phpcs:disable Generic.Files.LineLength.TooLong
 		yield 'No params' => [
 			[ 'params' => [ (object)[] ] ],
@@ -1441,7 +1435,9 @@ class TemplateDataBlobTest extends MediaWikiIntegrationTestCase {
 <section class="mw-templatedata-doc-wrap">
 <header><p class="mw-templatedata-doc-desc mw-templatedata-doc-muted">(templatedata-doc-desc-empty)</p></header>
 <table class="wikitable mw-templatedata-doc-params">
-	<caption><p>(templatedata-doc-params)</p></caption>
+	<caption>
+		<p class="mw-templatedata-caption">(templatedata-doc-params)<mw:edittemplatedata page="Template:Test/doc"></mw:edittemplatedata></p>
+	</caption>
 	<thead><tr><th colspan="2">(templatedata-doc-param-name)</th><th>(templatedata-doc-param-desc)</th><th>(templatedata-doc-param-type)</th><th>(templatedata-doc-param-status)</th></tr></thead>
 	<tbody>
 		<tr>
@@ -1458,7 +1454,9 @@ HTML
 <section class="mw-templatedata-doc-wrap">
 <header><p class="mw-templatedata-doc-desc mw-templatedata-doc-muted">(templatedata-doc-desc-empty)</p></header>
 <table class="wikitable mw-templatedata-doc-params sortable">
-	<caption><p>(templatedata-doc-params)</p></caption>
+	<caption>
+		<p class="mw-templatedata-caption">(templatedata-doc-params)<mw:edittemplatedata page="Template:Test/doc"></mw:edittemplatedata></p>
+	</caption>
 	<thead><tr><th colspan="2">(templatedata-doc-param-name)</th><th>(templatedata-doc-param-desc)</th><th>(templatedata-doc-param-type)</th><th>(templatedata-doc-param-status)</th></tr></thead>
 	<tbody>
 		<tr>
@@ -1498,16 +1496,18 @@ HTML
 <section class="mw-templatedata-doc-wrap">
 <header><p class="mw-templatedata-doc-desc">Template docs</p></header>
 <table class="wikitable mw-templatedata-doc-params sortable">
-	<caption><p>(templatedata-doc-params)</p></caption>
+	<caption>
+		<p class="mw-templatedata-caption">(templatedata-doc-params)<mw:edittemplatedata page="Template:Test/doc"></mw:edittemplatedata></p>
+	</caption>
 	<thead><tr><th colspan="2">(templatedata-doc-param-name)</th><th>(templatedata-doc-param-desc)</th><th>(templatedata-doc-param-type)</th><th>(templatedata-doc-param-status)</th></tr></thead>
 	<tbody>
 		<tr>
 			<th>Label</th>
-			<td class="mw-templatedata-doc-param-name"><code>suggestedParam</code>(word-separator)<code class="mw-templatedata-doc-param-alias">Alias1</code>(word-separator)<code class="mw-templatedata-doc-param-alias">Alias2</code></td>
+			<td class="mw-templatedata-doc-param-name"><code>suggestedParam</code> <code class="mw-templatedata-doc-param-alias">Alias1</code> <code class="mw-templatedata-doc-param-alias">Alias2</code></td>
 			<td>
 				<p>Param docs</p>
 				<dl>
-					<dt>(templatedata-doc-param-suggestedvalues)</dt><dd><code>Suggested1</code>(word-separator)<code>Suggested2</code></dd>
+					<dt>(templatedata-doc-param-suggestedvalues)</dt><dd><code>Suggested1</code> <code>Suggested2</code></dd>
 					<dt>(templatedata-doc-param-default)</dt><dd>Default docs</dd>
 					<dt>(templatedata-doc-param-example)</dt><dd>Example docs</dd>
 					<dt>(templatedata-doc-param-autovalue)</dt><dd><code>Auto value</code></dd>
@@ -1534,19 +1534,23 @@ HTML
 	 * @covers \MediaWiki\Extension\TemplateData\TemplateDataHtmlFormatter
 	 * @dataProvider provideGetHtml
 	 */
-	public function testGetHtml( array $data, $expected ) {
+	public function testGetHtml( array $data, string $expected ) {
 		$t = TemplateDataBlob::newFromJSON( $this->db, json_encode( $data ) );
 		$localizer = new class implements MessageLocalizer {
+
 			public function msg( $key, ...$params ) {
 				return new RawMessage( "($key)" );
 			}
+
 		};
+		$title = Title::newFromText( 'Template:Test/doc' );
 		$formatter = new TemplateDataHtmlFormatter( $localizer );
-		$actual = $formatter->getHtml( $t );
+		$actual = $formatter->getHtml( $t, $title );
 		$linedActual = preg_replace( '/>\s*</', ">\n<", $actual );
 
 		$linedExpected = preg_replace( '/>\s*</', ">\n<", trim( $expected ) );
 
 		$this->assertSame( $linedExpected, $linedActual );
 	}
+
 }

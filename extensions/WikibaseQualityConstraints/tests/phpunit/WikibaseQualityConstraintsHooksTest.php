@@ -5,10 +5,10 @@ namespace WikibaseQuality\ConstraintReport\Tests;
 use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Entity\Property;
 use Wikibase\DataModel\Snak\SnakList;
+use Wikibase\DataModel\Tests\NewStatement;
 use Wikibase\Lib\Changes\Change;
 use Wikibase\Lib\Changes\EntityChange;
 use Wikibase\Lib\Tests\Changes\TestChanges;
-use Wikibase\Repo\Tests\NewStatement;
 use WikibaseQuality\ConstraintReport\WikibaseQualityConstraintsHooks;
 
 /**
@@ -30,13 +30,13 @@ class WikibaseQualityConstraintsHooksTest extends \PHPUnit\Framework\TestCase {
 	 */
 	public function testIsConstraintStatementsChange( Change $change, $expected ) {
 		$actual = WikibaseQualityConstraintsHooks::isConstraintStatementsChange(
-			$this->getDefaultConfig(),
+			self::getDefaultConfig(),
 			$change
 		);
 		$this->assertSame( $expected, $actual );
 	}
 
-	public function provideChanges() {
+	public static function provideChanges(): iterable {
 		$factory = TestChanges::getEntityChangeFactory();
 		$changes = TestChanges::getChanges();
 		$changeKeys = [];
@@ -77,7 +77,7 @@ class WikibaseQualityConstraintsHooksTest extends \PHPUnit\Framework\TestCase {
 		$old = $new->copy();
 
 		// changes on properties affecting constraint statements
-		$p2302 = $this->getDefaultConfig()->get( 'WBQualityConstraintsPropertyConstraintId' );
+		$p2302 = self::getDefaultConfig()->get( 'WBQualityConstraintsPropertyConstraintId' );
 		$statement = NewStatement::noValueFor( $p2302 )->build();
 		$new->getStatements()->addStatement( $statement );
 		$change = $factory->newFromUpdate( EntityChange::UPDATE, $old, $new );

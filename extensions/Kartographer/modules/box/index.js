@@ -1,26 +1,23 @@
 /**
  * **Resource Loader module: {@link Kartographer.Box ext.kartographer.box}**
  *
- * @alternateClassName ext.kartographer.box
+ * @borrows Kartographer.Box as ext.kartographer.box
  * @class Kartographer.Box
  * @singleton
  */
 L.kartographer = module.exports = {
 	/**
 	 * @type {Kartographer.Box.OpenFullScreenControl}
-	 * @ignore
 	 */
 	OpenFullScreenControl: require( './openfullscreen_control.js' ),
 
 	/**
 	 * @type {Kartographer.Box.ScaleControl}
-	 * @ignore
 	 */
 	ScaleControl: require( './scale_control.js' ),
 
 	/**
-	 * @type {Kartographer.Box.MWMap}
-	 * @ignore
+	 * @type {Kartographer.Box.MapClass}
 	 */
 	Map: require( './Map.js' ).Map,
 
@@ -32,7 +29,7 @@ L.kartographer = module.exports = {
 	 *
 	 * @param {Object} options
 	 * @return {Kartographer.Box.MapClass}
-	 * @member Kartographer.Box
+	 * @memberof Kartographer.Box
 	 */
 	map: require( './Map.js' ).map
 };

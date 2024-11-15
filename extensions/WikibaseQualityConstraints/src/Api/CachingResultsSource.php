@@ -3,6 +3,7 @@
 namespace WikibaseQuality\ConstraintReport\Api;
 
 use DataValues\TimeValue;
+use WANObjectCache;
 use Wikibase\DataModel\Entity\EntityId;
 use Wikibase\DataModel\Entity\EntityIdParser;
 use Wikibase\Lib\Store\LookupConstants;
@@ -324,7 +325,8 @@ class CachingResultsSource implements ResultsSource {
 		EntityId $entityId,
 		$forRevision = 0
 	) {
-		$value = $this->cache->get( $entityId, $curTTL, [], $asOf );
+		$cacheInfo = WANObjectCache::PASS_BY_REF;
+		$value = $this->cache->get( $entityId, $curTTL, [], $cacheInfo );
 		$now = call_user_func( $this->microtime, true );
 
 		$dependencyMetadata = $this->checkDependencyMetadata( $value,
@@ -333,6 +335,8 @@ class CachingResultsSource implements ResultsSource {
 			return null;
 		}
 
+		// @phan-suppress-next-line PhanTypePossiblyInvalidDimOffset False positive
+		$asOf = $cacheInfo[WANObjectCache::KEY_AS_OF];
 		$ageInSeconds = (int)ceil( $now - $asOf );
 		$cachingMetadata = $ageInSeconds > 0 ?
 			CachingMetadata::ofMaximumAgeInSeconds( $ageInSeconds ) :
@@ -399,7 +403,7 @@ class CachingResultsSource implements ResultsSource {
 			static function ( DependencyMetadata $metadata, EntityId $entityId ) {
 				return DependencyMetadata::merge( [
 					$metadata,
-					DependencyMetadata::ofEntityId( $entityId )
+					DependencyMetadata::ofEntityId( $entityId ),
 				] );
 			},
 			$futureTimeDependencyMetadata

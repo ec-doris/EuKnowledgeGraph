@@ -5,6 +5,7 @@ namespace WikibaseQuality\ConstraintReport\Tests\Specials;
 use DataValues\StringValue;
 use HamcrestPHPUnitIntegration;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Request\FauxRequest;
 use MultiConfig;
 use NullStatsdDataFactory;
 use SpecialPageTestBase;
@@ -14,7 +15,6 @@ use Wikibase\DataModel\Entity\Property;
 use Wikibase\DataModel\Services\Statement\GuidGenerator;
 use Wikibase\DataModel\Snak\PropertyValueSnak;
 use Wikibase\DataModel\Statement\Statement;
-use Wikibase\Repo\EntityIdLabelFormatterFactory;
 use Wikibase\Repo\WikibaseRepo;
 use WikibaseQuality\ConstraintReport\ConstraintsServices;
 use WikibaseQuality\ConstraintReport\Specials\SpecialConstraintReport;
@@ -56,7 +56,7 @@ class SpecialConstraintReportTest extends SpecialPageTestBase {
 		MediaWikiServices::getInstance()->resetServiceForTesting( ConstraintsServices::CONSTRAINT_LOOKUP );
 		$this->tablesUsed[] = 'wbqc_constraints';
 		$config = new MultiConfig( [
-			$this->getDefaultConfig(),
+			self::getDefaultConfig(),
 			MediaWikiServices::getInstance()->getMainConfig(),
 		] );
 		$this->setService( 'MainConfig', $config );
@@ -72,12 +72,13 @@ class SpecialConstraintReportTest extends SpecialPageTestBase {
 		return new SpecialConstraintReport(
 			WikibaseRepo::getEntityLookup(),
 			WikibaseRepo::getEntityTitleLookup(),
-			new EntityIdLabelFormatterFactory(),
+			WikibaseRepo::getEntityIdLabelFormatterFactory(),
 			WikibaseRepo::getEntityIdHtmlLinkFormatterFactory(),
 			WikibaseRepo::getEntityIdParser(),
-			WikibaseRepo::getValueFormatterFactory(),
+			WikibaseRepo::getLanguageFallbackChainFactory(),
 			ConstraintsServices::getDelegatingConstraintChecker(),
-			$this->getDefaultConfig(),
+			ConstraintsServices::getViolationMessageRendererFactory(),
+			self::getDefaultConfig(),
 			new NullStatsdDataFactory()
 		);
 	}
@@ -125,16 +126,16 @@ class SpecialConstraintReportTest extends SpecialPageTestBase {
 					'constraint_guid' => '1',
 					'pid' => self::$idMap[ 'P1' ]->getNumericId(),
 					'constraint_type_qid' =>
-						$this->getDefaultConfig()->get( 'WBQualityConstraintsMultiValueConstraintId' ),
-					'constraint_parameters' => '{}'
+						self::getDefaultConfig()->get( 'WBQualityConstraintsMultiValueConstraintId' ),
+					'constraint_parameters' => '{}',
 				],
 				[
 					'constraint_guid' => '3',
 					'pid' => self::$idMap[ 'P1' ]->getNumericId(),
 					'constraint_type_qid' =>
-						$this->getDefaultConfig()->get( 'WBQualityConstraintsSingleValueConstraintId' ),
-					'constraint_parameters' => '{}'
-				]
+						self::getDefaultConfig()->get( 'WBQualityConstraintsSingleValueConstraintId' ),
+					'constraint_parameters' => '{}',
+				],
 			]
 		);
 	}
@@ -143,7 +144,7 @@ class SpecialConstraintReportTest extends SpecialPageTestBase {
 	 * @dataProvider provideRequestsAndMatchers
 	 */
 	public function testExecute( $subPage, array $request, $userLanguage, array $matchers ) {
-		$request = new \FauxRequest( $request );
+		$request = new FauxRequest( $request );
 
 		// the added item is Q1; this solves the problem that the provider is executed before the test
 		$id = self::$idMap[ 'Q1' ];
@@ -160,7 +161,7 @@ class SpecialConstraintReportTest extends SpecialPageTestBase {
 		}
 	}
 
-	public function provideRequestsAndMatchers() {
+	public static function provideRequestsAndMatchers() {
 		$userLanguage = 'qqx';
 		$cases = [];
 		$matchers = [];
@@ -216,14 +217,14 @@ class SpecialConstraintReportTest extends SpecialPageTestBase {
 			self::NOT_EXISTENT_ITEM_ID,
 			[],
 			$userLanguage,
-			$matchers
+			$matchers,
 		];
 
 		// Valid input and entity exists
 		unset( $matchers[ 'error' ] );
 		$matchers[ 'result for' ] = [
 			'tag' => 'h3',
-			'content' => '(wbqc-constraintreport-result-headline) '
+			'content' => '(wbqc-constraintreport-result-headline) ',
 		];
 
 		$matchers['result for'] = both(

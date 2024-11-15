@@ -3,6 +3,7 @@
 namespace WikibaseQuality\ConstraintReport\Html;
 
 use Html;
+use HtmlArmor;
 use InvalidArgumentException;
 use Wikimedia\Assert\Assert;
 
@@ -15,7 +16,7 @@ class HtmlTableHeaderBuilder {
 	/**
 	 * Html content of the header
 	 *
-	 * @var string
+	 * @var string|HtmlArmor
 	 */
 	private $content;
 
@@ -27,35 +28,24 @@ class HtmlTableHeaderBuilder {
 	private $isSortable;
 
 	/**
-	 * Determines, whether the content is raw html or should be escaped.
-	 *
-	 * @var bool
-	 */
-	private $isRawContent;
-
-	/**
-	 * @param string $content HTML
+	 * @param string|HtmlArmor $content
 	 * @param bool $isSortable
-	 * @param bool $isRawContent
-	 * @param-taint $content escapes_html
 	 *
 	 * @throws InvalidArgumentException
 	 */
-	public function __construct( $content, $isSortable = false, $isRawContent = false ) {
-		Assert::parameterType( 'string', $content, '$content' );
+	public function __construct( $content, $isSortable = false ) {
+		Assert::parameterType( [ 'string', HtmlArmor::class ], $content, '$content' );
 		Assert::parameterType( 'boolean', $isSortable, '$isSortable' );
-		Assert::parameterType( 'boolean', $isRawContent, '$isRawContent' );
 
 		$this->content = $content;
 		$this->isSortable = $isSortable;
-		$this->isRawContent = $isRawContent;
 	}
 
 	/**
-	 * @return string
+	 * @return string HTML
 	 */
 	public function getContent() {
-		return $this->content;
+		return HtmlArmor::getHtml( $this->content );
 	}
 
 	/**
@@ -77,14 +67,7 @@ class HtmlTableHeaderBuilder {
 			$attributes['class'] = 'unsortable';
 		}
 
-		if ( !$this->isRawContent ) {
-			// @phan-suppress-next-line SecurityCheck-DoubleEscaped
-			$content = htmlspecialchars( $this->content );
-		} else {
-			$content = $this->content;
-		}
-
-		return Html::rawElement( 'th', $attributes, $content );
+		return Html::rawElement( 'th', $attributes, $this->getContent() );
 	}
 
 }

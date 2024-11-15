@@ -69,10 +69,9 @@ class MandatoryQualifiersChecker implements ConstraintChecker {
 	 */
 	public function checkConstraint( Context $context, Constraint $constraint ) {
 		if ( $context->getSnakRank() === Statement::RANK_DEPRECATED ) {
-			return new CheckResult( $context, $constraint, [], CheckResult::STATUS_DEPRECATED );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_DEPRECATED );
 		}
 
-		$parameters = [];
 		$constraintParameters = $constraint->getConstraintParameters();
 		$constraintTypeItemId = $constraint->getConstraintTypeItemId();
 
@@ -80,7 +79,6 @@ class MandatoryQualifiersChecker implements ConstraintChecker {
 			$constraintParameters,
 			$constraintTypeItemId
 		);
-		$parameters['property'] = [ $propertyId ];
 
 		$message = ( new ViolationMessage( 'wbqc-violation-message-mandatory-qualifier' ) )
 			->withEntityId( $context->getSnak()->getPropertyId(), Role::CONSTRAINT_PROPERTY )
@@ -96,7 +94,7 @@ class MandatoryQualifiersChecker implements ConstraintChecker {
 			}
 		}
 
-		return new CheckResult( $context, $constraint, $parameters, $status, $message );
+		return new CheckResult( $context, $constraint, $status, $message );
 	}
 
 	public function checkConstraintParameters( Constraint $constraint ) {

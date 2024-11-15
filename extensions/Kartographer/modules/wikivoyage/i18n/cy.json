@@ -1,9 +1,14 @@
 {
 	"@metadata": {
 		"authors": [
-			"Afalau"
+			"Afalau",
+			"Ceirios"
 		]
 	},
 	"kartographer-wv-group": "Grŵp:",
+	"kartographer-wv-layer-nearby-articles": "Erthyglau gerllaw",
+	"kartographer-wv-nearby-articles-control": "Archwilio cyrchfannau cyfagos",
+	"kartographer-wv-warning-external-source-title": "Ffynhonnell data allanol",
+	"kartographer-wv-warning-external-source-agree": "Rwy'n deall",
 	"kartographer-wv-warning-external-source-disagree": "Canslo"
 }

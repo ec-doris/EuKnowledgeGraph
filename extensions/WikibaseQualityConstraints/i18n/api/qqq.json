@@ -12,7 +12,6 @@
 			"Verdy p"
 		]
 	},
-	"apihelp-wbcheckconstraints-description": "{{Doc-apihelp-description|wbcheckconstraints}}",
 	"apihelp-wbcheckconstraints-summary": "{{Doc-apihelp-summary|wbcheckconstraints}}",
 	"apihelp-wbcheckconstraints-param-id": "{{Doc-apihelp-param|wbcheckconstraints|id}}",
 	"apihelp-wbcheckconstraints-param-claimid": "{{Doc-apihelp-param|wbcheckconstraints|claimid}}",

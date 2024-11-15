@@ -3,6 +3,8 @@
 		"authors": [
 			"BaRaN6161 TURK",
 			"Cobija",
+			"Joseph",
+			"MrSchipunov",
 			"MuratTheTurkish",
 			"SaldırganSincap"
 		]
@@ -57,8 +59,9 @@
 	"jsonconfig-license-name-dl-de-zero-2.0": "Veri lisansı Almanya – Sıfır – Sürüm 2.0",
 	"jsonconfig-license-name-dl-de-by-1.0": "Veri lisansı Almanya – atıf – Sürüm 1.0",
 	"jsonconfig-license-name-dl-de-by-2.0": "Veri lisansı Almanya – atıf – sürüm 2.0",
-	"jsonconfig-license-copyrightwarning": "Değişiklikleri kaydederek [https://meta.wikimedia.org/wiki/Terms_of_Use/tr Kullanım Şartları]'nı kabul etmiş olursunuz ve katkınızı [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}].",
-	"jsonconfig-license-copyrightwarning-license-unset": "Değişiklikleri kaydederek [https://meta.wikimedia.org/wiki/Terms_of_Use/tr Kullanım Şartları]'nı kabul edersiniz ve <code>licence</code> alanında belirtilen lisansa göre katkınızı geri dönülmez şekilde bırakmayı kabul edersiniz.",
+	"jsonconfig-license-name-GeoNutzV": "Coğrafi Veri lisansı Almanya",
+	"jsonconfig-license-copyrightwarning": "Değişiklikleri kaydederek [https://foundation.wikimedia.org/wiki/Terms_of_Use Kullanım Şartları]'nı kabul etmiş olursunuz ve katkınızı [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}].",
+	"jsonconfig-license-copyrightwarning-license-unset": "Değişiklikleri yayımlayarak [https://foundation.wikimedia.org/wiki/Terms_of_Use Kullanım Şartları]'nı kabul edersiniz ve <code>licence</code> alanında belirtilen lisansa göre katkınızı geri dönülmez şekilde bırakmayı kabul edersiniz.",
 	"jsonconfig-license-notice": "'''Not:''' Bu sayfayı düzenlediğinizde, katkınızı [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}] altında bırakmayı kabul edersiniz.",
 	"jsonconfig-license-notice-license-unset": "'''Not:''' Bu sayfayı düzenlediğinizde, katkınızı <code>licence</code> alanında belirtilen lisansa göre bırakmayı kabul edersiniz.",
 	"right-jsonconfig-flush": "API ile JsonConfig'i değiştir",

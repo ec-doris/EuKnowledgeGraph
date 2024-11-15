@@ -6,10 +6,11 @@
 			"पर्वत सुबेदी",
 			"बिप्लब आनन्द",
 			"सरोज कुमार ढकाल",
-			"हिमाल सुबेदी"
+			"हिमाल सुबेदी",
+			"बडा काजी"
 		]
 	},
-	"wbqc-constraintreport": "श्रोत अभाव प्रतिवेदन",
+	"wbqc-constraintreport": "प्रतिबन्ध प्रतिवेदन",
 	"wbqc-constraintreport-form-submit-label": "जाँच",
 	"wbqc-constraintreport-form-entityid-placeholder": "क्युएक्सएकस/पिएक्सएक्स",
 	"wbqc-constraintreport-result-headline": "$1 को परिणाम",

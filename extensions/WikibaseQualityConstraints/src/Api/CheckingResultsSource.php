@@ -89,7 +89,7 @@ class CheckingResultsSource implements ResultsSource {
 			( new NullResult( new EntityContextCursor( $entityId->getSerialization() ) ) )
 				->withMetadata( Metadata::ofDependencyMetadata(
 					DependencyMetadata::ofEntityId( $entityId )
-				) )
+				) ),
 		];
 	}
 

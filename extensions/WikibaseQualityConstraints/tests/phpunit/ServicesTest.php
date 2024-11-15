@@ -64,7 +64,7 @@ use WikibaseQuality\ConstraintReport\WikibaseServices;
  */
 class ServicesTest extends MediaWikiIntegrationTestCase {
 
-	public function provideConstraintsServiceClasses() {
+	public static function provideConstraintsServiceClasses() {
 		return [
 			[ ExpiryLock::class ],
 			[ LoggingHelper::class ],
@@ -78,21 +78,21 @@ class ServicesTest extends MediaWikiIntegrationTestCase {
 			[ ConnectionCheckerHelper::class ],
 			[ RangeCheckerHelper::class ],
 			[ SparqlHelper::class, [
-				'config' => new HashConfig( [ 'WBQualityConstraintsSparqlEndpoint' => 'http://f.oo/sparql' ] ) ]
+				'config' => new HashConfig( [ 'WBQualityConstraintsSparqlEndpoint' => 'http://f.oo/sparql' ] ) ],
 			],
 			[ SparqlHelper::class, [ 'config' => new HashConfig( [ 'WBQualityConstraintsSparqlEndpoint' => '' ] ) ] ],
 			[ TypeCheckerHelper::class ],
 			[ DelegatingConstraintChecker::class ],
 			[ ResultsSource::class, [
-				'config' => new HashConfig( [ 'WBQualityConstraintsCacheCheckConstraintsResults' => true ] ) ]
+				'config' => new HashConfig( [ 'WBQualityConstraintsCacheCheckConstraintsResults' => true ] ) ],
 			],
 			[ ResultsSource::class, [
-				'config' => new HashConfig( [ 'WBQualityConstraintsCacheCheckConstraintsResults' => false ] ) ]
+				'config' => new HashConfig( [ 'WBQualityConstraintsCacheCheckConstraintsResults' => false ] ) ],
 			],
 		];
 	}
 
-	public function provideConstraintCheckerServiceClasses() {
+	public static function provideConstraintCheckerServiceClasses() {
 		return [
 			[ ConflictsWithChecker::class ],
 			[ ItemChecker::class ],
@@ -126,7 +126,7 @@ class ServicesTest extends MediaWikiIntegrationTestCase {
 		];
 	}
 
-	public function provideWikibaseServiceClasses() {
+	public static function provideWikibaseServiceClasses() {
 		return [
 			[ EntityLookup::class ],
 			[ 'EntityLookupWithoutCache', [ 'expectedClass' => EntityLookup::class ] ],
@@ -134,10 +134,10 @@ class ServicesTest extends MediaWikiIntegrationTestCase {
 		];
 	}
 
-	public function provideAllServiceClasses() {
-		yield from $this->provideConstraintsServiceClasses();
-		yield from $this->provideConstraintCheckerServiceClasses();
-		yield from $this->provideWikibaseServiceClasses();
+	public static function provideAllServiceClasses() {
+		yield from self::provideConstraintsServiceClasses();
+		yield from self::provideConstraintCheckerServiceClasses();
+		yield from self::provideWikibaseServiceClasses();
 	}
 
 	/**

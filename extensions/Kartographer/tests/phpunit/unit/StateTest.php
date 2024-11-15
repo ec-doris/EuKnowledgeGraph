@@ -3,12 +3,16 @@
 namespace Kartographer\UnitTests;
 
 use Kartographer\State;
+use Kartographer\Tag\LegacyMapFrame;
+use Kartographer\Tag\LegacyMapLink;
 use MediaWikiUnitTestCase;
 use ParserOutput;
+use Wikimedia\TestingAccessWrapper;
 
 /**
  * @covers \Kartographer\State
  * @group Kartographer
+ * @license MIT
  */
 class StateTest extends MediaWikiUnitTestCase {
 
@@ -16,7 +20,7 @@ class StateTest extends MediaWikiUnitTestCase {
 		$state = new State();
 		$this->assertFalse( $state->hasValidTags() );
 
-		$state->setValidTags();
+		$state->incrementUsage( LegacyMapLink::TAG );
 		$this->assertTrue( $state->hasValidTags() );
 	}
 
@@ -24,30 +28,30 @@ class StateTest extends MediaWikiUnitTestCase {
 		$state = new State();
 		$this->assertFalse( $state->hasBrokenTags() );
 
-		$state->setBrokenTags();
+		$state->incrementBrokenTags();
 		$this->assertTrue( $state->hasBrokenTags() );
 	}
 
 	public function testMapLinks() {
 		$state = new State();
-		$this->assertSame( 0, $state->getMaplinks() );
+		$this->assertSame( [], $state->getUsages() );
 
-		$state->useMaplink();
-		$this->assertSame( 1, $state->getMaplinks() );
+		$state->incrementUsage( LegacyMapLink::TAG );
+		$this->assertSame( 1, $state->getUsages()['maplinks'] );
 
-		$state->useMaplink();
-		$this->assertSame( 2, $state->getMaplinks() );
+		$state->incrementUsage( LegacyMapLink::TAG );
+		$this->assertSame( 2, $state->getUsages()['maplinks'] );
 	}
 
 	public function testMapframes() {
 		$state = new State();
-		$this->assertSame( 0, $state->getMapframes() );
+		$this->assertSame( [], $state->getUsages() );
 
-		$state->useMapframe();
-		$this->assertSame( 1, $state->getMapframes() );
+		$state->incrementUsage( LegacyMapFrame::TAG );
+		$this->assertSame( 1, $state->getUsages()['mapframes'] );
 
-		$state->useMapframe();
-		$this->assertSame( 2, $state->getMapframes() );
+		$state->incrementUsage( LegacyMapFrame::TAG );
+		$this->assertSame( 2, $state->getUsages()['mapframes'] );
 	}
 
 	public function testInteractiveGroups() {
@@ -66,10 +70,10 @@ class StateTest extends MediaWikiUnitTestCase {
 		$this->assertSame( [], $state->getRequestedGroups() );
 
 		$state->addRequestedGroups( [ 6 => 'a', 7 => 'b' ] );
-		$this->assertSame( [ 'a' => 6, 'b' => 7 ], $state->getRequestedGroups() );
+		$this->assertSame( [ 'a', 'b' ], $state->getRequestedGroups() );
 
 		$state->addRequestedGroups( [ 11 => 'b',  22 => 'c' ] );
-		$this->assertSame( [ 'a' => 6, 'b' => 7, 'c' => 22 ], $state->getRequestedGroups() );
+		$this->assertSame( [ 'a' , 'b', 'c' ], $state->getRequestedGroups() );
 	}
 
 	public function testCounters() {
@@ -114,7 +118,7 @@ class StateTest extends MediaWikiUnitTestCase {
 	public function testParserOutputPersistenceForwardCompatibility() {
 		$output = new ParserOutput();
 
-		$state = new State( $output );
+		$state = new State();
 		$state->addData( 'test', [ 'foo' => 'bar' ] );
 
 		// Set JSONified state. Should work before we set JSON-serializable data,
@@ -128,7 +132,7 @@ class StateTest extends MediaWikiUnitTestCase {
 	public function testParserOutputPersistenceBackwardCompatibility() {
 		$output = new ParserOutput();
 
-		$state = new State( $output );
+		$state = new State();
 		$state->addData( 'test', [ 'foo' => 'bar' ] );
 
 		// Set the object directly. Should still work once we normally set JSON-serializable data.
@@ -138,7 +142,7 @@ class StateTest extends MediaWikiUnitTestCase {
 		$this->assertEquals( $state, $retrieved );
 	}
 
-	public function provideStates() {
+	public static function provideStates() {
 		yield 'empty' => [ new State() ];
 
 		$stateWithData = new State();
@@ -155,13 +159,12 @@ class StateTest extends MediaWikiUnitTestCase {
 		yield 'with groups' => [ $stateWithGroups ];
 
 		$stateWithFlags = new State();
-		$stateWithFlags->setBrokenTags();
-		$stateWithFlags->setValidTags();
-		$stateWithFlags->useMapframe();
-		$stateWithFlags->useMapframe();
-		$stateWithFlags->useMaplink();
-		$stateWithFlags->useMaplink();
-		$stateWithFlags->useMaplink();
+		$stateWithFlags->incrementBrokenTags();
+		$stateWithFlags->incrementUsage( LegacyMapFrame::TAG );
+		$stateWithFlags->incrementUsage( LegacyMapFrame::TAG );
+		$stateWithFlags->incrementUsage( LegacyMapLink::TAG );
+		$stateWithFlags->incrementUsage( LegacyMapLink::TAG );
+		$stateWithFlags->incrementUsage( LegacyMapLink::TAG );
 		yield 'with flags' => [ $stateWithFlags ];
 	}
 
@@ -175,6 +178,25 @@ class StateTest extends MediaWikiUnitTestCase {
 		$this->assertEquals( $state, State::getState( $output ) );
 	}
 
+	public function testJsonStability() {
+		$state = new State();
+		$state->incrementUsage( LegacyMapLink::TAG );
+		$state->incrementUsage( LegacyMapFrame::TAG );
+		$state->addInteractiveGroups( [ 'interactive' ] );
+		$state->addRequestedGroups( [ 'requested' ] );
+		// This intentionally breaks when unexpected changes are made to the JSON serialization
+		$this->assertEquals( [
+			'broken' => 0,
+			'maplinks' => 1,
+			'mapframes' => 1,
+			// FIXME: Why do we store flipped arrays with meaningless values in the parser cache?
+			'interactiveGroups' => [ 'interactive' => 0 ],
+			'requestedGroups' => [ 'requested' => 0 ],
+			'counters' => null,
+			'data' => [],
+		], $state->jsonSerialize() );
+	}
+
 	/**
 	 * @dataProvider provideStates
 	 */
@@ -185,7 +207,9 @@ class StateTest extends MediaWikiUnitTestCase {
 		$this->assertIsString( $json );
 		$this->assertIsArray( json_decode( $json, true ) );
 
-		$decoded = State::newFromJson( $jsonData );
+		/** @var State $class */
+		$class = TestingAccessWrapper::newFromClass( State::class );
+		$decoded = $class->newFromJson( $jsonData );
 		$this->assertEquals( $state, $decoded );
 	}
 

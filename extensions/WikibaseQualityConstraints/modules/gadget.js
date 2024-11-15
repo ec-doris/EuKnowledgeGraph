@@ -281,7 +281,8 @@ module.exports = ( function ( mw, wb, $, OO ) {
 		var config = {
 			status: result.status,
 			constraint: result.constraint,
-			message: result[ 'message-html' ]
+			message: result[ 'message-html' ],
+			constraintClarification: result[ 'constraint-clarification' ]
 		};
 		if ( result.cached ) {
 			config.ancillaryMessages = [ this._getCachedMessage( result.cached ) ];

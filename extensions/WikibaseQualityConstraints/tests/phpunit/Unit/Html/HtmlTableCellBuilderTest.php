@@ -31,24 +31,24 @@ class HtmlTableCellBuilderTest extends \MediaWikiUnitTestCase {
 	/**
 	 * Test cases for testConstruct
 	 */
-	public function constructDataProvider() {
+	public static function constructDataProvider() {
 		return [
 			[
 				'foobar',
-				[]
+				[],
 			],
 			[
 				'foobar',
 				[
 					'rowspan' => 2,
-					'colspan' => 2
-				]
+					'colspan' => 2,
+				],
 			],
 			[
 				42,
 				[],
-				InvalidArgumentException::class
-			]
+				InvalidArgumentException::class,
+			],
 		];
 	}
 
@@ -65,28 +65,28 @@ class HtmlTableCellBuilderTest extends \MediaWikiUnitTestCase {
 	/**
 	 * Test cases for testToHtml
 	 */
-	public function toHtmlDataProvider() {
+	public static function toHtmlDataProvider() {
 		return [
 			[
 				'foobar',
 				[],
-				'<td>foobar</td>'
+				'<td>foobar</td>',
 			],
 			[
 				'foobar',
 				[
 					'rowspan' => 2,
-					'colspan' => 3
+					'colspan' => 3,
 				],
-				'<td rowspan="2" colspan="3">foobar</td>'
+				'<td rowspan="2" colspan="3">foobar</td>',
 			],
 			[
 				'foobar',
 				[
-					'foo' => 'bar'
+					'foo' => 'bar',
 				],
-				'<td foo="bar">foobar</td>'
-			]
+				'<td foo="bar">foobar</td>',
+			],
 		];
 	}
 

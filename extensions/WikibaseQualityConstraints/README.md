@@ -41,7 +41,7 @@ Extension to Wikibase Repository that performs constraint checks.
   * Alternatively, to check “format” constraints without running a full SPARQL server,
     you can use the [minisparql] server.
 
-* Run `php maintenance/runScript.php extensions/WikibaseQualityConstraints/maintenance/ImportConstraintStatements.php`.
+* Run `php maintenance/run.php WikibaseQualityConstraints:ImportConstraintStatements.php`.
 
 [minisparql]: https://github.com/lucaswerkmeister/minisparql
 
@@ -64,7 +64,7 @@ and then print a config snippet which you can append to your `LocalSettings.php`
 
 ```sh
 # working directory should be the MediaWiki installation folder, i.e. where LocalSettings.php is
-php extensions/WikibaseQualityConstraints/maintenance/ImportConstraintEntities.php | tee -a LocalSettings.php
+php maintenance/run.php WikibaseQualityConstraints:ImportConstraintEntities.php | tee -a LocalSettings.php
 ```
 
 (The new entities will not show up in your wiki’s recent changes until they have been processed in the job queue;
@@ -80,7 +80,7 @@ There are two ways to run the tests of this extension:
 
   ```sh
   # from the MediaWiki installation folder
-  php tests/phpunit/phpunit.php -c extensions/WikibaseQualityConstraints/phpunit.xml.dist
+  composer phpunit -- -c extensions/WikibaseQualityConstraints/phpunit.xml.dist
   ```
 
   This creates test coverage reports
@@ -91,7 +91,7 @@ There are two ways to run the tests of this extension:
 
   ```sh
   # from the MediaWiki installation folder
-  php tests/phpunit/phpunit.php extensions/WikibaseQualityConstraints/tests/phpunit/
+  composer phpunit:entrypoint extensions/WikibaseQualityConstraints/tests/phpunit/
   ```
 
   This runs the tests without coverage report
@@ -183,7 +183,7 @@ To add a new constraint type, the following steps are necessary:
     $config->get( 'WBQualityConstraints…ConstraintId' )
     	=> ConstraintCheckerServices::get…Checker( $services ),
     ```
-    to the the `$checkerMap` array in the `DELEGATING_CONSTRAINT_CHECKER` function.
+    to the `$checkerMap` array in the `DELEGATING_CONSTRAINT_CHECKER` function.
   * In `ServicesTest.php`, append a new entry like
     ```php
     [ …Checker::class ],
@@ -214,8 +214,6 @@ To add a new constraint type, the following steps are necessary:
     and one test for the `checkConstraintParameters` method.
   * Use the `ResultAssertions` trait’s methods to check constraint check results.
   * Use the `NewItem` and `NewStatement` builders to construct test data.
-    (You might see `JsonFileEntityLookup` and separate JSON files used in some existing tests,
-    but that’s a lot less readable.)
   * If the checker uses a `Config`, use the `DefaultConfig` trait.
   * If the constraint has parameters,
     add methods for them to the `ConstraintParameters` trait and use it in the tests.

@@ -34,7 +34,7 @@ trait SparqlHelperMock {
 			$args[] = $separators;
 		}
 
-		$mock->expects( $this->exactly( 1 ) )
+		$mock->expects( $this->once() )
 			->method( 'findEntitiesWithSameStatement' )
 			->with( ...$args )
 			->willReturn( new CachedEntityIds( $result, Metadata::blank() ) );
@@ -50,15 +50,15 @@ trait SparqlHelperMock {
 	) {
 		$mock = $this->createMock( SparqlHelper::class );
 
-		$mock->expects( $this->exactly( 1 ) )
+		$mock->expects( $this->once() )
 			->method( 'findEntitiesWithSameQualifierOrReference' )
 			->willReturn( new CachedEntityIds( $result, Metadata::blank() ) )
-			->withConsecutive( [
-				$this->equalTo( $expectedEntityId ),
-				$this->equalTo( $expectedSnak ),
-				$this->equalTo( $expectedType ),
-				$this->equalTo( $expectedType === 'qualifier' )
-			] );
+			->with(
+				$expectedEntityId,
+				$expectedSnak,
+				$expectedType,
+				$expectedType === 'qualifier'
+			);
 
 		return $mock;
 	}

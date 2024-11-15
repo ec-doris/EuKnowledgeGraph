@@ -4,7 +4,6 @@
 			"McDutchie"
 		]
 	},
-	"apihelp-wbcheckconstraints-description": "Executa verificationes de restrictiones sur qualcunque entitate que tu vole e restitue le resultato.",
 	"apihelp-wbcheckconstraints-summary": "Executa verificationes de restrictiones sur qualcunque entitate que tu vole e restitue le resultato.",
 	"apihelp-wbcheckconstraints-param-id": "Lista de IDs del entitates pro le quales obtener datos. Separa valores con '|' o alternative.",
 	"apihelp-wbcheckconstraints-param-claimid": "Lista de GUIDs identificante un assertion pro verificar un reporto de restrictiones. Separa valores con '|'.",

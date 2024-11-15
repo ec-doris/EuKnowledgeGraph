@@ -3,47 +3,44 @@
 namespace Kartographer;
 
 use FormatJson;
+use InvalidArgumentException;
 use JsonConfig\JCMapDataContent;
 use JsonConfig\JCSingleton;
 use JsonSchema\Validator;
-use LogicException;
 use MediaWiki\MediaWikiServices;
 use Parser;
 use PPFrame;
-use Status;
+use StatusValue;
 use stdClass;
 
 /**
- * Parses and sanitizes text properties of GeoJSON/simplestyle by putting them through parser
+ * Parses and sanitizes text properties of GeoJSON/simplestyle by putting them through the MediaWiki
+ * wikitext parser.
+ *
+ * @license MIT
  */
 class SimpleStyleParser {
 
-	private const PARSED_PROPS = [ 'title', 'description' ];
+	public const WIKITEXT_PROPERTIES = [ 'title', 'description' ];
 
-	/** @var Parser */
-	private $parser;
+	private WikitextParser $parser;
+	private array $options;
+	private string $mapServer;
 
-	/** @var PPFrame|null */
-	private $frame;
-
-	/** @var array */
-	private $options;
-
-	/** @var string */
-	private $mapService;
+	public static function newFromParser( Parser $parser, PPFrame $frame = null ): self {
+		return new self( new MediaWikiWikitextParser( $parser, $frame ) );
+	}
 
 	/**
-	 * @param Parser $parser Parser used for wikitext processing
-	 * @param PPFrame|null $frame
+	 * @param WikitextParser $parser
 	 * @param array $options Set ['saveUnparsed' => true] to back up the original values of title
 	 *                       and description in _origtitle and _origdescription
 	 */
-	public function __construct( Parser $parser, PPFrame $frame = null, array $options = [] ) {
+	public function __construct( WikitextParser $parser, array $options = [] ) {
 		$this->parser = $parser;
-		$this->frame = $frame;
 		$this->options = $options;
 		// @fixme: More precise config?
-		$this->mapService = MediaWikiServices::getInstance()
+		$this->mapServer = MediaWikiServices::getInstance()
 			->getMainConfig()
 			->get( 'KartographerMapServer' );
 	}
@@ -52,34 +49,32 @@ class SimpleStyleParser {
 	 * Parses string into JSON and performs validation/sanitization
 	 *
 	 * @param string|null $input
-	 * @return Status
+	 * @return StatusValue with the value being [ 'data' => stdClass[], 'schema-errors' => array[] ]
 	 */
-	public function parse( $input ): Status {
-		$input = trim( $input );
-		$status = Status::newGood( [] );
-		if ( $input !== '' ) {
-			$status = FormatJson::parse( $input, FormatJson::TRY_FIXING | FormatJson::STRIP_COMMENTS );
-			if ( $status->isOK() ) {
-				$status = $this->parseObject( $status->value );
-			} else {
-				$status = Status::newFatal( 'kartographer-error-json', $status->getMessage() );
-			}
+	public function parse( ?string $input ): StatusValue {
+		if ( !$input || trim( $input ) === '' ) {
+			return StatusValue::newGood( [ 'data' => [] ] );
 		}
 
-		return $status;
+		$status = FormatJson::parse( $input, FormatJson::TRY_FIXING | FormatJson::STRIP_COMMENTS );
+		if ( !$status->isOK() ) {
+			return StatusValue::newFatal( 'kartographer-error-json', $status->getMessage() );
+		}
+
+		return $this->parseObject( $status->value );
 	}
 
 	/**
 	 * Validate and sanitize a parsed GeoJSON data object
 	 *
 	 * @param array|stdClass &$data
-	 * @return Status
+	 * @return StatusValue
 	 */
-	public function parseObject( &$data ): Status {
+	public function parseObject( &$data ): StatusValue {
 		if ( !is_array( $data ) ) {
 			$data = [ $data ];
 		}
-		$status = $this->validateContent( $data );
+		$status = $this->validateGeoJSON( $data );
 		if ( $status->isOK() ) {
 			$status = $this->normalizeAndSanitize( $data );
 		}
@@ -87,63 +82,50 @@ class SimpleStyleParser {
 	}
 
 	/**
-	 * Normalize an object
-	 *
 	 * @param stdClass[]|stdClass &$data
-	 * @return Status
+	 * @return StatusValue
 	 */
-	public function normalizeAndSanitize( &$data ): Status {
-		$status = $this->normalize( $data );
-		$this->sanitize( $data );
+	public function normalizeAndSanitize( &$data ): StatusValue {
+		$status = $this->recursivelyNormalizeExternalData( $data );
+		$this->recursivelySanitizeAndParseWikitext( $data );
 		return $status;
 	}
 
 	/**
 	 * @param stdClass[] $values
 	 * @param int[] &$counters
-	 * @return array|false [ string $markerSymbol, stdClass $markerProperties ]
+	 * @return array|null [ string $markerSymbol, stdClass $markerProperties ]
 	 */
-	public static function updateMarkerSymbolCounters( array $values, array &$counters = [] ) {
-		$firstMarker = false;
+	public static function updateMarkerSymbolCounters( array $values, array &$counters = [] ): ?array {
+		$firstMarker = null;
 		foreach ( $values as $item ) {
 			// While the input should be validated, it's still arbitrary user input.
 			if ( !( $item instanceof stdClass ) ) {
 				continue;
 			}
 
-			if ( isset( $item->properties->{'marker-symbol'} ) ) {
-				$marker = $item->properties->{'marker-symbol'};
-				// all special markers begin with a dash
-				// both 'number' and 'letter' have 6 symbols
-				$type = substr( $marker, 0, 7 );
-				$isNumber = $type === '-number';
-				if ( $isNumber || $type === '-letter' ) {
-					// numbers 1..99 or letters a..z
-					$count = $counters[$marker] ?? 0;
-					if ( $count < ( $isNumber ? 99 : 26 ) ) {
-						$counters[$marker] = ++$count;
-					}
-					$marker = $isNumber ? strval( $count ) : chr( ord( 'a' ) + $count - 1 );
-					$item->properties->{'marker-symbol'} = $marker;
-					if ( $firstMarker === false ) {
-						// GeoJSON is in lowercase, but the letter is shown as uppercase
-						$firstMarker = [ mb_strtoupper( $marker ), $item->properties ];
-					}
+			$marker = $item->properties->{'marker-symbol'} ?? '';
+			$isNumber = str_starts_with( $marker, '-number' );
+			if ( $isNumber || str_starts_with( $marker, '-letter' ) ) {
+				// numbers 1..99 or letters a..z
+				$count = $counters[$marker] ?? 0;
+				if ( $count < ( $isNumber ? 99 : 26 ) ) {
+					$counters[$marker] = ++$count;
+				}
+				$marker = $isNumber ? strval( $count ) : chr( ord( 'a' ) + $count - 1 );
+				$item->properties->{'marker-symbol'} = $marker;
+				if ( !$firstMarker ) {
+					// GeoJSON is in lowercase, but the letter is shown as uppercase
+					$firstMarker = [ mb_strtoupper( $marker ), $item->properties ];
 				}
 			}
-			if ( !isset( $item->type ) ) {
-				continue;
-			}
-			$type = $item->type;
-			if ( $type === 'FeatureCollection' && isset( $item->features ) ) {
-				$tmp = self::updateMarkerSymbolCounters( $item->features, $counters );
-				if ( $firstMarker === false ) {
-					$firstMarker = $tmp;
-				}
-			} elseif ( $type === 'GeometryCollection' && isset( $item->geometries ) ) {
-				$tmp = self::updateMarkerSymbolCounters( $item->geometries, $counters );
-				if ( $firstMarker === false ) {
-					$firstMarker = $tmp;
+
+			// Recurse into FeatureCollection and GeometryCollection
+			$features = $item->features ?? $item->geometries ?? null;
+			if ( $features ) {
+				$found = self::updateMarkerSymbolCounters( $features, $counters );
+				if ( !$firstMarker ) {
+					$firstMarker = $found;
 				}
 			}
 		}
@@ -151,23 +133,63 @@ class SimpleStyleParser {
 	}
 
 	/**
-	 * @param mixed $json
-	 * @return Status
+	 * @param stdClass[] $values
+	 * @return array|null Same as {@see updateMarkerSymbolCounters}, but with the $markerSymbol
+	 *  name not updated
 	 */
-	private function validateContent( $json ): Status {
-		$schema = self::loadSchema();
-		$validator = new Validator();
-		$validator->check( $json, $schema );
+	public static function findFirstMarkerSymbol( array $values ): ?array {
+		foreach ( $values as $item ) {
+			// While the input should be validated, it's still arbitrary user input.
+			if ( !( $item instanceof stdClass ) ) {
+				continue;
+			}
 
-		if ( !$validator->isValid() ) {
-			return Status::newFatal(
-				'kartographer-error-bad_data',
-				$validator->getErrors()[0]['pointer'] ?? '',
-				$validator->getErrors()[0]['message'] ?? ''
-			);
+			$marker = $item->properties->{'marker-symbol'} ?? '';
+			if ( str_starts_with( $marker, '-number' ) || str_starts_with( $marker, '-letter' ) ) {
+				return [ $marker, $item->properties ];
+			}
+
+			// Recurse into FeatureCollection and GeometryCollection
+			$features = $item->features ?? $item->geometries ?? null;
+			if ( $features ) {
+				$found = self::findFirstMarkerSymbol( $features );
+				if ( $found ) {
+					return $found;
+				}
+			}
 		}
 
-		return Status::newGood();
+		return null;
+	}
+
+	/**
+	 * @param stdClass[] $data
+	 * @return StatusValue
+	 */
+	private function validateGeoJSON( array $data ): StatusValue {
+		// Basic top-level validation. The JSON schema validation below does this again, but gives
+		// terrible, very hard to understand error messages.
+		foreach ( $data as $geoJSON ) {
+			if ( !( $geoJSON instanceof stdClass ) ) {
+				return StatusValue::newFatal( 'kartographer-error-json-object' );
+			}
+			if ( !isset( $geoJSON->type ) || !is_string( $geoJSON->type ) || !$geoJSON->type ) {
+				return StatusValue::newFatal( 'kartographer-error-json-type' );
+			}
+		}
+
+		$schema = (object)[ '$ref' => 'file://' . dirname( __DIR__ ) . '/schemas/geojson.json' ];
+		$validator = new Validator();
+		$validator->check( $data, $schema );
+
+		if ( !$validator->isValid() ) {
+			$errors = $validator->getErrors( Validator::ERROR_DOCUMENT_VALIDATION );
+			$status = StatusValue::newFatal( 'kartographer-error-bad_data' );
+			$status->setResult( false, [ 'schema-errors' => $errors ] );
+			return $status;
+		}
+
+		return StatusValue::newGood();
 	}
 
 	/**
@@ -177,43 +199,42 @@ class SimpleStyleParser {
 	 *
 	 * @param stdClass[]|stdClass &$json
 	 */
-	protected function sanitize( &$json ) {
+	private function recursivelySanitizeAndParseWikitext( &$json ): void {
 		if ( is_array( $json ) ) {
 			foreach ( $json as &$element ) {
-				$this->sanitize( $element );
+				$this->recursivelySanitizeAndParseWikitext( $element );
 			}
 		} elseif ( is_object( $json ) ) {
 			foreach ( array_keys( get_object_vars( $json ) ) as $prop ) {
 				// https://phabricator.wikimedia.org/T134719
-				if ( $prop[0] === '_' ) {
+				if ( str_starts_with( $prop, '_' ) ) {
 					unset( $json->$prop );
 				} else {
-					$this->sanitize( $json->$prop );
+					$this->recursivelySanitizeAndParseWikitext( $json->$prop );
 				}
 			}
 
-			if ( property_exists( $json, 'properties' ) && is_object( $json->properties ) ) {
-				$this->sanitizeProperties( $json->properties );
+			if ( isset( $json->properties ) && is_object( $json->properties ) ) {
+				$this->parseWikitextProperties( $json->properties );
 			}
 		}
 	}
 
 	/**
-	 * Normalizes JSON
-	 *
 	 * @param stdClass[]|stdClass &$json
-	 * @return Status
+	 * @return StatusValue
 	 */
-	protected function normalize( &$json ): Status {
-		$status = Status::newGood();
+	private function recursivelyNormalizeExternalData( &$json ): StatusValue {
+		$status = StatusValue::newGood();
 		if ( is_array( $json ) ) {
 			foreach ( $json as &$element ) {
-				$this->normalize( $element );
+				$status->merge( $this->recursivelyNormalizeExternalData( $element ) );
 			}
-		} elseif ( is_object( $json ) && $json->type === 'ExternalData' ) {
-			$status->merge( $this->normalizeExternalData( $json ) );
+			unset( $element );
+		} elseif ( is_object( $json ) && isset( $json->type ) && $json->type === 'ExternalData' ) {
+			$status->merge( $this->normalizeExternalDataServices( $json ) );
 		}
-		$status->value = $json;
+		$status->value = [ 'data' => $json ];
 
 		return $status;
 	}
@@ -222,16 +243,18 @@ class SimpleStyleParser {
 	 * Canonicalizes an ExternalData object
 	 *
 	 * @param stdClass &$object
-	 * @return Status
+	 * @return StatusValue
 	 */
-	private function normalizeExternalData( &$object ): Status {
+	private function normalizeExternalDataServices( stdClass &$object ): StatusValue {
+		$service = $object->service ?? null;
 		$ret = (object)[
 			'type' => 'ExternalData',
-			'service' => $object->service,
+			'service' => $service,
 		];
 
-		switch ( $object->service ) {
+		switch ( $service ) {
 			case 'geoshape':
+			case 'geopoint':
 			case 'geoline':
 			case 'geomask':
 				$query = [ 'getgeojson' => 1 ];
@@ -243,11 +266,11 @@ class SimpleStyleParser {
 				if ( isset( $object->query ) ) {
 					$query['query'] = $object->query;
 				}
-				// 'geomask' service is the same as inverted geoshape service
-				// Kartotherian does not support it, request it as geoshape
-				$service = $object->service === 'geomask' ? 'geoshape' : $object->service;
-
-				$ret->url = "{$this->mapService}/{$service}?" . wfArrayToCgi( $query );
+				$ret->url = $this->mapServer . '/' .
+					// 'geomask' service is the same as inverted geoshape service
+					// Kartotherian does not support it, request it as geoshape
+					( $service === 'geomask' ? 'geoshape' : $service ) .
+					'?' . wfArrayToCgi( $query );
 				if ( isset( $object->properties ) ) {
 					$ret->properties = $object->properties;
 				}
@@ -258,7 +281,7 @@ class SimpleStyleParser {
 				if ( !$jct || JCSingleton::getContentClass( $jct->getConfig()->model ) !==
 							  JCMapDataContent::class
 				) {
-					return Status::newFatal( 'kartographer-error-title', $object->title );
+					return StatusValue::newFatal( 'kartographer-error-title', $object->title );
 				}
 				$query = [
 					'format' => 'json',
@@ -270,77 +293,60 @@ class SimpleStyleParser {
 				break;
 
 			default:
-				throw new LogicException( "Unexpected service name '{$object->service}'" );
+				throw new InvalidArgumentException( "Unexpected service name '$service'" );
 		}
 
 		$object = $ret;
-		return Status::newGood();
+		return StatusValue::newGood();
 	}
 
 	/**
-	 * Sanitizes properties
-	 *
 	 * HACK: this function supports JsonConfig-style localization that doesn't pass validation
 	 *
 	 * @param stdClass $properties
 	 */
-	private function sanitizeProperties( $properties ) {
+	private function parseWikitextProperties( stdClass $properties ) {
 		$saveUnparsed = $this->options['saveUnparsed'] ?? false;
-		foreach ( self::PARSED_PROPS as $prop ) {
-			if ( property_exists( $properties, $prop ) ) {
-				$property = &$properties->$prop;
 
-				if ( is_string( $property ) ) {
-					if ( $saveUnparsed ) {
-						$properties->{"_orig$prop"} = $property;
-					}
-					$property = $this->parseText( $property );
-				} elseif ( is_object( $property ) ) {
-					// Delete empty localizations
-					if ( !count( get_object_vars( $property ) ) ) {
-						unset( $properties->$prop );
+		foreach ( self::WIKITEXT_PROPERTIES as $prop ) {
+			if ( !property_exists( $properties, $prop ) ) {
+				continue;
+			}
+
+			$origProp = "_orig$prop";
+			$property = &$properties->$prop;
+
+			if ( is_string( $property ) && $property !== '' ) {
+				if ( $saveUnparsed ) {
+					$properties->$origProp = $property;
+				}
+				$property = $this->parser->parseWikitext( $property );
+			} elseif ( is_object( $property ) ) {
+				if ( $saveUnparsed ) {
+					$properties->$origProp = (object)[];
+				}
+				foreach ( $property as $language => &$text ) {
+					if ( !is_string( $text ) || $text === '' ) {
+						unset( $property->$language );
 					} else {
 						if ( $saveUnparsed ) {
-							$properties->{"_orig$prop"} = $property;
+							$properties->$origProp->$language = $text;
 						}
-						foreach ( $property as $language => &$text ) {
-							if ( !is_string( $text ) ) {
-								unset( $property->$language );
-							} else {
-								$text = $this->parseText( $text );
-							}
-						}
+						$text = $this->parser->parseWikitext( $text );
 					}
-				} else {
-					unset( $properties->$prop ); // Dunno what the hell it is, ditch
 				}
+				unset( $text );
+
+				// Delete empty localizations
+				if ( !get_object_vars( $property ) ) {
+					unset( $properties->$prop );
+					unset( $properties->$origProp );
+				}
+			} else {
+				// Dunno what the hell it is, ditch
+				unset( $properties->$prop );
 			}
 		}
 	}
 
-	/**
-	 * Parses property wikitext into HTML
-	 *
-	 * @param string $text
-	 * @return string
-	 */
-	private function parseText( $text ): string {
-		$text = $this->parser->recursiveTagParseFully( $text, $this->frame ?: false );
-		return trim( Parser::stripOuterParagraph( $text ) );
-	}
-
-	/**
-	 * @return stdClass
-	 */
-	private static function loadSchema(): stdClass {
-		static $schema;
-
-		if ( !$schema ) {
-			$schema = (object)[
-				'$ref' => 'file://' . dirname( __DIR__ ) . '/schemas/geojson.json',
-			];
-		}
-
-		return $schema;
-	}
 }

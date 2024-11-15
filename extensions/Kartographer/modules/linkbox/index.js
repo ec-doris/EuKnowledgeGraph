@@ -1,7 +1,7 @@
 /**
  * **Resource Loader module: {@link Kartographer.Linkbox ext.kartographer.linkbox}**
  *
- * @alternateClassName ext.kartographer.linkbox
+ * @borrows Kartographer.Linkbox as ext.kartographer.linkbox
  * @class Kartographer.Linkbox
  * @singleton
  */
@@ -9,7 +9,6 @@ module.exports = {
 
 	/**
 	 * @type {Kartographer.Linkbox.LinkClass}
-	 * @ignore
 	 */
 	Link: require( './Link.js' ),
 
@@ -23,7 +22,7 @@ module.exports = {
 	 * @return {Kartographer.Linkbox.LinkClass}
 	 */
 	link: function ( options ) {
-		var Link = this.Link;
+		const Link = this.Link;
 		return new Link( options );
 	}
 };

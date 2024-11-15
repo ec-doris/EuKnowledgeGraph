@@ -190,10 +190,10 @@ class ViolationMessageSerializerTest extends \MediaWikiUnitTestCase {
 	public function testSerializeItemIdSnakValue_senseCheck() {
 		$this->expectException( InvalidArgumentException::class );
 
-		// Since EntityId is going to be an interface, not all EntityId implementations are guaranteed to use this constructor
+		// Since EntityId is an interface, not all EntityId implementations are guaranteed to use this constructor
 		$this->getMockBuilder( SerializableEntityId::class )
 			->setConstructorArgs( [ '::somevalue' ] )
-			->getMock();
+			->getMockForAbstractClass();
 	}
 
 	/**
@@ -252,7 +252,7 @@ class ViolationMessageSerializerTest extends \MediaWikiUnitTestCase {
 		$this->assertSame( $abbreviation, $serialized );
 	}
 
-	public function provideContextTypes() {
+	public static function provideContextTypes() {
 		return [
 			[ Context::TYPE_STATEMENT, 's' ],
 			[ Context::TYPE_QUALIFIER, 'q' ],

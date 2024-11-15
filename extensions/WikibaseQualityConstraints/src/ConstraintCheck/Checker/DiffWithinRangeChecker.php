@@ -71,7 +71,7 @@ class DiffWithinRangeChecker implements ConstraintChecker {
 	 * @param Constraint $constraint
 	 *
 	 * @throws ConstraintParameterException
-	 * @return array [ DataValue|null $min, DataValue|null $max, NumericPropertyId $property, array $parameters ]
+	 * @return array [ DataValue|null $min, DataValue|null $max, NumericPropertyId $property ]
 	 */
 	private function parseConstraintParameters( Constraint $constraint ) {
 		list( $min, $max ) = $this->constraintParameterParser->parseQuantityRangeParameter(
@@ -83,16 +83,7 @@ class DiffWithinRangeChecker implements ConstraintChecker {
 			$constraint->getConstraintTypeItemId()
 		);
 
-		$parameters = [];
-		if ( $min !== null ) {
-			$parameters['minimum_quantity'] = [ $min ];
-		}
-		if ( $max !== null ) {
-			$parameters['maximum_quantity'] = [ $max ];
-		}
-		$parameters['property'] = [ $property ];
-
-		return [ $min, $max, $property, $parameters ];
+		return [ $min, $max, $property ];
 	}
 
 	/**
@@ -126,23 +117,21 @@ class DiffWithinRangeChecker implements ConstraintChecker {
 	 */
 	public function checkConstraint( Context $context, Constraint $constraint ) {
 		if ( $context->getSnakRank() === Statement::RANK_DEPRECATED ) {
-			return new CheckResult( $context, $constraint, [], CheckResult::STATUS_DEPRECATED );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_DEPRECATED );
 		}
-
-		$parameters = [];
 
 		$snak = $context->getSnak();
 
 		if ( !$snak instanceof PropertyValueSnak ) {
 			// nothing to check
-			return new CheckResult( $context, $constraint, $parameters, CheckResult::STATUS_COMPLIANCE );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_COMPLIANCE );
 		}
 
 		$minuend = $snak->getDataValue();
 		'@phan-var \DataValues\TimeValue|\DataValues\QuantityValue|\DataValues\UnboundedQuantityValue $minuend';
 
 		/** @var NumericPropertyId $property */
-		list( $min, $max, $property, $parameters ) = $this->parseConstraintParameters( $constraint );
+		list( $min, $max, $property ) = $this->parseConstraintParameters( $constraint );
 
 		// checks only the first occurrence of the referenced property
 		foreach ( $context->getSnakGroup( Context::GROUP_NON_DEPRECATED ) as $otherSnak ) {
@@ -190,10 +179,10 @@ class DiffWithinRangeChecker implements ConstraintChecker {
 				$status = CheckResult::STATUS_VIOLATION;
 			}
 
-			return new CheckResult( $context, $constraint, $parameters, $status, $message );
+			return new CheckResult( $context, $constraint, $status, $message );
 		}
 
-		return new CheckResult( $context, $constraint, $parameters, CheckResult::STATUS_COMPLIANCE );
+		return new CheckResult( $context, $constraint, CheckResult::STATUS_COMPLIANCE );
 	}
 
 	public function checkConstraintParameters( Constraint $constraint ) {

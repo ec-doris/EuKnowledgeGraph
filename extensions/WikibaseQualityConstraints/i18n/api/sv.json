@@ -5,7 +5,6 @@
 			"WikiPhoenix"
 		]
 	},
-	"apihelp-wbcheckconstraints-description": "Utför begränsningskontroller på alla entiteter du vill och returnerar resultatet.",
 	"apihelp-wbcheckconstraints-summary": "Utför begränsningskontroller på alla entiteter du vill och returnerar resultatet.",
 	"apihelp-wbcheckconstraints-param-id": "ID-lista över entiteterna att hämta data från. Separera värden med \"|\" eller alternativa.",
 	"apihelp-wbcheckconstraints-param-constraintid": "Valfritt filter för att endast returnera begränsningarna som har det angivna begränsnings-ID:et.",

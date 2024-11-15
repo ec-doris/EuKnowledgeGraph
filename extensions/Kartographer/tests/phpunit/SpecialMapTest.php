@@ -3,28 +3,30 @@
 namespace Kartographer\Tests;
 
 use GeoData\Globe;
-use Kartographer\SpecialMap;
+use Kartographer\Special\SpecialMap;
 use MediaWikiIntegrationTestCase;
-use Title;
 use Wikimedia\TestingAccessWrapper;
 
 /**
- * @covers \Kartographer\SpecialMap
+ * @coversDefaultClass \Kartographer\Special\SpecialMap
  * @group Kartographer
+ * @license MIT
  */
 class SpecialMapTest extends MediaWikiIntegrationTestCase {
 
 	/**
+	 * @covers ::__construct
+	 * @covers ::parseSubpage
 	 * @dataProvider provideParseSubpage
 	 */
 	public function testParseSubpage(
-		$par, $expectedLat = null, $expectedLon = null, $expectedLang = null
+		string $par, float $expectedLat = null, float $expectedLon = null, string $expectedLang = null
 	) {
 		/** @var SpecialMap $specialMap */
 		$specialMap = TestingAccessWrapper::newFromObject( new SpecialMap() );
 		$res = $specialMap->parseSubpage( $par );
 		if ( $expectedLat === null || $expectedLon === null ) {
-			$this->assertFalse( $res, 'Parsing is expected to fail' );
+			$this->assertNull( $res, 'Parsing is expected to fail' );
 		} else {
 			[ 'lat' => $lat, 'lon' => $lon, 'lang' => $lang ] = $res;
 			$this->assertSame( $expectedLat, $lat, 'Comparing latitudes' );
@@ -33,7 +35,7 @@ class SpecialMapTest extends MediaWikiIntegrationTestCase {
 		}
 	}
 
-	public function provideParseSubpage() {
+	public static function provideParseSubpage() {
 		$tests = [
 			[ '' ],
 			[ 'foo' ],
@@ -54,6 +56,7 @@ class SpecialMapTest extends MediaWikiIntegrationTestCase {
 			[ '18/89.9/179.9', 89.9, 179.9, 'local' ],
 			[ '18/-89.9/-179.9', -89.9, -179.9, 'local' ],
 			[ '18/90/-180', 90.0, -180.0, 'local' ],
+			[ '/1/2', 1.0, 2.0, 'local' ],
 		];
 
 		if ( class_exists( Globe::class ) ) {
@@ -68,14 +71,40 @@ class SpecialMapTest extends MediaWikiIntegrationTestCase {
 		return $tests;
 	}
 
-	public function testLink() {
-		$this->setMwGlobals( 'wgArticlePath', '/wiki/$1' );
-		$title = SpecialMap::link( 12, -34.5, 6 );
-		$this->assertInstanceOf( Title::class, $title );
-		$this->assertEquals( '/wiki/Special:Map/6/12/-34.5/local', $title->getLocalURL() );
-
-		$title = SpecialMap::link( 12, -34.5, 6, 'zh' );
-		$this->assertInstanceOf( Title::class, $title );
-		$this->assertEquals( '/wiki/Special:Map/6/12/-34.5/zh', $title->getLocalURL() );
+	/**
+	 * @covers ::__construct
+	 * @covers ::getWorldMapSrcset
+	 * @covers ::getWorldMapUrl
+	 */
+	public function testGetWorldMapSrcset() {
+		$this->setMwGlobals( 'wgKartographerMapServer', 'http://192.0.2.0' );
+		/** @var SpecialMap $specialMap */
+		$specialMap = TestingAccessWrapper::newFromObject( new SpecialMap() );
+		$this->assertSame(
+			'http://192.0.2.0/osm-intl/0/0/0@2x.png 2x',
+			$specialMap->getWorldMapSrcset()
+		);
 	}
+
+	/**
+	 * @covers ::link
+	 * @dataProvider provideLinks
+	 */
+	public function testLink( ?string $expected, ?float $lat, ?float $lon, int $zoom = null, string $lang = 'local' ) {
+		$this->setMwGlobals( 'wgArticlePath', '/wiki/$1' );
+		$this->assertSame( $expected, SpecialMap::link( $lat, $lon, $zoom, $lang ) );
+	}
+
+	public static function provideLinks() {
+		return [
+			[ '/wiki/Special:Map/6/12/-34.5', 12, -34.5, 6 ],
+			[ '/wiki/Special:Map/6/12/-34.5/zh', 12, -34.5, 6, 'zh' ],
+			[ '/wiki/Special:Map/6/12/34', 12, 34, 6, 'local' ],
+			[ '/wiki/Special:Map/0/12/34', 12, 34, null, '' ],
+			[ '/wiki/Special:Map/0/-12/34', -12, 34 ],
+			[ null, 12, null ],
+			[ null, null, null ],
+		];
+	}
+
 }

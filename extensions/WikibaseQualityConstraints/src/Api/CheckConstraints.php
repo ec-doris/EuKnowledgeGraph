@@ -1,24 +1,25 @@
 <?php
 
+declare( strict_types = 1 );
+
 namespace WikibaseQuality\ConstraintReport\Api;
 
 use ApiBase;
 use ApiMain;
-use Config;
 use IBufferingStatsdDataFactory;
 use Wikibase\DataModel\Entity\EntityId;
 use Wikibase\DataModel\Entity\EntityIdParser;
 use Wikibase\DataModel\Entity\EntityIdParsingException;
 use Wikibase\DataModel\Services\Statement\StatementGuidValidator;
-use Wikibase\Lib\Formatters\OutputFormatValueFormatterFactory;
+use Wikibase\Lib\LanguageFallbackChainFactory;
 use Wikibase\Lib\Store\EntityTitleLookup;
 use Wikibase\Repo\Api\ApiErrorReporter;
 use Wikibase\Repo\Api\ApiHelperFactory;
 use Wikibase\Repo\Api\ResultBuilder;
 use Wikibase\Repo\EntityIdLabelFormatterFactory;
-use Wikibase\View\EntityIdFormatterFactory;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Message\ViolationMessageRendererFactory;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Result\CheckResult;
+use Wikimedia\ParamValidator\ParamValidator;
 
 /**
  * API module that performs constraint check of entities, claims and constraint ID
@@ -33,65 +34,32 @@ class CheckConstraints extends ApiBase {
 	public const PARAM_CONSTRAINT_ID = 'constraintid';
 	public const PARAM_STATUS = 'status';
 
-	/**
-	 * @var EntityIdParser
-	 */
-	private $entityIdParser;
-
-	/**
-	 * @var StatementGuidValidator
-	 */
-	private $statementGuidValidator;
-
-	/**
-	 * @var ResultBuilder
-	 */
-	private $resultBuilder;
-
-	/**
-	 * @var ApiErrorReporter
-	 */
-	private $errorReporter;
-
-	/**
-	 * @var ResultsSource
-	 */
-	private $resultsSource;
-
-	/**
-	 * @var CheckResultsRendererFactory
-	 */
-	private $checkResultsRendererFactory;
-
-	/**
-	 * @var IBufferingStatsdDataFactory
-	 */
-	private $dataFactory;
+	private EntityIdParser $entityIdParser;
+	private StatementGuidValidator $statementGuidValidator;
+	private ResultBuilder $resultBuilder;
+	private ApiErrorReporter $errorReporter;
+	private ResultsSource $resultsSource;
+	private CheckResultsRendererFactory $checkResultsRendererFactory;
+	private IBufferingStatsdDataFactory $dataFactory;
 
 	public static function factory(
 		ApiMain $main,
 		string $name,
-		Config $config,
 		IBufferingStatsdDataFactory $dataFactory,
 		ApiHelperFactory $apiHelperFactory,
-		EntityIdFormatterFactory $entityIdFormatterFactory,
+		EntityIdLabelFormatterFactory $entityIdLabelFormatterFactory,
 		EntityIdParser $entityIdParser,
 		EntityTitleLookup $entityTitleLookup,
+		LanguageFallbackChainFactory $languageFallbackChainFactory,
 		StatementGuidValidator $statementGuidValidator,
-		OutputFormatValueFormatterFactory $valueFormatterFactory,
-		ResultsSource $resultsSource
+		ResultsSource $resultsSource,
+		ViolationMessageRendererFactory $violationMessageRendererFactory
 	): self {
-		$entityIdLabelFormatterFactory = new EntityIdLabelFormatterFactory();
-
 		$checkResultsRendererFactory = new CheckResultsRendererFactory(
 			$entityTitleLookup,
 			$entityIdLabelFormatterFactory,
-			new ViolationMessageRendererFactory(
-				$config,
-				$main,
-				$entityIdFormatterFactory,
-				$valueFormatterFactory
-			)
+			$languageFallbackChainFactory,
+			$violationMessageRendererFactory
 		);
 
 		return new self(
@@ -143,7 +111,7 @@ class CheckConstraints extends ApiBase {
 		$statuses = $params[self::PARAM_STATUS];
 
 		$checkResultsRenderer = $this->checkResultsRendererFactory
-			->getCheckResultsRenderer( $this->getLanguage() );
+			->getCheckResultsRenderer( $this->getLanguage(), $this );
 
 		$this->getResult()->addValue(
 			null,
@@ -165,7 +133,7 @@ class CheckConstraints extends ApiBase {
 	 *
 	 * @return EntityId[]
 	 */
-	private function parseEntityIds( array $params ) {
+	private function parseEntityIds( array $params ): array {
 		$ids = $params[self::PARAM_ID];
 
 		if ( $ids === null ) {
@@ -190,7 +158,7 @@ class CheckConstraints extends ApiBase {
 	 *
 	 * @return string[]
 	 */
-	private function parseClaimIds( array $params ) {
+	private function parseClaimIds( array $params ): array {
 		$ids = $params[self::PARAM_CLAIM_ID];
 
 		if ( $ids === null ) {
@@ -210,7 +178,7 @@ class CheckConstraints extends ApiBase {
 		return $ids;
 	}
 
-	private function validateParameters( array $params ) {
+	private function validateParameters( array $params ): void {
 		if ( $params[self::PARAM_CONSTRAINT_ID] !== null
 			 && empty( $params[self::PARAM_CONSTRAINT_ID] )
 		) {
@@ -234,19 +202,19 @@ class CheckConstraints extends ApiBase {
 	public function getAllowedParams() {
 		return [
 			self::PARAM_ID => [
-				ApiBase::PARAM_TYPE => 'string',
-				ApiBase::PARAM_ISMULTI => true,
+				ParamValidator::PARAM_TYPE => 'string',
+				ParamValidator::PARAM_ISMULTI => true,
 			],
 			self::PARAM_CLAIM_ID => [
-				ApiBase::PARAM_TYPE => 'string',
-				ApiBase::PARAM_ISMULTI => true,
+				ParamValidator::PARAM_TYPE => 'string',
+				ParamValidator::PARAM_ISMULTI => true,
 			],
 			self::PARAM_CONSTRAINT_ID => [
-				ApiBase::PARAM_TYPE => 'string',
-				ApiBase::PARAM_ISMULTI => true,
+				ParamValidator::PARAM_TYPE => 'string',
+				ParamValidator::PARAM_ISMULTI => true,
 			],
 			self::PARAM_STATUS => [
-				ApiBase::PARAM_TYPE => [
+				ParamValidator::PARAM_TYPE => [
 					CheckResult::STATUS_COMPLIANCE,
 					CheckResult::STATUS_VIOLATION,
 					CheckResult::STATUS_WARNING,
@@ -257,9 +225,9 @@ class CheckConstraints extends ApiBase {
 					CheckResult::STATUS_BAD_PARAMETERS,
 					CheckResult::STATUS_TODO,
 				],
-				ApiBase::PARAM_ISMULTI => true,
-				ApiBase::PARAM_ALL => true,
-				ApiBase::PARAM_DFLT => implode( '|', CachingResultsSource::CACHED_STATUSES ),
+				ParamValidator::PARAM_ISMULTI => true,
+				ParamValidator::PARAM_ALL => true,
+				ParamValidator::PARAM_DEFAULT => implode( '|', CachingResultsSource::CACHED_STATUSES ),
 				ApiBase::PARAM_HELP_MSG_PER_VALUE => [],
 			],
 		];

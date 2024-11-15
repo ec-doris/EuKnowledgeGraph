@@ -5,7 +5,6 @@
 			"Guycn2"
 		]
 	},
-	"apihelp-wbcheckconstraints-description": "ביצוע בדיקות אילוצים על ישות כלשהי והחזרת התוצאה.",
 	"apihelp-wbcheckconstraints-summary": "ביצוע בדיקת אילוצים על כל ישות והחזרת התוצאה.",
 	"apihelp-wbcheckconstraints-param-id": "רשימת מזהי ישויות שמהן צריך לקבל נתונים. יש להפריד את הערכים בתו '|' או חלופות.",
 	"apihelp-wbcheckconstraints-param-claimid": "רשימת GUID־ים שמזהים טענה שצריך לבדוק אל מול דו\"ח אילוצים. יש להפריד ערכים בתו '|'.",
@@ -16,10 +15,10 @@
 	"apihelp-wbcheckconstraints-paramvalue-status-exception": "ישות הנושא של הקביעה היא חריגה ידועה של האילוץ.",
 	"apihelp-wbcheckconstraints-paramvalue-status-todo": "האילוץ אינו מיושם.",
 	"apihelp-wbcheckconstraints-paramvalue-status-bad-parameters": "הפרמטרים של האילוץ אינם תקינים.",
-	"apihelp-wbcheckconstraints-paramvalue-status-deprecated": "האילוץ לא נבדק משום שהקביעה יצאה משימוש.",
+	"apihelp-wbcheckconstraints-paramvalue-status-deprecated": "האילוץ לא נבדק משום שהקביעה הוכרזה כירודה.",
 	"apihelp-wbcheckconstraints-paramvalue-status-warning": "הקביעה מפרה את האילוץ, אבל האילוץ אינו חובה.",
 	"apihelp-wbcheckconstraints-paramvalue-status-suggestion": "הקביעה הזאת מפרה את האילוץ, אבל האילוץ הוא רק הצעה.",
-	"apihelp-wbcheckconstraints-paramvalue-status-not-in-scope": "האילוץ אינו נבדק בסוג הקביעה הזה (קביעה ראשית, בדיקת כשירות או הפניה), ולכן דילגנו על האילוץ הזה.",
+	"apihelp-wbcheckconstraints-paramvalue-status-not-in-scope": "האילוץ אינו נבדק בסוג הסנאק הזה (סנאק ראשי, מבחין או מקור), ולכן דילגנו על בדיקת האילוץ הזה.",
 	"apihelp-wbcheckconstraintparameters-summary": "בדיקת הפרמטרים של קביעות האילוצים.",
 	"apihelp-wbcheckconstraintparameters-extended-description": "ניתן לציין את אחד הפרמטרים <var>property</var> ו־<var>constraintid</var> או את שניהם; כל האילוצים שנבחרו לפי אחד הפרמטרים ייבדקו.",
 	"apihelp-wbcheckconstraintparameters-param-propertyid": "רשימה של מזהי המאפיינים שייבדקו. כל קביעות האילוצים של המאפיינים האלה תיבדקנה.\n\nאם הפרמטר הזה מצוין, הוא לא יכול להיות ריק.",

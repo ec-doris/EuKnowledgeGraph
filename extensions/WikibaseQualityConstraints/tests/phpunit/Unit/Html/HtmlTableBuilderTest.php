@@ -38,49 +38,49 @@ class HtmlTableBuilderTest extends \MediaWikiUnitTestCase {
 		$this->assertEquals( $expectedIsSortable, $htmlTable->isSortable() );
 	}
 
-	public function constructDataProvider() {
+	public static function constructDataProvider() {
 		return [
 			[
 				[
 					'foo',
-					'bar'
+					'bar',
 				],
 				[
 					new HtmlTableHeaderBuilder( 'foo' ),
-					new HtmlTableHeaderBuilder( 'bar' )
+					new HtmlTableHeaderBuilder( 'bar' ),
 				],
 				false,
-				null
+				null,
 			],
 			[
 				[
 					new HtmlTableHeaderBuilder( 'foo', true ),
-					'bar'
+					'bar',
 				],
 				[
 					new HtmlTableHeaderBuilder( 'foo', true ),
-					new HtmlTableHeaderBuilder( 'bar' )
+					new HtmlTableHeaderBuilder( 'bar' ),
 				],
 				true,
-				null
+				null,
 			],
 			[
 				[
 					new HtmlTableHeaderBuilder( 'foo', true ),
-					new HtmlTableHeaderBuilder( 'bar' )
+					new HtmlTableHeaderBuilder( 'bar' ),
 				],
 				[
 					new HtmlTableHeaderBuilder( 'foo', true ),
-					new HtmlTableHeaderBuilder( 'bar' )
+					new HtmlTableHeaderBuilder( 'bar' ),
 				],
 				true,
-				null
+				null,
 			],
 			[
 				[ 42 ],
 				null,
 				false,
-				InvalidArgumentException::class
+				InvalidArgumentException::class,
 			],
 		];
 	}
@@ -93,8 +93,8 @@ class HtmlTableBuilderTest extends \MediaWikiUnitTestCase {
 			[
 				[
 					new HtmlTableCellBuilder( 'foo' ),
-					new HtmlTableCellBuilder( 'bar' )
-				]
+					new HtmlTableCellBuilder( 'bar' ),
+				],
 			],
 			$htmlTable->getRows()
 		);
@@ -121,53 +121,53 @@ class HtmlTableBuilderTest extends \MediaWikiUnitTestCase {
 	/**
 	 * Test cases for testAppendRows
 	 */
-	public function appendRowsDataProvider() {
+	public static function appendRowsDataProvider() {
 		return [
 			[
 				[
 					[
 						'foo',
-						'bar'
-					]
+						'bar',
+					],
 				],
 				[
 					[
 						new HtmlTableCellBuilder( 'foo' ),
-						new HtmlTableCellBuilder( 'bar' )
-					]
-				]
+						new HtmlTableCellBuilder( 'bar' ),
+					],
+				],
 			],
 			[
 				[
 					[
 						new HtmlTableCellBuilder( 'foo' ),
-						'bar'
-					]
+						'bar',
+					],
 				],
 				[
 					[
 						new HtmlTableCellBuilder( 'foo' ),
-						new HtmlTableCellBuilder( 'bar' )
-					]
-				]
+						new HtmlTableCellBuilder( 'bar' ),
+					],
+				],
 			],
 			[
 				[
 					[
 						'foo',
-						42
-					]
+						42,
+					],
 				],
 				null,
-				InvalidArgumentException::class
+				InvalidArgumentException::class,
 			],
 			[
 				[
-					42
+					42,
 				],
 				null,
-				InvalidArgumentException::class
-			]
+				InvalidArgumentException::class,
+			],
 		];
 	}
 
@@ -189,35 +189,35 @@ class HtmlTableBuilderTest extends \MediaWikiUnitTestCase {
 			[
 				[
 					$this->getHtmlTableHeaderMock( 'fu' ),
-					$this->getHtmlTableHeaderMock( 'bar' )
+					$this->getHtmlTableHeaderMock( 'bar' ),
 				],
 				[
 					[
 						$this->getHtmlTableCellMock( 'fucked up' ),
-						$this->getHtmlTableCellMock( 'beyond all recognition' )
-					]
+						$this->getHtmlTableCellMock( 'beyond all recognition' ),
+					],
 				],
 				'<table class="wikitable">'
 					. '<thead><tr><th>fu</th><th>bar</th></tr></thead>'
 					. '<tbody><tr><td>fucked up</td><td>beyond all recognition</td></tr></tbody>'
-					. '</table>'
+					. '</table>',
 			],
 			[
 				[
 					$this->getHtmlTableHeaderMock( 'fu' ),
-					$this->getHtmlTableHeaderMock( 'bar', true )
+					$this->getHtmlTableHeaderMock( 'bar', true ),
 				],
 				[
 					[
 						$this->getHtmlTableCellMock( 'fucked up' ),
-						$this->getHtmlTableCellMock( 'beyond all recognition' )
-					]
+						$this->getHtmlTableCellMock( 'beyond all recognition' ),
+					],
 				],
 				'<table class="wikitable sortable">'
 					. '<thead><tr><th>fu</th><th>bar</th></tr></thead>'
 					. '<tbody><tr><td>fucked up</td><td>beyond all recognition</td></tr></tbody>'
-					. '</table>'
-			]
+					. '</table>',
+			],
 		];
 	}
 

@@ -1,5 +1,7 @@
 <?php
 
+declare( strict_types = 1 );
+
 namespace WikibaseQuality\ConstraintReport\ConstraintCheck\Context;
 
 use Wikibase\DataModel\Entity\PropertyId;
@@ -59,17 +61,13 @@ interface Context {
 
 	/**
 	 * The snak that is being checked.
-	 *
-	 * @return Snak
 	 */
-	public function getSnak();
+	public function getSnak(): Snak;
 
 	/**
 	 * The entity that is being checked.
-	 *
-	 * @return StatementListProvidingEntity
 	 */
-	public function getEntity();
+	public function getEntity(): StatementListProvidingEntity;
 
 	/**
 	 * The type / role of the snak that is being checked within this context.
@@ -78,7 +76,7 @@ interface Context {
 	 * @return string one of {@link self::TYPE_STATEMENT},
 	 * {@link self::TYPE_QUALIFIER} or {@link self::TYPE_REFERENCE}.
 	 */
-	public function getType();
+	public function getType(): string;
 
 	/**
 	 * The rank of the snak that is being checked.
@@ -88,7 +86,7 @@ interface Context {
 	 * if this is a statement context,
 	 * or null if it’s any other type of context.
 	 */
-	public function getSnakRank();
+	public function getSnakRank(): ?int;
 
 	/**
 	 * The statement that this snak is the main snak of.
@@ -97,7 +95,7 @@ interface Context {
 	 * @return Statement|null The statement if this is a statement context,
 	 * or null if it’s any other type of context.
 	 */
-	public function getSnakStatement();
+	public function getSnakStatement(): ?Statement;
 
 	/**
 	 * The group of snaks that the snak being checked resides in.
@@ -121,13 +119,11 @@ interface Context {
 	 * @return Snak[] not a SnakList because for a statement context,
 	 * the returned value might contain the same snak several times.
 	 */
-	public function getSnakGroup( $groupingMode, array $separators = [] );
+	public function getSnakGroup( string $groupingMode, array $separators = [] ): array;
 
 	/**
 	 * Get the cursor that can be used to address check results for this context.
-	 *
-	 * @return ContextCursor
 	 */
-	public function getCursor();
+	public function getCursor(): ContextCursor;
 
 }

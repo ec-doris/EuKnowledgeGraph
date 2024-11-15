@@ -1,4 +1,5 @@
 <?php
+
 namespace JsonConfig\Tests;
 
 use JsonConfig\JCSingleton;
@@ -16,7 +17,7 @@ class JCTitleParsingTest extends MediaWikiIntegrationTestCase {
 	/** @var array */
 	private $configBackup;
 
-	public function setUp(): void {
+	protected function setUp(): void {
 		parent::setUp();
 
 		// Copied from mediawiki/tests/phpunit/includes/title/MediaWikiTitleCodecTest.php
@@ -69,7 +70,7 @@ class JCTitleParsingTest extends MediaWikiIntegrationTestCase {
 		}
 	}
 
-	public function provideValues() {
+	public static function provideValues() {
 		return [
 			// title, ns, expected
 			[ false, null, false ],

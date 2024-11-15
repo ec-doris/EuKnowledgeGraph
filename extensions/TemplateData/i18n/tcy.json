@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"ChiK",
 			"Vishwanatha Badikana"
 		]
 	},
@@ -13,7 +14,7 @@
 	"templatedata-doc-param-status-required": "ಬೋಡಾಯಿನ",
 	"templatedata-doc-param-status-suggested": "ತೋಜ್ಪಾಯಿನ",
 	"templatedata-doc-param-type": "ಇದೊ",
-	"templatedata-doc-param-type-content": "ಪರಿವಿಡಿ",
+	"templatedata-doc-param-type-content": "ವಿಸಯೊಲು",
 	"templatedata-doc-param-type-date": "ತಾರೀಕ್",
 	"templatedata-doc-param-type-line": "ಸಾಲ್",
 	"templatedata-doc-param-type-number": "ಸಂಕ್ಯೆ",
@@ -21,7 +22,7 @@
 	"templatedata-doc-param-type-unknown": "ಗೊತ್ತಿಜ್ಜಾಂದಿನ",
 	"templatedata-doc-param-type-url": "ಯುಆರ್ಎಲ್",
 	"templatedata-doc-param-type-wiki-file-name": "ಕಡತೊಲು",
-	"templatedata-doc-param-type-wiki-page-name": "ಪುಟೊ",
+	"templatedata-doc-param-type-wiki-page-name": "ಪುಟೊತ ಪುದರ್",
 	"templatedata-doc-param-type-wiki-template-name": "ಟೆಂಪ್ಲೇಟ್",
 	"templatedata-doc-param-type-wiki-user-name": "ಬಳಕೆದಾರೆರ್",
 	"templatedata-modal-button-add-language": "ಬಾಸೆನ್ ಸೇರ್ಪಾಲೆ",
@@ -38,7 +39,6 @@
 	"templatedata-modal-format-block": "ಉಂತಾಲೆ",
 	"templatedata-modal-format-inline": "ಸಾಲ್‍ದ ಉಲಯಿ",
 	"templatedata-modal-json-error-replace": "ಜಾಗೆಡ್ದ್ ದೆಪ್ಪುಲೆ",
-	"templatedata-modal-table-param-actions": "ಕ್ರಿಯೆಕುಲು",
 	"templatedata-modal-table-param-name": "ಪುದರ್",
 	"templatedata-modal-table-param-required": "ಬೋಡಾಯಿನ",
 	"templatedata-modal-table-param-suggested": "ತೋಜ್ಪಾಯಿನ",

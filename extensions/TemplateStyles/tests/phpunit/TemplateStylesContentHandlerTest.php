@@ -5,6 +5,7 @@ use MediaWiki\Extension\TemplateStyles\TemplateStylesContent;
 use MediaWiki\Extension\TemplateStyles\TemplateStylesContentHandler;
 use MediaWiki\Page\PageIdentity;
 use MediaWiki\Page\PageIdentityValue;
+use MediaWiki\Title\Title;
 
 /**
  * @group TemplateStyles
@@ -158,7 +159,7 @@ class TemplateStylesContentHandlerTest extends MediaWikiLangTestCase {
 		);
 	}
 
-	public function provideSizeLimit() {
+	public static function provideSizeLimit() {
 		$long = str_repeat( 'X', 102400 );
 
 		return [

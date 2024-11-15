@@ -15,8 +15,8 @@ use Wikibase\DataModel\Entity\ItemId;
 use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Snak\PropertyNoValueSnak;
 use Wikibase\DataModel\Snak\PropertyValueSnak;
-use Wikibase\Repo\Tests\NewItem;
-use Wikibase\Repo\Tests\NewStatement;
+use Wikibase\DataModel\Tests\NewItem;
+use Wikibase\DataModel\Tests\NewStatement;
 use WikibaseQuality\ConstraintReport\Constraint;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Checker\FormatChecker;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\MainSnakContext;
@@ -40,7 +40,7 @@ class FormatCheckerTest extends \MediaWikiIntegrationTestCase {
 	use ConstraintParameters;
 	use ResultAssertions;
 
-	public function provideFormatConstraintCompliance() {
+	public static function provideFormatConstraintCompliance() {
 		$imdbRegex = '(tt|nm|ch|co|ev)\d{7}';
 		$taxonRegex = '(|somevalue|novalue|.*virus.*|.*viroid.*|.*phage.*|((×)?[A-Z]([a-z]+-)?[a-z]+('
 			. '( [A-Z]?[a-z]+)|'
@@ -95,7 +95,7 @@ class FormatCheckerTest extends \MediaWikiIntegrationTestCase {
 		$this->assertCompliance( $result );
 	}
 
-	public function provideFormatConstraintViolation() {
+	public static function provideFormatConstraintViolation() {
 		$imdbRegex = '(tt|nm|ch|co|ev)\d{7}';
 		$taxonRegex = '(|somevalue|novalue|.*virus.*|.*viroid.*|.*phage.*|((×)?[A-Z]([a-z]+-)?[a-z]+('
 			. '( [A-Z]?[a-z]+)|'
@@ -155,7 +155,7 @@ class FormatCheckerTest extends \MediaWikiIntegrationTestCase {
 	}
 
 	public function testFormatConstraintWithSyntaxClarification() {
-		$syntaxClarificationId = $this->getDefaultConfig()
+		$syntaxClarificationId = self::getDefaultConfig()
 			->get( 'WBQualityConstraintsSyntaxClarificationId' );
 		$statement = NewStatement::forProperty( $syntaxClarificationId )
 			->withValue( '' )
@@ -255,7 +255,7 @@ class FormatCheckerTest extends \MediaWikiIntegrationTestCase {
 			$this->getConstraintParameterParser(),
 			new HashConfig( [
 				'WBQualityConstraintsFormatCheckerShellboxRatio' => 1,
-				'WBQualityConstraintsCheckFormatConstraint' => true
+				'WBQualityConstraintsCheckFormatConstraint' => true,
 			] ),
 			$sparqlHelper,
 			$shellboxClientFactory
@@ -292,7 +292,7 @@ class FormatCheckerTest extends \MediaWikiIntegrationTestCase {
 			new HashConfig( [
 				'WBQualityConstraintsFormatCheckerShellboxRatio' => 1,
 				'WBQualityConstraintsSparqlMaxMillis' => 100,
-				'WBQualityConstraintsCheckFormatConstraint' => true
+				'WBQualityConstraintsCheckFormatConstraint' => true,
 			] ),
 			$sparqlHelper,
 			$shellboxClientFactory
@@ -350,7 +350,7 @@ class FormatCheckerTest extends \MediaWikiIntegrationTestCase {
 	}
 
 	private function getChecker( ?Config $config = null ): FormatChecker {
-		$config = $config ?? $this->getDefaultConfig();
+		$config = $config ?? self::getDefaultConfig();
 		$sparqlHelper = $this->getMockBuilder( SparqlHelper::class )
 			->disableOriginalConstructor()
 			->onlyMethods( [ 'matchesRegularExpression' ] )
@@ -391,7 +391,7 @@ class FormatCheckerTest extends \MediaWikiIntegrationTestCase {
 	private function getMultiConfig( array $overrides = [] ): Config {
 		return new MultiConfig( [
 			new HashConfig( $overrides ),
-			$this->getDefaultConfig(),
+			self::getDefaultConfig(),
 			MediaWikiServices::getInstance()->getMainConfig(),
 		] );
 	}

@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Xuacu",
-			"Yurik"
+			"Yurik",
+			"YoaR"
 		]
 	},
 	"jsonconfig-desc": "Permite guardar la configuración JSON nuna wiki",
@@ -24,7 +25,7 @@
 	"jsonconfig-err-root-object-expected": "Los datos JSON tienen de ser un oxetu, rodiáu por llaves {...}",
 	"jsonconfig-err-string": "El parámetru «$1» tien de ser una cadena",
 	"jsonconfig-err-stringline": "El parámetru «$1» tien de ser una cadena non mayor de $2 caráuteres, sin tabuladores, nin tien de principiar o acabar con espaciu",
-	"jsonconfig-err-unexpected-key": "L'oxetu «$1» contien un campu inesperáu, «$2»",
+	"jsonconfig-err-unexpected-key": "L'oxetu «$1» contién un campu inesperáu, «$2»",
 	"jsonconfig-err-duplicate-header": "Atopóse la cabecera duplicada «$2» en «$1». Cada cabecera tien de ser única.",
 	"jsonconfig-err-url": "El parámetru «$1» tien de ser una URL válida",
 	"jsonconfig-move-aborted-model": "el modelu de configuración JSON d'esta páxina «$1» nun casaría col nuevu modelu de títulu «$2»",

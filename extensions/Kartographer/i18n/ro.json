@@ -3,14 +3,15 @@
 		"authors": [
 			"Andrei Stroe",
 			"NGC 54",
-			"Strainu"
+			"Strainu",
+			"Paloi Sciurala"
 		]
 	},
 	"kartographer-attribution": "[https://foundation.wikimedia.org/wiki/Maps_Terms_of_Use Hărți Wikimedia] | Datele hărților © [https://www.openstreetmap.org/copyright Contribuitorii OpenStreetMap]",
 	"kartographer-broken-category": "Pagini cu hărți defecte",
 	"kartographer-broken-category-desc": "Pagina include o utilizare de hartă invalidă",
 	"kartographer-desc": "Permite adăugarea de hărți în paginile wiki",
-	"kartographer-error-context-multi": "Tag &lt;$1&gt; cu probleme:\n$2",
+	"kartographer-error-context-multi": "Tag $1 cu probleme:\n$2",
 	"kartographer-error-json": "Nu pot parsa JSON: $1",
 	"kartographer-error-missing-attr": "Atributul \"$1\" lipsește",
 	"kartographer-error-bad_attr": "Atributul \"$1\" are o valoare invalidă",
@@ -70,7 +71,7 @@
 	"visualeditor-mwmapsdialog-area": "Aria hărții",
 	"visualeditor-mwmapsdialog-content": "Conținutul hărții",
 	"visualeditor-mwmapsdialog-options": "Opțiuni",
-	"visualeditor-mwmapsdialog-align": "Aliniere",
+	"visualeditor-mwmapsdialog-display": "Aliniere",
 	"visualeditor-mwmapsdialog-language": "Limbă",
 	"visualeditor-mwmapsdialog-help-title": "Învață despre crearea și editarea hărților.",
 	"visualeditor-mwmapsdialog-position-lat": "Latitudine",

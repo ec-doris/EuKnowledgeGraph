@@ -91,10 +91,9 @@ class InverseChecker implements ConstraintChecker {
 	 */
 	public function checkConstraint( Context $context, Constraint $constraint ) {
 		if ( $context->getSnakRank() === Statement::RANK_DEPRECATED ) {
-			return new CheckResult( $context, $constraint, [], CheckResult::STATUS_DEPRECATED );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_DEPRECATED );
 		}
 
-		$parameters = [];
 		$constraintParameters = $constraint->getConstraintParameters();
 		$constraintTypeItemId = $constraint->getConstraintTypeItemId();
 
@@ -102,13 +101,12 @@ class InverseChecker implements ConstraintChecker {
 			$constraintParameters,
 			$constraintTypeItemId
 		);
-		$parameters['property'] = [ $propertyId ];
 
 		$snak = $context->getSnak();
 
 		if ( !$snak instanceof PropertyValueSnak ) {
 			// nothing to check
-			return new CheckResult( $context, $constraint, $parameters, CheckResult::STATUS_COMPLIANCE );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_COMPLIANCE );
 		}
 
 		$dataValue = $snak->getDataValue();
@@ -121,14 +119,14 @@ class InverseChecker implements ConstraintChecker {
 			$message = ( new ViolationMessage( 'wbqc-violation-message-value-needed-of-type' ) )
 				->withEntityId( new ItemId( $constraintTypeItemId ), Role::CONSTRAINT_TYPE_ITEM )
 				->withDataValueType( 'wikibase-entityid' );
-			return new CheckResult( $context, $constraint, $parameters, CheckResult::STATUS_VIOLATION, $message );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_VIOLATION, $message );
 		}
 
 		$targetEntityId = $dataValue->getEntityId();
 		$targetEntity = $this->entityLookup->getEntity( $targetEntityId );
 		if ( !$targetEntity instanceof StatementListProvider ) {
 			$message = new ViolationMessage( 'wbqc-violation-message-target-entity-must-exist' );
-			return new CheckResult( $context, $constraint, $parameters, CheckResult::STATUS_VIOLATION, $message );
+			return new CheckResult( $context, $constraint, CheckResult::STATUS_VIOLATION, $message );
 		}
 
 		$inverseStatement = $this->connectionCheckerHelper->findStatementWithPropertyAndEntityIdValue(
@@ -147,7 +145,7 @@ class InverseChecker implements ConstraintChecker {
 			$status = CheckResult::STATUS_VIOLATION;
 		}
 
-		return ( new CheckResult( $context, $constraint, $parameters, $status, $message ) )
+		return ( new CheckResult( $context, $constraint, $status, $message ) )
 			->withMetadata( Metadata::ofDependencyMetadata(
 				DependencyMetadata::ofEntityId( $targetEntityId ) ) );
 	}

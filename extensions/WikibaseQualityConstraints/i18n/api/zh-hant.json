@@ -4,7 +4,6 @@
 			"Kly"
 		]
 	},
-	"apihelp-wbcheckconstraints-description": "在任何您所想要並回傳結果的實體上執行限制檢查。",
 	"apihelp-wbcheckconstraints-summary": "在任何您所想要並回傳結果的實體上執行限制檢查。",
 	"apihelp-wbcheckconstraints-param-id": "要取得資料的實體 ID 清單。以 '|' 或其它替代符號來分隔。",
 	"apihelp-wbcheckconstraints-param-claimid": "識別聲稱來檢查限制報告的 GUID 清單。請以 '|' 符號分隔。",

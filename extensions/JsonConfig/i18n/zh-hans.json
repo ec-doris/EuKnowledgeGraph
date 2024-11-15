@@ -1,15 +1,19 @@
 {
 	"@metadata": {
 		"authors": [
+			"GuoPC",
 			"Hanyanbo98",
 			"Hudafu",
+			"LittlePaw365",
 			"Liuxinyu970226",
 			"NigelSoft",
 			"Shizhao",
 			"SomeyaMako",
 			"Yurik",
 			"列维劳德",
-			"御坂美琴"
+			"御坂美琴",
+			"Lakejason0",
+			"沈澄心"
 		]
 	},
 	"nstab-data": "数据",
@@ -54,7 +58,7 @@
 	"jsonconfig-type-name-invalid": "无效",
 	"jsonconfig-type-name-string": "字符串",
 	"jsonconfig-type-name-localized": "已本地化",
-	"jsonconfig-type-name-number": "数值",
+	"jsonconfig-type-name-number": "数字",
 	"jsonconfig-type-name-boolean": "布尔值",
 	"jsonconfig-license": "数据基于$1可用。",
 	"jsonconfig-license-not-set": "编辑此页面时，您同意根据<code>licence</code>中指定的许可证发布您的贡献。",
@@ -62,9 +66,10 @@
 	"jsonconfig-license-name-dl-de-zero-2.0": "数据许可证德国 - Zero - 版本 2.0",
 	"jsonconfig-license-name-dl-de-by-1.0": "数据许可证德国 – 署名 – 版本 1.0",
 	"jsonconfig-license-name-dl-de-by-2.0": "数据许可证德国 – 署名 – 版本 2.0",
+	"jsonconfig-license-name-GeoNutzV": "德国地理数据许可协议",
 	"jsonconfig-license-url-CC0-1.0": "https://creativecommons.org/publicdomain/zero/1.0/deed.zh",
-	"jsonconfig-license-copyrightwarning": "保存更改，即表示您同意[https://foundation.wikimedia.org/wiki/Terms_of_Use 使用条款]，并且您同意不可撤销地在 [{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}]下发布您的贡献。",
-	"jsonconfig-license-copyrightwarning-license-unset": "保存更改即表示您同意[https://foundation.wikimedia.org/wiki/Terms_of_Use 使用条款]，并且您同意根据<code>licence</code>中指定的许可证不可撤销地发布您的贡献。",
+	"jsonconfig-license-copyrightwarning": "通过发布更改，您同意[https://foundation.wikimedia.org/wiki/Terms_of_Use 使用条款]，并且您不可撤销地同意将您的贡献根据[{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}]发布。",
+	"jsonconfig-license-copyrightwarning-license-unset": "通过发布更改，您同意[https://foundation.wikimedia.org/wiki/Terms_of_Use 使用条款]，并且您不可撤销地同意将您的贡献根据<code>licence</code>字段中指定的许可协议发布。",
 	"jsonconfig-license-notice": "'''注意：''' 编辑此页面时，您同意在[{{int:jsonconfig-license-url-$1}} {{int:jsonconfig-license-name-$1}}]下发布您的贡献。",
 	"jsonconfig-license-notice-license-unset": "'''注意：''' 编辑此页面时，您同意根据<code>licence</code>中指定的许可证发布您的贡献。",
 	"right-jsonconfig-flush": "通过API操作JsonConfig",

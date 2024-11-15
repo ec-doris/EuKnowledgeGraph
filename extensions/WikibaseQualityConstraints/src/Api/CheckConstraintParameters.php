@@ -1,23 +1,24 @@
 <?php
 
+declare( strict_types = 1 );
+
 namespace WikibaseQuality\ConstraintReport\Api;
 
 use ApiBase;
 use ApiMain;
 use ApiResult;
-use Config;
 use IBufferingStatsdDataFactory;
 use InvalidArgumentException;
 use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Services\Statement\StatementGuidParser;
 use Wikibase\DataModel\Services\Statement\StatementGuidParsingException;
-use Wikibase\Lib\Formatters\OutputFormatValueFormatterFactory;
+use Wikibase\Lib\LanguageFallbackChainFactory;
 use Wikibase\Repo\Api\ApiErrorReporter;
 use Wikibase\Repo\Api\ApiHelperFactory;
-use Wikibase\View\EntityIdFormatterFactory;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\DelegatingConstraintChecker;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Helper\ConstraintParameterException;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Message\ViolationMessageRendererFactory;
+use Wikimedia\ParamValidator\ParamValidator;
 
 /**
  * API module that checks whether the parameters of a constraint statement are valid.
@@ -36,30 +37,12 @@ class CheckConstraintParameters extends ApiBase {
 	public const KEY_PROBLEMS = 'problems';
 	public const KEY_MESSAGE_HTML = 'message-html';
 
-	/**
-	 * @var ApiErrorReporter
-	 */
-	private $apiErrorReporter;
-
-	/**
-	 * @var DelegatingConstraintChecker
-	 */
-	private $delegatingConstraintChecker;
-
-	/**
-	 * @var ViolationMessageRendererFactory
-	 */
-	private $violationMessageRendererFactory;
-
-	/**
-	 * @var StatementGuidParser
-	 */
-	private $statementGuidParser;
-
-	/**
-	 * @var IBufferingStatsdDataFactory
-	 */
-	private $dataFactory;
+	private ApiErrorReporter $apiErrorReporter;
+	private LanguageFallbackChainFactory $languageFallbackChainFactory;
+	private DelegatingConstraintChecker $delegatingConstraintChecker;
+	private ViolationMessageRendererFactory $violationMessageRendererFactory;
+	private StatementGuidParser $statementGuidParser;
+	private IBufferingStatsdDataFactory $dataFactory;
 
 	/**
 	 * Creates new instance from global state.
@@ -67,25 +50,18 @@ class CheckConstraintParameters extends ApiBase {
 	public static function newFromGlobalState(
 		ApiMain $main,
 		string $name,
-		Config $config,
 		IBufferingStatsdDataFactory $dataFactory,
 		ApiHelperFactory $apiHelperFactory,
-		EntityIdFormatterFactory $entityIdFormatterFactory,
+		LanguageFallbackChainFactory $languageFallbackChainFactory,
 		StatementGuidParser $statementGuidParser,
-		OutputFormatValueFormatterFactory $valueFormatterFactory,
-		DelegatingConstraintChecker $delegatingConstraintChecker
+		DelegatingConstraintChecker $delegatingConstraintChecker,
+		ViolationMessageRendererFactory $violationMessageRendererFactory
 	): self {
-		$violationMessageRendererFactory = new ViolationMessageRendererFactory(
-			$config,
-			$main,
-			$entityIdFormatterFactory,
-			$valueFormatterFactory
-		);
-
 		return new self(
 			$main,
 			$name,
 			$apiHelperFactory,
+			$languageFallbackChainFactory,
 			$delegatingConstraintChecker,
 			$violationMessageRendererFactory,
 			$statementGuidParser,
@@ -97,6 +73,7 @@ class CheckConstraintParameters extends ApiBase {
 		ApiMain $main,
 		string $name,
 		ApiHelperFactory $apiHelperFactory,
+		LanguageFallbackChainFactory $languageFallbackChainFactory,
 		DelegatingConstraintChecker $delegatingConstraintChecker,
 		ViolationMessageRendererFactory $violationMessageRendererFactory,
 		StatementGuidParser $statementGuidParser,
@@ -105,6 +82,7 @@ class CheckConstraintParameters extends ApiBase {
 		parent::__construct( $main, $name );
 
 		$this->apiErrorReporter = $apiHelperFactory->getErrorReporter( $this );
+		$this->languageFallbackChainFactory = $languageFallbackChainFactory;
 		$this->delegatingConstraintChecker = $delegatingConstraintChecker;
 		$this->violationMessageRendererFactory = $violationMessageRendererFactory;
 		$this->statementGuidParser = $statementGuidParser;
@@ -132,7 +110,7 @@ class CheckConstraintParameters extends ApiBase {
 	 * @param array|null $propertyIdSerializations
 	 * @return NumericPropertyId[]
 	 */
-	private function parsePropertyIds( $propertyIdSerializations ) {
+	private function parsePropertyIds( ?array $propertyIdSerializations ): array {
 		if ( $propertyIdSerializations === null ) {
 			return [];
 		} elseif ( empty( $propertyIdSerializations ) ) {
@@ -163,7 +141,7 @@ class CheckConstraintParameters extends ApiBase {
 	 * @param array|null $constraintIds
 	 * @return string[]
 	 */
-	private function parseConstraintIds( $constraintIds ) {
+	private function parseConstraintIds( ?array $constraintIds ): array {
 		if ( $constraintIds === null ) {
 			return [];
 		} elseif ( empty( $constraintIds ) ) {
@@ -203,7 +181,7 @@ class CheckConstraintParameters extends ApiBase {
 	 * @param NumericPropertyId[] $propertyIds
 	 * @param ApiResult $result
 	 */
-	private function checkPropertyIds( array $propertyIds, ApiResult $result ) {
+	private function checkPropertyIds( array $propertyIds, ApiResult $result ): void {
 		foreach ( $propertyIds as $propertyId ) {
 			$result->addArrayType( $this->getResultPathForPropertyId( $propertyId ), 'assoc' );
 			$allConstraintExceptions = $this->delegatingConstraintChecker
@@ -222,7 +200,7 @@ class CheckConstraintParameters extends ApiBase {
 	 * @param string[] $constraintIds
 	 * @param ApiResult $result
 	 */
-	private function checkConstraintIds( array $constraintIds, ApiResult $result ) {
+	private function checkConstraintIds( array $constraintIds, ApiResult $result ): void {
 		foreach ( $constraintIds as $constraintId ) {
 			if ( $result->getResultData( $this->getResultPathForConstraintId( $constraintId ) ) ) {
 				// already checked as part of checkPropertyIds()
@@ -238,7 +216,7 @@ class CheckConstraintParameters extends ApiBase {
 	 * @param NumericPropertyId $propertyId
 	 * @return string[]
 	 */
-	private function getResultPathForPropertyId( NumericPropertyId $propertyId ) {
+	private function getResultPathForPropertyId( NumericPropertyId $propertyId ): array {
 		return [ $this->getModuleName(), $propertyId->getSerialization() ];
 	}
 
@@ -246,7 +224,7 @@ class CheckConstraintParameters extends ApiBase {
 	 * @param string $constraintId
 	 * @return string[]
 	 */
-	private function getResultPathForConstraintId( $constraintId ) {
+	private function getResultPathForConstraintId( string $constraintId ): array {
 		$propertyId = $this->statementGuidParser->parse( $constraintId )->getEntityId();
 		'@phan-var NumericPropertyId $propertyId';
 		return array_merge( $this->getResultPathForPropertyId( $propertyId ), [ $constraintId ] );
@@ -260,10 +238,10 @@ class CheckConstraintParameters extends ApiBase {
 	 * @param ApiResult $result
 	 */
 	private function addConstraintParameterExceptionsToResult(
-		$constraintId,
-		$constraintParameterExceptions,
+		string $constraintId,
+		?array $constraintParameterExceptions,
 		ApiResult $result
-	) {
+	): void {
 		$path = $this->getResultPathForConstraintId( $constraintId );
 		if ( $constraintParameterExceptions === null ) {
 			$result->addValue(
@@ -278,8 +256,13 @@ class CheckConstraintParameters extends ApiBase {
 				empty( $constraintParameterExceptions ) ? self::STATUS_OKAY : self::STATUS_NOT_OKAY
 			);
 
+			$language = $this->getLanguage();
 			$violationMessageRenderer = $this->violationMessageRendererFactory
-				->getViolationMessageRenderer( $this->getLanguage() );
+				->getViolationMessageRenderer(
+					$language,
+					$this->languageFallbackChainFactory->newFromLanguage( $language ),
+					$this
+				);
 			$problems = [];
 			foreach ( $constraintParameterExceptions as $constraintParameterException ) {
 				$problems[] = [
@@ -302,13 +285,13 @@ class CheckConstraintParameters extends ApiBase {
 	public function getAllowedParams() {
 		return [
 			self::PARAM_PROPERTY_ID => [
-				ApiBase::PARAM_TYPE => 'string',
-				ApiBase::PARAM_ISMULTI => true
+				ParamValidator::PARAM_TYPE => 'string',
+				ParamValidator::PARAM_ISMULTI => true,
 			],
 			self::PARAM_CONSTRAINT_ID => [
-				ApiBase::PARAM_TYPE => 'string',
-				ApiBase::PARAM_ISMULTI => true
-			]
+				ParamValidator::PARAM_TYPE => 'string',
+				ParamValidator::PARAM_ISMULTI => true,
+			],
 		];
 	}
 

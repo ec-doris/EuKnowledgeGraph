@@ -3,9 +3,12 @@
 		"authors": [
 			"Nike",
 			"Pyscowicz",
-			"Valtlait"
+			"Valtlait",
+			"Samoasambia",
+			"Silvonen"
 		]
 	},
+	"jsonconfig-edit-action-cancel": "Peruuta",
 	"jsonconfig-err-bad-type": "Parametrin ”$1” on oltava kelvollinen tyyppi, kuten <code>string</code>, <code>number</code> tai <code>boolean</code>",
 	"jsonconfig-optional-field": "(valinnainen)",
 	"jsonconfig-type-name-invalid": "kelpaamaton",
@@ -26,7 +29,7 @@
 	"jsonconfig-license-name-CC-BY-SA-2.5": "Creative Commons Nimeä-JaaSamoin 2.5",
 	"jsonconfig-license-name-CC-BY-SA-3.0": "Creative Commons Nimeä-JaaSamoin 3.0",
 	"jsonconfig-license-name-CC-BY-SA-4.0": "Creative Commons Nimeä-JaaSamoin 4.0",
-	"jsonconfig-license-name-CC-BY-SA-4.0+": "Creative Commons Nimeä-JaaSamoin 4.0  tai uudempi versio",
+	"jsonconfig-license-name-CC-BY-SA-4.0+": "Creative Commons Nimeä-JaaSamoin 4.0 tai uudempi versio",
 	"jsonconfig-license-url-CC0-1.0": "https://creativecommons.org/publicdomain/zero/1.0/deed.fi",
 	"jsonconfig-license-url-CC-BY-1.0": "https://creativecommons.org/licenses/by/1.0/deed.fi",
 	"jsonconfig-license-url-CC-BY-2.0": "https://creativecommons.org/licenses/by/2.0/deed.fi",

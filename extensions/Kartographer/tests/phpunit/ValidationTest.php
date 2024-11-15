@@ -2,28 +2,37 @@
 
 namespace Kartographer\Tests;
 
-use Kartographer\Tests\Mock\MockSimpleStyleParser;
-use MediaWiki\MediaWikiServices;
+use Kartographer\SimpleStyleParser;
+use MediaWiki\Title\Title;
 use MediaWikiIntegrationTestCase;
 use Parser;
 use ParserOptions;
-use Title;
+use StatusValue;
 
 /**
  * @covers \Kartographer\SimpleStyleParser
  * @group Kartographer
+ * @license MIT
  */
 class ValidationTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @dataProvider provideTestCases
+	 * phpcs:disable Squiz.WhiteSpace.FunctionSpacing.BeforeFirst
 	 */
-	public function testValidation( $file, $shouldFail ) {
-		$parser = MediaWikiServices::getInstance()->getParserFactory()->create();
+	public function testValidation( string $file, bool $shouldFail ) {
+		$parser = $this->getServiceContainer()->getParserFactory()->create();
 		$options = ParserOptions::newFromAnon();
 		$title = Title::newMainPage();
 		$parser->startExternalParse( $title, $options, Parser::OT_HTML );
-		$validator = new MockSimpleStyleParser( $parser );
+		$validator = new class extends SimpleStyleParser {
+			public function __construct() {
+			}
+
+			public function normalizeAndSanitize( &$data ): StatusValue {
+				return StatusValue::newGood();
+			}
+		};
 
 		$content = file_get_contents( $file );
 		if ( $content === false ) {
@@ -33,13 +42,13 @@ class ValidationTest extends MediaWikiIntegrationTestCase {
 		$result = $validator->parse( $content );
 
 		if ( $shouldFail ) {
-			$this->assertFalse( $result->isGood(), 'Validation unexpectedly succeeded' );
+			$this->assertStatusNotGood( $result );
 		} else {
-			$this->assertTrue( $result->isGood(), 'Validation failed' );
+			$this->assertStatusGood( $result );
 		}
 	}
 
-	public function provideTestCases() {
+	public static function provideTestCases() {
 		foreach ( glob( __DIR__ . '/data/good-schemas/*.json' ) as $file ) {
 			yield basename( $file ) => [ $file, false ];
 		}

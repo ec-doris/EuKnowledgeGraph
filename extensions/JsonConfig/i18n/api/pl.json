@@ -7,7 +7,6 @@
 			"SemanticPioneer"
 		]
 	},
-	"apihelp-jsonconfig-description": "Zezwala na bezpośredni dostęp do podsystemu JsonConfig.",
 	"apihelp-jsonconfig-summary": "Zezwala na bezpośredni dostęp do podsystemu JsonConfig.",
 	"apihelp-jsonconfig-param-command": "Która akcja podrzędna ma zostać wykonana na JsonConfig:\n;status: Pokazuje konfigurację JsonConfig.\n;reset: Czyści konfiguracje z pamięci podręcznej. Wymaga parametru $1title i prawa jsonconfig-flush.\n;reload: Ponownie ładuje i buforuje konfiguracje z magazynu konfiguracji. Wymaga parametru $1title i prawa jsonconfig-reset.",
 	"apihelp-jsonconfig-param-namespace": "Numer przestrzeni nazw tytułu do przetworzenia.",
@@ -16,7 +15,6 @@
 	"apihelp-jsonconfig-example-1": "Pokaż konfigurację",
 	"apihelp-jsonconfig-example-2": "Zresetuj [[Data:Brazil/Amazonas.map]]",
 	"apihelp-jsonconfig-example-3": "Przeładuj [[Data:Brazil/Amazonas.map]]",
-	"apihelp-jsondata-description": "Odbierz zlokalizowane dane JSON.",
 	"apihelp-jsondata-summary": "Pozyskaj przetłumaczone dane JSON.",
 	"apihelp-jsondata-param-title": "Tytuł do pozyskania. Domyślnie zakładana przestrzeń nazw to „Data:”",
 	"apihelp-jsondata-example-1": "Pobierz zawartość JSON strony Sample.tab zlokalizowaną na język użytkownika",

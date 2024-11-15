@@ -5,7 +5,6 @@
 			"Hamilton Abreu"
 		]
 	},
-	"apihelp-wbcheckconstraints-description": "Realiza a verificação das restrições de qualquer entidade que queira e devolve o resultado.",
 	"apihelp-wbcheckconstraints-summary": "Realiza a verificação das restrições de qualquer entidade que queira e devolve o resultado.",
 	"apihelp-wbcheckconstraints-param-id": "Lista de identificadores das entidades de que serão obtidos os dados. Separar os valores com '|' ou alternativa.",
 	"apihelp-wbcheckconstraints-param-claimid": "Lista de identificadores únicos globais (GUID) que identificam uma alegação para verificar um relatório de restrições. Separar os valores com '|'.",

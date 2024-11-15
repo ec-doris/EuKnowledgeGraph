@@ -1,9 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
-			"Kimberli Mäkäräinen (WMNO)"
+			"Kimberli Mäkäräinen (WMNO)",
+			"Yupik"
 		]
 	},
-	"jsonconfig-edit-action-cancel": "Šluhtte",
-	"jsonconfig-optional-field": "(eaktodáhtolaš)"
+	"jsonconfig-edit-action-apply": "Geavat",
+	"jsonconfig-edit-action-cancel": "Gaskkalduhte",
+	"jsonconfig-optional-field": "(eaktodáhtolaš)",
+	"jsonconfig-type-name-string": "sreaŋga",
+	"jsonconfig-type-name-boolean": "boolelaš árvu"
 }

@@ -1,7 +1,10 @@
 <?php
 
+declare( strict_types = 1 );
+
 namespace WikibaseQuality\ConstraintReport\ConstraintCheck\Result;
 
+use DataValues\MultilingualTextValue;
 use DataValues\TimeValue;
 use Wikibase\DataModel\Entity\EntityIdParser;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Cache\CachingMetadata;
@@ -20,25 +23,10 @@ use WikibaseQuality\ConstraintReport\ConstraintDeserializer;
  */
 class CheckResultDeserializer {
 
-	/**
-	 * @var ConstraintDeserializer
-	 */
-	private $constraintDeserializer;
-
-	/**
-	 * @var ContextCursorDeserializer
-	 */
-	private $contextCursorDeserializer;
-
-	/**
-	 * @var ViolationMessageDeserializer
-	 */
-	private $violationMessageDeserializer;
-
-	/**
-	 * @var EntityIdParser
-	 */
-	private $entityIdParser;
+	private ConstraintDeserializer $constraintDeserializer;
+	private ContextCursorDeserializer $contextCursorDeserializer;
+	private ViolationMessageDeserializer $violationMessageDeserializer;
+	private EntityIdParser $entityIdParser;
 
 	public function __construct(
 		ConstraintDeserializer $constraintDeserializer,
@@ -52,11 +40,7 @@ class CheckResultDeserializer {
 		$this->entityIdParser = $entityIdParser;
 	}
 
-	/**
-	 * @param array $serialization
-	 * @return CheckResult
-	 */
-	public function deserialize( array $serialization ) {
+	public function deserialize( array $serialization ): CheckResult {
 		$contextCursor = $this->contextCursorDeserializer->deserialize(
 			$serialization[CheckResultSerializer::KEY_CONTEXT_CURSOR]
 		);
@@ -69,8 +53,6 @@ class CheckResultDeserializer {
 				$serialization[CheckResultSerializer::KEY_CONSTRAINT]
 			);
 
-			$parameters = []; // serialization of parameters not supported yet
-
 			$status = $serialization[CheckResultSerializer::KEY_CHECK_RESULT_STATUS];
 
 			$violationMessage = $this->getViolationMessageFromSerialization( $serialization );
@@ -78,9 +60,12 @@ class CheckResultDeserializer {
 			$result = new CheckResult(
 				$contextCursor,
 				$constraint,
-				$parameters,
 				$status,
 				$violationMessage
+			);
+
+			$result->setConstraintClarification(
+				$this->getConstraintClarificationFromSerialization( $serialization )
 			);
 
 			$cachingMetadata = $this->deserializeCachingMetadata(
@@ -98,11 +83,7 @@ class CheckResultDeserializer {
 		);
 	}
 
-	/**
-	 * @param array $serialization
-	 * @return null|ViolationMessage
-	 */
-	private function getViolationMessageFromSerialization( array $serialization ) {
+	private function getViolationMessageFromSerialization( array $serialization ): ?ViolationMessage {
 		if ( array_key_exists( CheckResultSerializer::KEY_VIOLATION_MESSAGE, $serialization ) ) {
 			return $this->violationMessageDeserializer->deserialize(
 				$serialization[CheckResultSerializer::KEY_VIOLATION_MESSAGE]
@@ -112,11 +93,19 @@ class CheckResultDeserializer {
 		}
 	}
 
-	/**
-	 * @param array $serialization
-	 * @return DependencyMetadata
-	 */
-	private function getDependencyMetadataFromSerialization( array $serialization ) {
+	private function getConstraintClarificationFromSerialization(
+		array $serialization
+	): MultilingualTextValue {
+		if ( array_key_exists( CheckResultSerializer::KEY_CONSTRAINT_CLARIFICATION, $serialization ) ) {
+			return MultilingualTextValue::newFromArray(
+				$serialization[CheckResultSerializer::KEY_CONSTRAINT_CLARIFICATION]
+			);
+		} else {
+			return new MultilingualTextValue( [] );
+		}
+	}
+
+	private function getDependencyMetadataFromSerialization( array $serialization ): DependencyMetadata {
 		if ( array_key_exists( CheckResultSerializer::KEY_DEPENDENCY_METADATA, $serialization ) ) {
 			return $this->deserializeDependencyMetadata(
 				$serialization[CheckResultSerializer::KEY_DEPENDENCY_METADATA]
@@ -126,11 +115,7 @@ class CheckResultDeserializer {
 		}
 	}
 
-	/**
-	 * @param array $serialization
-	 * @return CachingMetadata
-	 */
-	private function deserializeCachingMetadata( array $serialization ) {
+	private function deserializeCachingMetadata( array $serialization ): CachingMetadata {
 		if (
 			array_key_exists(
 				CheckResultSerializer::KEY_CACHING_METADATA_MAX_AGE,
@@ -145,11 +130,7 @@ class CheckResultDeserializer {
 		}
 	}
 
-	/**
-	 * @param array $serialization
-	 * @return DependencyMetadata
-	 */
-	private function deserializeDependencyMetadata( array $serialization ) {
+	private function deserializeDependencyMetadata( array $serialization ): DependencyMetadata {
 		if (
 			array_key_exists(
 				CheckResultSerializer::KEY_DEPENDENCY_METADATA_FUTURE_TIME,
@@ -171,7 +152,7 @@ class CheckResultDeserializer {
 
 				return DependencyMetadata::merge( [
 					$metadata,
-					DependencyMetadata::ofEntityId( $entityId )
+					DependencyMetadata::ofEntityId( $entityId ),
 				] );
 			},
 			$futureTimeDependencyMetadata

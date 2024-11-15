@@ -151,7 +151,7 @@ class JCTabularContentView extends JCContentView {
 					$makeRow( $titleHeaders, [ 'class' => 'mw-tabular-row-name' ] ),
 				] ) ) . Html::rawElement( 'tbody', [], implode( "\n", $rows ) ) ) .
 			$content->renderSources(
-				MediaWikiServices::getInstance()->getParser()->getFreshParser(),
+				MediaWikiServices::getInstance()->getParserFactory()->getInstance(),
 				$page,
 				$revId,
 				$options

@@ -46,7 +46,7 @@ class CitationNeededCheckerTest extends \PHPUnit\Framework\TestCase {
 		}
 	}
 
-	public function provideStatements() {
+	public static function provideStatements() {
 		$mainSnak = new PropertyValueSnak( new NumericPropertyId( 'P1' ), new StringValue( 'emacs forever' ) );
 		$referenceSnak = new PropertyValueSnak( new NumericPropertyId( 'P2' ), new StringValue( 'Everyone says so' ) );
 
@@ -69,7 +69,7 @@ class CitationNeededCheckerTest extends \PHPUnit\Framework\TestCase {
 
 		$result = $checker->checkConstraintParameters( $constraint );
 
-		$this->assertEmpty( $result );
+		$this->assertSame( [], $result );
 	}
 
 	/**

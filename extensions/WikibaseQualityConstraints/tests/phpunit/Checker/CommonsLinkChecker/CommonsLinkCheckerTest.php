@@ -11,8 +11,8 @@ use Wikibase\DataModel\Services\Lookup\InMemoryDataTypeLookup;
 use Wikibase\DataModel\Services\Lookup\PropertyDataTypeLookup;
 use Wikibase\DataModel\Snak\PropertyNoValueSnak;
 use Wikibase\DataModel\Snak\PropertyValueSnak;
-use Wikibase\Repo\Tests\NewItem;
-use Wikibase\Repo\Tests\NewStatement;
+use Wikibase\DataModel\Tests\NewItem;
+use Wikibase\DataModel\Tests\NewStatement;
 use WikibaseQuality\ConstraintReport\Constraint;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Checker\CommonsLinkChecker;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\MainSnakContext;
@@ -280,7 +280,7 @@ class CommonsLinkCheckerTest extends \MediaWikiIntegrationTestCase {
 	}
 
 	public function testCheckConstraintParameters() {
-		$namespaceId = $this->getDefaultConfig()->get( 'WBQualityConstraintsNamespaceId' );
+		$namespaceId = self::getDefaultConfig()->get( 'WBQualityConstraintsNamespaceId' );
 		$constraint = $this->getConstraintMock( [ $namespaceId => [] ] );
 
 		$result = $this->commonsLinkChecker->checkConstraintParameters( $constraint );

@@ -10,10 +10,10 @@ use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Services\Lookup\InMemoryDataTypeLookup;
 use Wikibase\DataModel\Snak\PropertyNoValueSnak;
 use Wikibase\DataModel\Snak\PropertyValueSnak;
+use Wikibase\DataModel\Tests\NewItem;
+use Wikibase\DataModel\Tests\NewStatement;
 use Wikibase\Lib\Units\CSVUnitStorage;
 use Wikibase\Lib\Units\UnitConverter;
-use Wikibase\Repo\Tests\NewItem;
-use Wikibase\Repo\Tests\NewStatement;
 use WikibaseQuality\ConstraintReport\Constraint;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Checker\RangeChecker;
 use WikibaseQuality\ConstraintReport\ConstraintCheck\Context\MainSnakContext;
@@ -59,7 +59,7 @@ class RangeCheckerTest extends \MediaWikiIntegrationTestCase {
 		parent::setUp();
 		$this->timeValue = $this->getTimeValue( '1970-01-01' );
 		$rangeCheckerHelper = new RangeCheckerHelper(
-			$this->getDefaultConfig(),
+			self::getDefaultConfig(),
 			new UnitConverter( new CSVUnitStorage( __DIR__ . '/units.csv' ), '' )
 		);
 		$dataTypeLookup = new InMemoryDataTypeLookup();
@@ -362,7 +362,7 @@ class RangeCheckerTest extends \MediaWikiIntegrationTestCase {
 		$this->assertCount( 1, $result );
 	}
 
-	public function providePropertyIds() {
+	public static function providePropertyIds() {
 		return [ [ 'P1' ], [ 'P2' ] ];
 	}
 
