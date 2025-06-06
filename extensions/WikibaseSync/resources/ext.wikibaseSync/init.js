@@ -412,16 +412,21 @@ function removeExistingRecordsFromWikidataResults(wikidataResults, localResults)
     var updatedResults = [];
     localResults.concat(wikidataResults).forEach(function (element) {
         var index = updatedResults.findIndex(function (x) {
+			if (element.label == undefined) return -1
             return x.label.toLowerCase().trim() == element.label.toLowerCase().trim() && x.description.toLowerCase().trim() == element.description.toLowerCase().trim()
         })
         if (index == -1) {
             if (element.repository.toLowerCase() !== "local") {
+                if (element.label == undefined) {
+                    element.label = element.title
+                }
                 element.label = "[clone from wikidata:] " + element.label
+
             }
             updatedResults.push(element);
         }
     })
     return updatedResults
-    
+
 };
 

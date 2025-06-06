@@ -47,6 +47,7 @@ var SERVER = 'https://linkedopendata.eu';
 		var updatedResults = [];
 		localResults.concat(wikidataResults).forEach(function (element) {
 			var index = updatedResults.findIndex(function (x) {
+				if (element.label == undefined) return -1
 				return x.label.toLowerCase().trim() == element.label.toLowerCase().trim() && element.description != undefined && x.description.toLowerCase().trim() == element.description.toLowerCase().trim()
 			})
 			if (index == -1) {
