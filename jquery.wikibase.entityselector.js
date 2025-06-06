@@ -51,7 +51,7 @@ var SERVER = 'https://linkedopendata.eu';
 			})
 			if (index == -1) {
 				if (element.repository.toLowerCase() !== "local") {
-					if (element.label !== undefined) {
+					if (element.label == undefined) {
 						element.label = element.title
 					}
 					element.label = "[clone from wikidata:] " + element.label
