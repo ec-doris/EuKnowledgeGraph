@@ -1,0 +1,15 @@
+name: Deploy Dev
+
+on:
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  build:
+    uses: ec-doris/github-workflows/.github/workflows/build.yaml@main
+    with:
+      AWS_REGION: 'eu-west-1'
+      ECR_REPOSITORY: 891376987990.dkr.ecr.eu-west-1.amazonaws.com/linkedopendata-dev-wikibase-bundle
+      IMAGE_TAG: ${{ github.sha }}
+      DOCKERFILE: wikibase-bundle.Dockerfile
