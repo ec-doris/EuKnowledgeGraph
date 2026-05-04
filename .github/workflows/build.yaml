@@ -91,7 +91,7 @@ on:
           default: ''
 jobs:
   build:
-    runs-on: doris-runners-dev
+    # runs-on: doris-runners-dev
     steps:
       - name: Install git
         run: sudo apt-get update && sudo apt-get install -y git jq wget curl unzip

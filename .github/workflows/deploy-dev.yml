@@ -8,7 +8,6 @@ on:
 jobs:
   build:
     uses: ./.github/workflows/build.yaml
-    runs-on: doris-runners-dev
     with:
       AWS_REGION: 'eu-west-1'
       ECR_REPOSITORY: 891376987990.dkr.ecr.eu-west-1.amazonaws.com/linkedopendata-dev-wikibase-bundle
