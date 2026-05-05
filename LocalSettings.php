@@ -70,7 +70,7 @@ $wgWBRepoSettings['statementSections'] = array(
 #Enable Kartographer
 wfLoadExtension( 'JsonConfig' );
 wfLoadExtension( 'Kartographer' );
-$wgKartographerMapServer = 'https://a.tile.openstreetmap.org';
+$wgKartographerMapServer = 'https://tile.openstreetmap.org';
 $wgKartographerDfltStyle = '';
 $wgKartographerSrcsetScales = [1];
 $wgKartographerStyles = [];
